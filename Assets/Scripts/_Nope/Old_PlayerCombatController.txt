@@ -1,0 +1,110 @@
+using UnityEngine;
+using System;
+
+public class Old_PlayerCombatController : MonoBehaviour
+{
+    // ตั้งค่า Prefab ของการโจมตีใน Inspector
+    public GameObject[] attackPrefabs;
+    public float comboWindow = 0.5f;
+    public float attackFart = 1f;
+    public float attackHight = 1f;
+    public float rotationSpeed = 10f; // เพิ่มความเร็วในการหมุน
+
+    private int _attackIndex = 0;
+    private float _lastAttackTime;
+
+    // ตัวแปรสำหรับเก็บข้อมูลที่จะใช้ใน OnDrawGizmos
+    private Vector3 _attackDirection;
+    private Vector3 _mousePosition;
+
+    private void OnEnable()
+    {
+        PlayerInputActionsManager.instance.OnMountPosition += HandleMountPosition;
+        PlayerInputActionsManager.instance.OnMeleeAttack += HandleMeleeAttack;
+    }
+
+    private void OnDisable()
+    {
+        PlayerInputActionsManager.instance.OnMountPosition -= HandleMountPosition;
+        PlayerInputActionsManager.instance.OnMeleeAttack -= HandleMeleeAttack;
+    }
+
+    private void Update()
+    {
+        // ตรวจสอบว่าคอมโบขาดตอนหรือไม่
+        if (Time.time - _lastAttackTime > comboWindow)
+        {
+            _attackIndex = 0;
+        }
+
+        // ทำให้ตัวละครหันหน้าไปตามทิศทางการโจมตีแบบนุ่มนวล
+        if (_attackDirection != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(_attackDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+    }
+
+    // ฟังก์ชันสำหรับรับตำแหน่งที่คลิก และเก็บไว้ในตัวแปร
+    private void HandleMountPosition(Vector3 position)
+    {
+        _mousePosition = position;
+        ShowPointClicker(_mousePosition);
+        Debug.Log($"mousePosition : {_mousePosition} \n_attackDirection : {_attackDirection}");
+
+        _attackDirection = (_mousePosition - transform.position).normalized;
+    }
+
+    // ฟังก์ชันสำหรับรับทิศทางการโจมตี และเก็บไว้ในตัวแปร
+    private void HandleAttackDirection(Vector3 direction)
+    {
+        _attackDirection = direction;
+    }
+
+    // ฟังก์ชันสำหรับการโจมตีจริงๆ (ไม่มีพารามิเตอร์)
+    private void HandleMeleeAttack()
+    {
+        if (attackPrefabs.Length == 0) return;
+
+        // คำนวณลำดับการโจมตีปัจจุบัน
+        int currentAttackIndex = _attackIndex % attackPrefabs.Length;
+
+        // สร้าง GameObject ของการโจมตี
+        GameObject attackInstance = Instantiate(attackPrefabs[currentAttackIndex], transform.position, Quaternion.identity);
+
+        // คำนวณตำแหน่งและทิศทางการหมุน
+        Vector3 directionToMouse = (_mousePosition - transform.position).normalized;
+        attackInstance.transform.position = transform.position + (directionToMouse * attackFart);
+
+        Quaternion targetRotation = Quaternion.LookRotation(_attackDirection);
+        attackInstance.transform.rotation = targetRotation;
+
+        // อัปเดตสถานะสำหรับคอมโบถัดไป
+        _attackIndex++;
+        _lastAttackTime = Time.time;
+    }
+
+    public GameObject showPoitPrefab;
+    private GameObject showPoitLast;
+
+    private void ShowPointClicker(Vector3 point)
+    {
+        if (showPoitLast != null) Destroy(showPoitLast);
+        showPoitLast = Instantiate(showPoitPrefab, point, Quaternion.identity);
+    }
+
+    // ใช้เพื่อแสดงข้อมูลใน Scene View เท่านั้น
+    private void OnDrawGizmos()
+    {
+        // วาดจุดสีแดงที่ตำแหน่งเมาส์
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(_mousePosition, 0.2f);
+
+        // วาดเส้นสีเขียวจากตัวละครไปยังตำแหน่งเมาส์
+        Gizmos.color = Color.green;
+        Vector3 playerPosition = transform.position;
+        Vector3 directionToMouse = (_mousePosition - playerPosition).normalized;
+
+        Gizmos.DrawRay(playerPosition, directionToMouse * 2f);
+    }
+}

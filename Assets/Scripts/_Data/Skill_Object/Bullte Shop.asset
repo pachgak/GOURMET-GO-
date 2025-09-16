@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea5a85171cab10249bda4e63a305ce4d, type: 3}
+  m_Name: Bullte Shop
+  m_EditorClassIdentifier: 
+  skillName: 
+  skillIcon: {fileID: 0}
+  cooldown: 0
+  usesCount: 0
+  skillLifeTime: 0
+  spawnSkillPrefabsType: 1
+  skillSetp:
+  - playAtTime: 0
+    skillPrefabs: {fileID: 4132065170442862893, guid: be8703a38a2b1e34183ecd0cdf6d2bc4, type: 3}
+    skillFar: 0
+    skillHight: 0
+    damage: 0
+    knockbackForce: 10
+    speed: 20
+    haveDash: 0
+    dashSpeed: 0
+    dashTime: 0

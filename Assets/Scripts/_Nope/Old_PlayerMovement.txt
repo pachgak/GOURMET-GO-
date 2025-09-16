@@ -1,0 +1,142 @@
+using System;
+using UnityEngine;
+
+public class Old_PlayerMovement : MonoBehaviour
+{
+    public float moveSpeed = 5f;
+    public float sprintSpeed = 10f;
+    public float dashSpeed = 20f;
+    public float dashTime = 0.2f;
+
+    private Rigidbody rb;
+    [SerializeField] private LayerMask _groundLayerMask; // เพิ่ม LayerMask สำหรับพื้น
+    public float customGravity = -20f; // ตั้งค่าแรงโน้มถ่วงที่คุณต้องการ
+    private Vector3 moveDirection;
+    private bool isPlayerAttacking = false;
+    private bool isSprinting = false;
+    private bool isDashing = false;
+    private float dashTimeCounter;
+
+    public Action<bool> OnDashStateChange;
+    public Action<bool> OnSprintStateChange;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+
+    }
+
+    private void OnEnable()
+    {
+        PlayerInputActionsManager.instance.OnMoveInput += HandleMoveInput;
+        PlayerInputActionsManager.instance.OnSprintInput += HandleSprintInput;
+        PlayerInputActionsManager.instance.OnDashInput += HandleDashInput;
+        PlayerInputActionsManager.instance.OnAttackStateChange += HandleAttackStateChange;
+    }
+
+    private void OnDisable()
+    {
+        PlayerInputActionsManager.instance.OnMoveInput -= HandleMoveInput;
+        PlayerInputActionsManager.instance.OnSprintInput -= HandleSprintInput;
+        PlayerInputActionsManager.instance.OnDashInput -= HandleDashInput;
+        PlayerInputActionsManager.instance.OnAttackStateChange -= HandleAttackStateChange;
+    }
+
+    private void HandleMoveInput(Vector3 direction)
+    {
+        moveDirection = direction;
+    }
+
+    private void HandleSprintInput(bool isSprintingState)
+    {
+        if (isSprinting != isSprintingState)
+        {
+            isSprinting = isSprintingState;
+            OnSprintStateChange?.Invoke(isSprinting);
+        }
+    }
+
+    private void HandleDashInput()
+    {
+        if (moveDirection != Vector3.zero && !isDashing)
+        {
+            isDashing = true;
+            dashTimeCounter = dashTime;
+            OnDashStateChange?.Invoke(isDashing);
+        }
+    }
+
+    private void HandleAttackStateChange(bool isAttacking)
+    {
+        isPlayerAttacking = isAttacking;
+    }
+
+    private void FixedUpdate()
+    {
+        if (isPlayerAttacking)
+        {
+            return;
+        }
+
+        if (isDashing)
+        {
+            rb.AddForce(moveDirection * dashSpeed, ForceMode.Impulse);
+            dashTimeCounter -= Time.fixedDeltaTime;
+
+            if (dashTimeCounter <= 0)
+            {
+                isDashing = false;
+                rb.linearVelocity = Vector3.zero;
+                OnDashStateChange?.Invoke(isDashing);
+            }
+        }
+        else
+        {
+            float currentSpeed = isSprinting ? sprintSpeed : moveSpeed;
+            Vector3 targetVelocity = moveDirection * currentSpeed;
+
+            // ตรวจสอบทิศทางการเคลื่อนที่และปรับความสูง
+            if (moveDirection.sqrMagnitude > 0)
+            {
+                
+
+                rb.linearVelocity = targetVelocity;
+            }
+            else
+            {
+                rb.linearVelocity = Vector3.zero;
+            }
+
+            // ตรวจสอบว่ามีทิศทางการเคลื่อนที่หรือไม่
+            if (moveDirection.sqrMagnitude > 0)
+            {
+                rb.linearVelocity = targetVelocity;
+            }
+            else
+            {
+                // ถ้าไม่มีการกดปุ่มใดๆ ให้ล้าง velocity เพื่อหยุดทันที
+                rb.linearVelocity = Vector3.zero;
+            }
+
+            
+        }
+
+        //ขึ้นพื้นต่างระดับ
+        // Raycast เพื่อหาความสูงของพื้น
+        RaycastHit hit;
+        // ยิง Ray ลงจากตำแหน่งปัจจุบันเพื่อหาพื้น
+        if (Physics.Raycast(transform.position + new Vector3(0, 1f, 0), Vector3.down, out hit, 1.1f, _groundLayerMask))
+        {
+            // ปรับตำแหน่ง Y ของ RigidBody ให้ตรงกับความสูงของพื้น
+            Vector3 newPosition = new Vector3(transform.position.x, hit.point.y + 0.1f, transform.position.z);
+            rb.MovePosition(newPosition);
+            Debug.Log("Set newPosition");
+        }
+        //แรงโน้มถ่วง Raycast เพื่อหาความสูงของพื้น
+        RaycastHit hit2;
+        if (!Physics.Raycast(transform.position, Vector3.down, out hit2, 0.2f, _groundLayerMask))
+        {
+            rb.AddForce(Vector3.up * customGravity, ForceMode.Acceleration);
+        }
+    }
+}

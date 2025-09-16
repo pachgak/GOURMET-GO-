@@ -1,0 +1,385 @@
+using System;
+using UnityEngine;
+using System.Collections;
+
+public class PlayerMovement : MonoBehaviour
+{
+    public static PlayerMovement instance;
+
+    [Header("Walk")]
+    public float moveSpeed = 5f;
+    [Header("Sprint")]
+    public float sprintSpeed = 10f;
+    public float sonicSpeed = 10f;
+    public float sprintTime = 2f; // อัตราการเพิ่มความเร็ว
+    public float lerpSpeedTime = 2f; // อัตราการเพิ่มความเร็ว
+    public float timeToSonicSpeed = 5f; // เวลาที่ใช้ในการวิ่งก่อนเข้าสู่โหมด sonic
+    public AnimationCurve sprintCurve;
+    [Header("Dash")]
+    public float dashCooldown = 1.5f; // เวลา Cooldown ของ Dash
+    public Vector2 dashSpeedFactor = new Vector2(4f, 2f);
+    public float dashTime = 0.2f;
+    [Header("Attack Delay Movement")]
+    public float attackMovementDelay = 0.2f; // เวลาหน่วงหลังโจมตี
+    private Coroutine movementDelayCoroutine;
+    [Header("Sliding")]
+    public Vector2 slideBrakeFactor = new Vector2(0.9f, 0.98f); // ค่าสัมประสิทธิ์การเบรค (น้อยกว่า 1)
+    public float minSlideSpeed = 2f; // ความเร็วขั้นต่ำที่จะเริ่มหยุดไถล
+    [Header("Jun System")]
+    public float lastDirectionDelay = 0.05f; // เวลาหน่วงที่คุณต้องการ
+    public float gravity = -20f; // CharacterController ใช้แรงโน้มถ่วงของตัวเอง
+
+    private CharacterController controller;
+    private float currentSpeed; // ความเร็วปัจจุบันของตัวละคร
+    private Coroutine _sprintTimerCoroutine;
+    private Vector3 moveDirection;
+    private Vector3 lastMoveDirection;
+    private Vector3 _delayedMoveDirection;
+    private Vector3 _beforeMoveDirection;
+    private Coroutine _directionUpdateCoroutine;
+    private bool isSprinting = false;
+    private bool isSliding = false; // ตัวแปรสถานะใหม่สำหรับควบคุมการไถล
+    private bool isSonic = false;
+    private float trueSlideBrakeFactor; // เพิ่มตัวแปรนี้เข้ามา
+    private bool isDashing = false;
+    private bool canDash = true; // สถานะสำหรับตรวจสอบว่า Dash พร้อมใช้งานหรือไม่
+    private float dashTimeCounter;
+    private Vector3 dashVelocity; // เก็บความเร็วสำหรับการพุ่ง
+    private Vector3 slideVelocity;
+
+    private bool isAttackingForward = false;
+    private float attackForwardTimeCounter;
+    private Vector3 attackForwardDirection;
+    private bool _canAttack = true;
+    private bool _canMove = true; // สถานะสำหรับควบคุมการเคลื่อนที่
+
+    private float _sprintTimer;
+
+    public Action<bool> OnDashStateChange;
+    public Action<bool> OnSprintStateChange;
+
+    private void Awake()
+    {
+        if (instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+
+        controller = GetComponent<CharacterController>();
+        if (controller == null)
+        {
+            Debug.LogError("CharacterController component not found on the GameObject.");
+        }
+    }
+
+    private void OnEnable()
+    {
+        PlayerInputActionsManager.instance.OnMoveInput += HandleMoveInput;
+        PlayerInputActionsManager.instance.OnSprintInput += HandleSprintInput;
+        PlayerInputActionsManager.instance.OnDashInput += HandleDashInput;
+
+        // ใช้ Coroutine เพื่อรอ PlayerCombatController
+        StartCoroutine(WaitForCombatControllerInstance());
+    }
+
+    private void OnDisable()
+    {
+        PlayerInputActionsManager.instance.OnMoveInput -= HandleMoveInput;
+        PlayerInputActionsManager.instance.OnSprintInput -= HandleSprintInput;
+        PlayerInputActionsManager.instance.OnDashInput -= HandleDashInput;
+        if (PlayerCombatController.instance != null) PlayerCombatController.instance.OnAttackForward -= HandleAttackForward;
+        if (PlayerCombatController.instance != null) PlayerCombatController.instance.OnAttackStateChange -= HandleAttackStateChange;
+    }
+
+    private System.Collections.IEnumerator WaitForCombatControllerInstance()
+    {
+        // รอจนกว่า PlayerCombatController.instance จะไม่เป็น null
+        while (PlayerCombatController.instance == null)
+        {
+            yield return null;
+        }
+        // เมื่อ instance พร้อมแล้ว จึงทำการสมัครรับฟัง
+        PlayerCombatController.instance.OnAttackStateChange += HandleAttackStateChange;
+        PlayerCombatController.instance.OnAttackForward += HandleAttackForward;
+    }
+
+    private void HandleMoveInput(Vector3 direction)
+    {
+        moveDirection = direction;
+
+        // ถ้าผู้เล่นปล่อยปุ่มเดิน (ทิศทางการเคลื่อนที่เป็นศูนย์)
+        if (moveDirection == Vector3.zero)
+        {
+            // บังคับให้สถานะการวิ่งเป็น false ทันที
+            SetIsSprint(false);
+
+            // การเช็ค isSliding เพื่อป้องกันการเข้าสู่สถานะไถลซ้ำ
+            if (!isSliding && currentSpeed > moveSpeed)
+            {
+                SetIsSliding(true);
+            }
+        }
+
+        SaveLastMoveDirection();
+    }
+
+    private void HandleSprintInput(bool isSprintingState)
+    {
+        if (isSprintingState && moveDirection != Vector3.zero)
+        {
+            SetIsSprint(true);
+        }
+        // ถ้าผู้เล่นปล่อยปุ่มวิ่ง
+        else
+        {
+            SetIsSprint(false);
+        }
+    }
+
+    private void HandleDashInput()
+    {
+        if (moveDirection != Vector3.zero && canDash)
+        {
+            SetIsDash(true);
+        }
+    }
+
+    private void HandleAttackForward(Vector3 direction, float speed, float time)
+    {
+        isAttackingForward = true;
+        attackForwardTimeCounter = time;
+        attackForwardDirection = direction * speed;
+    }
+
+    // ฟังก์ชันสำหรับรับสถานะการโจมตี
+    private void HandleAttackStateChange(bool canAttack)
+    {
+        _canAttack = canAttack;
+
+        if (!canAttack)
+        {
+            // หยุด Coroutine เก่า (ถ้ามี) ก่อนที่จะเริ่มใหม่
+            if (movementDelayCoroutine != null)
+            {
+                StopCoroutine(movementDelayCoroutine);
+            }
+            // เริ่ม Coroutine เพื่อหน่วงเวลาการเคลื่อนที่
+            movementDelayCoroutine = StartCoroutine(StartMovementDelay(attackMovementDelay));
+        }
+    }
+
+    private void Update()
+    {
+        Vector3 finalMovement = Vector3.zero;
+
+        if (isDashing)
+        {
+            finalMovement = dashVelocity;
+            dashTimeCounter -= Time.deltaTime;
+
+            if (dashTimeCounter <= 0)
+            {
+                SetIsDash(false);
+            }
+        }
+        else if (isAttackingForward)
+        {
+            finalMovement = attackForwardDirection;
+            attackForwardTimeCounter -= Time.deltaTime;
+            if (attackForwardTimeCounter <= 0)
+            {
+                isAttackingForward = false;
+                finalMovement = Vector3.zero;
+            }
+        }
+        else if (isSliding)
+        {
+            // ลดความเร็วลงเรื่อยๆ เพื่อจำลองการไถล
+            currentSpeed *= trueSlideBrakeFactor; // ใช้ตัวแปรที่คำนวณใหม่
+            finalMovement = slideVelocity * currentSpeed; // ใช้ lastMoveDirection
+
+            // หยุดการไถลเมื่อความเร็วลดลงถึงค่าที่กำหนด
+            if (currentSpeed <= minSlideSpeed)
+            {
+                SetIsSliding(false);
+            }
+        }
+        else if (_canMove)
+        {
+            // คำนวณความเร็วเป้าหมาย
+            //float targetSpeed = isSprinting ? sprintSpeed : moveSpeed;
+
+            // ถ้ากำลังเร่งความเร็วอยู่
+            if (isSprinting && _sprintTimer < sprintTime)
+            {
+                _sprintTimer += Time.deltaTime;
+            }
+            // ถ้ากำลังชะลอความเร็ว
+            else if (!isSprinting && _sprintTimer != 0)
+            {
+                SetIsSliding(true);
+                //_sprintTimer = 0;
+            }
+
+            // ทำให้ sprintTimer อยู่ในช่วง 0 ถึง sprintTime
+            _sprintTimer = Mathf.Clamp(_sprintTimer, 0, sprintTime);
+
+            // ใช้ sprintTimer เพื่อคำนวณ Lerp
+            float t = _sprintTimer / sprintTime;
+            float easedT = sprintCurve.Evaluate(t);
+            currentSpeed = Mathf.Lerp(moveSpeed, sprintSpeed, easedT);
+
+            finalMovement = moveDirection * currentSpeed;
+        }
+
+        // ใช้ isGrounded เพื่อตรวจสอบว่าอยู่บนพื้นหรือไม่
+        if (controller.isGrounded)
+        {
+            // ถ้าอยู่บนพื้น ให้ความเร็วแกน Y เป็น 0 เพื่อไม่ให้ตัวละครจม
+            finalMovement.y = 0;
+        }
+        else
+        {
+            // ถ้าลอยอยู่ ให้ใช้แรงโน้มถ่วง
+            finalMovement.y = gravity;
+        }
+
+        // ใช้ controller.Move เพื่อให้ตัวละครเคลื่อนที่
+        controller.Move(finalMovement * Time.deltaTime);
+    }
+
+    // Coroutine สำหรับการหน่วงเวลา
+    private IEnumerator DirectionUpdateCoroutine()
+    {
+        // หยุดรอเป็นเวลาที่กำหนด
+        yield return new WaitForSeconds(lastDirectionDelay);
+
+        // หลังจากรอแล้ว ให้ตรวจสอบว่าทิศทางยังคงเหมือนเดิมหรือไม่
+        if (_delayedMoveDirection == moveDirection)
+        {
+            _beforeMoveDirection = lastMoveDirection;
+            lastMoveDirection = _delayedMoveDirection;
+        }
+    }
+
+    private IEnumerator SprintTimerCoroutine()
+    {
+        yield return new WaitForSeconds(timeToSonicSpeed);
+        
+                isSonic = true;
+                // รีเซ็ต _sprintTimer เพื่อเริ่ม Lerp ใหม่
+                _sprintTimer = 0f;
+
+    }
+
+    private void SaveLastMoveDirection()
+    {
+        // ถ้าผู้เล่นเริ่มกดปุ่มเดิน (direction ไม่เท่ากับ zero)
+        if (moveDirection != Vector3.zero)
+        {
+            // เก็บค่าทิศทางปัจจุบันไว้
+            _delayedMoveDirection = moveDirection;
+
+            // หยุด Coroutine เก่า (ถ้ามี) ก่อนเริ่มใหม่
+            if (_directionUpdateCoroutine != null)
+            {
+                StopCoroutine(_directionUpdateCoroutine);
+            }
+
+            // เริ่ม Coroutine เพื่อจับเวลา
+            _directionUpdateCoroutine = StartCoroutine(DirectionUpdateCoroutine());
+
+        }
+        // ถ้าผู้เล่นปล่อยปุ่ม
+        else
+        {
+            // หยุด Coroutine ทันที
+            if (_directionUpdateCoroutine != null)
+            {
+                StopCoroutine(_directionUpdateCoroutine);
+            }
+        }
+    }
+
+    private System.Collections.IEnumerator StartMovementDelay(float movementDelay)
+    {
+        _canMove = false; // หยุดการเคลื่อนที่
+        yield return new WaitForSeconds(movementDelay);
+        _canMove = true; // กลับมาเคลื่อนที่ได้
+    }
+
+    private void SetIsSliding(bool isSet)
+    {
+        if (isSet == true)
+        {
+            // คำนวณค่าเปอร์เซ็นต์ (t) ของ currentSpeed
+            float t = Mathf.InverseLerp(moveSpeed, sprintSpeed, currentSpeed);
+            // ใช้ค่า t เพื่อหาค่าสัมประสิทธิ์การเบรคที่เหมาะสม
+            trueSlideBrakeFactor = Mathf.Lerp(slideBrakeFactor.x, slideBrakeFactor.y, t);
+
+            isSliding = true;
+            slideVelocity = lastMoveDirection;
+        }
+
+        if (isSet == false)
+        {
+            isSliding = false;
+            _sprintTimer = 0;
+        }
+    }
+
+    private void SetIsSprint(bool isSet)
+    {
+        if (isSet == true)
+        {
+            isSprinting = true;
+            OnSprintStateChange?.Invoke(isSprinting);
+
+            // เริ่ม Coroutine สำหรับการนับเวลา Sonic Speed
+            _sprintTimerCoroutine = StartCoroutine(SprintTimerCoroutine());
+        }
+
+        if (isSet == false)
+        {
+            isSprinting = false;
+            OnSprintStateChange?.Invoke(isSprinting);
+        }
+    }
+    private void SetIsDash(bool isSet)
+    {
+        if (isSet == true)
+        {
+            isDashing = true;
+            dashTimeCounter = dashTime;
+
+            // InverseLerp จะหาว่า currentSpeed อยู่ที่ตำแหน่งไหนระหว่าง moveSpeed กับ sprintSpeed
+            float t = Mathf.InverseLerp(moveSpeed, sprintSpeed, currentSpeed);
+            // Lerp จะคำนวณค่าระหว่าง dashSpeedFactor.x กับ dashSpeedFactor.y ตามค่า t
+            float trueDashSpeedFactor = Mathf.Lerp(dashSpeedFactor.x, dashSpeedFactor.y, t);
+            // เก็บความเร็วสำหรับใช้ตอนพุ่ง
+            dashVelocity = moveDirection.normalized * currentSpeed * trueDashSpeedFactor;
+            OnDashStateChange?.Invoke(isDashing);
+
+            // เริ่ม Coroutine สำหรับ Cooldown
+            StartCoroutine(DashCooldownCoroutine());
+        }
+
+        if (isSet == false)
+        {
+            isDashing = false;
+            dashVelocity = Vector3.zero;
+            OnDashStateChange?.Invoke(isDashing);
+        }
+    }
+
+    private IEnumerator DashCooldownCoroutine()
+    {
+        canDash = false;
+        yield return new WaitForSeconds(dashCooldown);
+        canDash = true;
+    }
+
+
+}

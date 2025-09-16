@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0d80dccf779f54438175483217f057d, type: 3}
+  m_Name: Dirt Spawn
+  m_EditorClassIdentifier: 
+  skillName: 
+  skillIcon: {fileID: 0}
+  cooldown: 0
+  usesCount: 0
+  skillPrefabs: {fileID: 4911351558283754124, guid: 0ad6b66772061904a9050adfec474f65, type: 3}
+  spawnSkillPrefabsType: 2
+  skillFar: 10
+  damage: 1
+  knockbackForce: 5
+  speed: 0
+  haveDash: 0
+  dashSpeed: 0
+  dashTime: 0
+  skillSpawnDelay: 0

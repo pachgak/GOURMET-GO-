@@ -1,0 +1,247 @@
+using UnityEngine;
+using System;
+
+public class PlayerCombatController : MonoBehaviour
+{
+    public static PlayerCombatController instance;
+
+    private void Awake()
+    {
+        if (instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+    }
+
+    // ตั้งค่า Prefab ของการโจมตีใน Inspector
+    public AttackComboSet[] attackCombo;
+    public float attackFart = 1f;
+    public float attackHight = 1f;
+    public float comboWindow = 0.5f;
+
+    [Header("Attack Forward")]
+    public float attackForwardSpeed = 5f; // ความเร็วในการพุ่งไปข้างหน้าเมื่อโจมตี
+    public float attackForwardTime = 0.1f; // ระยะเวลาในการพุ่งไปข้างหน้า
+
+    [Header("Sprinte Attack")]
+    public AttackComboSet sprinteAttact;
+    public AttackComboSet sonicAttact;
+    public Vector2 snapDirectionAttact;
+
+    [Header("Jun System")]
+    public float resetAttackClick = 0.3f;
+
+    [Header("System")]
+    [SerializeField] private int _attackIndex = 0;
+    [SerializeField] private float _lastAttackTime;
+
+    // ตัวแปรสำหรับเก็บข้อมูลที่จะใช้ใน OnDrawGizmos
+    private Vector3 _attackDirection;
+    private Vector3 _mousePosition;
+
+    // ตัวแปรใหม่สำหรับจัดการ Cooldown
+    [SerializeField] private bool _attackClick = false;
+    private float _attackCooldownTimer;
+    private float _resetAttackClickTimer;
+    private bool _canAttack = true;
+    private bool _isComboing = false;
+
+    private bool _isDashing = false;
+    private bool _isSprinte = false;
+
+    [Header("Action")]
+    public Action<Vector3, float, float> OnAttackForward;
+    public Action<bool> OnAttackStateChange;
+    public Action<bool> OnComboingStateChange;
+
+    [System.Serializable]
+    public class AttackComboSet
+    {
+        public GameObject attackPrefabs;
+        public float comboCooldown;
+        public float damage;
+        public float knockbackForce;
+    }
+
+    private void OnEnable()
+    {
+        PlayerInputActionsManager.instance.OnMeleeAttack += HandleMeleeAttack;
+        PlayerInputActionsManager.instance.OnMountPosition += HandleGetMountPos;
+
+        // ใช้ Coroutine เพื่อรอ PlayerMovement
+        StartCoroutine(WaitForMovementInstance());
+    }
+
+    private void OnDisable()
+    {
+        PlayerInputActionsManager.instance.OnMeleeAttack -= HandleMeleeAttack;
+        PlayerInputActionsManager.instance.OnMountPosition -= HandleGetMountPos;
+
+        if (PlayerMovement.instance != null) PlayerMovement.instance.OnDashStateChange -= HandleDashStateChange;
+        if (PlayerMovement.instance != null) PlayerMovement.instance.OnSprinteStateChange -= HandleSprinteStateChange;
+    }
+
+    private System.Collections.IEnumerator WaitForMovementInstance()
+    {
+        // รอจนกว่า PlayerMovement.instance จะไม่เป็น null
+        while (PlayerMovement.instance == null)
+        {
+            yield return null;
+        }
+        // เมื่อ instance พร้อมแล้ว จึงทำการสมัครรับฟัง
+        PlayerMovement.instance.OnDashStateChange += HandleDashStateChange;
+        PlayerMovement.instance.OnSprinteStateChange += HandleSprinteStateChange;
+    }
+
+    private void HandleSprinteStateChange(bool isSprinteState)
+    {
+        _isSprinte = isSprinteState;
+    }
+
+    private void HandleDashStateChange(bool isDashingState,Vector3 actionDirection)
+    {
+        _isDashing = isDashingState;
+
+        if (_isDashing)
+        {
+            _attackIndex = 0; // รีเซ็ตคอมโบ
+            _attackCooldownTimer = 0; // รีเซ็ต Cooldown
+            _canAttack = false; // ตั้งค่าให้โจมตีได้ทันที
+            OnAttackStateChange?.Invoke(_canAttack);
+
+            _isComboing = false;
+            OnComboingStateChange?.Invoke(_isComboing);
+        }
+        else
+        {
+            _canAttack = true;
+        }
+    }
+
+    private void HandleGetMountPos(Vector3 mousePosition)
+    {
+        _mousePosition = mousePosition;
+        
+    }
+
+    // สร้าง Prefab การโจมตี
+    private void HandleMeleeAttack()
+    {
+        
+        ShowPointClicker(_mousePosition);
+        _attackClick = true;
+        _resetAttackClickTimer = resetAttackClick;
+
+        if (!_attackClick) return;
+        // ตรวจสอบว่าโจมตีได้หรือไม่
+        if (!_canAttack || _isDashing) return;
+
+        if (attackCombo.Length == 0) return;
+
+        _attackClick = false;
+
+        // คำนวณลำดับการโจมตีปัจจุบัน
+        int currentAttackIndex = _attackIndex % attackCombo.Length;
+
+        // สร้าง GameObject ของการโจมตี
+        GameObject attackInstance = Instantiate(attackCombo[currentAttackIndex].attackPrefabs, transform.position, Quaternion.identity);
+
+        // คำนวณทิศทางการโจมตี
+        Vector3 playerPosition = transform.position;
+        Vector3 directionToMouse = (_mousePosition - playerPosition).normalized;
+        attackInstance.transform.position = transform.position + (directionToMouse * attackFart);
+        // ส่งสัญญาณให้ตัวละครพุ่งไปข้างหน้า
+        OnAttackForward?.Invoke(directionToMouse, attackForwardSpeed, attackForwardTime);
+
+        // คำนวณการหมุน (Rotation)
+        Vector3 targetVecter = _mousePosition - transform.position;
+        targetVecter.y = 0f;
+        Quaternion targetRotation = Quaternion.LookRotation(targetVecter);
+        attackInstance.transform.rotation = targetRotation;
+
+        if (attackInstance.TryGetComponent(out AttackHitbox attackHitbox))
+        {
+            attackHitbox.damage = attackCombo[currentAttackIndex].damage;
+            attackHitbox.knockbackDirection = directionToMouse;
+            attackHitbox.knockbackForce = attackCombo[currentAttackIndex].knockbackForce;
+        }
+
+        //attackInstance.GetComponent<AttackHitbox>().damage = ;
+        //attackInstance.GetComponent<AttackHitbox>().knockbackForce  = ;
+
+        // อัปเดตสถานะสำหรับคอมโบถัดไป
+        _attackIndex++;
+        _lastAttackTime = Time.time;
+
+        if (!_isComboing)
+        {
+            _isComboing = true;
+            OnComboingStateChange?.Invoke(_isComboing);
+        }
+        _canAttack = false;
+        // ส่งสัญญาณว่าโจมตีไม่ได้แล้ว
+        OnAttackStateChange?.Invoke(_canAttack);
+        // ตั้งค่า Cooldown ใหม่
+        _attackCooldownTimer = attackCombo[currentAttackIndex].comboCooldown;
+    }
+    private void Update()
+    {
+        if (_attackClick && _canAttack) HandleMeleeAttack();
+        if (_attackClick)
+        {
+            _resetAttackClickTimer -= Time.deltaTime;
+            if (_resetAttackClickTimer <= 0)
+            {
+                _attackClick = false;
+            }
+        }
+
+        // ตรวจสอบว่าคอมโบขาดตอนหรือไม่
+        if (Time.time - _lastAttackTime > comboWindow && _attackIndex != 0)
+        {
+            _attackIndex = 0;
+
+            _isComboing = false;
+            OnComboingStateChange?.Invoke(_isComboing);
+        }
+
+        // นับเวลาถอยหลังสำหรับ Cooldown
+        if (!_canAttack)
+        {
+            _attackCooldownTimer -= Time.deltaTime;
+            if (_attackCooldownTimer <= 0)
+            {
+                _canAttack = true;
+                // ส่งสัญญาณว่าโจมตีได้แล้ว
+                OnAttackStateChange?.Invoke(_canAttack);
+            }
+        }
+    }
+
+    public GameObject showPoitPrefab;
+    private GameObject showPoitLast;
+
+    private void ShowPointClicker(Vector3 point)
+    {
+        if (showPoitLast != null) Destroy(showPoitLast);
+        showPoitLast = Instantiate(showPoitPrefab, point, Quaternion.identity);
+    }
+
+    // ใช้เพื่อแสดงข้อมูลใน Scene View เท่านั้น
+    private void OnDrawGizmos()
+    {
+        // วาดจุดสีแดงที่ตำแหน่งเมาส์
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(_mousePosition, 0.2f);
+
+        // วาดเส้นสีเขียวจากตัวละครไปยังตำแหน่งเมาส์
+        Gizmos.color = Color.green;
+        Vector3 playerPosition = transform.position;
+        Vector3 directionToMouse = (_mousePosition - playerPosition).normalized;
+
+        // Gizmos.DrawRay(startPoint, direction)
+        Gizmos.DrawRay(playerPosition, directionToMouse * 2f);
+    }
+}
