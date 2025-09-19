@@ -51,7 +51,7 @@ public class PlayerCombatController : MonoBehaviour
     private float _attackCooldownTimer;
     private float _resetAttackClickTimer;
     [SerializeField] private bool _canAttack = true;
-    [SerializeField]private bool _isComboing = false;
+    [SerializeField] private bool _isComboing = false;
 
     [SerializeField] private bool _isDashing = false;
     [SerializeField] private bool _isSprinte = false;
@@ -83,8 +83,23 @@ public class PlayerCombatController : MonoBehaviour
         OpenUiManager.instance.OnUiOpeningStateChange += HandleUiOpeningStateChange;
 
         // ใช้ Coroutine เพื่อรอ PlayerMovement
-        StartCoroutine(WaitForMovementInstance());
-        StartCoroutine(WaitForPlayerSkillControllerInstance());
+        //StartCoroutine(WaitForMovementInstance());
+        PachonTool.WaitForInstance(() => PlayerMovement.instance,
+                (playerMovement) =>
+                {
+                    playerMovement.OnDashStateChange += HandleDashStateChange;
+                    playerMovement.OnSprinteStateChange += HandleSprinteStateChange;
+                    playerMovement.OnSonicStateChange += HandleSonicStateChange;
+                }
+        );
+
+        //StartCoroutine(WaitForPlayerSkillControllerInstance());
+        PachonTool.WaitForInstance(() => PlayerSkillController.instance,
+                (playerSkillController) =>
+                {
+                    playerSkillController.OnSkillingStateChange += HandleSkillingStateChange;
+                }
+        );
     }
 
     private void OnDisable()
@@ -242,7 +257,7 @@ public class PlayerCombatController : MonoBehaviour
             _attackCooldownTimer = attackCombo[currentAttackIndex].comboCooldown;
         }
 
-        
+
     }
     private void Update()
     {
@@ -278,7 +293,7 @@ public class PlayerCombatController : MonoBehaviour
         }
     }
 
-    private void InstallAttackHit(GameObject attackPrefabs,Vector3 directionToMouse, float damage,float knockbackForce)
+    private void InstallAttackHit(GameObject attackPrefabs, Vector3 directionToMouse, float damage, float knockbackForce)
     {
         // สร้าง GameObject ของการโจมตี
         GameObject attackInstance = Instantiate(attackPrefabs, transform);

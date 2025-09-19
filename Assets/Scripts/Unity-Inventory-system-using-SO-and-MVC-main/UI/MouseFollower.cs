@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class MouseFollower : MonoBehaviour
 {
-    [SerializeField]
+    //[SerializeField]
     private Canvas canvas;
 
-    [SerializeField]
+    //[SerializeField]
     private UIInventoryItem item;
 
     public void Awake()

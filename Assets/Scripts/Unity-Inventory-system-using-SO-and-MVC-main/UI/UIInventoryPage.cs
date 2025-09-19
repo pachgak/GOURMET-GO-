@@ -13,8 +13,8 @@ namespace Inventory.UI
         [SerializeField]
         private RectTransform contentPanel;
 
-        [SerializeField]
-        private UIInventoryDescription itemDescription;
+        //[SerializeField]
+        //private UIInventoryDescription itemDescription;
 
         [SerializeField]
         private MouseFollower mouseFollower;
@@ -23,7 +23,8 @@ namespace Inventory.UI
 
         private int currentlyDraggedItemIndex = -1;
 
-        public event Action<int> OnDescriptionRequested,
+        public event Action<int> 
+                OnDescriptionRequested,
                 OnItemActionRequested,
                 OnStartDragging;
 
@@ -36,7 +37,7 @@ namespace Inventory.UI
         {
             Hide();
             mouseFollower.Toggle(false);
-            itemDescription.ResetDescription();
+            //itemDescription.ResetDescription();
         }
 
         public void InitializeInventoryUI(int inventorysize)
@@ -66,7 +67,7 @@ namespace Inventory.UI
 
         internal void UpdateDescription(int itemIndex, Sprite itemImage, string name, string description)
         {
-            itemDescription.SetDescription(itemImage, name, description);
+            //itemDescription.SetDescription(itemImage, name, description);
             DeselectAllItems();
             listOfUIItems[itemIndex].Select();
         }
@@ -144,7 +145,7 @@ namespace Inventory.UI
 
         public void ResetSelection()
         {
-            itemDescription.ResetDescription();
+            //itemDescription.ResetDescription();
             DeselectAllItems();
         }
 

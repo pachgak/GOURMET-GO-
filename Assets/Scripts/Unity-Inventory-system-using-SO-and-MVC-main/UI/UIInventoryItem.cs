@@ -35,10 +35,6 @@ namespace Inventory.UI
             itemImage.gameObject.SetActive(false);
             empty = true;
         }
-        public void Deselect()
-        {
-            borderImage.enabled = false;
-        }
         public void SetData(Sprite sprite, int quantity)
         {
             itemImage.gameObject.SetActive(true);
@@ -50,6 +46,11 @@ namespace Inventory.UI
         public void Select()
         {
             borderImage.enabled = true;
+        }
+
+        public void Deselect()
+        {
+            borderImage.enabled = false;
         }
 
         public void OnPointerClick(PointerEventData pointerData)
@@ -64,16 +65,17 @@ namespace Inventory.UI
             }
         }
 
-        public void OnEndDrag(PointerEventData eventData)
-        {
-            OnItemEndDrag?.Invoke(this);
-        }
-
         public void OnBeginDrag(PointerEventData eventData)
         {
             if (empty)
                 return;
             OnItemBeginDrag?.Invoke(this);
+        }
+
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            OnItemEndDrag?.Invoke(this);
         }
 
         public void OnDrop(PointerEventData eventData)
