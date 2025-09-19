@@ -25,21 +25,22 @@ namespace Inventory.Model
         [field: SerializeField]
         public Sprite ItemImage { get; set; }
 
-        [field: SerializeField]
+        //ไม่ได้ใช้ Dubility
+        [HideInInspector]
         public List<ItemParameter> DefaultParametersList { get; set; }
 
     }
 
     [Serializable]
-    public struct ItemParameter : IEquatable<ItemParameter>
+    public struct ItemParameter // : IEquatable<ItemParameter>
     {
         public ItemParameterSO itemParameter;
         public float value;
 
-        public bool Equals(ItemParameter other)
-        {
-            return other.itemParameter == itemParameter;
-        }
+        //public bool Equals(ItemParameter other)
+        //{
+        //    return other.itemParameter == itemParameter;
+        //}
     }
 }
 

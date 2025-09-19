@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu]
-public class CharacterStatHealthModifierSO : CharacterStatModifierSO
+public class HealthModifierSO : ItemModifierSO
 {
     public override void AffectCharacter(GameObject character, float val)
     {

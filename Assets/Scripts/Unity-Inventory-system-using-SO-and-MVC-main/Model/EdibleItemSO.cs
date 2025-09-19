@@ -41,7 +41,7 @@ namespace Inventory.Model
     [Serializable]
     public class ModifierData
     {
-        public CharacterStatModifierSO statModifier;
+        public ItemModifierSO statModifier;
         public float value;
     }
 }
