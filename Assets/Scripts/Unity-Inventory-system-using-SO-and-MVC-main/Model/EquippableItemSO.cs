@@ -12,13 +12,16 @@ namespace Inventory.Model
         [field: SerializeField]
         public AudioClip actionSFX { get; private set; }
 
-        public bool PerformAction(GameObject character, List<ItemParameter> itemState = null)
+        public bool PerformAction(GameObject character, List<ItemParameter> itemParameter
+ = null)
         {
             AgentWeapon weaponSystem = character.GetComponent<AgentWeapon>();
             if (weaponSystem != null)
             {
-                weaponSystem.SetWeapon(this, itemState == null ? 
-                    DefaultParametersList : itemState);
+                weaponSystem.SetWeapon(this, itemParameter
+ == null ? 
+                    DefaultParametersList : itemParameter
+);
                 return true;
             }
             return false;

@@ -36,5 +36,11 @@ namespace Inventory.UI
             title.text = itemName;
             description.text = itemDescription;
         }
+
+        public void Toggle(bool val)
+        {
+            //Debug.Log($"Item toggled {val}");
+            gameObject.SetActive(val);
+        }
     }
 }

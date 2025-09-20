@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 588567043420276067}
   - component: {fileID: 4358442856722591202}
   - component: {fileID: 8657640020508407168}
+  - component: {fileID: 6064659053313190647}
   - component: {fileID: 2440062492892563660}
   - component: {fileID: 1017415940033824222}
   m_Layer: 8
@@ -29,7 +30,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4087920257458981140}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -374.98, y: 0.91, z: 96.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -49,6 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6aa89606aec6ef843bb4302547aa0345, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canMove: 0
   lookRadius: 10
   StillThreshold: 0.05
   MaxKnockbackTime: 0.5
@@ -90,6 +92,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 1000
+  currentHealth: 0
+--- !u!114 &6064659053313190647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4087920257458981140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 484ef053f23c58643a21da371d796333, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effecfHitPrefab: {fileID: 5400559683693291329, guid: 6f7b678c455c1264d96a9c05d41584ec, type: 3}
+  damagePromptPrefab: {fileID: 0}
+  offSet: {x: 0, y: 1, z: -0.5}
 --- !u!54 &2440062492892563660
 Rigidbody:
   m_ObjectHideFlags: 0

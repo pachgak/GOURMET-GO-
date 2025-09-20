@@ -14,7 +14,8 @@ public class AgentWeapon : MonoBehaviour
     [SerializeField]
     private List<ItemParameter> parametersToModify, itemCurrentState;
 
-    public void SetWeapon(EquippableItemSO weaponItemSO, List<ItemParameter> itemState)
+    public void SetWeapon(EquippableItemSO weaponItemSO, List<ItemParameter> itemParameter
+)
     {
         if (weapon != null)
         {
@@ -22,7 +23,8 @@ public class AgentWeapon : MonoBehaviour
         }
 
         this.weapon = weaponItemSO;
-        this.itemCurrentState = new List<ItemParameter>(itemState);
+        this.itemCurrentState = new List<ItemParameter>(itemParameter
+);
         ModifyParameters();
     }
 
@@ -36,7 +38,7 @@ public class AgentWeapon : MonoBehaviour
                 float newValue = itemCurrentState[index].value + parameter.value;
                 itemCurrentState[index] = new ItemParameter
                 {
-                    itemParameter = parameter.itemParameter,
+                    itemParameterSO = parameter.itemParameterSO,
                     value = newValue
                 };
             }

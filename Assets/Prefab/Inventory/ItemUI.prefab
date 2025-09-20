@@ -211,7 +211,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -376,6 +376,7 @@ GameObject:
   - component: {fileID: 4852423222999904129}
   - component: {fileID: 598268590664722909}
   - component: {fileID: 1033030225024700877}
+  - component: {fileID: 2537238556743287515}
   m_Layer: 0
   m_Name: ItemUI
   m_TagString: Untagged
@@ -456,3 +457,15 @@ MonoBehaviour:
   itemImage: {fileID: 4543194973027782181}
   quantityTxt: {fileID: 8998351543540676742}
   borderImage: {fileID: 8166044165582578561}
+--- !u!225 &2537238556743287515
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7208886306295136114}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

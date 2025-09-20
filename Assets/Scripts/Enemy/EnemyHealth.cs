@@ -12,11 +12,14 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
     private NavMeshAgent agent;
     private Coroutine enableAgentCoroutine; // เพิ่มตัวแปรสำหรับเก็บ Coroutine
 
+    private HitEffect _hitEffect;
+
     void Start()
     {
         currentHealth = maxHealth;
         rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
+        _hitEffect = GetComponent<HitEffect>();
 
         // ตั้งค่าเริ่มต้น: ให้ Rigidbody เป็น Kinematic
         if (rb != null)
@@ -34,6 +37,8 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
         {
             Die();
         }
+
+        if(_hitEffect != null) _hitEffect.InstantiateEffect(damage);
     }
 
     private void Die()

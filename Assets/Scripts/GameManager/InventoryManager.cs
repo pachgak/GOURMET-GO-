@@ -11,6 +11,8 @@ public class InventoryManager : MonoBehaviour
     private UIActivator _uiActivator;
 
     public Action<bool> OnOpenInventoryStateChange;
+
+    //public UIActivatorCompack uIActivatorCompack;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     private void Awake()
