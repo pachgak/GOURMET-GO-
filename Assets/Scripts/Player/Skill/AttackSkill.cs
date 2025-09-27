@@ -4,7 +4,7 @@ using UnityEngine;
 using static UnityEngine.Rendering.DebugUI;
 
 [CreateAssetMenu(fileName = "New AttackDash Skill", menuName = "Skills/Skill/AttackDash Skill")]
-public class AttackSkill : SkillS
+public class AttackSkill : PlayerSkillSO
 {
     [Space(20)]
     [Header("===== Modify Skill ================================================================")]

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Heal Skill", menuName = "Skills/Skill/Heal Skill")]
-public class HealSkill : SkillS
+public class HealSkill : PlayerSkillSO
 {
     [Space(20)]
     [Header("===== Modify Skill ================================================================")]

@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlayerSkillController : MonoBehaviour
 {
     // ใช้ Array ของ Skill ScriptableObject
-    public SkillS[] assignedSkills = new SkillS[5];
+    public PlayerSkillSO[] assignedSkills = new PlayerSkillSO[5];
     public float useSkillDely = 0f;
 
     private Vector3 _mousePosition;

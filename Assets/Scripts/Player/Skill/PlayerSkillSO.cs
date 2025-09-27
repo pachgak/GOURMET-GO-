@@ -3,7 +3,7 @@ using UnityEngine;
 
 //// Attribute นี้จะทำให้เราสร้าง ScriptableObject จากเมนู Assets ได้
 //[CreateAssetMenu(fileName = "New Skill", menuName = "Skills/Generic Skill")]
-public abstract class SkillS : ScriptableObject
+public abstract class PlayerSkillSO : ScriptableObject
 {
     [Header("Base Skill")]
     public string skillName;
