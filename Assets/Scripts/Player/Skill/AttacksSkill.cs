@@ -41,8 +41,12 @@ public class AttacksSkill : SkillS
 
     public override Coroutine Use(GameObject player, Vector3 mousePosition)
     {
-        Coroutine setplaySkill = PlayerSkillController.instance.StartCoroutine(Setplay(player, mousePosition));
-        return setplaySkill;
+        if (player.TryGetComponent(out PlayerSkillController playerSkillController))
+        {
+            Coroutine setplaySkill = playerSkillController.StartCoroutine(Setplay(player, mousePosition));
+            return setplaySkill;
+        }
+        return null;
     }
 
     private IEnumerator Setplay(GameObject player, Vector3 mousePosition)
@@ -61,7 +65,7 @@ public class AttacksSkill : SkillS
             float speed = skillSetp[i].speed;
             float skillFar = skillSetp[i].skillFar;
 
-            if (haveDash && PlayerMovement.instance.TryGetComponent(out PlayerMovement playerMovement))
+            if (haveDash && player.TryGetComponent(out PlayerMovement playerMovement))
             {
                 // คำนวณทิศทางการพุ่ง
                 Vector3 directionDesh = (mousePosition - player.transform.position).normalized;

@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class PlayerSkillController : MonoBehaviour
 {
-    public static PlayerSkillController instance;
-
     // ใช้ Array ของ Skill ScriptableObject
     public SkillS[] assignedSkills = new SkillS[5];
     public float useSkillDely = 0f;
@@ -15,6 +13,11 @@ public class PlayerSkillController : MonoBehaviour
     [SerializeField] private float _canSkillDelyTimer;
     [HideInInspector] public Coroutine _skillStepCoroutine;
 
+    [Header("_Scripts References")]
+    private PlayerMovement _playerMovement;
+    [Header("_Manager References")]
+    private PlayerInputActionsManager _inputManager;
+
     private bool _isDash;
 
 
@@ -23,44 +26,27 @@ public class PlayerSkillController : MonoBehaviour
 
     private void Awake()
     {
-        if (instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        instance = this;
+        _inputManager = PlayerInputActionsManager.instance;
+        _playerMovement = GetComponent<PlayerMovement>();
     }
 
     private void OnEnable()
     {
-        PlayerInputActionsManager.instance.OnSkillSlotInput += HandleSkillSlotInput;
-        PlayerInputActionsManager.instance.OnMountPosition += HandleGetMountPos;
+        _inputManager.OnSkillSlotInput += HandleSkillSlotInput;
+        _inputManager.OnMountPosition += HandleGetMountPos;
 
-        StartCoroutine(WaitForMovementInstance());
+        _playerMovement.OnDashSkillCancelInput += HandleDashSkillCancelInput;
+        _playerMovement.OnDashStateChange += HandleDashStateChange;
     }
 
     private void OnDisable()
     {
-        PlayerInputActionsManager.instance.OnSkillSlotInput -= HandleSkillSlotInput;
-        PlayerInputActionsManager.instance.OnMountPosition -= HandleGetMountPos;
+        _inputManager.OnSkillSlotInput -= HandleSkillSlotInput;
+        _inputManager.OnMountPosition -= HandleGetMountPos;
 
-        if(PlayerMovement.instance != null) PlayerMovement.instance.OnDashSkillCancelInput -= HandleDashSkillCancelInput;
-        if(PlayerMovement.instance != null) PlayerMovement.instance.OnDashStateChange -= HandleDashStateChange;
+        _playerMovement.OnDashSkillCancelInput -= HandleDashSkillCancelInput;
+        _playerMovement.OnDashStateChange -= HandleDashStateChange;
     }
-
-
-    private System.Collections.IEnumerator WaitForMovementInstance()
-    {
-        // รอจนกว่า PlayerMovement.instance จะไม่เป็น null
-        while (PlayerMovement.instance == null)
-        {
-            yield return null;
-        }
-        // เมื่อ instance พร้อมแล้ว จึงทำการสมัครรับฟัง
-        PlayerMovement.instance.OnDashSkillCancelInput += HandleDashSkillCancelInput;
-        PlayerMovement.instance.OnDashStateChange += HandleDashStateChange;
-    }
-
 
     internal void HandleDashStateChange(bool isState, Vector3 vector)
     {

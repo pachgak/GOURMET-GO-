@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("Player Components")]
+    [Header("_Scripts References")]
     private PlayerMovement playerMovement;
     private PlayerCombatController playerCombat;
     private PlayerSkillController playerSkill;
@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     private InteractByPoint playerInteract;
     private InventoryController playerInventory;
 
-    [Header("Manager References")]
+    [Header("_Manager References")]
     private PlayerInputActionsManager inputManager;
     private OpenUiManager uiManager;
     private InventoryManager inventoryManager;
@@ -54,8 +54,6 @@ public class PlayerController : MonoBehaviour
 
         playerCombat.OnAttackStateChange += playerMovement.HandleAttackStateChange;
         playerCombat.OnAttackForward += playerMovement.HandleAttackForward;
-
-        inventoryManager.OnOpenInventoryStateChange += playerMovement.HandleOpenInventoryStateChange;
 
         playerSkill.OnSkillingStateChange += playerMovement.HandleSkillingStateChange;
 

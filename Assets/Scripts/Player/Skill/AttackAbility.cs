@@ -30,7 +30,7 @@ public class AttackAbility : AbilitySkill
     public override void Use(GameObject player, Vector3 mousePosition)
     {
         // ดึงคอมโพเนนต์ PlayerMovement จาก GameObject ของผู้เล่น
-        if (haveDash && PlayerMovement.instance.TryGetComponent(out PlayerMovement playerMovement))
+        if (haveDash && player.TryGetComponent(out PlayerMovement playerMovement))
         {
             // คำนวณทิศทางการพุ่ง
             Vector3 directionDesh = (mousePosition - player.transform.position).normalized;

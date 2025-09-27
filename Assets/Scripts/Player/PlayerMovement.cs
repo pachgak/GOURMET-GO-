@@ -1,11 +1,10 @@
 using System;
 using UnityEngine;
 using System.Collections;
+using Inventory;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public static PlayerMovement instance;
-
     [Header("Walk")]
     public float moveSpeed = 5f;
     [Header("Sprint")]
@@ -28,6 +27,14 @@ public class PlayerMovement : MonoBehaviour
     public float lastDirectionDelay = 0.05f; // เวลาหน่วงที่คุณต้องการ
     public float gravity = -20f; // CharacterController ใช้แรงโน้มถ่วงของตัวเอง
     public float resetClick = 0.3f;
+
+    [Header("_Scripts References")]
+    private PlayerCombatController _playerCombat;
+    private PlayerSkillController _playerSkill;
+
+    [Header("_Manager References")]
+    private PlayerInputActionsManager _inputManager;
+    private OpenUiManager _uiManager;
 
     [Header("_System")]
     private CharacterController controller;
@@ -93,12 +100,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
-        if (instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        instance = this;
+        //Ref
+        _inputManager = PlayerInputActionsManager.instance;
+        _uiManager = OpenUiManager.instance;
+        _playerCombat = GetComponent<PlayerCombatController>();
+        _playerSkill = GetComponent<PlayerSkillController>();
+
 
         controller = GetComponent<CharacterController>();
         if (controller == null)
@@ -111,76 +118,37 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnEnable()
     {
-        //PlayerInputActionsManager.instance.OnMoveInput += HandleMoveInput;
-        //PlayerInputActionsManager.instance.OnSprintInput += HandleSprintInput;
-        //PlayerInputActionsManager.instance.OnDashInput += HandleDashInput;
+        _inputManager.OnMoveInput += HandleMoveInput;
+        _inputManager.OnSprintInput += HandleSprintInput;
+        _inputManager.OnDashInput += HandleDashInput;
 
-        //OpenUiManager.instance.OnUiOpeningStateChange += HandleUiOpeningStateChange;
+        _uiManager.OnUiOpeningStateChange += HandleUiOpeningStateChange;
 
-        //// ใช้ Coroutine เพื่อรอ PlayerCombatController
-        //StartCoroutine(WaitForCombatControllerInstance());
-        //StartCoroutine(WaitForInventoryManagerInstance());
-        //StartCoroutine(WaitForPlayerSkillControllerInstance());
+        _playerCombat.OnAttackStateChange += HandleAttackStateChange;
+        _playerCombat.OnAttackForward += HandleAttackForward;
+
+        _playerSkill.OnSkillingStateChange += HandleSkillingStateChange;
+
     }
 
     private void OnDisable()
     {
-        //PlayerInputActionsManager.instance.OnMoveInput -= HandleMoveInput;
-        //PlayerInputActionsManager.instance.OnSprintInput -= HandleSprintInput;
-        //PlayerInputActionsManager.instance.OnDashInput -= HandleDashInput;
+        _inputManager.OnMoveInput -= HandleMoveInput;
+        _inputManager.OnSprintInput -= HandleSprintInput;
+        _inputManager.OnDashInput -= HandleDashInput;
 
-        //OpenUiManager.instance.OnUiOpeningStateChange -= HandleUiOpeningStateChange;
+        _uiManager.OnUiOpeningStateChange -= HandleUiOpeningStateChange;
 
-        //if (PlayerCombatController.instance != null) PlayerCombatController.instance.OnAttackForward -= HandleAttackForward;
-        //if (PlayerCombatController.instance != null) PlayerCombatController.instance.OnAttackStateChange -= HandleAttackStateChange;
+        _playerCombat.OnAttackStateChange -= HandleAttackStateChange;
+        _playerCombat.OnAttackForward -= HandleAttackForward;
+
+        _playerSkill.OnSkillingStateChange -= HandleSkillingStateChange;
         
-        //if (InventoryManager.instance != null) InventoryManager.instance.OnOpenInventoryStateChange -= HandleOpenInventoryStateChange;
-
-        //if (PlayerSkillController.instance != null) PlayerSkillController.instance.OnSkillingStateChange -= HandleSkillingStateChange;
-    }
-
-    private System.Collections.IEnumerator WaitForCombatControllerInstance()
-    {
-        // รอจนกว่า PlayerCombatController.instance จะไม่เป็น null
-        while (PlayerCombatController.instance == null)
-        {
-            yield return null;
-        }
-        // เมื่อ instance พร้อมแล้ว จึงทำการสมัครรับฟัง
-        PlayerCombatController.instance.OnAttackStateChange += HandleAttackStateChange;
-        PlayerCombatController.instance.OnAttackForward += HandleAttackForward;
-    }
-
-    private System.Collections.IEnumerator WaitForInventoryManagerInstance()
-    {
-        // รอจนกว่า PlayerCombatController.instance จะไม่เป็น null
-        while (InventoryManager.instance == null)
-        {
-            yield return null;
-        }
-        // เมื่อ instance พร้อมแล้ว จึงทำการสมัครรับฟัง
-        InventoryManager.instance.OnOpenInventoryStateChange += HandleOpenInventoryStateChange;
-    }
-
-    private System.Collections.IEnumerator WaitForPlayerSkillControllerInstance()
-    {
-        // รอจนกว่า PlayerCombatController.instance จะไม่เป็น null
-        while (PlayerSkillController.instance == null)
-        {
-            yield return null;
-        }
-        // เมื่อ instance พร้อมแล้ว จึงทำการสมัครรับฟัง
-        PlayerSkillController.instance.OnSkillingStateChange += HandleSkillingStateChange;
     }
 
     internal void HandleUiOpeningStateChange(bool isUiOpeningState)
     {
         _isUiOpening = isUiOpeningState;
-    }
-
-    internal void HandleOpenInventoryStateChange(bool obj)
-    {
-        //_isOpenInventory = obj;
     }
 
     internal void HandleMoveInput(Vector3 direction)

@@ -23,8 +23,12 @@ public class InteractByPoint : MonoBehaviour
     //[HideInInspector] private InteractPrompt interactPrompt;
     //[HideInInspector] private Outline outline;
 
-    [Header("System")]
+    [Header("_Manager References")]
+    [SerializeField] private PlayerInputActionsManager _inputManager;
+    [SerializeField] private OpenUiManager _uiManager;
 
+    [Header("_System")]
+     
     [SerializeField] private bool _isInteractable;
     [SerializeField] private InteractableBase _nearInteractable;
     private Vector3 _mousePosition;
@@ -35,24 +39,30 @@ public class InteractByPoint : MonoBehaviour
 
     private bool _isUiOpening = false;
 
+    private void Awake()
+    {
+        _inputManager = PlayerInputActionsManager.instance;
+        _uiManager = OpenUiManager.instance;
+    }
+
     private void OnEnable()
     {
-        //PlayerInputActionsManager.instance.OnInteractInputDown += HandleInteractInputDown;
-        //PlayerInputActionsManager.instance.OnInteractInputUp += HandleInteractInputUp;
-        //PlayerInputActionsManager.instance.OnMountPosition += HandleGetMountPos;
+        _inputManager.OnInteractInputDown += HandleInteractInputDown;
+        _inputManager.OnInteractInputUp += HandleInteractInputUp;
+        _inputManager.OnMountPosition += HandleGetMountPos;
 
-        //OpenUiManager.instance.OnUiOpeningStateChange += HandleUiOpeningStateChange;
+        _uiManager.OnUiOpeningStateChange += HandleUiOpeningStateChange;
 
         if (_nearInteractable != null) interactUI.SetActive(true);
     }
 
     private void OnDisable()
     {
-        //PlayerInputActionsManager.instance.OnInteractInputDown -= HandleInteractInputDown;
-        //PlayerInputActionsManager.instance.OnInteractInputUp -= HandleInteractInputUp;
-        //PlayerInputActionsManager.instance.OnMountPosition += HandleGetMountPos;
+        _inputManager.OnInteractInputDown -= HandleInteractInputDown;
+        _inputManager.OnInteractInputUp -= HandleInteractInputUp;
+        _inputManager.OnMountPosition -= HandleGetMountPos;
 
-        //OpenUiManager.instance.OnUiOpeningStateChange -= HandleUiOpeningStateChange;
+        _uiManager.OnUiOpeningStateChange -= HandleUiOpeningStateChange;
 
         if (interactUI != null) interactUI.SetActive(false);
     }

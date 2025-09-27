@@ -21,9 +21,11 @@ public class AttackSkill : SkillS
 
     [Header("Dash on Skill")]
     public bool haveDash;
-    public float dashSpeed = 0f; // ¤ÇÒÁàÃçÇ¢Í§¡ÒÃ¾Øè§
-    public float dashTime = 0f; // ÃÐÂÐàÇÅÒ¡ÒÃ¾Øè§
+    public float dashSpeed = 0f; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¢Í§ï¿½ï¿½Ã¾ï¿½ï¿½
+    public float dashTime = 0f; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¡ï¿½Ã¾ï¿½ï¿½
     public float skillSpawnDelay = 0f;
+
+    private PlayerSkillController _playerSkillController;
 
     public enum SpawnSkillPrefabsType
     {
@@ -32,15 +34,21 @@ public class AttackSkill : SkillS
 
     public override Coroutine Use(GameObject player, Vector3 mousePosition)
     {
-        // ´Ö§¤ÍÁâ¾à¹¹µì PlayerMovement ¨Ò¡ GameObject ¢Í§¼ÙéàÅè¹
-        if (haveDash && PlayerMovement.instance.TryGetComponent(out PlayerMovement playerMovement))
+        if(player.TryGetComponent(out PlayerSkillController playerSkillController))
         {
-            // ¤Ó¹Ç³·ÔÈ·Ò§¡ÒÃ¾Øè§
+            _playerSkillController = playerSkillController;
+        }
+
+        
+        // ï¿½Ö§ï¿½ï¿½ï¿½ï¿½à¹¹ï¿½ï¿½ PlayerMovement ï¿½Ò¡ GameObject ï¿½Í§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        if (haveDash && player.TryGetComponent(out PlayerMovement playerMovement))
+        {
+            // ï¿½Ó¹Ç³ï¿½ï¿½È·Ò§ï¿½ï¿½Ã¾ï¿½ï¿½
             Vector3 directionDesh = (mousePosition - player.transform.position).normalized;
             Vector3 attackDirection = (mousePosition - player.transform.position).normalized;
 
-            // àÃÕÂ¡ãªéàÁ¸Í´¡ÒÃ¾Øè§ã¹Ê¤ÃÔ»µì PlayerMovement
-            // ¹Õè¤×Í¡ÒÃ·Õè AttackSkill "ÃéÍ§¢Í" ¡ÒÃà¤Å×èÍ¹·Õè
+            // ï¿½ï¿½ï¿½Â¡ï¿½ï¿½ï¿½ï¿½ï¿½Í´ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½Ê¤ï¿½Ô»ï¿½ï¿½ PlayerMovement
+            // ï¿½ï¿½ï¿½ï¿½Í¡ï¿½Ã·ï¿½ï¿½ AttackSkill "ï¿½ï¿½Í§ï¿½ï¿½" ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¹ï¿½ï¿½ï¿½
             Coroutine skillDelayCoroutine = playerMovement.StartCoroutine(SpawnSkillAfterDelay(player, mousePosition , attackDirection));
 
             playerMovement.OnSkillDash?.Invoke(directionDesh, dashSpeed, dashTime , skillDelayCoroutine);
@@ -52,10 +60,10 @@ public class AttackSkill : SkillS
 
     private IEnumerator SpawnSkillAfterDelay(GameObject player, Vector3 mousePosition , Vector3 attackDirection)
     {
-        // ÃÍà»ç¹àÇÅÒµÒÁ·Õè¡ÓË¹´
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¹ï¿½
         yield return new WaitForSeconds(skillSpawnDelay);
 
-        // àÁ×èÍ¤ÃºàÇÅÒáÅéÇ ãËéÊÃéÒ§ Skill Prefab ¢Öé¹ÁÒ
+        // ï¿½ï¿½ï¿½ï¿½Í¤Ãºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò§ Skill Prefab ï¿½ï¿½ï¿½ï¿½ï¿½
         if (skillPrefabs != null) InstallAttackHit(skillPrefabs, player.transform, mousePosition, attackDirection, damage, knockbackForce);
     }
 
@@ -66,7 +74,7 @@ public class AttackSkill : SkillS
         Vector3 posInstance = Vector3.zero;
         Vector3 targetVecter = Vector3.zero;
         
-        // ÊÃéÒ§ GameObject ¢Í§¡ÒÃâ¨ÁµÕ
+        // ï¿½ï¿½ï¿½Ò§ GameObject ï¿½Í§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         switch (spawnSkillPrefabsType)
         {
             case SpawnSkillPrefabsType.PlayerParent:
@@ -89,7 +97,7 @@ public class AttackSkill : SkillS
 
         attackInstance.transform.position = posInstance;
 
-        // ¤Ó¹Ç³¡ÒÃËÁØ¹ (Rotation)
+        // ï¿½Ó¹Ç³ï¿½ï¿½ï¿½ï¿½ï¿½Ø¹ (Rotation)
         targetVecter.y = 0f;
         Quaternion targetRotation = Quaternion.LookRotation(targetVecter);
         attackInstance.transform.rotation = targetRotation;
@@ -105,6 +113,6 @@ public class AttackSkill : SkillS
             iSpeed._speed = speed;
         }
 
-        EndSkilling();
+        //EndSkilling();
     }
 }

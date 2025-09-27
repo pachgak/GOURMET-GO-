@@ -26,21 +26,22 @@ namespace Inventory
         [SerializeField]
         private AudioSource audioSource;
 
+        private InventoryManager _inventoryManager;
+
+        private void Awake()
+        {
+            _inventoryManager = InventoryManager.instance;
+        }
+
         private void OnEnable()
         {
-            //PachonTool.WaitForInstance(() => InventoryManager.instance,
-            //    (inventoryManager) =>
-            //    {
-            //        inventoryManager.OnOpenInventoryStateChange += HandleOpenInventoryStateChange;
-            //    }
-
-            //);
+            _inventoryManager.OnOpenInventoryStateChange += HandleOpenInventoryStateChange;
         }
 
 
         private void OnDisable()
         {
-            //if (InventoryManager.instance != null) InventoryManager.instance.OnOpenInventoryStateChange -= HandleOpenInventoryStateChange;
+            _inventoryManager.OnOpenInventoryStateChange += HandleOpenInventoryStateChange;
         }
 
         internal void HandleOpenInventoryStateChange(bool obj)

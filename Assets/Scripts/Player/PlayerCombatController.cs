@@ -5,18 +5,6 @@ using System.Linq;
 
 public class PlayerCombatController : MonoBehaviour
 {
-    public static PlayerCombatController instance;
-
-    private void Awake()
-    {
-        if (instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        instance = this;
-    }
-
     // ตั้งค่า Prefab ของการโจมตีใน Inspector
     public AttackComboSet[] attackCombo;
     public float attackFart = 1f;
@@ -38,7 +26,13 @@ public class PlayerCombatController : MonoBehaviour
     [Header("Jun System")]
     public float resetAttackClick = 0.3f;
 
-    [Header("System")]
+    [Header("_References")]
+    private PlayerMovement _playerMovement;
+    private PlayerSkillController _playerSkill;
+    private PlayerInputActionsManager _inputManager;
+    private OpenUiManager _uiManager;
+
+    [Header("_System")]
     [SerializeField] private int _attackIndex = 0;
     [SerializeField] private float _lastAttackTime;
 
@@ -75,70 +69,43 @@ public class PlayerCombatController : MonoBehaviour
         public float knockbackForce;
     }
 
+    private void Awake()
+    {
+        //Ref
+        _inputManager = PlayerInputActionsManager.instance;
+        _uiManager = OpenUiManager.instance;
+        _playerSkill = GetComponent<PlayerSkillController>();
+        _playerMovement = GetComponent<PlayerMovement>();
+    }
+
+
     private void OnEnable()
     {
-        //PlayerInputActionsManager.instance.OnMeleeAttack += HandleMeleeAttack;
-        //PlayerInputActionsManager.instance.OnMountPosition += HandleGetMountPos;
+        _inputManager.OnMeleeAttack += HandleMeleeAttack;
+        _inputManager.OnMountPosition += HandleGetMountPos;
 
-        //OpenUiManager.instance.OnUiOpeningStateChange += HandleUiOpeningStateChange;
+        _uiManager.OnUiOpeningStateChange += HandleUiOpeningStateChange;
+        
+        _playerMovement.OnDashStateChange += HandleDashStateChange;
+        _playerMovement.OnSprinteStateChange += HandleSprinteStateChange;
+        _playerMovement.OnSonicStateChange += HandleSonicStateChange;
 
-        //// ใช้ Coroutine เพื่อรอ PlayerMovement
-        ////StartCoroutine(WaitForMovementInstance());
-        //PachonTool.WaitForInstance(() => PlayerMovement.instance,
-        //        (playerMovement) =>
-        //        {
-        //            playerMovement.OnDashStateChange += HandleDashStateChange;
-        //            playerMovement.OnSprinteStateChange += HandleSprinteStateChange;
-        //            playerMovement.OnSonicStateChange += HandleSonicStateChange;
-        //        }
-        //);
-
-        ////StartCoroutine(WaitForPlayerSkillControllerInstance());
-        //PachonTool.WaitForInstance(() => PlayerSkillController.instance,
-        //        (playerSkillController) =>
-        //        {
-        //            playerSkillController.OnSkillingStateChange += HandleSkillingStateChange;
-        //        }
-        //);
+        _playerSkill.OnSkillingStateChange += HandleSkillingStateChange;
     }
 
     private void OnDisable()
     {
-        //PlayerInputActionsManager.instance.OnMeleeAttack -= HandleMeleeAttack;
-        //PlayerInputActionsManager.instance.OnMountPosition -= HandleGetMountPos;
+        _inputManager.OnMeleeAttack -= HandleMeleeAttack;
+        _inputManager.OnMountPosition -= HandleGetMountPos;
 
-        //OpenUiManager.instance.OnUiOpeningStateChange -= HandleUiOpeningStateChange;
+        _uiManager.OnUiOpeningStateChange -= HandleUiOpeningStateChange;
 
-        //if (PlayerMovement.instance != null) PlayerMovement.instance.OnDashStateChange -= HandleDashStateChange;
-        //if (PlayerMovement.instance != null) PlayerMovement.instance.OnSprinteStateChange -= HandleSprinteStateChange;
-        //if (PlayerMovement.instance != null) PlayerMovement.instance.OnSonicStateChange -= HandleSonicStateChange;
+        _playerMovement.OnDashStateChange -= HandleDashStateChange;
+        _playerMovement.OnSprinteStateChange -= HandleSprinteStateChange;
+        _playerMovement.OnSonicStateChange -= HandleSonicStateChange;
 
-        //if (PlayerSkillController.instance != null) PlayerSkillController.instance.OnSkillingStateChange -= HandleSkillingStateChange;
-    }
-
-    private System.Collections.IEnumerator WaitForMovementInstance()
-    {
-        // รอจนกว่า PlayerMovement.instance จะไม่เป็น null
-        while (PlayerMovement.instance == null)
-        {
-            yield return null;
-        }
-        // เมื่อ instance พร้อมแล้ว จึงทำการสมัครรับฟัง
-        PlayerMovement.instance.OnDashStateChange += HandleDashStateChange;
-        PlayerMovement.instance.OnSprinteStateChange += HandleSprinteStateChange;
-        PlayerMovement.instance.OnSonicStateChange += HandleSonicStateChange;
-    }
-
-    private System.Collections.IEnumerator WaitForPlayerSkillControllerInstance()
-    {
-        // รอจนกว่า PlayerCombatController.instance จะไม่เป็น null
-        while (PlayerSkillController.instance == null)
-        {
-            yield return null;
-        }
-        // เมื่อ instance พร้อมแล้ว จึงทำการสมัครรับฟัง
-        PlayerSkillController.instance.OnSkillingStateChange += HandleSkillingStateChange;
-    }
+        _playerSkill.OnSkillingStateChange -= HandleSkillingStateChange;
+    } 
 
     internal void HandleUiOpeningStateChange(bool isUiOpeningState)
     {

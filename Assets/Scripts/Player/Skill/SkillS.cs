@@ -20,9 +20,9 @@ public abstract class SkillS : ScriptableObject
     // ต้องกำหนดให้เป็น abstract เพื่อบังคับให้คลาสลูกต้องเขียนทับ
     public abstract Coroutine Use(GameObject player, Vector3 mousePosition);
 
-    public void EndSkilling()
-    {
-        Debug.Log($"EndSkilling");
-        PlayerSkillController.instance.DoSkillEnd();
-    }
+    //public void EndSkilling()
+    //{
+    //    Debug.Log($"EndSkilling");
+    //    PlayerSkillController.instance.DoSkillEnd();
+    //}
 }

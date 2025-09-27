@@ -19,7 +19,7 @@ public class HealSkill : SkillS
         //playerHealth.Heal(healAmount);
         Debug.Log($"healed for {healAmount} HP.");
         //}
-        EndSkilling();
+        //EndSkilling();
 
         return null;
     }

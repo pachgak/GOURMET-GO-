@@ -22,9 +22,13 @@ public class EnemyMovement : MonoBehaviour , IKnockbackable
     void Start()
     {
         // หา GameObject ของผู้เล่น
-        if (PlayerMovement.instance != null)
+        if (target == null)
         {
-            target = PlayerMovement.instance.transform;
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+                target = player.transform;
+            }
         }
         else
         {

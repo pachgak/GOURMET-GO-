@@ -16,60 +16,42 @@ public class PlayerAnimatorController : MonoBehaviour
     [SerializeField] private bool _isSliding = false;
     private Vector3 _moveDirection;
 
+    [Header("_References")]
+    private PlayerInputActionsManager _inputManager;
+    private PlayerMovement _playerMovement;
+    private PlayerCombatController _playerCombat;
+
+    private void Awake()
+    {
+        _inputManager = PlayerInputActionsManager.instance;
+        _playerMovement = GetComponent<PlayerMovement>();
+        _playerCombat = GetComponent<PlayerCombatController>();
+    }
 
     private void OnEnable()
     {
-        //PlayerInputActionsManager.instance.OnMoveInput += HandleMoveAnimation;
+        _inputManager.OnMoveInput += HandleMoveAnimation;
 
-        //// ใช้ Coroutine เพื่อรอ PlayerMovement
-        //StartCoroutine(WaitForMovementInstance());
+        _playerMovement.OnDashStateChange += HandleDashAnimation;
+        _playerMovement.OnSprinteStateChange += HandleSprinteAnimation;
+        _playerMovement.OnSonicStateChange += HandleSonicAnimation;
+        _playerMovement.OnSlideStateChange += HandleSlideAnimation;
 
-        //// ใช้ Coroutine เพื่อรอ PlayerCombatController
-        //StartCoroutine(WaitForCombatControllerInstance());
+        _playerCombat.OnAttackForward += HandleAttackForwardAnimation;
+        _playerCombat.OnComboingStateChange += HandleComboingdAnimation;
     }
 
     private void OnDisable()
     {
-        //PlayerInputActionsManager.instance.OnMoveInput -= HandleMoveAnimation;
+        _inputManager.OnMoveInput -= HandleMoveAnimation;
 
-        //if (PlayerMovement.instance != null)
-        //{
-        //    PlayerMovement.instance.OnDashStateChange -= HandleDashAnimation;
-        //    PlayerMovement.instance.OnSprinteStateChange -= HandleSprinteAnimation;
-        //    PlayerMovement.instance.OnSonicStateChange -= HandleSonicAnimation;
-        //    PlayerMovement.instance.OnSlideStateChange -= HandleSlideAnimation;
-        //}
-        //if (PlayerCombatController.instance != null)
-        //{
-        //    PlayerCombatController.instance.OnAttackForward -= HandleAttackForwardAnimation;
-        //    PlayerCombatController.instance.OnComboingStateChange -= HandleComboingdAnimation;
-        //}
-    }
+        _playerMovement.OnDashStateChange -= HandleDashAnimation;
+        _playerMovement.OnSprinteStateChange -= HandleSprinteAnimation;
+        _playerMovement.OnSonicStateChange -= HandleSonicAnimation;
+        _playerMovement.OnSlideStateChange -= HandleSlideAnimation;
 
-    private System.Collections.IEnumerator WaitForMovementInstance()
-    {
-        // รอจนกว่า PlayerMovement.instance จะไม่เป็น null
-        while (PlayerMovement.instance == null)
-        {
-            yield return null;
-        }
-        // เมื่อ instance พร้อมแล้ว จึงทำการสมัครรับฟัง
-        PlayerMovement.instance.OnDashStateChange += HandleDashAnimation;
-        PlayerMovement.instance.OnSprinteStateChange += HandleSprinteAnimation;
-        PlayerMovement.instance.OnSonicStateChange += HandleSonicAnimation;
-        PlayerMovement.instance.OnSlideStateChange += HandleSlideAnimation;
-    }
-
-    private System.Collections.IEnumerator WaitForCombatControllerInstance()
-    {
-        // รอจนกว่า PlayerCombatController.instance จะไม่เป็น null
-        while (PlayerCombatController.instance == null)
-        {
-            yield return null;
-        }
-        // เมื่อ instance พร้อมแล้ว จึงทำการสมัครรับฟัง
-        PlayerCombatController.instance.OnAttackForward += HandleAttackForwardAnimation;
-        PlayerCombatController.instance.OnComboingStateChange += HandleComboingdAnimation;
+        _playerCombat.OnAttackForward -= HandleAttackForwardAnimation;
+        _playerCombat.OnComboingStateChange -= HandleComboingdAnimation;
     }
 
     internal void HandleComboingdAnimation(bool isCombo)
