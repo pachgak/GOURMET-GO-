@@ -37,27 +37,27 @@ public class InteractByPoint : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerInputActionsManager.instance.OnInteractInputDown += HandleInteractInputDown;
-        PlayerInputActionsManager.instance.OnInteractInputUp += HandleInteractInputUp;
-        PlayerInputActionsManager.instance.OnMountPosition += HandleGetMountPos;
+        //PlayerInputActionsManager.instance.OnInteractInputDown += HandleInteractInputDown;
+        //PlayerInputActionsManager.instance.OnInteractInputUp += HandleInteractInputUp;
+        //PlayerInputActionsManager.instance.OnMountPosition += HandleGetMountPos;
 
-        OpenUiManager.instance.OnUiOpeningStateChange += HandleUiOpeningStateChange;
+        //OpenUiManager.instance.OnUiOpeningStateChange += HandleUiOpeningStateChange;
 
         if (_nearInteractable != null) interactUI.SetActive(true);
     }
 
     private void OnDisable()
     {
-        PlayerInputActionsManager.instance.OnInteractInputDown -= HandleInteractInputDown;
-        PlayerInputActionsManager.instance.OnInteractInputUp -= HandleInteractInputUp;
-        PlayerInputActionsManager.instance.OnMountPosition += HandleGetMountPos;
+        //PlayerInputActionsManager.instance.OnInteractInputDown -= HandleInteractInputDown;
+        //PlayerInputActionsManager.instance.OnInteractInputUp -= HandleInteractInputUp;
+        //PlayerInputActionsManager.instance.OnMountPosition += HandleGetMountPos;
 
-        OpenUiManager.instance.OnUiOpeningStateChange -= HandleUiOpeningStateChange;
+        //OpenUiManager.instance.OnUiOpeningStateChange -= HandleUiOpeningStateChange;
 
         if (interactUI != null) interactUI.SetActive(false);
     }
 
-    private void HandleInteractInputDown()
+    internal void HandleInteractInputDown()
     {
         if (_nearInteractable == null || _isUiOpening) return;
 
@@ -65,7 +65,7 @@ public class InteractByPoint : MonoBehaviour
         if (_nearInteractable.hasDuration) _nearInteractable.Progress.AddListener(onProgress);
     }
 
-    private void HandleInteractInputUp()
+    internal void HandleInteractInputUp()
     {
         if (_nearInteractable == null || _isUiOpening) return;
 
@@ -76,7 +76,7 @@ public class InteractByPoint : MonoBehaviour
         if (_nearInteractable.hasDuration && !_nearInteractable.isResetTimer) progressImg.fillAmount = _nearInteractable.timer / _nearInteractable.duration;
     }
 
-    private void HandleGetMountPos(Vector3 mousePosition)
+    internal void HandleGetMountPos(Vector3 mousePosition)
     {
         _mousePosition = mousePosition;
     }
@@ -87,7 +87,7 @@ public class InteractByPoint : MonoBehaviour
         interactUI.SetActive(false);
     }
 
-    private void HandleUiOpeningStateChange(bool isUiOpeningState)
+    internal void HandleUiOpeningStateChange(bool isUiOpeningState)
     {
         _isUiOpening = isUiOpeningState;
 

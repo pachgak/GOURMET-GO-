@@ -111,32 +111,32 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerInputActionsManager.instance.OnMoveInput += HandleMoveInput;
-        PlayerInputActionsManager.instance.OnSprintInput += HandleSprintInput;
-        PlayerInputActionsManager.instance.OnDashInput += HandleDashInput;
+        //PlayerInputActionsManager.instance.OnMoveInput += HandleMoveInput;
+        //PlayerInputActionsManager.instance.OnSprintInput += HandleSprintInput;
+        //PlayerInputActionsManager.instance.OnDashInput += HandleDashInput;
 
-        OpenUiManager.instance.OnUiOpeningStateChange += HandleUiOpeningStateChange;
+        //OpenUiManager.instance.OnUiOpeningStateChange += HandleUiOpeningStateChange;
 
-        // ใช้ Coroutine เพื่อรอ PlayerCombatController
-        StartCoroutine(WaitForCombatControllerInstance());
-        StartCoroutine(WaitForInventoryManagerInstance());
-        StartCoroutine(WaitForPlayerSkillControllerInstance());
+        //// ใช้ Coroutine เพื่อรอ PlayerCombatController
+        //StartCoroutine(WaitForCombatControllerInstance());
+        //StartCoroutine(WaitForInventoryManagerInstance());
+        //StartCoroutine(WaitForPlayerSkillControllerInstance());
     }
 
     private void OnDisable()
     {
-        PlayerInputActionsManager.instance.OnMoveInput -= HandleMoveInput;
-        PlayerInputActionsManager.instance.OnSprintInput -= HandleSprintInput;
-        PlayerInputActionsManager.instance.OnDashInput -= HandleDashInput;
+        //PlayerInputActionsManager.instance.OnMoveInput -= HandleMoveInput;
+        //PlayerInputActionsManager.instance.OnSprintInput -= HandleSprintInput;
+        //PlayerInputActionsManager.instance.OnDashInput -= HandleDashInput;
 
-        OpenUiManager.instance.OnUiOpeningStateChange -= HandleUiOpeningStateChange;
+        //OpenUiManager.instance.OnUiOpeningStateChange -= HandleUiOpeningStateChange;
 
-        if (PlayerCombatController.instance != null) PlayerCombatController.instance.OnAttackForward -= HandleAttackForward;
-        if (PlayerCombatController.instance != null) PlayerCombatController.instance.OnAttackStateChange -= HandleAttackStateChange;
+        //if (PlayerCombatController.instance != null) PlayerCombatController.instance.OnAttackForward -= HandleAttackForward;
+        //if (PlayerCombatController.instance != null) PlayerCombatController.instance.OnAttackStateChange -= HandleAttackStateChange;
         
-        if (InventoryManager.instance != null) InventoryManager.instance.OnOpenInventoryStateChange -= HandleOpenInventoryStateChange;
+        //if (InventoryManager.instance != null) InventoryManager.instance.OnOpenInventoryStateChange -= HandleOpenInventoryStateChange;
 
-        if (PlayerSkillController.instance != null) PlayerSkillController.instance.OnSkillingStateChange -= HandleSkillingStateChange;
+        //if (PlayerSkillController.instance != null) PlayerSkillController.instance.OnSkillingStateChange -= HandleSkillingStateChange;
     }
 
     private System.Collections.IEnumerator WaitForCombatControllerInstance()
@@ -173,17 +173,17 @@ public class PlayerMovement : MonoBehaviour
         PlayerSkillController.instance.OnSkillingStateChange += HandleSkillingStateChange;
     }
 
-    private void HandleUiOpeningStateChange(bool isUiOpeningState)
+    internal void HandleUiOpeningStateChange(bool isUiOpeningState)
     {
         _isUiOpening = isUiOpeningState;
     }
 
-    private void HandleOpenInventoryStateChange(bool obj)
+    internal void HandleOpenInventoryStateChange(bool obj)
     {
         //_isOpenInventory = obj;
     }
 
-    private void HandleMoveInput(Vector3 direction)
+    internal void HandleMoveInput(Vector3 direction)
     {
         _moveDirection = direction;
 
@@ -202,7 +202,7 @@ public class PlayerMovement : MonoBehaviour
         SaveLastMoveDirection();
     }
 
-    private void HandleSprintInput(bool isSprintingState)
+    internal void HandleSprintInput(bool isSprintingState)
     {
         _holdSprinte = isSprintingState;
 
@@ -221,7 +221,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void HandleDashInput()
+    internal void HandleDashInput()
     {
         if (_isUiOpening) return;
         if (_isSkilling) return;
@@ -242,7 +242,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void HandleAttackForward(Vector3 direction, float speed, float time)
+    internal void HandleAttackForward(Vector3 direction, float speed, float time)
     {
         _isAttackingForward = true;
         _attackForwardTimeCounter = time;
@@ -253,7 +253,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     // ฟังก์ชันสำหรับรับสถานะการโจมตี
-    private void HandleAttackStateChange(bool canAttack)
+    internal void HandleAttackStateChange(bool canAttack)
     {
         _canAttack = canAttack;
 
@@ -276,7 +276,7 @@ public class PlayerMovement : MonoBehaviour
         movementDelayCoroutine = StartCoroutine(StartMovementDelay(delay));
     }
 
-    private void HandleSkillDash(Vector3 direction, float dashSkillSpeed, float dashSkillTime, Coroutine skillDelayCoroutine)
+    internal void HandleSkillDash(Vector3 direction, float dashSkillSpeed, float dashSkillTime, Coroutine skillDelayCoroutine)
     {
         Debug.Log("HandleSkillDash");
         //Dash Script
@@ -295,7 +295,7 @@ public class PlayerMovement : MonoBehaviour
         //}
     }
 
-    private void HandleSkillingStateChange(bool isState , float skillLifeTime)
+    internal void HandleSkillingStateChange(bool isState , float skillLifeTime)
     {
         _isSkilling = isState;
 

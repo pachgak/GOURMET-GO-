@@ -19,31 +19,31 @@ public class PlayerAnimatorController : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerInputActionsManager.instance.OnMoveInput += HandleMoveAnimation;
+        //PlayerInputActionsManager.instance.OnMoveInput += HandleMoveAnimation;
 
-        // ใช้ Coroutine เพื่อรอ PlayerMovement
-        StartCoroutine(WaitForMovementInstance());
+        //// ใช้ Coroutine เพื่อรอ PlayerMovement
+        //StartCoroutine(WaitForMovementInstance());
 
-        // ใช้ Coroutine เพื่อรอ PlayerCombatController
-        StartCoroutine(WaitForCombatControllerInstance());
+        //// ใช้ Coroutine เพื่อรอ PlayerCombatController
+        //StartCoroutine(WaitForCombatControllerInstance());
     }
 
     private void OnDisable()
     {
-        PlayerInputActionsManager.instance.OnMoveInput -= HandleMoveAnimation;
+        //PlayerInputActionsManager.instance.OnMoveInput -= HandleMoveAnimation;
 
-        if (PlayerMovement.instance != null)
-        {
-            PlayerMovement.instance.OnDashStateChange -= HandleDashAnimation;
-            PlayerMovement.instance.OnSprinteStateChange -= HandleSprinteAnimation;
-            PlayerMovement.instance.OnSonicStateChange -= HandleSonicAnimation;
-            PlayerMovement.instance.OnSlideStateChange -= HandleSlideAnimation;
-        }
-        if (PlayerCombatController.instance != null)
-        {
-            PlayerCombatController.instance.OnAttackForward -= HandleAttackForwardAnimation;
-            PlayerCombatController.instance.OnComboingStateChange -= HandleComboingdAnimation;
-        }
+        //if (PlayerMovement.instance != null)
+        //{
+        //    PlayerMovement.instance.OnDashStateChange -= HandleDashAnimation;
+        //    PlayerMovement.instance.OnSprinteStateChange -= HandleSprinteAnimation;
+        //    PlayerMovement.instance.OnSonicStateChange -= HandleSonicAnimation;
+        //    PlayerMovement.instance.OnSlideStateChange -= HandleSlideAnimation;
+        //}
+        //if (PlayerCombatController.instance != null)
+        //{
+        //    PlayerCombatController.instance.OnAttackForward -= HandleAttackForwardAnimation;
+        //    PlayerCombatController.instance.OnComboingStateChange -= HandleComboingdAnimation;
+        //}
     }
 
     private System.Collections.IEnumerator WaitForMovementInstance()
@@ -72,7 +72,7 @@ public class PlayerAnimatorController : MonoBehaviour
         PlayerCombatController.instance.OnComboingStateChange += HandleComboingdAnimation;
     }
 
-    private void HandleComboingdAnimation(bool isCombo)
+    internal void HandleComboingdAnimation(bool isCombo)
     {
         if(!_isCombo && !_isDashing) animator.SetTrigger("atStartCombo");
 
@@ -83,26 +83,26 @@ public class PlayerAnimatorController : MonoBehaviour
         if(!isCombo) HandleMoveAnimation(_moveDirection);
     }
 
-    private void HandleAttackForwardAnimation(Vector3 vector, float arg2, float arg3)
+    internal void HandleAttackForwardAnimation(Vector3 vector, float arg2, float arg3)
     {
         animator.SetTrigger("atAttack");
 
         SetActionStateDirection(true, vector);
     }
 
-    private void HandleSprinteAnimation(bool isSprinteState)
+    internal void HandleSprinteAnimation(bool isSprinteState)
     {
         _isSprinte = isSprinteState;
         animator.SetBool("isSprinte", _isSprinte);
     }
 
-    private void HandleSonicAnimation(bool isSonicState)
+    internal void HandleSonicAnimation(bool isSonicState)
     {
         _isSonic = isSonicState;
         animator.SetBool("isSonic", _isSonic);
     }
 
-    private void HandleSlideAnimation(bool isState, Vector3 actionDirection)
+    internal void HandleSlideAnimation(bool isState, Vector3 actionDirection)
     {
         _isSliding = isState;
         animator.SetBool("isSlide", isState);
@@ -110,7 +110,7 @@ public class PlayerAnimatorController : MonoBehaviour
         SetActionStateDirection(isState, actionDirection);
     }
 
-    private void HandleMoveAnimation(Vector3 moveDirection)
+    internal void HandleMoveAnimation(Vector3 moveDirection)
     {
         _moveDirection = moveDirection;
 
@@ -137,7 +137,7 @@ public class PlayerAnimatorController : MonoBehaviour
     }
 
     // ฟังก์ชันสำหรับเล่น Animation กลิ้ง
-    private void HandleDashAnimation(bool isDashingState, Vector3 actionDirection)
+    internal void HandleDashAnimation(bool isDashingState, Vector3 actionDirection)
     {
         _isDashing = isDashingState; // อัปเดตสถานะ
         if(isDashingState) animator.SetTrigger("atDash");

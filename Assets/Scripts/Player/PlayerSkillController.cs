@@ -62,7 +62,7 @@ public class PlayerSkillController : MonoBehaviour
     }
 
 
-    private void HandleDashStateChange(bool isState, Vector3 vector)
+    internal void HandleDashStateChange(bool isState, Vector3 vector)
     {
         _isDash = isState;
 
@@ -75,17 +75,17 @@ public class PlayerSkillController : MonoBehaviour
         }
     }
 
-    private void HandleDashSkillCancelInput()
+    internal void HandleDashSkillCancelInput()
     {
         DoSkillEnd();
     }
 
-    private void HandleGetMountPos(Vector3 mousePosition)
+    internal void HandleGetMountPos(Vector3 mousePosition)
     {
         _mousePosition = mousePosition;
     }
 
-    private void HandleSkillSlotInput(int slot)
+    internal void HandleSkillSlotInput(int slot)
     {
         Debug.Log($"slot : {slot}");
         if (slot > assignedSkills.Length) return;

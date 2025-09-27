@@ -28,22 +28,22 @@ namespace Inventory
 
         private void OnEnable()
         {
-            PachonTool.WaitForInstance(() => InventoryManager.instance,
-                (inventoryManager) =>
-                {
-                    inventoryManager.OnOpenInventoryStateChange += HandleOpenInventoryStateChange;
-                }
+            //PachonTool.WaitForInstance(() => InventoryManager.instance,
+            //    (inventoryManager) =>
+            //    {
+            //        inventoryManager.OnOpenInventoryStateChange += HandleOpenInventoryStateChange;
+            //    }
 
-            );
+            //);
         }
 
 
         private void OnDisable()
         {
-            if (InventoryManager.instance != null) InventoryManager.instance.OnOpenInventoryStateChange -= HandleOpenInventoryStateChange;
+            //if (InventoryManager.instance != null) InventoryManager.instance.OnOpenInventoryStateChange -= HandleOpenInventoryStateChange;
         }
 
-        private void HandleOpenInventoryStateChange(bool obj)
+        internal void HandleOpenInventoryStateChange(bool obj)
         {
             if (obj)
             {
