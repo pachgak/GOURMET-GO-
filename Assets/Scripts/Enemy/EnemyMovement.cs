@@ -19,7 +19,7 @@ public class EnemyMovement : MonoBehaviour , IKnockbackable
 
     [SerializeField] private Coroutine KnockbackCoroutine;
 
-    void Start()
+    protected virtual void Start()
     {
         // หา GameObject ของผู้เล่น
         if (target == null)
@@ -40,7 +40,7 @@ public class EnemyMovement : MonoBehaviour , IKnockbackable
         rb = GetComponent<Rigidbody>();
     }
 
-    void Update()
+    protected virtual void Update()
     {
         if (target == null || !agent.enabled || canMove) return;
 

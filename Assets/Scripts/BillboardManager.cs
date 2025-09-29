@@ -2,12 +2,12 @@ using com.cyborgAssets.inspectorButtonPro;
 using System;
 using UnityEngine;
 
-public class LookAtCameraManager : MonoBehaviour
+public class BillboardManager : MonoBehaviour
 {
     public Transform mainCameraTransform;
 
     // ทำให้เป็น Singleton เพื่อให้เข้าถึงได้ง่ายจากสคริปต์อื่น
-    public static LookAtCameraManager instance;
+    public static BillboardManager instance;
 
     // Action สำหรับส่งข้อมูลการหมุนของกล้องออกไป
     public Action<Quaternion> OnCameraChange;

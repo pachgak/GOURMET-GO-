@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class LookAtCamera : MonoBehaviour
+public class Billboard : MonoBehaviour
 {
     private Transform mainCameraTransform;
     private Quaternion originalRotation;
@@ -25,10 +25,10 @@ public class LookAtCamera : MonoBehaviour
     private void OnEnable()
     {
         // สมัครรับฟัง Action จาก LookAtCameraManager
-        if (LookAtCameraManager.instance != null)
+        if (BillboardManager.instance != null)
         {
-            LookAtCameraManager.instance.OnCameraChange += HandleCameraChange;
-            LookAtCameraManager.instance.OnCameraFollowChange += HandleCameraFollowChange;
+            BillboardManager.instance.OnCameraChange += HandleCameraChange;
+            BillboardManager.instance.OnCameraFollowChange += HandleCameraFollowChange;
         }
     }
 
@@ -40,10 +40,10 @@ public class LookAtCamera : MonoBehaviour
     private void OnDisable()
     {
         // ยกเลิกการรับฟังเมื่อสคริปต์ถูกปิดการใช้งาน
-        if (LookAtCameraManager.instance != null)
+        if (BillboardManager.instance != null)
         {
-            LookAtCameraManager.instance.OnCameraChange -= HandleCameraChange;
-            LookAtCameraManager.instance.OnCameraFollowChange -= HandleCameraFollowChange;
+            BillboardManager.instance.OnCameraChange -= HandleCameraChange;
+            BillboardManager.instance.OnCameraFollowChange -= HandleCameraFollowChange;
         }
     }
 

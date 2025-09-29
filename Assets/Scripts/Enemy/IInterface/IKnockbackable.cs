@@ -1,6 +1,59 @@
+using System.Collections;
 using UnityEngine;
 
-    public interface IKnockbackable
+
+public interface IKnockbackable
+{
+    void GetKnockedBack(Vector3 direction, float force);
+    /*
     {
-        void GetKnockedBack(Vector3 direction, float force);
+        if (!canKnockback) return;
+    
+        if (KnockbackCoroutine != null) StopCoroutine(KnockbackCoroutine);
+        KnockbackCoroutine = StartCoroutine(ApplyKnockback(direction, force));
     }
+    */
+
+    //IEnumerator ApplyKnockback(Vector3 direction, float force);
+    //ตัวอย่าง
+    /*
+    private IEnumerator ApplyKnockback(Vector3 direction, float force)
+    {
+        Debug.Log($"ApplyKnockback : {direction} | {force}");
+
+        yield return null;
+        agent.enabled = false;
+        rb.useGravity = true;
+        rb.isKinematic = false;
+
+        rb.AddForce(direction * force, ForceMode.Impulse);
+
+        yield return new WaitForFixedUpdate();
+        float knockbackTime = Time.time;
+        yield return new WaitUntil(
+            () => rb.linearVelocity.magnitude < StillThreshold || Time.time > knockbackTime + MaxKnockbackTime
+        );
+        yield return new WaitForSeconds(0.25f);
+
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        rb.useGravity = false;
+        rb.isKinematic = true;
+        agent.Warp(transform.position);
+        agent.enabled = true;
+
+        yield return null;
+
+
+        //กลับไป stest เดิน
+        //if (Player != null)
+        //{
+        //    KnockbackCoroutine = StartCoroutine(ChasePlayer(Player));
+        //}
+        //else
+        //{
+        //    KnockbackCoroutine = StartCoroutine(Roam());
+        //}
+    }
+    */
+}
