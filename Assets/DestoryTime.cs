@@ -8,4 +8,14 @@ public class DestoryTime : MonoBehaviour
     {
         Destroy(gameObject, timeDestory);
     }
+
+    private void OnEnable()
+    {
+        //ReturnObjectToPool();
+    }
+
+    private void ReturnObjectToPool()
+    {
+        ObjectPoolingManager.Instance.ReturnObjectToPool(gameObject);
+    }
 }

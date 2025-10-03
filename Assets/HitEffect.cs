@@ -6,8 +6,23 @@ public class HitEffect : MonoBehaviour
     public GameObject effecfHitPrefab;
     public GameObject damagePromptPrefab;
     public Vector3 offSet;
+    public EnemyHealth enemyHealth;
 
-    public void InstantiateEffect(float damage)
+    public void Awake()
+    {
+        enemyHealth = GetComponent<EnemyHealth>();
+    }
+
+    private void OnEnable()
+    {
+        enemyHealth.OnTakeDamage += HandleInstantiateEffect;
+    }
+    private void OnDisable()
+    {
+        enemyHealth.OnTakeDamage -= HandleInstantiateEffect;
+    }
+
+    public void HandleInstantiateEffect(float damage)
     {
         Debug.Log("HitEffect");
        Vector3 effectPos = transform.localPosition + offSet;

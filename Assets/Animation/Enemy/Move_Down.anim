@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Slashing
+  m_Name: Move_Down
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -21,13 +21,7 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: -2014881939, guid: 4acd328af587a5b40aabf526d0fe5a49, type: 3}
-    - time: 0.05
-      value: {fileID: 68037438, guid: 4acd328af587a5b40aabf526d0fe5a49, type: 3}
-    - time: 0.16666667
-      value: {fileID: 1720042388, guid: 4acd328af587a5b40aabf526d0fe5a49, type: 3}
-    - time: 0.33333334
-      value: {fileID: 1720042388, guid: 4acd328af587a5b40aabf526d0fe5a49, type: 3}
+      value: {fileID: -1837112682, guid: 1a0c32d3e2095fa41a14ce575ca168f9, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -50,16 +44,13 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: -2014881939, guid: 4acd328af587a5b40aabf526d0fe5a49, type: 3}
-    - {fileID: 68037438, guid: 4acd328af587a5b40aabf526d0fe5a49, type: 3}
-    - {fileID: 1720042388, guid: 4acd328af587a5b40aabf526d0fe5a49, type: 3}
-    - {fileID: 1720042388, guid: 4acd328af587a5b40aabf526d0fe5a49, type: 3}
+    - {fileID: -1837112682, guid: 1a0c32d3e2095fa41a14ce575ca168f9, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.35000002
+    m_StopTime: 0.016666668
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -78,18 +69,4 @@ AnimationClip:
   m_EulerEditorCurves: []
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events:
-  - time: 0.16666667
-    functionName: GetIntSetOOs
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 0.33333334
-    functionName: DestroyAnimation
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
+  m_Events: []

@@ -19,6 +19,12 @@ public class ControllerVFX : MonoBehaviour
         if (_isPlaying && !_particleSystem.IsAlive())
         {
             Destroy(gameObject);
+            //ReturnObjectToPool();
         }
+    }
+
+    private void ReturnObjectToPool()
+    {
+        ObjectPoolingManager.Instance.ReturnObjectToPool(gameObject);
     }
 }

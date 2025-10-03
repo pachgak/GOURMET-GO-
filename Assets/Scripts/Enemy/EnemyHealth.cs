@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
+using System;
 
 public class EnemyHealth : MonoBehaviour , ITakeDamage
 {
@@ -12,14 +13,16 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
     private NavMeshAgent agent;
     private Coroutine enableAgentCoroutine; // เพิ่มตัวแปรสำหรับเก็บ Coroutine
 
-    private HitEffect _hitEffect;
+    //private HitEffect _hitEffect;
+
+    public Action<float> OnTakeDamage;
 
     void Start()
     {
         currentHealth = maxHealth;
         rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
-        _hitEffect = GetComponent<HitEffect>();
+        //_hitEffect = GetComponent<HitEffect>();
 
         // ตั้งค่าเริ่มต้น: ให้ Rigidbody เป็น Kinematic
         if (rb != null)
@@ -32,13 +35,14 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
     {
 
         currentHealth -= damage;
+        OnTakeDamage?.Invoke(damage);
 
         if (currentHealth <= 0)
         {
             Die();
         }
 
-        if(_hitEffect != null) _hitEffect.InstantiateEffect(damage);
+        //if(_hitEffect != null) _hitEffect.InstantiateEffect(damage);
     }
 
     private void Die()
