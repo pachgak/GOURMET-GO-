@@ -1,11 +1,11 @@
-// ã¹ PlayerCombatController.cs
+// ï¿½ PlayerCombatController.cs
 using UnityEngine;
 using System;
 using System.Linq;
 
 public class PlayerCombatController : MonoBehaviour
 {
-    // µÑé§¤èÒ Prefab ¢Í§¡ÒÃâ¨ÁµÕã¹ Inspector
+    // ï¿½ï¿½é§¤ï¿½ï¿½ Prefab ï¿½Í§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Inspector
     public AttackComboSet[] attackCombo;
     public float attackFart = 1f;
     public float attackHight = 1f;
@@ -13,15 +13,15 @@ public class PlayerCombatController : MonoBehaviour
     public LayerMask enemyLayer;
 
     [Header("Attack Forward")]
-    public float attackForwardSpeed = 5f; // ¤ÇÒÁàÃçÇã¹¡ÒÃ¾Øè§ä»¢éÒ§Ë¹éÒàÁ×èÍâ¨ÁµÕ
-    public float attackForwardTime = 0.1f; // ÃÐÂÐàÇÅÒã¹¡ÒÃ¾Øè§ä»¢éÒ§Ë¹éÒ
+    public float attackForwardSpeed = 5f; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã¹¡ï¿½Ã¾ï¿½ï¿½ä»¢ï¿½Ò§Ë¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    public float attackForwardTime = 0.1f; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã¹¡ï¿½Ã¾ï¿½ï¿½ä»¢ï¿½Ò§Ë¹ï¿½ï¿½
 
     [Header("Sprinte Attack")]
     public AttackComboSet sprinteAttact;
     public AttackComboSet sonicAttact;
     public Vector2 snapDirectionAttact;
-    // à¾ÔèÁ¢¹Ò´¢Í§ OverlapBox
-    public Vector3 overlapBoxHalfExtents; // <-- à¾ÔèÁµÑÇá»Ã¹Õéà¾×èÍ¡ÓË¹´¢¹Ò´¡ÅèÍ§
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò´ï¿½Í§ OverlapBox
+    public Vector3 overlapBoxHalfExtents; // <-- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¹ï¿½ï¿½ï¿½ï¿½ï¿½Í¡ï¿½Ë¹ï¿½ï¿½ï¿½Ò´ï¿½ï¿½ï¿½Í§
     public float overlapBoxFart;
     [Header("Jun System")]
     public float resetAttackClick = 0.3f;
@@ -36,11 +36,11 @@ public class PlayerCombatController : MonoBehaviour
     [SerializeField] private int _attackIndex = 0;
     [SerializeField] private float _lastAttackTime;
 
-    // µÑÇá»ÃÊÓËÃÑºà¡çº¢éÍÁÙÅ·Õè¨Ðãªéã¹ OnDrawGizmos
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñºï¿½çº¢ï¿½ï¿½ï¿½ï¿½Å·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ OnDrawGizmos
     private Vector3 _attackDirection;
     private Vector3 _mousePosition;
 
-    // µÑÇá»ÃãËÁèÊÓËÃÑº¨Ñ´¡ÒÃ Cooldown
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñºï¿½Ñ´ï¿½ï¿½ï¿½ Cooldown
     [SerializeField] private bool _attackClick = false;
     private float _attackCooldownTimer;
     private float _resetAttackClickTimer;
@@ -133,9 +133,9 @@ public class PlayerCombatController : MonoBehaviour
 
         if (_isDashing)
         {
-            _attackIndex = 0; // ÃÕà«çµ¤ÍÁâº
-            _attackCooldownTimer = 0; // ÃÕà«çµ Cooldown
-            _canAttack = false; // µÑé§¤èÒãËéâ¨ÁµÕä´é·Ñ¹·Õ
+            _attackIndex = 0; // ï¿½ï¿½ï¿½çµ¤ï¿½ï¿½ï¿½
+            _attackCooldownTimer = 0; // ï¿½ï¿½ï¿½ï¿½ Cooldown
+            _canAttack = false; // ï¿½ï¿½é§¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¹ï¿½ï¿½
             OnAttackStateChange?.Invoke(_canAttack);
 
             _isComboing = false;
@@ -155,24 +155,24 @@ public class PlayerCombatController : MonoBehaviour
 
     [SerializeField] private GameObject _nearestEnemyCollider;
 
-    // ÊÃéÒ§ Prefab ¡ÒÃâ¨ÁµÕ
+    // ï¿½ï¿½ï¿½Ò§ Prefab ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     public void HandleMeleeAttack()
     {
         if (_isUiOpening) return;
         if (_isSkilling) return;
 
-        // ¤Ó¹Ç³·ÔÈ·Ò§¨Ò¡¼ÙéàÅè¹ä»ÂÑ§àÁÒÊì
+        // ï¿½Ó¹Ç³ï¿½ï¿½È·Ò§ï¿½Ò¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ§ï¿½ï¿½ï¿½ï¿½ï¿½
         Vector3 directionToMouse = (_mousePosition - transform.position).normalized;
-        // ¤Ó¹Ç³µÓáË¹è§¡Öè§¡ÅÒ§¢Í§¡ÅèÍ§ OverlapBox
+        // ï¿½Ó¹Ç³ï¿½ï¿½ï¿½Ë¹è§¡ï¿½è§¡ï¿½Ò§ï¿½Í§ï¿½ï¿½ï¿½Í§ OverlapBox
         Vector3 overlapCenter = transform.position + directionToMouse * (overlapBoxFart);
 
-        // ãªé OverlapBox ã¹¡ÒÃµÃÇ¨¨ÑºÈÑµÃÙ
+        // ï¿½ï¿½ OverlapBox ã¹¡ï¿½Ãµï¿½Ç¨ï¿½Ñºï¿½Ñµï¿½ï¿½
         Collider[] hitColliders = Physics.OverlapBox(overlapCenter, overlapBoxHalfExtents, Quaternion.LookRotation(directionToMouse), enemyLayer);
 
-        // ¶éÒà¨ÍÈÑµÃÙ
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñµï¿½ï¿½
         if (hitColliders.Length > 0)
         {
-            // ËÒµÑÇ·Õèã¡Åé·ÕèÊØ´
+            // ï¿½Òµï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´
             Collider nearestEnemyCollider = hitColliders.OrderBy(c => Vector3.Distance(transform.position, c.transform.position)).FirstOrDefault();
 
             if (nearestEnemyCollider != null)
@@ -182,7 +182,7 @@ public class PlayerCombatController : MonoBehaviour
         }
         else
         {
-            // ¶éÒäÁèà¨ÍÈÑµÃÙ ãËéà»ç¹ null
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ null
             _nearestEnemyCollider = null;
         }
 
@@ -192,23 +192,23 @@ public class PlayerCombatController : MonoBehaviour
 
         if (!_attackClick) return;
 
-        // µÃÇ¨ÊÍºÇèÒâ¨ÁµÕä´éËÃ×ÍäÁè
+        // ï¿½ï¿½Ç¨ï¿½Íºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if (!_canAttack || _isDashing) return;
 
         _attackClick = false;
 
         if (attackCombo.Length != 0)
         {
-            // ¤Ó¹Ç³ÅÓ´Ñº¡ÒÃâ¨ÁµÕ»Ñ¨¨ØºÑ¹
+            // ï¿½Ó¹Ç³ï¿½Ó´Ñºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ»Ñ¨ï¿½ØºÑ¹
             int currentAttackIndex = _attackIndex % attackCombo.Length;
 
-            // Êè§ÊÑ­­Ò³ãËéµÑÇÅÐ¤Ã¾Øè§ä»¢éÒ§Ë¹éÒ
+            // ï¿½ï¿½ï¿½Ñ­ï¿½Ò³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¤Ã¾ï¿½ï¿½ä»¢ï¿½Ò§Ë¹ï¿½ï¿½
             OnAttackForward?.Invoke(directionToMouse, attackForwardSpeed, attackForwardTime);
 
-            // ÊÃéÒ§ GameObject ¢Í§¡ÒÃâ¨ÁµÕ
+            // ï¿½ï¿½ï¿½Ò§ GameObject ï¿½Í§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             InstallAttackHit(attackCombo[currentAttackIndex].attackPrefabs, directionToMouse, attackCombo[currentAttackIndex].damage, attackCombo[currentAttackIndex].knockbackForce);
 
-            // ÍÑ»à´µÊ¶Ò¹ÐÊÓËÃÑº¤ÍÁâº¶Ñ´ä»
+            // ï¿½Ñ»à´µÊ¶Ò¹ï¿½ï¿½ï¿½ï¿½ï¿½Ñºï¿½ï¿½ï¿½âº¶Ñ´ï¿½
             _attackIndex++;
             _lastAttackTime = Time.time;
 
@@ -218,9 +218,9 @@ public class PlayerCombatController : MonoBehaviour
                 OnComboingStateChange?.Invoke(_isComboing);
             }
             _canAttack = false;
-            // Êè§ÊÑ­­Ò³ÇèÒâ¨ÁµÕäÁèä´éáÅéÇ
+            // ï¿½ï¿½ï¿½Ñ­ï¿½Ò³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             OnAttackStateChange?.Invoke(_canAttack);
-            // µÑé§¤èÒ Cooldown ãËÁè
+            // ï¿½ï¿½é§¤ï¿½ï¿½ Cooldown ï¿½ï¿½ï¿½ï¿½
             _attackCooldownTimer = attackCombo[currentAttackIndex].comboCooldown;
         }
 
@@ -238,7 +238,7 @@ public class PlayerCombatController : MonoBehaviour
             }
         }
 
-        // µÃÇ¨ÊÍºÇèÒ¤ÍÁâº¢Ò´µÍ¹ËÃ×ÍäÁè
+        // ï¿½ï¿½Ç¨ï¿½Íºï¿½ï¿½Ò¤ï¿½ï¿½âº¢Ò´ï¿½Í¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if (Time.time - _lastAttackTime > comboWindow && _attackIndex != 0)
         {
             _attackIndex = 0;
@@ -247,14 +247,14 @@ public class PlayerCombatController : MonoBehaviour
             OnComboingStateChange?.Invoke(_isComboing);
         }
 
-        // ¹ÑºàÇÅÒ¶ÍÂËÅÑ§ÊÓËÃÑº Cooldown
+        // ï¿½Ñºï¿½ï¿½ï¿½Ò¶ï¿½ï¿½ï¿½ï¿½Ñ§ï¿½ï¿½ï¿½ï¿½Ñº Cooldown
         if (!_canAttack)
         {
             _attackCooldownTimer -= Time.deltaTime;
             if (_attackCooldownTimer <= 0)
             {
                 _canAttack = true;
-                // Êè§ÊÑ­­Ò³ÇèÒâ¨ÁµÕä´éáÅéÇ
+                // ï¿½ï¿½ï¿½Ñ­ï¿½Ò³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 OnAttackStateChange?.Invoke(_canAttack);
             }
         }
@@ -262,15 +262,17 @@ public class PlayerCombatController : MonoBehaviour
 
     private void InstallAttackHit(GameObject attackPrefabs, Vector3 directionToMouse, float damage, float knockbackForce)
     {
-        // ÊÃéÒ§ GameObject ¢Í§¡ÒÃâ¨ÁµÕ
-        GameObject attackInstance = Instantiate(attackPrefabs, transform);
+        // ï¿½ï¿½ï¿½Ò§ GameObject ï¿½Í§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        //GameObject attackInstance = Instantiate(attackPrefabs, transform);
+        GameObject attackInstance = ObjectPoolingManager.Instance.GetPoorObj(attackPrefabs);
+        attackInstance.transform.parent = transform;
 
-        // ¤Ó¹Ç³·ÔÈ·Ò§¡ÒÃâ¨ÁµÕ
+        // ï¿½Ó¹Ç³ï¿½ï¿½È·Ò§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         //Vector3 playerPosition = transform.position;
         // Vector3 directionToMouse = (_mousePosition - playerPosition).normalized;
         attackInstance.transform.position = transform.position + (directionToMouse * attackFart);
 
-        // ¤Ó¹Ç³¡ÒÃËÁØ¹ (Rotation)
+        // ï¿½Ó¹Ç³ï¿½ï¿½ï¿½ï¿½ï¿½Ø¹ (Rotation)
         Vector3 targetVecter = _mousePosition - transform.position;
         targetVecter.y = 0f;
         Quaternion targetRotation = Quaternion.LookRotation(targetVecter);
@@ -281,6 +283,7 @@ public class PlayerCombatController : MonoBehaviour
             iHurtBox._damage = damage;
             iHurtBox._knockbackDirection = directionToMouse;
             iHurtBox._knockbackForce = knockbackForce;
+            iHurtBox.PerformAttack(); 
         }
     }
 
@@ -294,14 +297,14 @@ public class PlayerCombatController : MonoBehaviour
         showPoitLast = Instantiate(showPoitPrefab, point, Quaternion.identity);
     }
 
-    // ãªéà¾×èÍáÊ´§¢éÍÁÙÅã¹ Scene View à·èÒ¹Ñé¹
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Scene View ï¿½ï¿½Ò¹ï¿½ï¿½
     private void OnDrawGizmos()
     {
-        // ÇÒ´¨Ø´ÊÕá´§·ÕèµÓáË¹è§àÁÒÊì
+        // ï¿½Ò´ï¿½Ø´ï¿½ï¿½á´§ï¿½ï¿½ï¿½ï¿½ï¿½Ë¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(_mousePosition, 0.2f);
 
-        // ÇÒ´àÊé¹ÊÕà¢ÕÂÇ¨Ò¡µÑÇÅÐ¤Ãä»ÂÑ§µÓáË¹è§àÁÒÊì
+        // ï¿½Ò´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¨Ò¡ï¿½ï¿½ï¿½ï¿½Ð¤ï¿½ï¿½ï¿½Ñ§ï¿½ï¿½ï¿½Ë¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         Gizmos.color = Color.green;
         Vector3 playerPosition = transform.position;
         Vector3 directionToMouse = (_mousePosition - playerPosition).normalized;
@@ -309,17 +312,17 @@ public class PlayerCombatController : MonoBehaviour
         // Gizmos.DrawRay(startPoint, direction)
         Gizmos.DrawRay(playerPosition, directionToMouse * 2f);
 
-        // --- â¤é´ÊÓËÃÑºáÊ´§ÈÑµÃÙ·Õèã¡Åé·ÕèÊØ´ ---
+        // --- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñºï¿½Ê´ï¿½ï¿½Ñµï¿½Ù·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ ---
         if (_nearestEnemyCollider != null)
         {
-            // ¤Ó¹Ç³µÓáË¹è§·ÕèµéÍ§¡ÒÃÇÒ´ (º¹ËÑÇÈÑµÃÙ)
-            Vector3 headPosition = _nearestEnemyCollider.transform.position + Vector3.up * 1.5f; // + Vector3.up * 1.5f ¤×Í¡ÒÃÂ¡¢Öé¹ä» 1.5 Ë¹èÇÂ
+            // ï¿½Ó¹Ç³ï¿½ï¿½ï¿½Ë¹è§·ï¿½ï¿½ï¿½Í§ï¿½ï¿½ï¿½ï¿½Ò´ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñµï¿½ï¿½)
+            Vector3 headPosition = _nearestEnemyCollider.transform.position + Vector3.up * 1.5f; // + Vector3.up * 1.5f ï¿½ï¿½Í¡ï¿½ï¿½Â¡ï¿½ï¿½ï¿½ï¿½ 1.5 Ë¹ï¿½ï¿½ï¿½
 
-            // ÇÒ´àÊé¹¨Ò¡¼ÙéàÅè¹ä»ÂÑ§ÈÑµÃÙ·Õèã¡Åé·ÕèÊØ´
+            // ï¿½Ò´ï¿½ï¿½é¹¨Ò¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ§ï¿½Ñµï¿½Ù·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´
             Gizmos.color = Color.magenta;
             Gizmos.DrawLine(transform.position, headPosition);
 
-            // ÇÒ´äÍ¤Í¹à»ç¹·Ã§¡ÅÁº¹ËÑÇÈÑµÃÙ
+            // ï¿½Ò´ï¿½Í¤Í¹ï¿½ç¹·Ã§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñµï¿½ï¿½
             Gizmos.color = Color.cyan;
             Gizmos.DrawSphere(headPosition + Vector3.up, 0.3f);
         }
@@ -327,7 +330,7 @@ public class PlayerCombatController : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        // ÇÒ´ OverlapBox ÊÓËÃÑº¡ÒÃµÃÇ¨¨ÑºÈÑµÃÙ
+        // ï¿½Ò´ OverlapBox ï¿½ï¿½ï¿½ï¿½Ñºï¿½ï¿½Ãµï¿½Ç¨ï¿½Ñºï¿½Ñµï¿½ï¿½
         Gizmos.color = Color.yellow;
         Vector3 overlapCenter = transform.position + Vector3.forward * (overlapBoxFart);
         Gizmos.DrawWireCube(overlapCenter, overlapBoxHalfExtents * 2);

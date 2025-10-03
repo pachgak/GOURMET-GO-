@@ -18,8 +18,8 @@ public class ControllerVFX : MonoBehaviour
     {
         if (_isPlaying && !_particleSystem.IsAlive())
         {
-            Destroy(gameObject);
-            //ReturnObjectToPool();
+            //Destroy(gameObject);
+            ReturnObjectToPool();
         }
     }
 

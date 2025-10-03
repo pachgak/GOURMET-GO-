@@ -122,7 +122,7 @@ public class BaseEnemyMovement : MonoBehaviour
     {
         _agent.isStopped = false;
         _agent.SetDestination(targetPosition);
-        Debug.LogWarning($"MoveToTarget {targetPosition}");
+        //Debug.LogWarning($"MoveToTarget {targetPosition}");
     }
 
     private void StopMovement()

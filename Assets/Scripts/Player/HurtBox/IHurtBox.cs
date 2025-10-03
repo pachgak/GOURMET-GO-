@@ -7,4 +7,6 @@ public interface IHurtBox
     public float _damage { get; set; }
     public float _knockbackForce { get; set; }
     public Vector3 _knockbackDirection { get; set; }
+
+    public void PerformAttack();
 }

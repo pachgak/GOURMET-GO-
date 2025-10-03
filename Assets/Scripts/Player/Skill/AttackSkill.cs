@@ -78,17 +78,26 @@ public class AttackSkill : PlayerSkillSO
         switch (spawnSkillPrefabsType)
         {
             case SpawnSkillPrefabsType.PlayerParent:
-                attackInstance = Instantiate(skillPrefabs, playerTransform);
+                //attackInstance = Instantiate(skillPrefabs, playerTransform);
+                attackInstance = ObjectPoolingManager.Instance.GetPoorObj(skillPrefabs);
+                attackInstance.transform.parent = playerTransform;
+
                 posInstance = playerTransform.position + (attackDirection * skillFar);
                 targetVecter = attackDirection;
                 break;
             case SpawnSkillPrefabsType.PlayerWorld:
-                attackInstance = Instantiate(skillPrefabs, playerTransform.position, Quaternion.identity);
+                //attackInstance = Instantiate(skillPrefabs, playerTransform.position, Quaternion.identity);
+                attackInstance = ObjectPoolingManager.Instance.GetPoorObj(skillPrefabs);
+                attackInstance.transform.position = playerTransform.position;
+
                 posInstance = playerTransform.position + (attackDirection * skillFar);
                 targetVecter = attackDirection;
                 break;
             case SpawnSkillPrefabsType.MouseWorld:
-                attackInstance = Instantiate(skillPrefabs, mousePosition, Quaternion.identity);
+                //attackInstance = Instantiate(skillPrefabs, mousePosition, Quaternion.identity);
+                attackInstance = ObjectPoolingManager.Instance.GetPoorObj(skillPrefabs);
+                attackInstance.transform.position = mousePosition;
+
                 float skillFarTrue = (skillFar >= 0) ? Mathf.Clamp(Vector3.Distance(mousePosition, playerTransform.position), 0, skillFar) : Vector3.Distance(mousePosition, playerTransform.position);
                 posInstance = playerTransform.position + (directionToMouse * skillFarTrue);
                 targetVecter = mousePosition - playerTransform.position;

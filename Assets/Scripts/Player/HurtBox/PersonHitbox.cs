@@ -46,4 +46,9 @@ public class PersonHitbox : MonoBehaviour , IHurtBox
             Destroy(gameObject);
         }
     }
+
+    public void PerformAttack()
+    {
+        throw new System.NotImplementedException();
+    }
 }

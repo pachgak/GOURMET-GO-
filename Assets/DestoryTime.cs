@@ -6,12 +6,12 @@ public class DestoryTime : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Destroy(gameObject, timeDestory);
+        //Destroy(gameObject, timeDestory);
     }
 
     private void OnEnable()
     {
-        //ReturnObjectToPool();
+        Invoke(nameof(ReturnObjectToPool), timeDestory);
     }
 
     private void ReturnObjectToPool()

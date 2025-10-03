@@ -16,9 +16,9 @@ public class AttackHitbox : MonoBehaviour , IHurtBox
     float IHurtBox._knockbackForce { get => knockbackForce; set => knockbackForce = value; }
     Vector3 IHurtBox._knockbackDirection { get => knockbackDirection; set => knockbackDirection = value; }
 
-    private void Start()
+    private void OnEnable()
     {
-        PerformAttack();
+        //PerformAttack();
     }
 
     // ฟังก์ชันนี้จะถูกเรียกจาก Player เมื่อทำการโจมตี

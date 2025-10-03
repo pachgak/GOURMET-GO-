@@ -77,7 +77,7 @@ public class ObjectPoolingManager : MonoBehaviour
 
             // Instantiating ตัวแรก
             GameObject newObj = InstantiateObject(callObjPrefab, 0, pool.gameObjs);
-
+            newObj.SetActive(true);
             // อัพเดทสถิติสำหรับตัวที่ถูกสร้างใหม่และถูกใช้งาน
             UpdateUsageStats(pool, true);
             return newObj;

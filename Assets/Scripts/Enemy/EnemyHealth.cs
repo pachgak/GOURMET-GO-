@@ -33,7 +33,6 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
 
     public void TakeDamage(float damage)
     {
-
         currentHealth -= damage;
         OnTakeDamage?.Invoke(damage);
 
