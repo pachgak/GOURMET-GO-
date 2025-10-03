@@ -16,6 +16,13 @@ public class PersonHitbox : MonoBehaviour , IHurtBox
     float IHurtBox._knockbackForce { get => knockbackForce; set => knockbackForce = value; }
     Vector3 IHurtBox._knockbackDirection { get => knockbackDirection; set => knockbackDirection = value; }
 
+    Collider _colider;
+
+    private void Awake()
+    {
+        _colider = GetComponent<Collider>();
+    }
+
     private void Start()
     {
 
@@ -39,16 +46,22 @@ public class PersonHitbox : MonoBehaviour , IHurtBox
 
             //playerSound and CameraShack
 
-            Destroy(gameObject);
+            ReturnObjectToPool();
         }
         if (other.gameObject.layer == Mathf.Log(wallLayer.value))
         {
-            Destroy(gameObject);
+            ReturnObjectToPool();
         }
     }
 
     public void PerformAttack()
     {
-        throw new System.NotImplementedException();
+        _colider.enabled = true;
+    }
+
+    private void ReturnObjectToPool()
+    {
+        _colider.enabled = false;
+        ObjectPoolingManager.Instance.ReturnObjectToPool(gameObject);
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ObjectPoolingManager : MonoBehaviour
@@ -28,6 +29,14 @@ public class ObjectPoolingManager : MonoBehaviour
     [SerializeField]
     private List<Pool> poolsToPreWarm = new List<Pool>();
 
+    // List สำหรับแสดงผลใน Inspector เท่านั้น
+    [Header("RUNTIME DEBUG VIEW")]
+    [SerializeField]
+    [Tooltip("แสดงสถานะ Pool ที่กำลังทำงานอยู่ (อัพเดททุกเฟรม)")]
+    private List<Pool> debugPoolList = new List<Pool>();
+
+    private float debugUpdateTimer = 0f;
+    private const float DEBUG_UPDATE_INTERVAL = 0.5f; // อัพเดททุก 0.5 วินาที (2 ครั้ง/วินาที)
 
     private void Awake()
     {
@@ -42,6 +51,12 @@ public class ObjectPoolingManager : MonoBehaviour
         }
 
         InitializePools();
+    }
+
+    private void Update()
+    {
+        DebugUpdateTime();
+        
     }
 
     private void InitializePools()
@@ -98,7 +113,7 @@ public class ObjectPoolingManager : MonoBehaviour
 
         // ถ้าทุกตัวถูกใช้งานหมด: Instantiate ตัวใหม่เพิ่ม (ขยาย Pool)
         GameObject addedObj = InstantiateObject(callObjPrefab, pool.gameObjs.Count, pool.gameObjs);
-
+        addedObj.SetActive(true);
         // อัพเดทสถิติสำหรับตัวที่ถูกสร้างใหม่และถูกใช้งาน
         UpdateUsageStats(pool, true);
         return addedObj;
@@ -122,16 +137,16 @@ public class ObjectPoolingManager : MonoBehaviour
         obj.SetActive(false);
 
         // **อัพเดทสถิติ**
-        // เราต้องหาว่า Object นี้เป็นของ Pool ไหนก่อน
-        // ในการทำงานจริง จะต้องใช้ PoolIdentifier เพื่อระบุเจ้าของ แต่ในที่นี้จะใช้การวนลูป (ช้า) เพื่อหาสาธิต
-        //foreach (var pair in poolDictionary)
-        //{
-        //    if (pair.Value.gameObjs.Contains(obj))
-        //    {
-        //        UpdateUsageStats(pair.Value, false);
-        //        return;
-        //    }
-        //}
+        //เราต้องหาว่า Object นี้เป็นของ Pool ไหนก่อน
+        //ในการทำงานจริง จะต้องใช้ PoolIdentifier เพื่อระบุเจ้าของ แต่ในที่นี้จะใช้การวนลูป(ช้า) เพื่อหาสาธิต
+        foreach (var pair in poolDictionary)
+        {
+            if (pair.Value.gameObjs.Contains(obj))
+            {
+                UpdateUsageStats(pair.Value, false);
+                return;
+            }
+        }
     }
 
     // ฟังก์ชันสำหรับอัพเดท statCurrentUsed และ statMaxUsed
@@ -150,6 +165,27 @@ public class ObjectPoolingManager : MonoBehaviour
         {
             // ตรวจสอบไม่ให้ค่าต่ำกว่าศูนย์
             pool.statCurrentUsed = Mathf.Max(0, pool.statCurrentUsed - 1);
+        }
+    }
+
+    private void UpdateDebugList()
+    {
+        // ใช้วิธีที่รวดเร็วในการคัดลอก Value ทั้งหมดจาก Dictionary มาใส่ใน List
+        // เมธอด Values.ToList() จะทำตรงนี้ให้ 
+        debugPoolList = poolDictionary.Values.ToList();
+    }
+
+    private void DebugUpdateTime()
+    {
+        // ตรวจสอบว่า Manager ถูกใช้งานหรือไม่ (ไม่จำเป็นต้องรันถ้าเป็น Editor Mode)
+        if (Application.isPlaying)
+        {
+            debugUpdateTimer -= Time.deltaTime;
+            if (debugUpdateTimer <= 0)
+            {
+                UpdateDebugList(); // เรียกใช้ ToList() เพียง 2 ครั้งต่อวินาที
+                debugUpdateTimer = DEBUG_UPDATE_INTERVAL;
+            }
         }
     }
 }

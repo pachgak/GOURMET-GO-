@@ -129,6 +129,7 @@ public class AttacksSkill : PlayerSkillSO
             iHurtBox._damage = damage;
             iHurtBox._knockbackDirection = directionToMouse;
             iHurtBox._knockbackForce = knockbackForce;
+            iHurtBox.PerformAttack();
         }
         if (attackInstance.TryGetComponent(out ISpeed iSpeed))
         {

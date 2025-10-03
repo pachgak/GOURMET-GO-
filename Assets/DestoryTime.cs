@@ -14,6 +14,11 @@ public class DestoryTime : MonoBehaviour
         Invoke(nameof(ReturnObjectToPool), timeDestory);
     }
 
+    private void OnDisable()
+    {
+        CancelInvoke(nameof(ReturnObjectToPool));
+    }
+
     private void ReturnObjectToPool()
     {
         ObjectPoolingManager.Instance.ReturnObjectToPool(gameObject);

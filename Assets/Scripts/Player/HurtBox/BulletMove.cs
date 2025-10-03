@@ -5,15 +5,12 @@ public class BulletMove : MonoBehaviour , ISpeed
     // ความเร็วของกระสุน
     public float speed = 20f;
 
-    // ระยะเวลาที่กระสุนจะทำลายตัวเอง
-    public float destroyTime = 10f;
-
     float ISpeed._speed { get => speed; set => speed = value; }
 
     void Start()
     {
         // สั่งให้กระสุนทำลายตัวเองเมื่อผ่านไปตามเวลาที่กำหนด
-        Destroy(gameObject, destroyTime);
+        //Destroy(gameObject, destroyTime);
     }
 
     void Update()
