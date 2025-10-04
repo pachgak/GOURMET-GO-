@@ -44,17 +44,17 @@ public class EnemySkillSO : ScriptableObject
                 Vector3 attackDirection = (targetPosition - enemy.transform.position).normalized;
 
                 //
-                //enemy.OnSkillDash?.Invoke(directionDesh, dashSpeed, dashTime, null);
+                enemyMovement.SkillDash(directionDesh, dashSpeed, dashTime);
             }
-            else if (skillPrefabs != null) InstallAttackHit(skillPrefabs, enemy.transform, targetPosition, (targetPosition - enemy.transform.position).normalized, skillFar, damage, knockbackForce, speed);
+            else if (skillPrefabs != null) InstallAttackHit(skillPrefabs, enemy, targetPosition, (targetPosition - enemy.transform.position).normalized, skillFar, damage, knockbackForce, speed);
         }
         //EndSkilling();
     }
 
-    private void InstallAttackHit(GameObject skillPrefabs, Transform playerTransform, Vector3 mousePosition, Vector3 attackDirection, float skillFar, float damage, float knockbackForce, float speed)
+    private void InstallAttackHit(GameObject skillPrefabs, GameObject enemy, Vector3 mousePosition, Vector3 attackDirection, float skillFar, float damage, float knockbackForce, float speed)
     {
         GameObject attackInstance = null;
-        Vector3 directionToMouse = (mousePosition - playerTransform.position).normalized;
+        Vector3 directionToMouse = (mousePosition - enemy.transform.position).normalized;
         Vector3 posInstance = Vector3.zero;
         Vector3 targetVecter = Vector3.zero;
 
@@ -63,18 +63,18 @@ public class EnemySkillSO : ScriptableObject
         {
             case AttacksSkill.SpawnSkillPrefabsType.PlayerParent:
                 //attackInstance = Instantiate(skillPrefabs, playerTransform);
-                attackInstance = ObjectPoolingManager.Instance.Spawn(skillPrefabs, playerTransform);
+                attackInstance = ObjectPoolingManager.Instance.Spawn(skillPrefabs, enemy.transform);
                 //attackInstance.transform.parent = playerTransform;
 
-                posInstance = playerTransform.position + (attackDirection * skillFar);
+                posInstance = enemy.transform.position + (attackDirection * skillFar);
                 targetVecter = attackDirection;
                 break;
             case AttacksSkill.SpawnSkillPrefabsType.PlayerWorld:
                 //attackInstance = Instantiate(skillPrefabs, playerTransform.position, Quaternion.identity);
-                attackInstance = ObjectPoolingManager.Instance.Spawn(skillPrefabs, playerTransform.position);
+                attackInstance = ObjectPoolingManager.Instance.Spawn(skillPrefabs, enemy.transform.position);
                 //attackInstance.transform.position = playerTransform.position;
 
-                posInstance = playerTransform.position + (attackDirection * skillFar);
+                posInstance = enemy.transform.position + (attackDirection * skillFar);
                 targetVecter = attackDirection;
                 break;
             case AttacksSkill.SpawnSkillPrefabsType.MouseWorld:
@@ -82,9 +82,9 @@ public class EnemySkillSO : ScriptableObject
                 attackInstance = ObjectPoolingManager.Instance.Spawn(skillPrefabs , mousePosition);
                 //attackInstance.transform.position = mousePosition;
 
-                float skillFarTrue = (skillFar >= 0) ? Mathf.Clamp(Vector3.Distance(mousePosition, playerTransform.position), 0, skillFar) : Vector3.Distance(mousePosition, playerTransform.position);
-                posInstance = playerTransform.position + (directionToMouse * skillFarTrue);
-                targetVecter = mousePosition - playerTransform.position;
+                float skillFarTrue = (skillFar >= 0) ? Mathf.Clamp(Vector3.Distance(mousePosition, enemy.transform.position), 0, skillFar) : Vector3.Distance(mousePosition, enemy.transform.position);
+                posInstance = enemy.transform.position + (directionToMouse * skillFarTrue);
+                targetVecter = mousePosition - enemy.transform.position;
                 break;
         }
         // set position
@@ -97,6 +97,8 @@ public class EnemySkillSO : ScriptableObject
 
         if (attackInstance.TryGetComponent(out IHurtBox iHurtBox))
         {
+            iHurtBox._targetLayer = LayerMask.GetMask("Player");
+            iHurtBox._ownerHit = enemy;
             iHurtBox._damage = damage;
             iHurtBox._knockbackDirection = directionToMouse;
             iHurtBox._knockbackForce = knockbackForce;

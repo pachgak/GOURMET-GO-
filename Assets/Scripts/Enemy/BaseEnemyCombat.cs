@@ -26,12 +26,14 @@ public class BaseEnemyCombat : MonoBehaviour
     //protected Transform _playerTarget;
     protected Coroutine _attackSequenceCoroutine;
     protected BaseEnemyAI _aiController;
+    protected BaseEnemyMovement _enemyMovement;
 
     protected virtual void Awake()
     {
         // *** จัดการตัวเอง: หา Reference ที่จำเป็นทั้งหมด ***
         _agent = GetComponent<NavMeshAgent>();
         _aiController = GetComponent<BaseEnemyAI>();
+        _enemyMovement = GetComponent<BaseEnemyMovement>();
 
         // *Note: ใน Production Game, playerTarget ควรถูกกำหนดค่าใน Start/Setup*
         // สำหรับตอนนี้ สันนิษฐานว่า aiController.playerTarget ถูกกำหนดไว้แล้ว
@@ -70,6 +72,8 @@ public class BaseEnemyCombat : MonoBehaviour
             HandleStartAttackSequence(false);
             attackTimer = attackCooldown;
         }
+        
+        if(_attackSequenceCoroutine == null) _aiController.TriggerChangeState(BaseEnemyAI.EnemyState.Chase);
     }
 
     // --- Event Handler (Subscriber) ---
@@ -77,6 +81,7 @@ public class BaseEnemyCombat : MonoBehaviour
     // ถูกเรียกเมื่อ OnStartAttackSequence ถูก Invoke
     public virtual void HandleStartAttackSequence(bool forceUseSkill3)
     {
+        _enemyMovement.canKnockback = false;
         // Base Combat ไม่ใช้ forceUseSkill3 แต่คลาสลูกสามารถนำไปใช้ได้
         if (_attackSequenceCoroutine != null) StopCoroutine(_attackSequenceCoroutine);
         _attackSequenceCoroutine = StartCoroutine(AttackSequence(forceUseSkill3));
@@ -106,6 +111,8 @@ public class BaseEnemyCombat : MonoBehaviour
 
     protected void TriggerAttackFinished()
     {
+        _enemyMovement.canKnockback = true;
+
         OnAttackFinished?.Invoke();
     }
     protected void TriggerSkillUesd(int index)

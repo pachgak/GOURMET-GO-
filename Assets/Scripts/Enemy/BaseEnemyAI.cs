@@ -151,6 +151,11 @@ public class BaseEnemyAI : MonoBehaviour
     //    }
     //}
 
+    public virtual void TriggerChangeState(EnemyState newState)
+    {
+        ChangeState(newState);
+    }
+
     protected virtual void ChangeState(EnemyState newState)
     {
         currentState = newState;

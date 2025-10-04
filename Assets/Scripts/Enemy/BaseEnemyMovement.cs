@@ -30,6 +30,11 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
     [Range(0.001f, 0.1f)][SerializeField] private float StillThreshold = 0.05f;
     [SerializeField] private float MaxKnockbackTime = 0.5f;
 
+    private Coroutine _dashCoroutine;
+    [Header("Dash Settings")]
+    [SerializeField] private float _dashStoppingThreshold = 0.5f; // ค่าความเร็วต่ำสุดก่อนหยุด Dash
+
+
     private void Awake()
     {
         // *** จัดการตัวเอง: หา Reference ที่จำเป็นทั้งหมด ***
@@ -184,6 +189,7 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         Debug.Log($"ApplyKnockback : {direction} | {force}");
 
         yield return null;
+        _agent.isStopped = true;
         _agent.enabled = false;
         _rb.useGravity = true;
         _rb.isKinematic = false;
@@ -203,6 +209,7 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         _rb.isKinematic = true;
         _agent.Warp(transform.position);
         _agent.enabled = true;
+        _agent.isStopped = false;
 
         yield return null;
 
@@ -216,6 +223,58 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         //{
         //    KnockbackCoroutine = StartCoroutine(Roam());
         //}
+    }
+
+    public void SkillDash(Vector3 direction, float speed, float duration)
+    {
+        // หยุด Coroutine เก่า (ถ้ามี)
+        if (_dashCoroutine != null) StopCoroutine(_dashCoroutine);
+
+        // หยุดการนำทางของ NavMeshAgent
+        StopMovement();
+
+        // เริ่ม Coroutine Dash
+        _dashCoroutine = StartCoroutine(ApplySkillDash(direction, speed, duration));
+    }
+
+    private IEnumerator ApplySkillDash(Vector3 direction, float speed, float duration)
+    {
+        // 1. ปิด NavMeshAgent และเตรียม Rigidbody
+        _agent.isStopped = true;
+        _agent.enabled = false;
+        _rb.isKinematic = false;
+        _rb.useGravity = false; // ปิด Gravity ชั่วคราวเพื่อให้พุ่งตรง
+
+        // 2. กำหนดความเร็วเริ่มต้น
+        Vector3 dashVelocity = direction * speed;
+        _rb.linearVelocity = dashVelocity;
+
+        float startTime = Time.time;
+
+        // 3. Loop การพุ่ง
+        while (Time.time < startTime + duration && _rb.linearVelocity.magnitude > _dashStoppingThreshold)
+        {
+            // รักษาความเร็วในการพุ่ง
+            if (_rb.linearVelocity.magnitude > speed)
+            {
+                _rb.linearVelocity = _rb.linearVelocity.normalized * speed;
+            }
+
+            yield return null; // รอจนกว่าจะถึงเฟรมถัดไป
+        }
+
+        // 4. จบการพุ่ง
+        _rb.linearVelocity = Vector3.zero;
+        _rb.angularVelocity = Vector3.zero;
+        _rb.useGravity = true; // คืนค่า Gravity (ถ้าจำเป็น)
+        _rb.isKinematic = true;
+
+        // 5. เปิด NavMeshAgent คืน
+        _agent.enabled = true;
+        _agent.Warp(transform.position); // Warp เพื่อปรับตำแหน่ง Agent ให้ตรงกับ Rigidbody
+        _agent.isStopped = false;
+
+        _dashCoroutine = null;
     }
 
     private void OnDrawGizmosSelected()

@@ -20,6 +20,7 @@ public class AttacksSkill : PlayerSkillSO
 
         [Header("Attack on Skill")]
         public GameObject skillPrefabs;
+        //public IHurtBox.DamageType damageType;
         public float skillFar = 0f;
         public float skillHight = 0f;
         public float damage;
@@ -73,17 +74,17 @@ public class AttacksSkill : PlayerSkillSO
 
                 playerMovement.OnSkillDash?.Invoke(directionDesh, dashSpeed, dashTime, null);
             }
-            else if (skillPrefabs != null) InstallAttackHit(skillPrefabs, player.transform, mousePosition, (mousePosition - player.transform.position).normalized, skillFar, damage, knockbackForce, speed);
+            else if (skillPrefabs != null) InstallAttackHit(skillPrefabs, player, mousePosition, (mousePosition - player.transform.position).normalized, skillFar, damage, knockbackForce, speed);
         }
 
         Debug.Log("Setplay End");
         //EndSkilling();
     }
 
-    private void InstallAttackHit(GameObject skillPrefabs, Transform playerTransform, Vector3 mousePosition, Vector3 attackDirection , float skillFar ,  float damage, float knockbackForce,float speed)
+    private void InstallAttackHit(GameObject skillPrefabs, GameObject player, Vector3 mousePosition, Vector3 attackDirection , float skillFar ,  float damage, float knockbackForce,float speed)
     {
         GameObject attackInstance = null;
-        Vector3 directionToMouse = (mousePosition - playerTransform.position).normalized;
+        Vector3 directionToMouse = (mousePosition - player.transform.position).normalized;
         Vector3 posInstance = Vector3.zero;
         Vector3 targetVecter = Vector3.zero;
         
@@ -93,17 +94,17 @@ public class AttacksSkill : PlayerSkillSO
             case SpawnSkillPrefabsType.PlayerParent:
                 //attackInstance = Instantiate(skillPrefabs, playerTransform);
                 attackInstance = ObjectPoolingManager.Instance.Spawn(skillPrefabs);
-                attackInstance.transform.parent = playerTransform;
+                attackInstance.transform.parent = player.transform;
 
-                posInstance = playerTransform.position + (attackDirection * skillFar);
+                posInstance = player.transform.position + (attackDirection * skillFar);
                 targetVecter = attackDirection;
                 break;
             case SpawnSkillPrefabsType.PlayerWorld:
                 //attackInstance = Instantiate(skillPrefabs, playerTransform.position, Quaternion.identity);
                 attackInstance = ObjectPoolingManager.Instance.Spawn(skillPrefabs);
-                attackInstance.transform.position = playerTransform.position;
+                attackInstance.transform.position = player.transform.position;
 
-                posInstance = playerTransform.position + (attackDirection * skillFar);
+                posInstance = player.transform.position + (attackDirection * skillFar);
                 targetVecter = attackDirection;
                 break;
             case SpawnSkillPrefabsType.MouseWorld:
@@ -111,9 +112,9 @@ public class AttacksSkill : PlayerSkillSO
                 attackInstance = ObjectPoolingManager.Instance.Spawn(skillPrefabs);
                 attackInstance.transform.position = mousePosition;
 
-                float skillFarTrue = (skillFar >= 0) ? Mathf.Clamp(Vector3.Distance(mousePosition, playerTransform.position), 0, skillFar) : Vector3.Distance(mousePosition, playerTransform.position);
-                posInstance = playerTransform.position + (directionToMouse * skillFarTrue);
-                targetVecter = mousePosition - playerTransform.position;
+                float skillFarTrue = (skillFar >= 0) ? Mathf.Clamp(Vector3.Distance(mousePosition, player.transform.position), 0, skillFar) : Vector3.Distance(mousePosition, player.transform.position);
+                posInstance = player.transform.position + (directionToMouse * skillFarTrue);
+                targetVecter = mousePosition - player.transform.position;
                 break;
         }
 
@@ -126,6 +127,8 @@ public class AttacksSkill : PlayerSkillSO
 
         if (attackInstance.TryGetComponent(out IHurtBox iHurtBox))
         {
+            iHurtBox._targetLayer = LayerMask.GetMask("Enemy");
+            iHurtBox._ownerHit = player;
             iHurtBox._damage = damage;
             iHurtBox._knockbackDirection = directionToMouse;
             iHurtBox._knockbackForce = knockbackForce;

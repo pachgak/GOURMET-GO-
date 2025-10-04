@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections;
 using Inventory;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviour , IKnockbackable
 {
     [Header("Walk")]
     public float moveSpeed = 5f;
@@ -35,6 +35,16 @@ public class PlayerMovement : MonoBehaviour
     [Header("_Manager References")]
     private PlayerInputActionsManager _inputManager;
     private OpenUiManager _uiManager;
+
+    [Header("Knockbackable")]
+    public bool canKnockback = true;
+    private Coroutine KnockbackCoroutine;
+    [Range(0.001f, 0.1f)][SerializeField] private float StillThreshold = 0.05f;
+    [SerializeField] private float MaxKnockbackTime = 0.5f;
+    [Header("Knockback")] 
+    public float knockbackDeceleration = 20f; // อัตราการลดความเร็วของการกระเด็น (ค่าที่สูงขึ้นจะหยุดเร็วขึ้น)
+    [SerializeField] private bool _isKnockedBack = false;
+    private Vector3 _knockbackVelocity;
 
     [Header("_System")]
     private CharacterController controller;
@@ -304,6 +314,10 @@ public class PlayerMovement : MonoBehaviour
             {
                 SetIsDash(false);
             }
+        }
+        else if (_isKnockedBack) // <-- เพิ่ม Knockback เข้ามาในลำดับ
+        {
+            finalMovement = _knockbackVelocity;
         }
         else if (_isAttackingForward)
         {
@@ -622,5 +636,52 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void GetKnockedBack(Vector3 direction, float force)
+    {
+        if (!canKnockback) return;
 
+        if (KnockbackCoroutine != null) StopCoroutine(KnockbackCoroutine);
+        _isKnockedBack = false;
+        KnockbackCoroutine = StartCoroutine(ApplyKnockback(direction, force));
+    }
+
+    private IEnumerator ApplyKnockback(Vector3 direction, float force)
+    {
+        // 1. ยกเลิกสถานะการเคลื่อนที่อื่นๆ ที่ขัดแย้งกัน
+        if (_isDashing) SetIsDash(false);
+        if (_isDashSkilling) SetIsDashSkill(false);
+        if (_isSprinting) SetIsSprint(false, false);
+
+        // หยุดหน่วงการเคลื่อนที่ชั่วคราว (ถ้ามี)
+        if (movementDelayCoroutine != null) StopCoroutine(movementDelayCoroutine);
+
+        // 2. กำหนดความเร็วเริ่มต้นของการกระเด็น
+        _knockbackVelocity = direction.normalized * force;
+        _isKnockedBack = true;
+        _canMove = false; // หยุดการควบคุมของผู้เล่น
+
+        // 3. เริ่มลูปการกระเด็น
+        float timer = 0f;
+        while (timer < MaxKnockbackTime && _knockbackVelocity.magnitude > StillThreshold)
+        {
+            // คำนวณความเร็วใหม่ (ใช้ Decceleration)
+            // Time.deltaTime จะทำให้ความเร็วลดลงตามเวลาจริง
+            _knockbackVelocity -= _knockbackVelocity.normalized * knockbackDeceleration * Time.deltaTime;
+
+            // ถ้าความเร็วลดลงมากเกินไป ให้หยุดลูป
+            if (_knockbackVelocity.magnitude < StillThreshold)
+            {
+                _knockbackVelocity = Vector3.zero;
+                break;
+            }
+
+            timer += Time.deltaTime;
+            yield return null; // รอ 1 เฟรม
+        }
+
+        // 4. สิ้นสุดการกระเด็น
+        _knockbackVelocity = Vector3.zero;
+        _isKnockedBack = false;
+        _canMove = true; // คืนการควบคุมให้ผู้เล่น
+    }
 }

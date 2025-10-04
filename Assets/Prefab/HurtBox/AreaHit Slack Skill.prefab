@@ -176,14 +176,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d004430b20b422845b40a5fe3d21703d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackOffset: {x: 0, y: 0, z: 0}
-  attackRadius: 2.5
-  damage: 10
-  knockbackForce: 5
   knockbackDirection: {x: 0, y: 0, z: 0}
   targetLayer:
     serializedVersion: 2
     m_Bits: 256
+  ownerHit: {fileID: 0}
+  attackOffset: {x: 0, y: 0, z: 0}
+  attackRadius: 2.5
 --- !u!114 &7624579743572108251
 MonoBehaviour:
   m_ObjectHideFlags: 0

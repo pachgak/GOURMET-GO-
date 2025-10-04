@@ -13,11 +13,15 @@ public class TEst : MonoBehaviour
     public float cSpeed;
     public float speedTime = 0;
 
+    public LayerMask testLayer;
+    public LayerMask testLayers;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        string[] layersToInclude = new string[] { "Enemy", "Player" };
+        testLayers = LayerMask.GetMask(layersToInclude);
+        testLayer = LayerMask.GetMask("Enemy");
     }
 
     // Update is called once per frame

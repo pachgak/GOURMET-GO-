@@ -280,6 +280,7 @@ public class PlayerCombatController : MonoBehaviour
 
         if (attackInstance.TryGetComponent(out IHurtBox iHurtBox))
         {
+            iHurtBox._targetLayer = LayerMask.GetMask("Enemy");
             iHurtBox._damage = damage;
             iHurtBox._knockbackDirection = directionToMouse;
             iHurtBox._knockbackForce = knockbackForce;
