@@ -48,7 +48,7 @@ public class PersonHitbox : MonoBehaviour , IHurtBox
 
             ReturnObjectToPool();
         }
-        if (other.gameObject.layer == Mathf.Log(wallLayer.value))
+        if (other.gameObject.layer == Mathf.Log(wallLayer.value, 2))
         {
             ReturnObjectToPool();
         }
@@ -62,6 +62,6 @@ public class PersonHitbox : MonoBehaviour , IHurtBox
     private void ReturnObjectToPool()
     {
         _colider.enabled = false;
-        ObjectPoolingManager.Instance.ReturnObjectToPool(gameObject);
+        ObjectPoolingManager.Instance.Respawn(gameObject);
     }
 }

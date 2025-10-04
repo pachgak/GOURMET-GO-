@@ -1,29 +1,41 @@
 // EnemyMovement.cs
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class BaseEnemyMovement : MonoBehaviour
+public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
 {
     [Header("Roaming")]
     public float roamRadius = 20f;
     public float waitRoamTime = 2;
     public float roamSpeed = 3.6f;
     public float chaseSpeed = 5f;
+    
 
     private Vector3 _roamPoint;
     private BaseEnemyAI.EnemyState _currentState;
     private NavMeshAgent _agent;
+    private Rigidbody _rb;
     private BaseEnemyAI _aiController;
     private bool _isWaiting;
     private float _timerWaiting;
+
+    //public KnockbackableStat knockbackableStat;
+    //KnockbackableStat
+    [Header("Knockbackable")]
+    public bool canKnockback = true;
+    private Coroutine KnockbackCoroutine;
+    [Range(0.001f, 0.1f)][SerializeField] private float StillThreshold = 0.05f;
+    [SerializeField] private float MaxKnockbackTime = 0.5f;
 
     private void Awake()
     {
         // *** จัดการตัวเอง: หา Reference ที่จำเป็นทั้งหมด ***
         _agent = GetComponent<NavMeshAgent>();
         _aiController = GetComponent<BaseEnemyAI>();
+        _rb = GetComponent<Rigidbody>();
 
         // Safety Check
         if (_agent == null || _aiController == null)
@@ -157,6 +169,53 @@ public class BaseEnemyMovement : MonoBehaviour
         {
             _agent.SetDestination(hit.position);
         }
+    }
+
+    public void GetKnockedBack(Vector3 direction, float force)
+    {
+        if (!canKnockback) return;
+
+        if (KnockbackCoroutine != null) StopCoroutine(KnockbackCoroutine);
+        KnockbackCoroutine = StartCoroutine(ApplyKnockback(direction, force));
+    }
+
+    private IEnumerator ApplyKnockback(Vector3 direction, float force)
+    {
+        Debug.Log($"ApplyKnockback : {direction} | {force}");
+
+        yield return null;
+        _agent.enabled = false;
+        _rb.useGravity = true;
+        _rb.isKinematic = false;
+
+        _rb.AddForce(direction * force, ForceMode.Impulse);
+
+        yield return new WaitForFixedUpdate();
+        float knockbackTime = Time.time;
+        yield return new WaitUntil(
+            () => _rb.linearVelocity.magnitude < StillThreshold || Time.time > knockbackTime + MaxKnockbackTime
+        );
+        yield return new WaitForSeconds(0.25f);
+
+        _rb.linearVelocity = Vector3.zero;
+        _rb.angularVelocity = Vector3.zero;
+        _rb.useGravity = false;
+        _rb.isKinematic = true;
+        _agent.Warp(transform.position);
+        _agent.enabled = true;
+
+        yield return null;
+
+
+        //กลับไป stest เดิน
+        //if (Player != null)
+        //{
+        //    KnockbackCoroutine = StartCoroutine(ChasePlayer(Player));
+        //}
+        //else
+        //{
+        //    KnockbackCoroutine = StartCoroutine(Roam());
+        //}
     }
 
     private void OnDrawGizmosSelected()

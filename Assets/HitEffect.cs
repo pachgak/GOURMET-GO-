@@ -30,7 +30,7 @@ public class HitEffect : MonoBehaviour
         if (effecfHitPrefab != null)
         {
             //GameObject cloneEffecfHit = Instantiate(effecfHitPrefab, transform);
-            GameObject cloneEffecfHit = ObjectPoolingManager.Instance.GetPoorObj(effecfHitPrefab);
+            GameObject cloneEffecfHit = ObjectPoolingManager.Instance.Spawn(effecfHitPrefab);
             cloneEffecfHit.transform.parent = transform;
             cloneEffecfHit.transform.position = effectPos;
 
@@ -39,7 +39,7 @@ public class HitEffect : MonoBehaviour
         if (damagePromptPrefab != null)
         {
             //GameObject cloneDamagePrompt = Instantiate(damagePromptPrefab, transform);
-            GameObject cloneDamagePrompt = ObjectPoolingManager.Instance.GetPoorObj(damagePromptPrefab);
+            GameObject cloneDamagePrompt = ObjectPoolingManager.Instance.Spawn(damagePromptPrefab);
             cloneDamagePrompt.transform.parent = transform;
             cloneDamagePrompt.transform.position = effectPos;
             if (cloneDamagePrompt.TryGetComponent(out DamagePrompt damagePrompt))

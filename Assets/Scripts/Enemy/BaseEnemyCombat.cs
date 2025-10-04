@@ -3,14 +3,27 @@ using UnityEngine;
 using System;
 using System.Collections;
 using UnityEngine.AI;
+using Unity.VisualScripting;
 
 public class BaseEnemyCombat : MonoBehaviour
 {
+    public float attackCooldown;
+    public float attackTimer;
     // Events ที่จะถูก Invoke กลับไปหา AI เมื่อโจมตีเสร็จ
     public event Action OnAttackFinished;
+    public event Action<int> OnSkillUesd;
+
+    public EnemySkillSO[] enemySkills;
+    //public EnemySkill[] enemySkills;
+
+    //[System.Serializable]
+    //public class EnemySkill
+    //{
+    //    public AttacksSkill.SkillSetp[] _skillSetp;
+    //}
 
     protected NavMeshAgent _agent;
-    protected Transform _playerTarget;
+    //protected Transform _playerTarget;
     protected Coroutine _attackSequenceCoroutine;
     protected BaseEnemyAI _aiController;
 
@@ -34,8 +47,8 @@ public class BaseEnemyCombat : MonoBehaviour
     {
         if (_aiController != null)
         {
-            _playerTarget = _aiController.playerTarget; // ดึง Target จาก AI (เพื่อความง่าย)
-            _aiController.OnStartAttackSequence += HandleStartAttackSequence;
+            //_playerTarget = _aiController.playerTarget; // ดึง Target จาก AI (เพื่อความง่าย)
+            //_aiController.OnStartAttackSequence += HandleStartAttackSequence;
         }
     }
 
@@ -43,7 +56,19 @@ public class BaseEnemyCombat : MonoBehaviour
     {
         if (_aiController != null)
         {
-            _aiController.OnStartAttackSequence -= HandleStartAttackSequence;
+            //_aiController.OnStartAttackSequence -= HandleStartAttackSequence;
+        }
+    }
+
+    private void Update()
+    {
+        if (attackTimer > 0 && _attackSequenceCoroutine == null) attackTimer -= Time.deltaTime;
+
+
+        if (_aiController.currentState == BaseEnemyAI.EnemyState.Attack && attackTimer <= 0 && _attackSequenceCoroutine == null)
+        {
+            HandleStartAttackSequence(false);
+            attackTimer = attackCooldown;
         }
     }
 
@@ -54,27 +79,38 @@ public class BaseEnemyCombat : MonoBehaviour
     {
         // Base Combat ไม่ใช้ forceUseSkill3 แต่คลาสลูกสามารถนำไปใช้ได้
         if (_attackSequenceCoroutine != null) StopCoroutine(_attackSequenceCoroutine);
-        _attackSequenceCoroutine = StartCoroutine(SimpleMeleeAttack());
+        _attackSequenceCoroutine = StartCoroutine(AttackSequence(forceUseSkill3));
     }
 
     // --- Combat Logic ---
 
-    protected virtual IEnumerator SimpleMeleeAttack()
+    protected virtual IEnumerator AttackSequence(bool forceUseSkill3)
     {
-        Debug.Log("Base Combat: Simple Melee Attack!");
-        if (_agent != null) _agent.isStopped = true;
+        //if (_agent != null) _agent.isStopped = true;
 
-        // 1. Logic การหันหน้าไปหา Player
-        FaceTarget(_playerTarget.position);
-
-        // 2. Play Animation และรอ
-        yield return new WaitForSeconds(1.0f);
-
-        // 3. Apply Damage (TODO)
+        yield return AttackLogic(forceUseSkill3);
 
         // แจ้ง AI ว่าโจมตีเสร็จแล้ว
-        OnAttackFinished?.Invoke();
+        TriggerAttackFinished();
         _attackSequenceCoroutine = null;
+    }
+
+    protected virtual IEnumerator AttackLogic(bool forceUseSkill3)
+    {
+        // 1. Logic การหันหน้าไปหา Player
+        TriggerSkillUesd(0);
+        yield return enemySkills[0].UseSkill(this.gameObject, _aiController.playerTarget);
+
+        // 3. Apply Damage (TODO)
+    }
+
+    protected void TriggerAttackFinished()
+    {
+        OnAttackFinished?.Invoke();
+    }
+    protected void TriggerSkillUesd(int index)
+    {
+        OnSkillUesd?.Invoke(index);
     }
 
     protected void FaceTarget(Vector3 targetPosition)

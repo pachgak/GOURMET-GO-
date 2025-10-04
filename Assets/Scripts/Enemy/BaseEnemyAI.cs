@@ -124,8 +124,14 @@ public class BaseEnemyAI : MonoBehaviour
         }
         else
         {
-            OnStartChase?.Invoke(playerTarget.position); // สั่ง Movement ไล่ล่า
+            TriggerStartChase(playerTarget.position);
+            //OnStartChase?.Invoke(playerTarget.position); // สั่ง Movement ไล่ล่า
         }
+    }
+
+    protected void TriggerStartChase(Vector3 targetPos)
+    {
+        OnStartChase?.Invoke(targetPos);
     }
 
     //protected virtual void AttackChangeStateLogic()
@@ -153,14 +159,14 @@ public class BaseEnemyAI : MonoBehaviour
         switch (newState)
         {
             case EnemyState.Roaming:
-                OnAttackStateChange?.Invoke(false);
+                //OnAttackStateChange?.Invoke(false);
                 break;
             case EnemyState.Chase:
-                OnAttackStateChange?.Invoke(false);
+                //OnAttackStateChange?.Invoke(false);
                 break;
             case EnemyState.Attack:
                 OnStopMovement?.Invoke();
-                OnAttackStateChange?.Invoke(true);
+                //OnAttackStateChange?.Invoke(true);
 
                 // 1. ตรวจสอบ: ถ้าไม่มี Combat Component
                 if (_enemyCombat == null)
@@ -179,9 +185,9 @@ public class BaseEnemyAI : MonoBehaviour
                 }
                 else
                 {
-                    // 2. ถ้ามี: สั่ง Combat ให้เริ่มโจมตี (ผ่าน Event)
-                    OnStartAttackSequence?.Invoke(false);
-                    // AI จะค้างอยู่ใน Attack State รอ OnAttackFinished จาก Combat
+                    //// 2. ถ้ามี: สั่ง Combat ให้เริ่มโจมตี (ผ่าน Event)
+                    //OnStartAttackSequence?.Invoke(false);
+                    //// AI จะค้างอยู่ใน Attack State รอ OnAttackFinished จาก Combat
                 }
                 break;
         }

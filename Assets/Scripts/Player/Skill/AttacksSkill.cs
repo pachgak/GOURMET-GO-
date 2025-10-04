@@ -92,7 +92,7 @@ public class AttacksSkill : PlayerSkillSO
         {
             case SpawnSkillPrefabsType.PlayerParent:
                 //attackInstance = Instantiate(skillPrefabs, playerTransform);
-                attackInstance = ObjectPoolingManager.Instance.GetPoorObj(skillPrefabs);
+                attackInstance = ObjectPoolingManager.Instance.Spawn(skillPrefabs);
                 attackInstance.transform.parent = playerTransform;
 
                 posInstance = playerTransform.position + (attackDirection * skillFar);
@@ -100,7 +100,7 @@ public class AttacksSkill : PlayerSkillSO
                 break;
             case SpawnSkillPrefabsType.PlayerWorld:
                 //attackInstance = Instantiate(skillPrefabs, playerTransform.position, Quaternion.identity);
-                attackInstance = ObjectPoolingManager.Instance.GetPoorObj(skillPrefabs);
+                attackInstance = ObjectPoolingManager.Instance.Spawn(skillPrefabs);
                 attackInstance.transform.position = playerTransform.position;
 
                 posInstance = playerTransform.position + (attackDirection * skillFar);
@@ -108,7 +108,7 @@ public class AttacksSkill : PlayerSkillSO
                 break;
             case SpawnSkillPrefabsType.MouseWorld:
                 //attackInstance = Instantiate(skillPrefabs, mousePosition, Quaternion.identity);
-                attackInstance = ObjectPoolingManager.Instance.GetPoorObj(skillPrefabs);
+                attackInstance = ObjectPoolingManager.Instance.Spawn(skillPrefabs);
                 attackInstance.transform.position = mousePosition;
 
                 float skillFarTrue = (skillFar >= 0) ? Mathf.Clamp(Vector3.Distance(mousePosition, playerTransform.position), 0, skillFar) : Vector3.Distance(mousePosition, playerTransform.position);

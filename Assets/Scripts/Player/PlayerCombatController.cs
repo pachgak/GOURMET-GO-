@@ -264,7 +264,7 @@ public class PlayerCombatController : MonoBehaviour
     {
         // ���ҧ GameObject �ͧ�������
         //GameObject attackInstance = Instantiate(attackPrefabs, transform);
-        GameObject attackInstance = ObjectPoolingManager.Instance.GetPoorObj(attackPrefabs);
+        GameObject attackInstance = ObjectPoolingManager.Instance.Spawn(attackPrefabs);
         attackInstance.transform.parent = transform;
 
         // �ӹǳ��ȷҧ�������

@@ -81,7 +81,7 @@ public class ObjectPoolingManager : MonoBehaviour
 
 
     // เมธอดหลักสำหรับเรียกใช้ Object
-    public GameObject GetPoorObj(GameObject callObjPrefab)
+    public GameObject Spawn(GameObject callObjPrefab)
     {
         Pool pool;
         if (!poolDictionary.TryGetValue(callObjPrefab, out pool))
@@ -119,6 +119,129 @@ public class ObjectPoolingManager : MonoBehaviour
         return addedObj;
     }
 
+    public GameObject Spawn(GameObject callObjPrefab,Vector3 setPositon)
+    {
+        Pool pool;
+        if (!poolDictionary.TryGetValue(callObjPrefab, out pool))
+        {
+            // ถ้าไม่มี Pool: สร้าง Pool ใหม่แบบ On-Demand
+            pool = new Pool { prefabObj = callObjPrefab, initialSize = 1 };
+            poolDictionary.Add(callObjPrefab, pool);
+
+            // Instantiating ตัวแรก
+            GameObject newObj = InstantiateObject(callObjPrefab, 0, pool.gameObjs);
+            newObj.SetActive(true);
+            newObj.transform.position = setPositon;
+            // อัพเดทสถิติสำหรับตัวที่ถูกสร้างใหม่และถูกใช้งาน
+            UpdateUsageStats(pool, true);
+            return newObj;
+        }
+
+        // ค้นหา Object ที่ว่าง
+        foreach (GameObject obj in pool.gameObjs)
+        {
+            if (!obj.activeInHierarchy)
+            {
+                obj.SetActive(true);
+                obj.transform.position = setPositon;
+                // อัพเดทสถิติ
+                UpdateUsageStats(pool, true);
+                return obj;
+            }
+        }
+
+        // ถ้าทุกตัวถูกใช้งานหมด: Instantiate ตัวใหม่เพิ่ม (ขยาย Pool)
+        GameObject addedObj = InstantiateObject(callObjPrefab, pool.gameObjs.Count, pool.gameObjs);
+        addedObj.SetActive(true);
+        addedObj.transform.position = setPositon;
+        // อัพเดทสถิติสำหรับตัวที่ถูกสร้างใหม่และถูกใช้งาน
+        UpdateUsageStats(pool, true);
+        return addedObj;
+    }
+
+    public GameObject Spawn(GameObject callObjPrefab, Transform setParant)
+    {
+        Pool pool;
+        if (!poolDictionary.TryGetValue(callObjPrefab, out pool))
+        {
+            // ถ้าไม่มี Pool: สร้าง Pool ใหม่แบบ On-Demand
+            pool = new Pool { prefabObj = callObjPrefab, initialSize = 1 };
+            poolDictionary.Add(callObjPrefab, pool);
+
+            // Instantiating ตัวแรก
+            GameObject newObj = InstantiateObject(callObjPrefab, 0, pool.gameObjs);
+            newObj.SetActive(true);
+            newObj.transform.parent = setParant;
+            // อัพเดทสถิติสำหรับตัวที่ถูกสร้างใหม่และถูกใช้งาน
+            UpdateUsageStats(pool, true);
+            return newObj;
+        }
+
+        // ค้นหา Object ที่ว่าง
+        foreach (GameObject obj in pool.gameObjs)
+        {
+            if (!obj.activeInHierarchy)
+            {
+                obj.SetActive(true);
+                obj.transform.parent = setParant;
+                // อัพเดทสถิติ
+                UpdateUsageStats(pool, true);
+                return obj;
+            }
+        }
+
+        // ถ้าทุกตัวถูกใช้งานหมด: Instantiate ตัวใหม่เพิ่ม (ขยาย Pool)
+        GameObject addedObj = InstantiateObject(callObjPrefab, pool.gameObjs.Count, pool.gameObjs);
+        addedObj.SetActive(true);
+        addedObj.transform.parent = setParant;
+        // อัพเดทสถิติสำหรับตัวที่ถูกสร้างใหม่และถูกใช้งาน
+        UpdateUsageStats(pool, true);
+        return addedObj;
+    }
+
+    public GameObject Spawn(GameObject callObjPrefab, Transform setParant, Vector3 setPositon)
+    {
+        Pool pool;
+        if (!poolDictionary.TryGetValue(callObjPrefab, out pool))
+        {
+            // ถ้าไม่มี Pool: สร้าง Pool ใหม่แบบ On-Demand
+            pool = new Pool { prefabObj = callObjPrefab, initialSize = 1 };
+            poolDictionary.Add(callObjPrefab, pool);
+
+            // Instantiating ตัวแรก
+            GameObject newObj = InstantiateObject(callObjPrefab, 0, pool.gameObjs);
+            newObj.SetActive(true);
+            newObj.transform.parent = setParant;
+            newObj.transform.position = setPositon;
+            // อัพเดทสถิติสำหรับตัวที่ถูกสร้างใหม่และถูกใช้งาน
+            UpdateUsageStats(pool, true);
+            return newObj;
+        }
+
+        // ค้นหา Object ที่ว่าง
+        foreach (GameObject obj in pool.gameObjs)
+        {
+            if (!obj.activeInHierarchy)
+            {
+                obj.SetActive(true);
+                obj.transform.parent = setParant;
+                obj.transform.position = setPositon;
+                // อัพเดทสถิติ
+                UpdateUsageStats(pool, true);
+                return obj;
+            }
+        }
+
+        // ถ้าทุกตัวถูกใช้งานหมด: Instantiate ตัวใหม่เพิ่ม (ขยาย Pool)
+        GameObject addedObj = InstantiateObject(callObjPrefab, pool.gameObjs.Count, pool.gameObjs);
+        addedObj.SetActive(true);
+        addedObj.transform.parent = setParant;
+        addedObj.transform.position = setPositon;
+        // อัพเดทสถิติสำหรับตัวที่ถูกสร้างใหม่และถูกใช้งาน
+        UpdateUsageStats(pool, true);
+        return addedObj;
+    }
+
     // ฟังก์ชันย่อยสำหรับการ Instantiate และตั้งค่าเริ่มต้น
     private GameObject InstantiateObject(GameObject prefab, int index, List<GameObject> poolList)
     {
@@ -129,8 +252,8 @@ public class ObjectPoolingManager : MonoBehaviour
         return newObj;
     }
 
-    // ฟังก์ชันสำหรับคืน Object กลับ Pool
-    public void ReturnObjectToPool(GameObject obj)
+    // ฟังก์ชันสำหรับคืน Object กลับ Pool ReturnObjectToPool
+    public void Respawn(GameObject obj)
     {
         // ... (ถ้ามีการ Implement PoolIdentifier จะเพิ่มการตรวจสอบตรงนี้) ...
 

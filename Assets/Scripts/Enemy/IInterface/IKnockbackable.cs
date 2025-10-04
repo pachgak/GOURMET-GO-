@@ -57,3 +57,13 @@ public interface IKnockbackable
     }
     */
 }
+
+//Nope
+[System.Serializable]
+public class KnockbackableStat
+{
+    public bool canKnockback = true;
+    private Coroutine KnockbackCoroutine;
+    [Range(0.001f, 0.1f)][SerializeField] private float StillThreshold = 0.05f;
+    [SerializeField] private float MaxKnockbackTime = 0.5f;
+}

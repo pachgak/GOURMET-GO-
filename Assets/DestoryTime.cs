@@ -21,6 +21,6 @@ public class DestoryTime : MonoBehaviour
 
     private void ReturnObjectToPool()
     {
-        ObjectPoolingManager.Instance.ReturnObjectToPool(gameObject);
+        ObjectPoolingManager.Instance.Respawn(gameObject);
     }
 }
