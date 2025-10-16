@@ -45,4 +45,24 @@ public class TEst : MonoBehaviour
         // โค้ดด้านล่างนี้จะไม่ถูกเรียกใช้ถ้า someCondition เป็นจริง
         Debug.Log("ทำงานต่อ... เพราะเงื่อนไขไม่เป็นจริง");
     }
+
+    public void TestAnimationEvent(GameObject gameObject,int type)
+    {
+
+    }
+
+    public void GetGameObject(GameObject gameObject)
+    {
+
+    }
+    public void GetInt(int type)
+    {
+
+    }
+
+    public void GetBool(bool isBool)
+    {
+
+    }
+
 }

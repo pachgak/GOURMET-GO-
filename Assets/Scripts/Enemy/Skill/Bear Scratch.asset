@@ -23,9 +23,9 @@ MonoBehaviour:
     knockbackForce: 0
     speed: 0
     haveDash: 1
-    dashSpeed: 10
+    dashSpeed: 20
     dashTime: 0.25
-  - playAtTime: 0.25
+  - playAtTime: 0.66
     skillPrefabs: {fileID: 7411569378006972243, guid: 3192632e8899e774f9faf9938f36ef8d, type: 3}
     skillFar: 0
     skillHight: 0
@@ -35,7 +35,7 @@ MonoBehaviour:
     haveDash: 0
     dashSpeed: 0
     dashTime: 0
-  - playAtTime: 0.25
+  - playAtTime: 0.66
     skillPrefabs: {fileID: 3788498254762507853, guid: 9a6eb30f1e716e54f96e9c8a62048d02, type: 3}
     skillFar: 0
     skillHight: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
     haveDash: 0
     dashSpeed: 0
     dashTime: 0
-  - playAtTime: 1.25
+  - playAtTime: 1.166
     skillPrefabs: {fileID: 0}
     skillFar: 0
     skillHight: 0
@@ -53,9 +53,9 @@ MonoBehaviour:
     knockbackForce: 0
     speed: 0
     haveDash: 1
-    dashSpeed: 10
+    dashSpeed: 20
     dashTime: 0.25
-  - playAtTime: 1.5
+  - playAtTime: 1.583
     skillPrefabs: {fileID: 7411569378006972243, guid: 3192632e8899e774f9faf9938f36ef8d, type: 3}
     skillFar: 0
     skillHight: 0
@@ -65,8 +65,48 @@ MonoBehaviour:
     haveDash: 0
     dashSpeed: 0
     dashTime: 0
-  - playAtTime: 1.5
+  - playAtTime: 1.583
     skillPrefabs: {fileID: 8207986665541837172, guid: cdab2b161e9956847859ae2ab5424d26, type: 3}
+    skillFar: 0
+    skillHight: 0
+    damage: 0
+    knockbackForce: 0
+    speed: 0
+    haveDash: 0
+    dashSpeed: 0
+    dashTime: 0
+  - playAtTime: 2
+    skillPrefabs: {fileID: 0}
+    skillFar: 0
+    skillHight: 0
+    damage: 0
+    knockbackForce: 0
+    speed: 0
+    haveDash: 1
+    dashSpeed: 20
+    dashTime: 0.25
+  - playAtTime: 2.416
+    skillPrefabs: {fileID: 7411569378006972243, guid: 3192632e8899e774f9faf9938f36ef8d, type: 3}
+    skillFar: 0
+    skillHight: 0
+    damage: 0
+    knockbackForce: 0
+    speed: 0
+    haveDash: 0
+    dashSpeed: 0
+    dashTime: 0
+  - playAtTime: 2.416
+    skillPrefabs: {fileID: 8207986665541837172, guid: cdab2b161e9956847859ae2ab5424d26, type: 3}
+    skillFar: 0
+    skillHight: 0
+    damage: 0
+    knockbackForce: 0
+    speed: 0
+    haveDash: 0
+    dashSpeed: 0
+    dashTime: 0
+  - playAtTime: 3
+    skillPrefabs: {fileID: 0}
     skillFar: 0
     skillHight: 0
     damage: 0

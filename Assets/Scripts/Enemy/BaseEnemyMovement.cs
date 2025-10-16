@@ -56,8 +56,8 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
     {
         // *** สมัครรับ Events จาก BaseEnemyAI เพื่อรับคำสั่ง ***
         _aiController.OnStartChase += HandleStartChase;
-        _aiController.OnStopMovement += HandlStopMovement;
-        _aiController.OnStateChange += HandlStateChange;
+        _aiController.OnStopMovement += HandleStopMovement;
+        _aiController.OnStateChange += HandleStateChange;
     }
 
     private void OnDisable()
@@ -66,11 +66,11 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         if (_aiController != null)
         {
             _aiController.OnStartChase -= HandleStartChase;
-            _aiController.OnStopMovement -= HandlStopMovement;
+            _aiController.OnStopMovement -= HandleStopMovement;
         }
     }
 
-    private void HandlStateChange(BaseEnemyAI.EnemyState state)
+    private void HandleStateChange(BaseEnemyAI.EnemyState state)
     {
         _currentState = state;
         if (state == BaseEnemyAI.EnemyState.Roaming)
@@ -87,7 +87,7 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         MoveToTarget(targetPosition);
     }
 
-    private void HandlStopMovement()
+    private void HandleStopMovement()
     {
         StopMovement();
     }

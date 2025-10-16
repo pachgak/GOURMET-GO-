@@ -73,7 +73,7 @@ public class BaseEnemyCombat : MonoBehaviour
             attackTimer = attackCooldown;
         }
         
-        if(_attackSequenceCoroutine == null) _aiController.TriggerChangeState(BaseEnemyAI.EnemyState.Chase);
+        if(_aiController.currentState == BaseEnemyAI.EnemyState.Attack &&_attackSequenceCoroutine == null) _aiController.TriggerChangeState(BaseEnemyAI.EnemyState.Chase);
     }
 
     // --- Event Handler (Subscriber) ---

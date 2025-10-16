@@ -31,8 +31,8 @@ public class BaseEnemyAI : MonoBehaviour
     public float sightRange = 15f;
     public float attackRange = 2f;
 
-    protected bool _playerInSightRange;
-    protected bool _playerInAttackRange;
+    [SerializeField] protected bool _playerInSightRange;
+    [SerializeField] protected bool _playerInAttackRange;
     private BaseEnemyCombat _enemyCombat;
 
     protected virtual void Awake()
@@ -158,20 +158,22 @@ public class BaseEnemyAI : MonoBehaviour
 
     protected virtual void ChangeState(EnemyState newState)
     {
+        Debug.Log($"ChangeState : {newState}");
+
         currentState = newState;
         OnStateChange?.Invoke(currentState);
 
         switch (newState)
         {
             case EnemyState.Roaming:
-                //OnAttackStateChange?.Invoke(false);
+                OnAttackStateChange?.Invoke(false);
                 break;
             case EnemyState.Chase:
-                //OnAttackStateChange?.Invoke(false);
+                OnAttackStateChange?.Invoke(false);
                 break;
             case EnemyState.Attack:
                 OnStopMovement?.Invoke();
-                //OnAttackStateChange?.Invoke(true);
+                OnAttackStateChange?.Invoke(true);
 
                 // 1. ตรวจสอบ: ถ้าไม่มี Combat Component
                 if (_enemyCombat == null)

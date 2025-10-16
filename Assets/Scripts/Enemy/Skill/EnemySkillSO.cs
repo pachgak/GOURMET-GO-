@@ -21,7 +21,7 @@ public class EnemySkillSO : ScriptableObject
 
     private IEnumerator Setplay(GameObject enemy, Transform target)
     {
-        Vector3 targetPosition = target.position;
+        //Vector3 targetPosition = target.position;
 
         for (int i = 0; i < _skillSetp.Length; i++)
         {
@@ -40,13 +40,13 @@ public class EnemySkillSO : ScriptableObject
             if (haveDash && enemy.TryGetComponent(out BaseEnemyMovement enemyMovement))
             {
                 // คำนวณทิศทางการพุ่ง
-                Vector3 directionDesh = (targetPosition - enemy.transform.position).normalized;
-                Vector3 attackDirection = (targetPosition - enemy.transform.position).normalized;
+                Vector3 directionDesh = (target.position - enemy.transform.position).normalized;
+                Vector3 attackDirection = (target.position - enemy.transform.position).normalized;
 
                 //
                 enemyMovement.SkillDash(directionDesh, dashSpeed, dashTime);
             }
-            else if (skillPrefabs != null) InstallAttackHit(skillPrefabs, enemy, targetPosition, (targetPosition - enemy.transform.position).normalized, skillFar, damage, knockbackForce, speed);
+            else if (skillPrefabs != null) InstallAttackHit(skillPrefabs, enemy, target.position, (target.position - enemy.transform.position).normalized, skillFar, damage, knockbackForce, speed);
         }
         //EndSkilling();
     }
