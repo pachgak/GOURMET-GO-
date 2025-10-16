@@ -1,30 +1,28 @@
 using UnityEngine;
-using TMPro; // อย่าลืมว่าคุณต้องมี TextMeshPro ในโปรเจกต์ด้วย
+using TMPro;
+using Unity.VisualScripting; // อย่าลืมว่าคุณต้องมี TextMeshPro ในโปรเจกต์ด้วย
 
-public class DamagePrompt : MonoBehaviour
+public class DamagePromptText : MonoBehaviour
 {
     // ตัวแปรสาธารณะที่คุณสามารถตั้งค่าได้ใน Unity Inspector
-    public float destroyTime = 2f; // ระยะเวลาที่ข้อความความเสียหายจะอยู่บนหน้าจอ
+    public float destroyTime = 0.5f; // ระยะเวลาที่ข้อความความเสียหายจะอยู่บนหน้าจอ
     public float risingSpeed = 1f; // ความเร็วพื้นฐานที่ข้อความความเสียหายจะลอยขึ้น
     public float randomXRange = 1f; // ช่วงการสุ่มในแกน X
     public float randomYRange = 1f; // ช่วงการสุ่มในแกน Y
-    public Color damageColor = Color.red; // สีของข้อความความเสียหาย
 
     private Vector3 _offSet;
     private Transform _targetPos;
     public TMP_Text damageText;
     private Vector3 _randomDirection;
 
-    void Awake()
+    void OnEnable()
     {
-        // ตั้งค่าสีเริ่มต้น
-        damageText.color = damageColor;
-
         // สุ่มทิศทางการเคลื่อนที่
         _randomDirection = new Vector3(Random.Range(-randomXRange, randomXRange), Random.Range(0, randomYRange), 0);
-
+        damageText.color = new Color(damageText.color.r, damageText.color.g, damageText.color.b, 1);
+        damageText.transform.localPosition = Vector3.zero;
         // ทำลายวัตถุข้อความโดยอัตโนมัติหลังจากผ่านไปตามเวลาที่กำหนด
-        Destroy(gameObject, destroyTime);
+        Invoke(nameof(ReturnObjectToPool), destroyTime);
     }
 
     void Update()
@@ -43,5 +41,10 @@ public class DamagePrompt : MonoBehaviour
         damageText.text = damageAmount.ToString();
         _offSet = offSet;
         _targetPos = targetPos;
+    }
+
+    public void ReturnObjectToPool()
+    {
+        ObjectPoolingManager.Instance.Respawn(gameObject);
     }
 }

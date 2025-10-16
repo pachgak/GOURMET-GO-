@@ -1,3 +1,4 @@
+using com.cyborgAssets.inspectorButtonPro;
 using System.Collections;
 using UnityEngine;
 
@@ -12,6 +13,8 @@ public class TEst : MonoBehaviour
     public float bSpeed = 10;
     public float cSpeed;
     public float speedTime = 0;
+
+    public float Timer;
 
     public LayerMask testLayer;
     public LayerMask testLayers;
@@ -29,6 +32,7 @@ public class TEst : MonoBehaviour
     {
         cSpeed = Mathf.Lerp(aSpeed, bSpeed, speedTime);
         //currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, Time.deltaTime * sprintAcceleration);
+        Timer += Time.deltaTime;
     }
 
     private IEnumerator CheckForCondition()
@@ -63,6 +67,11 @@ public class TEst : MonoBehaviour
     public void GetBool(bool isBool)
     {
 
+    }
+    [ProButton]
+    public void SetTimeScal(float scall)
+    {
+        Time.timeScale = scall;
     }
 
 }

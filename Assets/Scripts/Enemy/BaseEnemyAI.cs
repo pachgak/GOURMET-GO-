@@ -220,4 +220,15 @@ public class BaseEnemyAI : MonoBehaviour
             ChangeState(EnemyState.Roaming);
         }
     }
+
+    protected virtual void OnDrawGizmosSelected()
+    {
+        // วงกลมระยะการมองเห็น (Sight Range)
+        Gizmos.color = Color.yellow; // สีเหลืองสำหรับระยะการมองเห็น
+        Gizmos.DrawWireSphere(transform.position, sightRange);
+
+        // วงกลมระยะการโจมตี (Attack Range)
+        Gizmos.color = Color.red; // สีแดงสำหรับระยะการโจมตี
+        Gizmos.DrawWireSphere(transform.position, attackRange);
+    }
 }

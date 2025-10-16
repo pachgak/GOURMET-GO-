@@ -17,6 +17,10 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
 
     public Action<float> OnTakeDamage;
 
+    public GameObject gameObjectOwner => gameObject;
+
+    Action<float> ITakeDamage.OnTakeDamage { get => OnTakeDamage; set => OnTakeDamage = value;}
+
     void Start()
     {
         currentHealth = maxHealth;

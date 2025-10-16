@@ -62,7 +62,7 @@ public class BaseEnemyCombat : MonoBehaviour
         }
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         if (attackTimer > 0 && _attackSequenceCoroutine == null) attackTimer -= Time.deltaTime;
 

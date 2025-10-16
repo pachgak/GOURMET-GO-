@@ -1,4 +1,5 @@
 // EnemyMovement.cs
+using com.cyborgAssets.inspectorButtonPro;
 using System;
 using System.Collections;
 using TMPro;
@@ -190,7 +191,7 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
 
         yield return null;
         _agent.isStopped = true;
-        _agent.enabled = false;
+        //_agent.enabled = false;
         _rb.useGravity = true;
         _rb.isKinematic = false;
 
@@ -208,7 +209,7 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         _rb.useGravity = false;
         _rb.isKinematic = true;
         _agent.Warp(transform.position);
-        _agent.enabled = true;
+        //_agent.enabled = true;
         _agent.isStopped = false;
 
         yield return null;
@@ -241,7 +242,7 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
     {
         // 1. ปิด NavMeshAgent และเตรียม Rigidbody
         _agent.isStopped = true;
-        _agent.enabled = false;
+        //_agent.enabled = false;
         _rb.isKinematic = false;
         _rb.useGravity = false; // ปิด Gravity ชั่วคราวเพื่อให้พุ่งตรง
 
@@ -270,7 +271,7 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         _rb.isKinematic = true;
 
         // 5. เปิด NavMeshAgent คืน
-        _agent.enabled = true;
+        //_agent.enabled = true;
         _agent.Warp(transform.position); // Warp เพื่อปรับตำแหน่ง Agent ให้ตรงกับ Rigidbody
         _agent.isStopped = false;
 
@@ -282,4 +283,11 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(_roamPoint, roamRadius);
     }
+
+    [ProButton]
+    public void TestIsStop(bool resu)
+    {
+        _agent.isStopped = resu;
+    }
+
 }

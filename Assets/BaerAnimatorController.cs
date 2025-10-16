@@ -90,7 +90,6 @@ public class BaerAnimatorController : MonoBehaviour
             // 4a. แปลงความเร็วจาก World Space ให้เป็น Local Space ของตัวละคร
             // นี่คือขั้นตอนสำคัญ: มันบอกว่าความเร็วนี้เมื่อเทียบกับทิศทางที่ตัวละครกำลังหันหน้าไปเป็นอย่างไร
             Vector3 localVelocity = transform.InverseTransformDirection(worldVelocity.normalized);
-            Debug.Log($"worldVelocity : {worldVelocity} | wV.N : {worldVelocity.normalized} | localVelocity : {localVelocity} ");
             // 4b. ดึงค่าสำหรับ Blend Tree (แกน X คือด้านข้าง, แกน Z คือเดินหน้า/ถอยหลัง)
             // ใช้ Math.Clamp เพื่อจำกัดค่าให้อยู่ระหว่าง -1 ถึง 1
             float moveX = localVelocity.x; // ด้านข้าง (Strafe Left/Right)

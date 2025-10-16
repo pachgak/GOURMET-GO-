@@ -36,6 +36,8 @@ public class EnemySkillSO : ScriptableObject
             float knockbackForce = _skillSetp[i].knockbackForce;
             float speed = _skillSetp[i].speed;
             float skillFar = _skillSetp[i].skillFar;
+            float skillHight = _skillSetp[i].skillHight;
+            Vector2 skillOffset = new Vector2(_skillSetp[i].skillFar, _skillSetp[i].skillHight);
 
             if (haveDash && enemy.TryGetComponent(out BaseEnemyMovement enemyMovement))
             {
@@ -46,17 +48,18 @@ public class EnemySkillSO : ScriptableObject
                 //
                 enemyMovement.SkillDash(directionDesh, dashSpeed, dashTime);
             }
-            else if (skillPrefabs != null) InstallAttackHit(skillPrefabs, enemy, target.position, (target.position - enemy.transform.position).normalized, skillFar, damage, knockbackForce, speed);
+            else if (skillPrefabs != null) InstallAttackHit(skillPrefabs, enemy, target.position, (target.position - enemy.transform.position).normalized, skillOffset, damage, knockbackForce, speed);
         }
         //EndSkilling();
     }
 
-    private void InstallAttackHit(GameObject skillPrefabs, GameObject enemy, Vector3 mousePosition, Vector3 attackDirection, float skillFar, float damage, float knockbackForce, float speed)
+    private void InstallAttackHit(GameObject skillPrefabs, GameObject enemy, Vector3 mousePosition, Vector3 attackDirection,Vector2 offSet, float damage, float knockbackForce, float speed)
     {
         GameObject attackInstance = null;
         Vector3 directionToMouse = (mousePosition - enemy.transform.position).normalized;
         Vector3 posInstance = Vector3.zero;
         Vector3 targetVecter = Vector3.zero;
+        Vector3 hightPos = new Vector3(0, offSet.y, 0);
 
         // สร้าง GameObject ของการโจมตี
         switch (spawnSkillPrefabsType)
@@ -66,7 +69,7 @@ public class EnemySkillSO : ScriptableObject
                 attackInstance = ObjectPoolingManager.Instance.Spawn(skillPrefabs, enemy.transform);
                 //attackInstance.transform.parent = playerTransform;
 
-                posInstance = enemy.transform.position + (attackDirection * skillFar);
+                posInstance = enemy.transform.position + (attackDirection * offSet.x);
                 targetVecter = attackDirection;
                 break;
             case AttacksSkill.SpawnSkillPrefabsType.PlayerWorld:
@@ -74,7 +77,7 @@ public class EnemySkillSO : ScriptableObject
                 attackInstance = ObjectPoolingManager.Instance.Spawn(skillPrefabs, enemy.transform.position);
                 //attackInstance.transform.position = playerTransform.position;
 
-                posInstance = enemy.transform.position + (attackDirection * skillFar);
+                posInstance = enemy.transform.position + (attackDirection * offSet.x);
                 targetVecter = attackDirection;
                 break;
             case AttacksSkill.SpawnSkillPrefabsType.MouseWorld:
@@ -82,13 +85,13 @@ public class EnemySkillSO : ScriptableObject
                 attackInstance = ObjectPoolingManager.Instance.Spawn(skillPrefabs , mousePosition);
                 //attackInstance.transform.position = mousePosition;
 
-                float skillFarTrue = (skillFar >= 0) ? Mathf.Clamp(Vector3.Distance(mousePosition, enemy.transform.position), 0, skillFar) : Vector3.Distance(mousePosition, enemy.transform.position);
+                float skillFarTrue = (offSet.x >= 0) ? Mathf.Clamp(Vector3.Distance(mousePosition, enemy.transform.position), 0, offSet.x) : Vector3.Distance(mousePosition, enemy.transform.position);
                 posInstance = enemy.transform.position + (directionToMouse * skillFarTrue);
                 targetVecter = mousePosition - enemy.transform.position;
                 break;
         }
         // set position
-        attackInstance.transform.position = posInstance;
+        attackInstance.transform.position = posInstance + hightPos;
 
         // คำนวณการหมุน (Rotation)
         targetVecter.y = 0f;

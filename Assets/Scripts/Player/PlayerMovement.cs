@@ -74,7 +74,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
     private Vector3 _slideVelocity;
 
     //Dash
-    [SerializeField] private bool _isDashing = false;
+    [SerializeField] public bool isDashing = false;
     [SerializeField] private bool _dashClick = false;
     private bool _canDash = true; // สถานะสำหรับตรวจสอบว่า Dash พร้อมใช้งานหรือไม่
     private float _dashTimeCounter;
@@ -165,7 +165,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
     {
         _moveDirection = direction;
 
-        if (_holdSprinte && _moveDirection != Vector3.zero && _canSprinte  && !_isSprinting && !_isSliding && !_isDashing && !_isAttackingForward)
+        if (_holdSprinte && _moveDirection != Vector3.zero && _canSprinte  && !_isSprinting && !_isSliding && !isDashing && !_isAttackingForward)
         {
             SetIsSprint(true);
         }
@@ -304,7 +304,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
                 SetIsDashSkill(false);
             }
         }
-        else if (_isDashing)
+        else if (isDashing)
         {
 
             finalMovement = _dashVelocity;
@@ -580,7 +580,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
     {
         if (isSet == true)
         {
-            _isDashing = true;
+            isDashing = true;
             _dashTimeCounter = dashTime;
 
             // InverseLerp จะหาว่า currentSpeed อยู่ที่ตำแหน่งไหนระหว่าง moveSpeed กับ sprintSpeed
@@ -589,7 +589,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
             float trueDashSpeedFactor = Mathf.Lerp(dashSpeedFactor.x, dashSpeedFactor.y, t);
             // เก็บความเร็วสำหรับใช้ตอนพุ่ง
             _dashVelocity = _moveDirection.normalized * _currentSpeed * trueDashSpeedFactor;
-            OnDashStateChange?.Invoke(_isDashing,_dashVelocity);
+            OnDashStateChange?.Invoke(isDashing,_dashVelocity);
 
             // เริ่ม Coroutine สำหรับ Cooldown
             StartCoroutine(DashCooldownCoroutine(dashCooldown));
@@ -597,9 +597,9 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
 
         if (isSet == false)
         {
-            _isDashing = false;
+            isDashing = false;
             _dashVelocity = Vector3.zero;
-            OnDashStateChange?.Invoke(_isDashing, _dashVelocity);
+            OnDashStateChange?.Invoke(isDashing, _dashVelocity);
         }
     }
 
@@ -639,6 +639,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
     public void GetKnockedBack(Vector3 direction, float force)
     {
         if (!canKnockback) return;
+        if (isDashing) return;
 
         if (KnockbackCoroutine != null) StopCoroutine(KnockbackCoroutine);
         _isKnockedBack = false;
@@ -648,7 +649,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
     private IEnumerator ApplyKnockback(Vector3 direction, float force)
     {
         // 1. ยกเลิกสถานะการเคลื่อนที่อื่นๆ ที่ขัดแย้งกัน
-        if (_isDashing) SetIsDash(false);
+        if (isDashing) SetIsDash(false);
         if (_isDashSkilling) SetIsDashSkill(false);
         if (_isSprinting) SetIsSprint(false, false);
 
