@@ -35,6 +35,7 @@ public class PalyerUIController : MonoBehaviour
     void Start()
     {
         hpBar.maxValue = playerHealth.maxHealth;
+        playerHealth.setHp(playerHealth.maxHealth);
     }
 
     // Update is called once per frame

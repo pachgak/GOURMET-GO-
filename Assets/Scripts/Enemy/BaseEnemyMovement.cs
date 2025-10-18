@@ -187,7 +187,6 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
 
     private IEnumerator ApplyKnockback(Vector3 direction, float force)
     {
-        Debug.Log($"ApplyKnockback : {direction} | {force}");
 
         yield return null;
         _agent.isStopped = true;

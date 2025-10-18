@@ -37,9 +37,9 @@ public class AreaHitbox : BaseHitBox
         }
 
         //playerSound and CameraShack
-        if (hitColliders != null)
+        if (hitColliders.Length > 0 && ownerHit == CameraShakeManager.instance.playerGameObject)
         {
-
+            CameraShakeManager.instance.ShakePlayerAttack();
         }
     }
 

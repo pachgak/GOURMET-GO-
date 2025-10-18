@@ -58,6 +58,9 @@ public class PlayerHealth : MonoBehaviour ,ITakeDamage
         }
 
         OnTakeDamage?.Invoke(damage);
+        //กล้อสั่นโนนตี
+        CameraShakeManager.instance.ShakePlayerTakeDamage();
+
         removeHp(damage);
 
         

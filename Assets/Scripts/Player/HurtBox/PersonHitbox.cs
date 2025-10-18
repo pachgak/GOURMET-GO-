@@ -62,6 +62,10 @@ public class PersonHitbox : BaseHitBox
             }
 
             //playerSound and CameraShack
+            if (ownerHit == CameraShakeManager.instance.playerGameObject)
+            {
+                CameraShakeManager.instance.ShakePlayerAttack();
+            }
 
             ReturnObjectToPool();
         }

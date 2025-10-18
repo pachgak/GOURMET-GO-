@@ -158,7 +158,6 @@ public class BaseEnemyAI : MonoBehaviour
 
     protected virtual void ChangeState(EnemyState newState)
     {
-        Debug.Log($"ChangeState : {newState}");
 
         currentState = newState;
         OnStateChange?.Invoke(currentState);

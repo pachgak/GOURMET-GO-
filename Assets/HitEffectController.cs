@@ -23,7 +23,6 @@ public class HitEffectController : MonoBehaviour
 
     public void HandleInstantiateEffect(float damage)
     {
-        Debug.Log("HitEffect");
        Vector3 effectPos = transform.localPosition + offSet;
 
         if (effecfHitPrefab != null)

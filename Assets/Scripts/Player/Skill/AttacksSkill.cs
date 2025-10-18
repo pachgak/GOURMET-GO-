@@ -31,8 +31,8 @@ public class AttacksSkill : PlayerSkillSO
 
         [Header("Dash on Skill")]
         public bool haveDash;
-        public float dashSpeed = 0f; // ¤ÇÒÁàÃçÇ¢Í§¡ÒÃ¾Øè§
-        public float dashTime = 0f; // ÃÐÂÐàÇÅÒ¡ÒÃ¾Øè§
+        public float dashSpeed = 0f; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¢Í§ï¿½ï¿½Ã¾ï¿½ï¿½
+        public float dashTime = 0f; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¡ï¿½Ã¾ï¿½ï¿½
     }
 
     public enum SpawnSkillPrefabsType
@@ -68,7 +68,7 @@ public class AttacksSkill : PlayerSkillSO
 
             if (haveDash && player.TryGetComponent(out PlayerMovement playerMovement))
             {
-                // ¤Ó¹Ç³·ÔÈ·Ò§¡ÒÃ¾Øè§
+                // ï¿½Ó¹Ç³ï¿½ï¿½È·Ò§ï¿½ï¿½Ã¾ï¿½ï¿½
                 Vector3 directionDesh = (mousePosition - player.transform.position).normalized;
                 Vector3 attackDirection = (mousePosition - player.transform.position).normalized;
 
@@ -83,12 +83,13 @@ public class AttacksSkill : PlayerSkillSO
 
     private void InstallAttackHit(GameObject skillPrefabs, GameObject player, Vector3 mousePosition, Vector3 attackDirection , float skillFar ,  float damage, float knockbackForce,float speed)
     {
+        Debug.Log($"InstallAttackHit : {skillPrefabs.name}");
         GameObject attackInstance = null;
         Vector3 directionToMouse = (mousePosition - player.transform.position).normalized;
         Vector3 posInstance = Vector3.zero;
         Vector3 targetVecter = Vector3.zero;
         
-        // ÊÃéÒ§ GameObject ¢Í§¡ÒÃâ¨ÁµÕ
+        // ï¿½ï¿½ï¿½Ò§ GameObject ï¿½Í§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         switch (spawnSkillPrefabsType)
         {
             case SpawnSkillPrefabsType.PlayerParent:
@@ -120,7 +121,7 @@ public class AttacksSkill : PlayerSkillSO
 
         attackInstance.transform.position = posInstance;
 
-        // ¤Ó¹Ç³¡ÒÃËÁØ¹ (Rotation)
+        // ï¿½Ó¹Ç³ï¿½ï¿½ï¿½ï¿½ï¿½Ø¹ (Rotation)
         targetVecter.y = 0f;
         Quaternion targetRotation = Quaternion.LookRotation(targetVecter);
         attackInstance.transform.rotation = targetRotation;

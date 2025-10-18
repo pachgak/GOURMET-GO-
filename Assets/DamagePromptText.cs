@@ -21,6 +21,7 @@ public class DamagePromptText : MonoBehaviour
         _randomDirection = new Vector3(Random.Range(-randomXRange, randomXRange), Random.Range(0, randomYRange), 0);
         damageText.color = new Color(damageText.color.r, damageText.color.g, damageText.color.b, 1);
         damageText.transform.localPosition = Vector3.zero;
+
         // ทำลายวัตถุข้อความโดยอัตโนมัติหลังจากผ่านไปตามเวลาที่กำหนด
         Invoke(nameof(ReturnObjectToPool), destroyTime);
     }
@@ -41,6 +42,8 @@ public class DamagePromptText : MonoBehaviour
         damageText.text = damageAmount.ToString();
         _offSet = offSet;
         _targetPos = targetPos;
+
+        transform.position = _targetPos.position + _offSet;
     }
 
     public void ReturnObjectToPool()
