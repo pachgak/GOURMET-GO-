@@ -8,7 +8,7 @@ namespace Inventory.Model
     public abstract class ItemSO : ScriptableObject
     {
         [field: SerializeField]
-        public string Name { get; set; }
+        public string ItemName { get; set; }
 
         [field: SerializeField]
         [field: TextArea]

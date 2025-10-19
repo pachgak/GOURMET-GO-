@@ -8,6 +8,7 @@ using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 public class BaerAnimatorController : MonoBehaviour
 {
     public Animator _animator;
+    public SpriteRenderer spriteRenderer;
     private NavMeshAgent _agent;
     private BaseEnemyCombat _enemyCombat;
     private BaseEnemyAI _aiController;
@@ -34,6 +35,8 @@ public class BaerAnimatorController : MonoBehaviour
         Vector3 attackDirection = (_aiController.playerTarget.position - transform.position).normalized;
         _animator.SetFloat("ActionX", attackDirection.x);
         _animator.SetFloat("ActionZ", attackDirection.z);
+
+        //spriteRenderer.flipX = (attackDirection.x <= 0) ? true : false;
 
         if (skillNumber == 0)
         {
@@ -87,6 +90,8 @@ public class BaerAnimatorController : MonoBehaviour
         // 4. ถ้ากำลังเคลื่อนที่ ให้คำนวณทิศทาง
         if (isMoving)
         {
+            spriteRenderer.flipX = false;
+
             // 4a. แปลงความเร็วจาก World Space ให้เป็น Local Space ของตัวละคร
             // นี่คือขั้นตอนสำคัญ: มันบอกว่าความเร็วนี้เมื่อเทียบกับทิศทางที่ตัวละครกำลังหันหน้าไปเป็นอย่างไร
             Vector3 localVelocity = transform.InverseTransformDirection(worldVelocity.normalized);

@@ -1,4 +1,5 @@
 using Inventory.Model;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,8 @@ using UnityEngine;
 public class Item : MonoBehaviour
 {
     [field: SerializeField]
-    public ItemSO InventoryItem { get; private set; }
+    public ItemSO itemSO { get; private set; }
+    public SpriteRenderer itemDropImage;
 
     [field: SerializeField]
     public int Quantity { get; set; } = 1;
@@ -17,14 +19,48 @@ public class Item : MonoBehaviour
     [SerializeField]
     private float duration = 0.3f;
 
-    private void Start()
+    private Collider _collider;
+
+    private bool _canPickUp;
+
+    private Vector3 originScale;
+
+    public Action OnItemSetup;
+
+    private void Awake()
     {
-        GetComponent<SpriteRenderer>().sprite = InventoryItem.ItemImage;
+        _collider = GetComponent<Collider>();
+        audioSource = GetComponent<AudioSource>();
+        originScale = transform.localScale;
+    }
+
+    public void Setup(ItemSO _itemSO,int _quantity)
+    {
+        itemSO = _itemSO;
+        Quantity = _quantity;
+
+        UpProfind();
+    }
+
+    public void UpProfind()
+    {
+        
+        itemDropImage.sprite = this.itemSO.ItemImage;
+        _collider.enabled = true;
+        GetComponent<InteractableBase>().message = $"PickUp : {this.itemSO.ItemName} x {Quantity}";
+        transform.localScale = originScale;
+
+        OnItemSetup?.Invoke();
+    }
+
+    public void Start()
+    {
+
     }
 
     public void DestroyItem()
     {
-        GetComponent<Collider2D>().enabled = false;
+        _collider.enabled = false;
         StartCoroutine(AnimateItemPickup());
 
     }
@@ -42,6 +78,12 @@ public class Item : MonoBehaviour
                 Vector3.Lerp(startScale, endScale, currentTime / duration);
             yield return null;
         }
-        Destroy(gameObject);
+        ReturnObjectToPool();
+        //Destroy(gameObject);
+    }
+
+    private void ReturnObjectToPool()
+    {
+        ObjectPoolingManager.Instance.Respawn(gameObject);
     }
 }

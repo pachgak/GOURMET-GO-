@@ -3,8 +3,15 @@ using UnityEngine;
 
 public class PlayerSkillController : MonoBehaviour
 {
+    [Serializable]
+    public class skillData
+    {
+        public PlayerSkillSO assignedSkills;
+        public int uesdCount;
+    }
+
     // ใช้ Array ของ Skill ScriptableObject
-    public PlayerSkillSO[] assignedSkills = new PlayerSkillSO[5];
+    public skillData[] skillDatas = new skillData[5];
     public float useSkillDely = 0f;
 
     private Vector3 _mousePosition;
@@ -74,15 +81,15 @@ public class PlayerSkillController : MonoBehaviour
     internal void HandleSkillSlotInput(int slot)
     {
         Debug.Log($"slot : {slot}");
-        if (slot > assignedSkills.Length) return;
+        if (slot > skillDatas.Length) return;
         if (_isSkilling) return;
         if (!_canSkill) return;
-        if (assignedSkills[slot - 1] == null) return;
+        if (skillDatas[slot - 1].assignedSkills == null) return;
 
-        SetSkillingState(true, assignedSkills[slot - 1].skillLifeTime);
+        SetSkillingState(true, skillDatas[slot - 1].assignedSkills.skillLifeTime);
 
-        _skillStepCoroutine = assignedSkills[slot - 1].Use(gameObject, _mousePosition);
-        Invoke(nameof(DoSkillEnd), assignedSkills[slot - 1].skillLifeTime);
+        _skillStepCoroutine = skillDatas[slot - 1].assignedSkills.Use(gameObject, _mousePosition);
+        Invoke(nameof(DoSkillEnd), skillDatas[slot - 1].assignedSkills.skillLifeTime);
 
         _canSkill = false;
         _canSkillDelyTimer = useSkillDely;
@@ -116,5 +123,20 @@ public class PlayerSkillController : MonoBehaviour
     public void DoSkillEnd()
     {
         SetSkillingState(false,0);
+    }
+
+    public bool AddSkill(PlayerSkillSO skill,int usedCount)
+    {
+        for (int i = 0; i < skillDatas.Length; i++) 
+        {
+            if (skillDatas[i].assignedSkills != null)
+            {
+                skillDatas[i].assignedSkills = skill;
+                skillDatas[i].uesdCount = usedCount;
+
+                return true;
+            }
+        }
+        return false;
     }
 }

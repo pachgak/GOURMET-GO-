@@ -2,14 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu]
+[CreateAssetMenu(fileName = "New HealthModifier", menuName = "Inventory/Modifier/HealthSO")]
 public class HealthModifierSO : ItemModifierSO
 {
-    public override void AffectCharacter(GameObject character, float val)
+    public override bool AffectCharacter(GameObject character, float val)
     {
         Debug.Log($"{character.name} : Health {val}");
-        //Health health = character.GetComponent<Health>();
-        //if (health != null)
-        //     health.AddHealth((int)val);
+        PlayerHealth health = character.GetComponent<PlayerHealth>();
+        if (health != null)
+        {
+            health.addHp((int)val);
+            return true;
+        }
+        return false;
     }
 }

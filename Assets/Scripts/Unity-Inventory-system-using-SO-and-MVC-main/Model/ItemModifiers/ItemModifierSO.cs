@@ -4,5 +4,5 @@ using UnityEngine;
 
 public abstract class ItemModifierSO : ScriptableObject
 {
-    public abstract void AffectCharacter(GameObject character, float val);
+    public abstract bool AffectCharacter(GameObject character, float val);
 }

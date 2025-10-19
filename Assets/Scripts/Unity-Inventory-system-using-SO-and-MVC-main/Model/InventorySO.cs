@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -16,7 +15,8 @@ namespace Inventory.Model
         public int Size { get; private set; } = 10;
 
         public event Action<Dictionary<int, InventoryItem>> OnInventoryUpdated;
-
+        public event Action<ItemSO,int> OnAddItem;
+        public event Action<ItemSO,int> OnRemoveItem;
         public void Initialize()
         {
             inventoryItems = new List<InventoryItem>();
@@ -28,7 +28,10 @@ namespace Inventory.Model
 
         public int AddItem(ItemSO item, int quantity, List<ItemParameter> itemParameter = null)
         {
-            if(item.IsStackable == false)
+            int initialQuantity = quantity;
+            int collectedQuantity = 0;
+
+            if (item.IsStackable == false)
             {
                 for (int i = 0; i < inventoryItems.Count; i++)
                 {
@@ -37,11 +40,17 @@ namespace Inventory.Model
                         quantity -= AddItemToFirstFreeSlot(item, 1, itemParameter);
                     }
                     InformAboutChange();
+
+                    collectedQuantity = initialQuantity - quantity;
+                    OnAddItem?.Invoke(item, collectedQuantity);
                     return quantity;
                 }
             }
             quantity = AddStackableItem(item, quantity);
             InformAboutChange();
+
+            collectedQuantity = initialQuantity - quantity;
+            OnAddItem?.Invoke(item, collectedQuantity);
             return quantity;
         }
 
@@ -112,6 +121,8 @@ namespace Inventory.Model
         {
             if (inventoryItems.Count > itemIndex)
             {
+                OnRemoveItem?.Invoke(inventoryItems[itemIndex].item, amount);
+
                 if (inventoryItems[itemIndex].IsEmpty)
                     return;
                 int reminder = inventoryItems[itemIndex].quantity - amount;
@@ -119,8 +130,11 @@ namespace Inventory.Model
                     inventoryItems[itemIndex] = InventoryItem.GetEmptyItem();
                 else
                     inventoryItems[itemIndex] = inventoryItems[itemIndex]
-                        .ChangeQuantity(reminder);
+                    .ChangeQuantity(reminder);
 
+                //int collectedQuantity = inventoryItems[itemIndex].quantity - Mathf.Max(0, reminder);
+                //Debug.Log($"reminder:{reminder} | itemQuantity {inventoryItems[itemIndex].quantity} : | -amount : {amount} | collectedQuantity : {collectedQuantity}");
+                
                 InformAboutChange();
             }
         }

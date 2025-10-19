@@ -30,11 +30,6 @@ public class DestoryAnimation : MonoBehaviour
         else GameObject.Destroy(gameObject);
     }
 
-    public void GetIntSet(int valu , MyEnum Sest)
-    {
-        Debug.Log("GetIntSet : " + valu + " | MyEnum :" + Sest.DisplayName());
-    }
-
     public void GetIntSetOOs(int valu )
     {
         Debug.Log("GetIntSet : " + valu );

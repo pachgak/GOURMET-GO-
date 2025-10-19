@@ -16,6 +16,8 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
     //private HitEffect _hitEffect;
 
     public Action<float> OnTakeDamage;
+    public Action OnDie;
+
 
     public GameObject gameObjectOwner => gameObject;
 
@@ -42,6 +44,7 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
 
         if (currentHealth <= 0)
         {
+            OnDie?.Invoke();
             Die();
         }
 
@@ -51,6 +54,11 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
     private void Die()
     {
         Debug.Log(transform.name + " has been defeated.");
-        Destroy(gameObject);
+        RetrunToPoor();
+    }
+
+    private void RetrunToPoor()
+    {
+        ObjectPoolingManager.Instance.Respawn(gameObject);
     }
 }
