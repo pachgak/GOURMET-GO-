@@ -9,7 +9,7 @@ public abstract class PlayerSkillSO : ScriptableObject
     public string skillName;
     public Sprite skillIcon;
     public float cooldown;
-    public int usesCount;
+    //public int usesCount;
 
     [Space(20)]
     [Header("===== Modify Skill ================================================================")]

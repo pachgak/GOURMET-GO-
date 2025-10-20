@@ -77,7 +77,7 @@ public class PlayerController : MonoBehaviour
         uiManager.OnUiOpeningStateChange += playerInteract.HandleUiOpeningStateChange;
 
         //PlayerSkillController
-        inputManager.OnSkillSlotInput += playerSkill.HandleSkillSlotInput;
+        inputManager.OnInputNumber += playerSkill.HandleSkillSlotInput;
         inputManager.OnMountPosition += playerSkill.HandleGetMountPos;
         playerMovement.OnDashSkillCancelInput += playerSkill.HandleDashSkillCancelInput;
         playerMovement.OnDashStateChange += playerSkill.HandleDashStateChange;

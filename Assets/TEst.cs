@@ -1,6 +1,7 @@
 using com.cyborgAssets.inspectorButtonPro;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TEst : MonoBehaviour
 {
@@ -19,6 +20,11 @@ public class TEst : MonoBehaviour
     public LayerMask testLayer;
     public LayerMask testLayers;
 
+    private void Awake()
+    {
+        
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -33,6 +39,18 @@ public class TEst : MonoBehaviour
         cSpeed = Mathf.Lerp(aSpeed, bSpeed, speedTime);
         //currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, Time.deltaTime * sprintAcceleration);
         Timer += Time.deltaTime;
+    }
+
+    public void ReloadCurrentScene()
+    {
+        // 1. รับ Scene ปัจจุบัน
+        Scene currentScene = SceneManager.GetActiveScene();
+
+        // 2. สั่งโหลด Scene นั้นซ้ำ โดยใช้ชื่อ (แนะนำ)
+        SceneManager.LoadScene(currentScene.name);
+
+        // หรือใช้ดัชนี (Build Index):
+        // SceneManager.LoadScene(currentScene.buildIndex);
     }
 
     private IEnumerator CheckForCondition()

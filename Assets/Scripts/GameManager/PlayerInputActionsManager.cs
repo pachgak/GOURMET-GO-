@@ -43,7 +43,7 @@ public class PlayerInputActionsManager : MonoBehaviour
     public Action OnInteractInputDown;
     public Action OnInteractInputUp;
 
-    public Action<int> OnSkillSlotInput;
+    public Action<int> OnInputNumber;
 
     private void Update()
     {
@@ -117,7 +117,7 @@ public class PlayerInputActionsManager : MonoBehaviour
             bool isNumber = int.TryParse(Input.inputString, out int number);
             if (isNumber)
             {
-                OnSkillSlotInput?.Invoke(number);
+                OnInputNumber?.Invoke(number);
             }
         }
 

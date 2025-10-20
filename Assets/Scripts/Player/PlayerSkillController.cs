@@ -8,6 +8,7 @@ public class PlayerSkillController : MonoBehaviour
     {
         public PlayerSkillSO assignedSkills;
         public int uesdCount;
+        [SerializeField] private float _cooldown;
     }
 
     // ใช้ Array ของ Skill ScriptableObject
@@ -39,7 +40,7 @@ public class PlayerSkillController : MonoBehaviour
 
     private void OnEnable()
     {
-        _inputManager.OnSkillSlotInput += HandleSkillSlotInput;
+        _inputManager.OnInputNumber += HandleSkillSlotInput;
         _inputManager.OnMountPosition += HandleGetMountPos;
 
         _playerMovement.OnDashSkillCancelInput += HandleDashSkillCancelInput;
@@ -48,7 +49,7 @@ public class PlayerSkillController : MonoBehaviour
 
     private void OnDisable()
     {
-        _inputManager.OnSkillSlotInput -= HandleSkillSlotInput;
+        _inputManager.OnInputNumber -= HandleSkillSlotInput;
         _inputManager.OnMountPosition -= HandleGetMountPos;
 
         _playerMovement.OnDashSkillCancelInput -= HandleDashSkillCancelInput;
@@ -90,6 +91,12 @@ public class PlayerSkillController : MonoBehaviour
 
         _skillStepCoroutine = skillDatas[slot - 1].assignedSkills.Use(gameObject, _mousePosition);
         Invoke(nameof(DoSkillEnd), skillDatas[slot - 1].assignedSkills.skillLifeTime);
+        skillDatas[slot - 1].uesdCount--;
+
+        if (skillDatas[slot - 1].uesdCount <= 0)
+        {
+            RemoveSkill(slot - 1);
+        }
 
         _canSkill = false;
         _canSkillDelyTimer = useSkillDely;
@@ -129,7 +136,7 @@ public class PlayerSkillController : MonoBehaviour
     {
         for (int i = 0; i < skillDatas.Length; i++) 
         {
-            if (skillDatas[i].assignedSkills != null)
+            if (skillDatas[i].assignedSkills == null)
             {
                 skillDatas[i].assignedSkills = skill;
                 skillDatas[i].uesdCount = usedCount;
@@ -138,5 +145,10 @@ public class PlayerSkillController : MonoBehaviour
             }
         }
         return false;
+    }
+
+    public void RemoveSkill(int Slot)
+    {
+        skillDatas[Slot] = null;
     }
 }
