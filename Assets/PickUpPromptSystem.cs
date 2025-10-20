@@ -23,6 +23,12 @@ public class PickUpPromptSystem : MonoBehaviour
         inventoryData.OnRemoveItem += HeadleRemoveItem;
     }
 
+    private void OnDisable()
+    {
+        inventoryData.OnAddItem -= HeadleAddItem;
+        inventoryData.OnRemoveItem -= HeadleRemoveItem;
+    }
+
     public void HeadleAddItem(ItemSO item, int quantity)
     {
         CreatePickupPrompt(item.ItemImage, quantity);

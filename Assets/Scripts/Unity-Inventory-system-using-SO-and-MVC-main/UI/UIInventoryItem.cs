@@ -38,7 +38,7 @@ namespace Inventory.UI
         }
         public void ResetData()
         {
-            itemImage.gameObject.SetActive(false);
+            if (itemImage != null) itemImage.gameObject.SetActive(false);
             empty = true;
         }
         public void SetData(Sprite sprite, int quantity)
@@ -56,7 +56,7 @@ namespace Inventory.UI
 
         public void Deselect()
         {
-            borderImage.enabled = false;
+            if (borderImage != null) borderImage.enabled = false;
         }
 
         public void ShowCurrentlyDragged()

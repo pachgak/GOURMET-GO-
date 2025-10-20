@@ -41,7 +41,9 @@ namespace Inventory
 
         private void OnDisable()
         {
-            _inventoryManager.OnOpenInventoryStateChange += HandleOpenInventoryStateChange;
+            _inventoryManager.OnOpenInventoryStateChange -= HandleOpenInventoryStateChange;
+
+            inventoryData.OnInventoryUpdated -= UpdateInventoryUI;
         }
 
         internal void HandleOpenInventoryStateChange(bool obj)
@@ -72,6 +74,7 @@ namespace Inventory
         {
             inventoryData.Initialize();
             inventoryData.OnInventoryUpdated += UpdateInventoryUI;
+
             foreach (InventoryItem item in initialItems)
             {
                 if (item.IsEmpty)
@@ -82,11 +85,13 @@ namespace Inventory
 
         private void UpdateInventoryUI(Dictionary<int, InventoryItem> inventoryState)
         {
-            inventoryUI.ResetAllItems();
+            
+                inventoryUI.ResetAllItems();
             foreach (var item in inventoryState)
             {
-                inventoryUI.UpdateData(item.Key, item.Value.item.ItemImage,
-                    item.Value.quantity);
+
+                    inventoryUI.UpdateData(item.Key, item.Value.item.ItemImage,
+                    item.Value.quantity); 
             }
         }
 

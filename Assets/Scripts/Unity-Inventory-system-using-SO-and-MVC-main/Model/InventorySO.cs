@@ -26,6 +26,11 @@ namespace Inventory.Model
             }
         }
 
+        public void AddItem(InventoryItem item)
+        {
+            AddItem(item.item, item.quantity);
+        }
+
         public int AddItem(ItemSO item, int quantity, List<ItemParameter> itemParameter = null)
         {
             int initialQuantity = quantity;
@@ -137,11 +142,6 @@ namespace Inventory.Model
                 
                 InformAboutChange();
             }
-        }
-
-        public void AddItem(InventoryItem item)
-        {
-            AddItem(item.item, item.quantity);
         }
 
         public Dictionary<int, InventoryItem> GetCurrentInventoryState()
