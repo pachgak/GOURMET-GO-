@@ -62,6 +62,7 @@ namespace Inventory.UI
         public void ShowCurrentlyDragged()
         {
             canvasGroup.alpha = 0.6f;
+            itemImage.gameObject.SetActive(false);
         }
         public void DeShowCurrentlyDragged()
         {

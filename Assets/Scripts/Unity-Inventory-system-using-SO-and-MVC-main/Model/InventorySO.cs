@@ -15,6 +15,7 @@ namespace Inventory.Model
         public int Size { get; private set; } = 10;
 
         public event Action<Dictionary<int, InventoryItem>> OnInventoryUpdated;
+
         public event Action<ItemSO,int> OnAddItem;
         public event Action<ItemSO,int> OnRemoveItem;
         public void Initialize()

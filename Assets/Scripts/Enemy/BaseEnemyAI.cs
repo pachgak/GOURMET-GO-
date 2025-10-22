@@ -20,9 +20,6 @@ public class BaseEnemyAI : MonoBehaviour
     public event Action<bool> OnAttackStateChange; // สำหรับ Animation/Visuals
     public event Action<bool> OnStartAttackSequence; // สั่ง Combat ให้เริ่มโจมตี (พร้อม flag พิเศษ)
 
-    // Events ภายในสำหรับ Logic การต่อสู้ (Combat จะ Invoke กลับมา)
-    public event Action OnAttackFinished;
-
     [Header("Base References")]
     protected NavMeshAgent _agent;
     public Transform playerTarget;
