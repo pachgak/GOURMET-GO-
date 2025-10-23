@@ -42,7 +42,7 @@ public class AttacksSkill : PlayerSkillSO
 
     public override Coroutine Use(GameObject player, Vector3 mousePosition)
     {
-        if (player.TryGetComponent(out PlayerSkillController playerSkillController))
+        if (player.TryGetComponent(out PlayerSkill playerSkillController))
         {
             Coroutine setplaySkill = playerSkillController.StartCoroutine(Setplay(player, mousePosition));
             return setplaySkill;

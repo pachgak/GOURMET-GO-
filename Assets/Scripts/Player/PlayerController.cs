@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
     [Header("_Scripts References")]
     private PlayerMovement playerMovement;
     private PlayerCombatController playerCombat;
-    private PlayerSkillController playerSkill;
+    private PlayerSkill playerSkill;
     private PlayerAnimatorController playerAnimator;
     private InteractByPoint playerInteract;
     private InventoryController playerInventory;
@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour
         // ใช้วิธี GetComponent/GetComponentInChildren เพื่อให้ได้ Reference
         playerMovement = GetComponent<PlayerMovement>();
         playerCombat = GetComponent<PlayerCombatController>();
-        playerSkill = GetComponent<PlayerSkillController>();
+        playerSkill = GetComponent<PlayerSkill>();
         playerInteract = GetComponent<InteractByPoint>();
         playerInventory = GetComponent<InventoryController>();
         playerAnimator = GetComponent<PlayerAnimatorController>();

@@ -28,29 +28,29 @@ public class PlayerCombatController : MonoBehaviour
 
     [Header("_References")]
     private PlayerMovement _playerMovement;
-    private PlayerSkillController _playerSkill;
+    private PlayerSkill _playerSkill;
     private PlayerInputActionsManager _inputManager;
     private OpenUiManager _uiManager;
 
     [Header("_System")]
-    [SerializeField] private int _attackIndex = 0;
-    [SerializeField] private float _lastAttackTime;
+    private int _attackIndex = 0;
+    private float _lastAttackTime;
 
     // ���������Ѻ�红����ŷ������ OnDrawGizmos
     private Vector3 _attackDirection;
     private Vector3 _mousePosition;
 
     // �������������Ѻ�Ѵ��� Cooldown
-    [SerializeField] private bool _attackClick = false;
+    private bool _attackClick = false;
     private float _attackCooldownTimer;
     private float _resetAttackClickTimer;
-    [SerializeField] private bool _canAttack = true;
-    [SerializeField] private bool _isComboing = false;
+    private bool _canAttack = true;
+    private bool _isComboing = false;
 
-    [SerializeField] private bool _isDashing = false;
-    [SerializeField] private bool _isSprinte = false;
-    [SerializeField] private bool _isSonic = false;
-    [SerializeField] private bool _isSkilling = false;
+    private bool _isDashing = false;
+    private bool _isSprinte = false;
+    private bool _isSonic = false;
+    private bool _isSkilling = false;
 
     private bool _isUiOpening = false;
 
@@ -74,7 +74,7 @@ public class PlayerCombatController : MonoBehaviour
         //Ref
         _inputManager = PlayerInputActionsManager.instance;
         _uiManager = OpenUiManager.instance;
-        _playerSkill = GetComponent<PlayerSkillController>();
+        _playerSkill = GetComponent<PlayerSkill>();
         _playerMovement = GetComponent<PlayerMovement>();
     }
 

@@ -204,4 +204,5 @@ namespace Inventory.Model
                 itemParameter = new List<ItemParameter>()
             };
     }
+
 }

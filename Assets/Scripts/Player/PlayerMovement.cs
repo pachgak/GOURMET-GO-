@@ -30,7 +30,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
 
     [Header("_Scripts References")]
     private PlayerCombatController _playerCombat;
-    private PlayerSkillController _playerSkill;
+    private PlayerSkill _playerSkill;
 
     [Header("_Manager References")]
     private PlayerInputActionsManager _inputManager;
@@ -114,7 +114,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
         _inputManager = PlayerInputActionsManager.instance;
         _uiManager = OpenUiManager.instance;
         _playerCombat = GetComponent<PlayerCombatController>();
-        _playerSkill = GetComponent<PlayerSkillController>();
+        _playerSkill = GetComponent<PlayerSkill>();
 
 
         controller = GetComponent<CharacterController>();

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,8 +7,11 @@ using UnityEngine;
 public abstract class PlayerSkillSO : ScriptableObject
 {
     [Header("Base Skill")]
-    public string skillName;
     public Sprite skillIcon;
+    public string skillName;
+    [field: SerializeField]
+    [field: TextArea]
+    public string Description { get; set; }
     public float cooldown;
     //public int usesCount;
 
@@ -25,4 +29,8 @@ public abstract class PlayerSkillSO : ScriptableObject
     //    Debug.Log($"EndSkilling");
     //    PlayerSkillController.instance.DoSkillEnd();
     //}
+    public enum AttackType
+    {
+        nope,V,O,X
+    }
 }

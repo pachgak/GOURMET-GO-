@@ -8,7 +8,7 @@ public class GetSkillModifierSO : ItemModifierSO
     public AttacksSkill skill;
     public override bool AffectCharacter(GameObject character, float val)
     {
-        PlayerSkillController playerSkillController = character.GetComponent<PlayerSkillController>();
+        PlayerSkill playerSkillController = character.GetComponent<PlayerSkill>();
         if (playerSkillController != null)
         {
            bool addSkillComplet = playerSkillController.AddSkill(skill, (int)val);

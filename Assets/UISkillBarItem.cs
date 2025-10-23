@@ -1,9 +1,13 @@
+using Inventory.UI;
+using System;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UISkillBarItem : MonoBehaviour
+public class UISkillBarItem : MonoBehaviour , IPointerClickHandler,
+        IBeginDragHandler, IEndDragHandler, IDropHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField]
     private Image borderImage;
@@ -21,6 +25,13 @@ public class UISkillBarItem : MonoBehaviour
     private CanvasGroup _canvasGroup;
 
     private bool empty;
+
+
+    public event Action<UISkillBarItem> OnItemClicked,
+        OnItemDroppedOn, OnItemBeginDrag, OnItemEndDrag,
+        OnRightMouseBtnClick,
+        OnPointEnterItem, OnPointExitItem;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -46,7 +57,7 @@ public class UISkillBarItem : MonoBehaviour
         empty = true;
     }
 
-    public void SetData(Sprite skillSprite, int uesdCount , Sprite typeSprite , string keyText)
+    public void SetData(Sprite skillSprite, int uesdCount , Sprite typeSprite)
     {
         skillImage.gameObject.SetActive(true);
 
@@ -58,12 +69,69 @@ public class UISkillBarItem : MonoBehaviour
         empty = false;
     }
 
+    public void Select()
+    {
+        borderImage.enabled = true;
+    }
+
+    public void Deselect()
+    {
+        if (borderImage != null) borderImage.enabled = false;
+    }
+
     public void ShowCurrentlyDragged()
     {
         _canvasGroup.alpha = 0.6f;
+        skillImage.gameObject.SetActive(false);
     }
     public void DeShowCurrentlyDragged()
     {
         _canvasGroup.alpha = 1f;
+    }
+
+    public void OnPointerClick(PointerEventData pointerData)
+    {
+        if (pointerData.button == PointerEventData.InputButton.Right)
+        {
+            OnRightMouseBtnClick?.Invoke(this);
+        }
+        else
+        {
+            OnItemClicked?.Invoke(this);
+        }
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        Debug.Log("Skill OnBeginDrag");
+        if (empty)
+            return;
+        OnItemBeginDrag?.Invoke(this);
+    }
+
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        OnItemEndDrag?.Invoke(this);
+    }
+
+    public void OnDrop(PointerEventData eventData)
+    {
+        OnItemDroppedOn?.Invoke(this);
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        OnPointEnterItem?.Invoke(this);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        OnPointExitItem?.Invoke(this);
     }
 }
