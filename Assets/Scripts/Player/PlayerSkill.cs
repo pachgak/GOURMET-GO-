@@ -97,7 +97,7 @@ public class PlayerSkill : MonoBehaviour
 
         if (skillDatas[slot - 1].uesdCount <= 0)
         {
-            RemoveSkill(slot - 1);
+            ResetSkill(slot - 1);
         }
 
         _canSkill = false;
@@ -161,7 +161,7 @@ public class PlayerSkill : MonoBehaviour
         return false;
     }
 
-    public void RemoveSkill(int Slot)
+    public void ResetSkill(int Slot)
     {
         skillDatas[Slot] = new SkillData();
         InformAboutChange();
@@ -205,6 +205,7 @@ public class PlayerSkill : MonoBehaviour
         skillUI.OnPointEnterItem += HandlePointEnterItem;
         skillUI.OnPointExitItem += HandlePointExitItem;
 
+        skillUI.OnDropItems += HandleDropItem;
     }
 
     private void HandleDescriptionRequest(int itemIndex)
@@ -229,6 +230,16 @@ public class PlayerSkill : MonoBehaviour
         if (skillItem.IsEmpty)
             return;
         SwapItems(itemIndex_1, itemIndex_2);
+    }
+
+    private void HandleDropItem(int idex)
+    {
+        if (idex <= -1) return;
+        SkillData skillItem = skillDatas[idex];
+        if (skillItem.IsEmpty)
+            return;
+
+        ResetSkill(idex);
     }
 
     private void UpdateSkillUI()

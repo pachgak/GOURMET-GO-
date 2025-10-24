@@ -10,7 +10,8 @@ using NUnit.Framework.Interfaces;
 namespace Inventory.UI
 {
     public class UIInventoryItem : MonoBehaviour, IPointerClickHandler,
-        IBeginDragHandler, IEndDragHandler, IDropHandler, IDragHandler , IPointerEnterHandler, IPointerExitHandler
+        IBeginDragHandler, IEndDragHandler, IDropHandler, IDragHandler , IPointerEnterHandler, IPointerExitHandler,
+        IDragToDropItemArea
     {
         [SerializeField]
         private Image itemImage;
@@ -25,7 +26,8 @@ namespace Inventory.UI
         public event Action<UIInventoryItem> OnItemClicked,
             OnItemDroppedOn, OnItemBeginDrag, OnItemEndDrag,
             OnRightMouseBtnClick,
-            OnPointEnterItem, OnPointExitItem;
+            OnPointEnterItem, OnPointExitItem,
+            OnDragToDroperItem;
 
         private bool empty = true;
 
@@ -62,7 +64,6 @@ namespace Inventory.UI
         public void ShowCurrentlyDragged()
         {
             canvasGroup.alpha = 0.6f;
-            itemImage.gameObject.SetActive(false);
         }
         public void DeShowCurrentlyDragged()
         {
@@ -112,6 +113,11 @@ namespace Inventory.UI
         public void OnPointerExit(PointerEventData eventData)
         {
             OnPointExitItem?.Invoke(this);
+        }
+
+        public void OnDragToDropItem()
+        {
+            OnDragToDroperItem?.Invoke(this);
         }
     }
 }

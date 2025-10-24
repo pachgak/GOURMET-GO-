@@ -82,7 +82,6 @@ public class UISkillBarItem : MonoBehaviour , IPointerClickHandler,
     public void ShowCurrentlyDragged()
     {
         _canvasGroup.alpha = 0.6f;
-        skillImage.gameObject.SetActive(false);
     }
     public void DeShowCurrentlyDragged()
     {

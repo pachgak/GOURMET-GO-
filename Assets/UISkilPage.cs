@@ -18,6 +18,9 @@ public class UISkilPage : MonoBehaviour
     [SerializeField]
     private MouseFollowerSkillUI mouseFollower;
 
+    [SerializeField]
+    private DropItemZoneUI dropitemZone;
+
     List<UISkillBarItem> listOfUIItems = new List<UISkillBarItem>();
 
     [SerializeField]private int currentlyDraggedItemIndex = -1;
@@ -30,6 +33,8 @@ public class UISkilPage : MonoBehaviour
             OnPointEnterItem, OnPointExitItem;
 
     public event Action<int, int> OnSwapItems;
+    public event Action<int> OnDropItems;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
     {
@@ -40,6 +45,8 @@ public class UISkilPage : MonoBehaviour
 
     public void InitializeInventoryUI(int inventorysize)
     {
+        dropitemZone.OnItemDropped += HandleDropItem;
+
         for (int i = 0; i < inventorysize; i++)
         {
             //UISkillBarItem uiItem = 
@@ -192,6 +199,11 @@ public class UISkilPage : MonoBehaviour
         Debug.Log($"currentlyDraggedItemIndex : {currentlyDraggedItemIndex} || skillItemUI Index : {listOfUIItems.IndexOf(skillItemUI)}");
         HandlePointEnterItem(skillItemUI, true);
         Debug.Log($"End HandleEndDrad");
+    }
+
+    private void HandleDropItem()
+    {
+        OnDropItems?.Invoke(currentlyDraggedItemIndex);
     }
 
     private void ResetDraggedItem()

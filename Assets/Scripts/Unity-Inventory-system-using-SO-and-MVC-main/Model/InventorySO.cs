@@ -145,6 +145,18 @@ namespace Inventory.Model
             }
         }
 
+        public void ResetItem(int itemIndex)
+        {
+            OnRemoveItem?.Invoke(inventoryItems[itemIndex].item, inventoryItems[itemIndex].quantity);
+
+            if (inventoryItems[itemIndex].IsEmpty)
+                return;
+
+            inventoryItems[itemIndex] = InventoryItem.GetEmptyItem();
+
+            InformAboutChange();
+        }
+
         public Dictionary<int, InventoryItem> GetCurrentInventoryState()
         {
             Dictionary<int, InventoryItem> returnValue =

@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.ConstrainedExecution;
 using UnityEngine;
 
 public class Billboard : MonoBehaviour
@@ -30,6 +31,8 @@ public class Billboard : MonoBehaviour
             BillboardManager.instance.OnCameraChange += HandleCameraChange;
             BillboardManager.instance.OnCameraFollowChange += HandleCameraFollowChange;
         }
+
+        HandleCameraChange(BillboardManager.instance.lastCameraRotation);
     }
 
     private void HandleCameraFollowChange(bool obj)

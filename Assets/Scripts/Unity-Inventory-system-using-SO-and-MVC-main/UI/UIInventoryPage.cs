@@ -22,6 +22,9 @@ namespace Inventory.UI
         [SerializeField]
         private MouseFollower mouseFollower;
 
+        [SerializeField]
+        private DropItemZoneUI dropitemZone;
+
         List<UIInventoryItem> listOfUIItems = new List<UIInventoryItem>();
 
         private int currentlyDraggedItemIndex = -1;
@@ -34,6 +37,7 @@ namespace Inventory.UI
                 OnPointEnterItem, OnPointExitItem;
 
         public event Action<int, int> OnSwapItems;
+        public event Action<int> OnDropItems;
 
         //[SerializeField]
         //private ItemActionPanel actionPanel;
@@ -47,6 +51,8 @@ namespace Inventory.UI
 
         public void InitializeInventoryUI(int inventorysize)
         {
+            dropitemZone.OnItemDropped += HandleDropItem;
+
             for (int i = 0; i < inventorysize; i++)
             {
                 //UIInventoryItem uiItem = 
@@ -199,6 +205,11 @@ namespace Inventory.UI
             Debug.Log($"currentlyDraggedItemIndex : {currentlyDraggedItemIndex} || inventoryItemUI Index : {listOfUIItems.IndexOf(inventoryItemUI)}");
             HandlePointEnterItem(inventoryItemUI,true);
             Debug.Log($"End HandleEndDrad");
+        }
+
+        private void HandleDropItem()
+        {
+            OnDropItems?.Invoke(currentlyDraggedItemIndex);
         }
 
         private void ResetDraggedItem()

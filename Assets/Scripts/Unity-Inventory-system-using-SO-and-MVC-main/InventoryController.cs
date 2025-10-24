@@ -20,14 +20,15 @@ namespace Inventory
 
         public List<InventoryItem> initialItems = new List<InventoryItem>();
 
+        public Item itemDropPrefab;
+
         [SerializeField]
         private AudioClip dropClip;
 
         [SerializeField]
         private AudioSource audioSource;
 
-        private InventoryManager _inventoryManager;
-
+        private InventoryManager _inventoryManager ;
         private void Awake()
         {
             _inventoryManager = InventoryManager.instance;
@@ -105,6 +106,8 @@ namespace Inventory
             inventoryUI.OnItemPerformAction += HandleItemPerformAction;
             inventoryUI.OnPointEnterItem += HandlePointEnterItem;
             inventoryUI.OnPointExitItem += HandlePointExitItem;
+
+            inventoryUI.OnDropItems += HandleDropItem; 
 
         }
 
@@ -184,6 +187,22 @@ namespace Inventory
             if (inventoryItem.IsEmpty)
                 return;
             inventoryData.SwapItems(itemIndex_1, itemIndex_2);
+        }
+
+        private void HandleDropItem(int idex) 
+        {
+            if (idex <= -1) return;
+            InventoryItem inventoryItem = inventoryData.GetItemAt(idex);
+            if (inventoryItem.IsEmpty)
+                return;
+
+            GameObject itemDrop_clone = ObjectPoolingManager.Instance.Spawn(itemDropPrefab.gameObject,transform.position + Vector3.up);
+            if (itemDrop_clone.TryGetComponent(out Item item))
+            {
+                item.Setup(inventoryItem.item, inventoryItem.quantity);
+                inventoryData.ResetItem(idex);
+            }
+
         }
 
         private void HandleDescriptionRequest(int itemIndex)

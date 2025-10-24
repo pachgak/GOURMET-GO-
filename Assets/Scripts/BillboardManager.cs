@@ -13,7 +13,8 @@ public class BillboardManager : MonoBehaviour
     public Action<Quaternion> OnCameraChange;
     public Action<bool> OnCameraFollowChange;
 
-    private Quaternion lastCameraRotation;
+    [HideInInspector]
+    public Quaternion lastCameraRotation;
 
     private bool _isFollowingCamera = true;
 
