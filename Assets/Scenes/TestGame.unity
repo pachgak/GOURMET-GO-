@@ -8714,6 +8714,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skillUI: {fileID: 1051114233}
+  initialSkills:
+  - assignedSkills: {fileID: 11400000, guid: e708f390442a6964aaa402185f892d16, type: 2}
+    uesdCount: 100
+    cooldown: 0
+  - assignedSkills: {fileID: 11400000, guid: 4d35236ca42885e438cf0272c1fa4ede, type: 2}
+    uesdCount: 100
+    cooldown: 0
+  - assignedSkills: {fileID: 11400000, guid: e708f390442a6964aaa402185f892d16, type: 2}
+    uesdCount: 10
+    cooldown: 0
+  - assignedSkills: {fileID: 11400000, guid: 4d35236ca42885e438cf0272c1fa4ede, type: 2}
+    uesdCount: 10
+    cooldown: 0
   skillDatas:
   - assignedSkills: {fileID: 0}
     uesdCount: 0

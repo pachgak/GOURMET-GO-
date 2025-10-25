@@ -11,6 +11,7 @@ public class PlayerSkill : MonoBehaviour
 {
     public UISkilPage skillUI;
 
+    public List<SkillData> initialSkills;
     // ใช้ Array ของ Skill ScriptableObject
     public SkillData[] skillDatas = new SkillData[0];
     public int skillSize = 5;
@@ -220,6 +221,15 @@ public class PlayerSkill : MonoBehaviour
     private void PrepareSkillData()
     {
         Initialize();
+
+        foreach (SkillData skill in initialSkills)
+        {
+            if (skill.IsEmpty)
+                continue;
+            AddSkill(skill.assignedSkills, skill.uesdCount);
+        }
+
+        InformAboutChange();
     }
 
     private void PrepareUI()
