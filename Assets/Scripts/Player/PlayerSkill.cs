@@ -87,8 +87,9 @@ public class PlayerSkill : MonoBehaviour
         if (_isSkilling) return;
         if (!_canSkill) return;
         if (skillDatas[slot - 1].assignedSkills == null) return;
+        if (skillDatas[slot - 1].cooldown > 0) return;
 
-        SetSkillingState(true, skillDatas[slot - 1].assignedSkills.skillLifeTime);
+            SetSkillingState(true, skillDatas[slot - 1].assignedSkills.skillLifeTime);
 
         _skillStepCoroutine = skillDatas[slot - 1].assignedSkills.Use(gameObject, _mousePosition);
         Invoke(nameof(DoSkillEnd), skillDatas[slot - 1].assignedSkills.skillLifeTime);
@@ -171,7 +172,7 @@ public class PlayerSkill : MonoBehaviour
     {
         public PlayerSkillSO assignedSkills;
         public int uesdCount;
-        [SerializeField] private float _cooldown;
+        public float cooldown;
         public bool IsEmpty => assignedSkills == null;
     }
 

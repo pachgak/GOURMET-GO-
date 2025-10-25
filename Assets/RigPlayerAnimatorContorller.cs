@@ -39,10 +39,15 @@ public class RigPlayerAnimatorContorller : MonoBehaviour
         _playerMovement = GetComponent<PlayerMovement>();
         _playerCombat = GetComponent<PlayerCombatController>();
 
+        //SetToPlay
         spriteFDown.gameObject.SetActive(true);
+        spriteFDown.transform.localPosition = Vector3.zero;
         spriteBUp.  gameObject.SetActive(true);
+        spriteBUp.transform.localPosition = Vector3.zero;
         spriteFLeft.gameObject.SetActive(true);
+        spriteFLeft.transform.localPosition = Vector3.zero;
         spriteBLeft.gameObject.SetActive(true);
+        spriteBLeft.transform.localPosition = Vector3.zero;
 
         _animatorFDown = spriteFDown.GetComponent<Animator>() ;
         _animatorBUp =   spriteBUp.GetComponent<Animator>();

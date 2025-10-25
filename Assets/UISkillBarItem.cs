@@ -19,6 +19,10 @@ public class UISkillBarItem : MonoBehaviour , IPointerClickHandler,
     [SerializeField]
     private Image typeImage;
     [SerializeField]
+    private Slider cooldowBar;
+    [SerializeField]
+    private TMP_Text cooldowText;
+    [SerializeField]
     private GameObject keyUI;
     private TMP_Text _keyTxt;
 
@@ -67,6 +71,9 @@ public class UISkillBarItem : MonoBehaviour , IPointerClickHandler,
         _uesdCountTxt.text = $"{uesdCount}";
         //_keyTxt.text = keyText;
         empty = false;
+
+        cooldowBar.maxValue = 0;
+        cooldowBar.value = 0;
     }
 
     public void Select()
