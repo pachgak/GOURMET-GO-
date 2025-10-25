@@ -98,6 +98,8 @@ public class PlayerSkill : MonoBehaviour
         skillDatas[slot - 1].uesdCount--;
         skillDatas[slot - 1].cooldown = skillDatas[slot - 1].assignedSkills.cooldown;
 
+        skillDatas[slot - 1].cooldownCoroutine = StartCoroutine(SetCountDownCooldown(slot - 1, skillDatas[slot - 1].assignedSkills.cooldown));
+
         if (skillDatas[slot - 1].uesdCount <= 0)
         {
             ResetSkill(slot - 1);
@@ -195,6 +197,7 @@ public class PlayerSkill : MonoBehaviour
         public PlayerSkillSO assignedSkills;
         public int uesdCount;
         public float cooldown;
+        public Coroutine cooldownCoroutine;
         public bool IsEmpty => assignedSkills == null;
     }
 
@@ -203,6 +206,10 @@ public class PlayerSkill : MonoBehaviour
         SkillData item1 = skillDatas[itemIndex_1];
         skillDatas[itemIndex_1] = skillDatas[itemIndex_2];
         skillDatas[itemIndex_2] = item1;
+
+        if (skillDatas[itemIndex_1].assignedSkills != null) skillDatas[itemIndex_1].cooldownCoroutine = StartCoroutine(SetCountDownCooldown(itemIndex_1, skillDatas[itemIndex_1].cooldown));
+        if (skillDatas[itemIndex_2].assignedSkills != null) skillDatas[itemIndex_2].cooldownCoroutine = StartCoroutine(SetCountDownCooldown(itemIndex_2, skillDatas[itemIndex_2].cooldown));
+
         InformAboutChange();
     }
 
@@ -274,7 +281,7 @@ public class PlayerSkill : MonoBehaviour
             if (skillDatas[i].assignedSkills == null) continue;
 
             skillUI.UpdateData(i, skillDatas[i].assignedSkills.skillIcon,
-            skillDatas[i].uesdCount, null);
+            skillDatas[i].uesdCount, null, skillDatas[i].cooldown, skillDatas[i].assignedSkills.cooldown);
         }
     }
 
@@ -284,7 +291,8 @@ public class PlayerSkill : MonoBehaviour
         SkillData skillItem = skillDatas[itemIndex];
         if (skillItem.IsEmpty)
             return;
-        skillUI.CreateDraggedItem(skillItem.assignedSkills.skillIcon, skillItem.uesdCount, null);
+        skillUI.CreateDraggedItem(skillItem.assignedSkills.skillIcon, skillItem.uesdCount, null, 0, skillItem.assignedSkills.cooldown);
+        
     }
 
     private void HandleItemActionRequest(int itemIndex)

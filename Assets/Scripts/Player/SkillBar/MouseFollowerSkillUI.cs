@@ -17,9 +17,9 @@ public class MouseFollowerSkillUI : MonoBehaviour
         item = GetComponentInChildren<UISkillBarItem>();
     }
 
-    public void SetData(Sprite skillSprite, int uesdCount, Sprite typeSprite)
+    public void SetData(Sprite skillSprite, int uesdCount, Sprite typeSprite, float countdown, float maxCooldown)
     {
-        item.SetData(skillSprite, uesdCount, typeSprite);
+        item.SetData(skillSprite, uesdCount, typeSprite, countdown, maxCooldown);
     }
     void Update()
     {

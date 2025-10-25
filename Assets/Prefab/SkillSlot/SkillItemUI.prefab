@@ -180,6 +180,7 @@ MonoBehaviour:
   borderImage: {fileID: 712638179562776628}
   skillImage: {fileID: 2149279541947856412}
   uesCountUI: {fileID: 2455031718194242102}
+  _uesdCountTxt: {fileID: 0}
   typeImage: {fileID: 644284854501194726}
   cooldowBar: {fileID: 5883573003795373534}
   cooldowText: {fileID: 843587657985656565}
@@ -969,7 +970,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6582646875168540653
 RectTransform:
   m_ObjectHideFlags: 0

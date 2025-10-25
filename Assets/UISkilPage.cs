@@ -140,11 +140,11 @@ public class UISkilPage : MonoBehaviour
     }
 
     public void UpdateData(int itemIndex,
-        Sprite itemImage, int itemQuantity,Sprite typeSprite)
+        Sprite itemImage, int itemQuantity,Sprite typeSprite,float countdown,float maxCooldown)
     {
         if (listOfUIItems.Count > itemIndex)
         {
-            listOfUIItems[itemIndex].SetData(itemImage, itemQuantity, typeSprite);
+            listOfUIItems[itemIndex].SetData(itemImage, itemQuantity, typeSprite, countdown, maxCooldown);
         }
     }
 
@@ -218,10 +218,10 @@ public class UISkilPage : MonoBehaviour
         currentlyDraggedItemIndex = -1;
     }
 
-    public void CreateDraggedItem(Sprite skillSprite, int uesdCount, Sprite typeSprite)
+    public void CreateDraggedItem(Sprite skillSprite, int uesdCount, Sprite typeSprite, float countdown, float maxCooldown)
     {
         mouseFollower.Toggle(true);
-        mouseFollower.SetData(skillSprite, uesdCount, typeSprite);
+        mouseFollower.SetData(skillSprite, uesdCount, typeSprite, countdown, maxCooldown);
     }
 
     private void HandleItemSelection(UISkillBarItem skillItemUI)

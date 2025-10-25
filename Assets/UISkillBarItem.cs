@@ -15,7 +15,7 @@ public class UISkillBarItem : MonoBehaviour , IPointerClickHandler,
     private Image skillImage;
     [SerializeField]
     private GameObject uesCountUI;
-    private TMP_Text _uesdCountTxt;
+    [SerializeField] private TMP_Text _uesdCountTxt;
     [SerializeField]
     private Image typeImage;
     [SerializeField]
@@ -36,15 +36,17 @@ public class UISkillBarItem : MonoBehaviour , IPointerClickHandler,
         OnRightMouseBtnClick,
         OnPointEnterItem, OnPointExitItem;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Awake()
     {
         _canvasGroup = GetComponent<CanvasGroup>();
 
         _uesdCountTxt = uesCountUI.GetComponentInChildren<TMP_Text>();
         _keyTxt = keyUI.GetComponentInChildren<TMP_Text>();
+    }
 
-
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
         ResetData();
     }
 
@@ -61,19 +63,20 @@ public class UISkillBarItem : MonoBehaviour , IPointerClickHandler,
         empty = true;
     }
 
-    public void SetData(Sprite skillSprite, int uesdCount , Sprite typeSprite)
+    public void SetData(Sprite skillSprite, int uesdCount , Sprite typeSprite, float countdown , float maxCooldown)
     {
         skillImage.gameObject.SetActive(true);
 
         skillImage.sprite = skillSprite;
         typeImage.sprite = typeSprite;
 
+        Debug.Log($"{uesdCount}");
         _uesdCountTxt.text = $"{uesdCount}";
         //_keyTxt.text = keyText;
         empty = false;
 
-        cooldowBar.maxValue = 0;
-        cooldowBar.value = 0;
+        cooldowBar.maxValue = maxCooldown;
+        CooldownUpdate(countdown);
     }
 
     public void Select()
@@ -99,8 +102,9 @@ public class UISkillBarItem : MonoBehaviour , IPointerClickHandler,
     public void CooldownUpdate(float countdown)
     {
         cooldowBar.value = countdown;
-        cooldowText.text = countdown.ToString();
-        if(cooldowBar.value == cooldowBar.minValue) cooldowText.enabled = false;
+        cooldowText.text = ((Mathf.Floor(countdown * 10f)) / 10f).ToString();
+        if (cooldowBar.value <= cooldowBar.minValue) cooldowText.enabled = false;
+        else cooldowText.enabled = true; 
     }
 
     public void OnPointerClick(PointerEventData pointerData)
