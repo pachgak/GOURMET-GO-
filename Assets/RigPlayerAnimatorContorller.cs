@@ -147,7 +147,7 @@ public class RigPlayerAnimatorContorller : MonoBehaviour
             }
         }
 
-        //SetActionStateDirection(isDashingState, actionDirection);
+        SetActionStateDirection(isDashingState, actionDirection);
     }
 
     internal void HandleComboingdAnimation(bool isCombo)
