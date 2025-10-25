@@ -6,7 +6,6 @@ using System.Drawing;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
-using static UnityEditor.Progress;
 
 public class PlayerSkill : MonoBehaviour
 {

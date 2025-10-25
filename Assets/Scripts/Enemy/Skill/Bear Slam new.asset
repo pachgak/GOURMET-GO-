@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea9305386f6b18c4780c167459107c07, type: 3}
-  m_Name: Bear Slam
+  m_Name: Bear Slam new
   m_EditorClassIdentifier: 
   skillName: 
   spawnSkillPrefabsType: 0
   _skillSetp:
-  - playAtTime: 0.67
-    skillPrefabs: {fileID: 8483425440768244396, guid: f57e9b0c5c78a484bbc9b9e3f3869ebc, type: 3}
+  - playAtTime: 0.47
+    skillPrefabs: {fileID: 6759881371905298888, guid: 3007a0af09266b841be87430ecb61aa3, type: 3}
     skillFar: 0
-    skillHight: 0
+    skillHight: 0.1
     damage: 0
     knockbackForce: 0
     speed: 0
