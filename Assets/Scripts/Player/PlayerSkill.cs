@@ -67,7 +67,6 @@ public class PlayerSkill : MonoBehaviour
             if(_skillStepCoroutine != null) StopCoroutine(_skillStepCoroutine);
             DoSkillEnd();
 
-            Debug.Log($"_isDash _skillStepCoroutine");
         }
     }
 

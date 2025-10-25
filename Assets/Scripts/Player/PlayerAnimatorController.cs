@@ -56,7 +56,12 @@ public class PlayerAnimatorController : MonoBehaviour
 
     internal void HandleComboingdAnimation(bool isCombo)
     {
-        if(!_isCombo && !_isDashing) animator.SetTrigger("atStartCombo");
+        Debug.Log($"Srite HandleComboingdAnimation : {isCombo} | {_isCombo} | {_isDashing}");
+        if (!_isCombo && !_isDashing)
+        {
+            Debug.Log($"Srite Set atStartCombo : {isCombo} | {_isCombo} | {_isDashing}");
+            animator.SetTrigger("atStartCombo");
+        }
 
         _isCombo = isCombo;
         
