@@ -148,6 +148,11 @@ public class UISkilPage : MonoBehaviour
         }
     }
 
+    internal void UpdateCooldown(int itemIndex, float countdown)
+    {
+        listOfUIItems[itemIndex].CooldownUpdate(countdown);
+    }
+
     private void HandleShowItemActions(UISkillBarItem skillItemUI)
     {
         int index = listOfUIItems.IndexOf(skillItemUI);

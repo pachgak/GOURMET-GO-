@@ -1,7 +1,9 @@
 using Inventory.Model;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
 using static UnityEditor.Progress;
@@ -94,6 +96,7 @@ public class PlayerSkill : MonoBehaviour
         _skillStepCoroutine = skillDatas[slot - 1].assignedSkills.Use(gameObject, _mousePosition);
         Invoke(nameof(DoSkillEnd), skillDatas[slot - 1].assignedSkills.skillLifeTime);
         skillDatas[slot - 1].uesdCount--;
+        skillDatas[slot - 1].cooldown = skillDatas[slot - 1].assignedSkills.cooldown;
 
         if (skillDatas[slot - 1].uesdCount <= 0)
         {
@@ -108,6 +111,25 @@ public class PlayerSkill : MonoBehaviour
 
         //float skillLifeTime = assignedSkills[slot - 1].skillLifeTime;
         //_skillingEndTimer = skillLifeTime;
+    }
+
+    internal IEnumerator SetCountDownCooldown(int index, float initialCooldown)
+    {
+        // 1. กำหนดค่าเริ่มต้น Cooldown (ถ้าจำเป็น)
+        skillDatas[index].cooldown = initialCooldown;
+
+        while (skillDatas[index].cooldown > 0)
+        {
+            // 3. ลดค่า cooldown
+            // Time.deltaTime คือเวลาที่ผ่านไปตั้งแต่เฟรมที่แล้ว (ขึ้นอยู่กับ Time Scale)
+            skillDatas[index].cooldown -= Time.deltaTime;
+            skillUI.UpdateCooldown(index, skillDatas[index].cooldown);
+            // 4. รอจนกว่าจะถึงเฟรมถัดไป
+            yield return null;
+        }
+
+        // 5. เมื่อ cooldown จบแล้ว ตรวจสอบให้แน่ใจว่าค่าเป็น 0
+        skillDatas[index].cooldown = 0;
     }
 
     private void Start()

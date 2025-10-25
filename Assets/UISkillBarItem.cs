@@ -90,9 +90,17 @@ public class UISkillBarItem : MonoBehaviour , IPointerClickHandler,
     {
         _canvasGroup.alpha = 0.6f;
     }
+
     public void DeShowCurrentlyDragged()
     {
         _canvasGroup.alpha = 1f;
+    }
+
+    public void CooldownUpdate(float countdown)
+    {
+        cooldowBar.value = countdown;
+        cooldowText.text = countdown.ToString();
+        if(cooldowBar.value == cooldowBar.minValue) cooldowText.enabled = false;
     }
 
     public void OnPointerClick(PointerEventData pointerData)
