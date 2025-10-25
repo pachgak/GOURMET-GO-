@@ -195,7 +195,7 @@ namespace Inventory.Model
     {
         public int quantity;
         public ItemSO item;
-        [HideInInspector] public List<ItemParameter> itemParameter;
+        [SerializeField] public List<ItemParameter> itemParameter;
         public bool IsEmpty => item == null;
 
         public InventoryItem ChangeQuantity(int newQuantity)
