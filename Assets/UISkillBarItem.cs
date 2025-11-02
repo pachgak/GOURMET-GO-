@@ -70,7 +70,6 @@ public class UISkillBarItem : MonoBehaviour , IPointerClickHandler,
         skillImage.sprite = skillSprite;
         typeImage.sprite = typeSprite;
 
-        Debug.Log($"{uesdCount}");
         _uesdCountTxt.text = $"{uesdCount}";
         //_keyTxt.text = keyText;
         empty = false;

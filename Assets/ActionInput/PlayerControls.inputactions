@@ -1,6 +1,6 @@
 {
     "version": 1,
-    "name": "PlayerControllers",
+    "name": "PlayerControls",
     "maps": [
         {
             "name": "Player",
@@ -8,9 +8,9 @@
             "actions": [
                 {
                     "name": "Move",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "47725297-acfe-4493-818c-e67f5db44218",
-                    "expectedControlType": "",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -100,6 +100,15 @@
                     "name": "Skill5",
                     "type": "Button",
                     "id": "c0196dc9-4ade-4302-a0d3-0bfb7e7c9a8c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Dash",
+                    "type": "Button",
+                    "id": "cfe67833-ba20-44be-911f-9ce82960c777",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -374,11 +383,33 @@
                 {
                     "name": "",
                     "id": "717553b1-24ac-4708-8245-d3ed16ca66c6",
-                    "path": "<Keyboard>/o",
+                    "path": "<Keyboard>/i",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Skill5",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1635448b-a61f-43d4-8287-cc8464d1e7b1",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Dash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "430bcf29-2b5a-4092-8ed8-875e53323c90",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Dash",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

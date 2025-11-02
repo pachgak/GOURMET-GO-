@@ -44,7 +44,7 @@ public class PlayerSkill : MonoBehaviour
 
     private void OnEnable()
     {
-        _inputManager.OnInputNumber += HandleSkillSlotInput;
+        _inputManager.OnSkillInput += HandleSkillSlotInput;
         _inputManager.OnMountPosition += HandleGetMountPos;
 
         _playerMovement.OnDashSkillCancelInput += HandleDashSkillCancelInput;
@@ -53,7 +53,7 @@ public class PlayerSkill : MonoBehaviour
 
     private void OnDisable()
     {
-        _inputManager.OnInputNumber -= HandleSkillSlotInput;
+        _inputManager.OnSkillInput -= HandleSkillSlotInput;
         _inputManager.OnMountPosition -= HandleGetMountPos;
 
         _playerMovement.OnDashSkillCancelInput -= HandleDashSkillCancelInput;
