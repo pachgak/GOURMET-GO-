@@ -1,0 +1,389 @@
+{
+    "version": 1,
+    "name": "PlayerControllers",
+    "maps": [
+        {
+            "name": "Player",
+            "id": "97ce0315-c11e-4132-8cd4-821eaf67cd66",
+            "actions": [
+                {
+                    "name": "Move",
+                    "type": "Button",
+                    "id": "47725297-acfe-4493-818c-e67f5db44218",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Interact",
+                    "type": "Button",
+                    "id": "d9d156b8-a7fd-46cd-a602-b05af7d6de84",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Sprint",
+                    "type": "Button",
+                    "id": "32960d24-371b-4e2f-b3d2-5a44ed434d78",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MeleeAttack",
+                    "type": "Button",
+                    "id": "e48e8870-dd44-4040-8bc4-5121aad67879",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "OpenInventory",
+                    "type": "Button",
+                    "id": "662a9b66-8711-4f94-9966-597b521985bb",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "OpenMenu",
+                    "type": "Button",
+                    "id": "4a9032ea-819f-40f4-bb91-950bbfaa8adc",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Skill1",
+                    "type": "Button",
+                    "id": "2e721293-e352-4686-8435-a0c6dac6dee3",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Skill2",
+                    "type": "Button",
+                    "id": "3a7910e6-6fb1-491c-a3f6-81f7c3e0b4fc",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Skill3",
+                    "type": "Button",
+                    "id": "5b25748e-ffc1-4985-838f-2299a62b3cab",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Skill4",
+                    "type": "Button",
+                    "id": "b40e65b6-522f-4455-b19c-102f9bca972c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Skill5",
+                    "type": "Button",
+                    "id": "c0196dc9-4ade-4302-a0d3-0bfb7e7c9a8c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "96ecebd6-8699-40df-9943-e76afb2eff89",
+                    "path": "<Keyboard>/e",
+                    "interactions": "Hold,MultiTap",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b9387457-8621-409e-94f0-beb45a5d9997",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "2D Vector",
+                    "id": "e215ec80-7a40-45df-ae5f-8cbcb32c6282",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Up",
+                    "id": "081512f1-3917-4e3b-8490-a5ef42c486f3",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Down",
+                    "id": "29888c38-dd07-4b72-8255-42e738627da0",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Left",
+                    "id": "4f5fe603-b1ec-4b47-9763-24d73bce5875",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Right",
+                    "id": "ebef139b-6083-46b7-a333-be8446a040d0",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "59f2ee43-6e2d-492d-a79b-30cdc1a304ce",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Sprint",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8e05c6f3-4bc8-4727-9e94-12e68ed2707f",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Sprint",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a0edff8b-e685-4406-a677-93fa0b2e68d3",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MeleeAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ee2db89a-32bf-4eb7-84f6-d2ea1daf40e7",
+                    "path": "<Keyboard>/h",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MeleeAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4f21fe6f-c504-43ca-a70a-0639d8614a4a",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenInventory",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1dd6a808-038b-4e76-9834-cb88c4dd8d97",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenInventory",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dbda542c-75b5-4f15-ae6a-736a137b3112",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cc764855-1e60-4ee7-bf35-36533286d626",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b8c7aa5a-1732-41f3-aeac-851873542ee5",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skill1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "74311d1c-5a56-4c75-a077-57f6eb506fc6",
+                    "path": "<Keyboard>/j",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skill1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0800ed53-2bd2-487e-989b-08fdc0e5652c",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skill2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c09f0bcc-556b-4b04-91ee-8bad91d3ea90",
+                    "path": "<Keyboard>/k",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skill2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "846f26fa-adb5-4a98-8744-5d40388e67da",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skill3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "06c80b39-4923-4968-b901-a687f85787b7",
+                    "path": "<Keyboard>/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skill3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8577a6dc-3ee4-4f83-91ec-b042613706b7",
+                    "path": "<Keyboard>/4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skill4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2737462b-cd30-48a4-8300-c5ee67093fbf",
+                    "path": "<Keyboard>/u",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skill4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3496ac9a-1973-4100-a721-fbd9eaed07fb",
+                    "path": "<Keyboard>/5",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skill5",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "717553b1-24ac-4708-8245-d3ed16ca66c6",
+                    "path": "<Keyboard>/o",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skill5",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
