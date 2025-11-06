@@ -20098,9 +20098,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d23b97faf8b5654896c745b204ed1e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meleeAttackDiraction: 1
+  meleeAttackDiraction: 0
   skillDiraction: 0
-  dashDiraction: 0
+  dashDiraction: 1
 --- !u!4 &782067064
 Transform:
   m_ObjectHideFlags: 0
