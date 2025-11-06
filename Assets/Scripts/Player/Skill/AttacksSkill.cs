@@ -52,6 +52,8 @@ public class AttacksSkill : PlayerSkillSO
 
     private IEnumerator Setplay(GameObject player, Vector3 mousePosition)
     {
+        Vector3 attackDirection = (mousePosition - player.transform.position).normalized;
+
         for (int i = 0; i < skillSetp.Length; i++)
         {
             if (i == 0) yield return new WaitForSeconds(skillSetp[i].playAtTime);
@@ -69,12 +71,11 @@ public class AttacksSkill : PlayerSkillSO
             if (haveDash && player.TryGetComponent(out PlayerMovement playerMovement))
             {
                 // �ӹǳ��ȷҧ��þ��
-                Vector3 directionDesh = (mousePosition - player.transform.position).normalized;
-                Vector3 attackDirection = (mousePosition - player.transform.position).normalized;
+                //Vector3 directionDesh = (mousePosition - player.transform.position).normalized;
 
-                playerMovement.OnSkillDash?.Invoke(directionDesh, dashSpeed, dashTime, null);
+                playerMovement.OnSkillDash?.Invoke(attackDirection, dashSpeed, dashTime, null);
             }
-            else if (skillPrefabs != null) InstallAttackHit(skillPrefabs, player, mousePosition, (mousePosition - player.transform.position).normalized, skillFar, damage, knockbackForce, speed);
+            else if (skillPrefabs != null) InstallAttackHit(skillPrefabs, player, mousePosition, attackDirection, skillFar, damage, knockbackForce, speed);
         }
 
         Debug.Log("Setplay End");

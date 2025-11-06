@@ -6,6 +6,7 @@ using System.Drawing;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
+using static SettingPlayerControllerManager;
 
 public class PlayerSkill : MonoBehaviour
 {
@@ -28,6 +29,7 @@ public class PlayerSkill : MonoBehaviour
     private PlayerMovement _playerMovement;
     [Header("_Manager References")]
     private PlayerInputActionsManager _inputManager;
+    private SettingPlayerControllerManager _settingControllerManager;
 
     private bool _isDash;
 
@@ -39,6 +41,7 @@ public class PlayerSkill : MonoBehaviour
     private void Awake()
     {
         _inputManager = PlayerInputActionsManager.instance;
+        _settingControllerManager = SettingPlayerControllerManager.instance;
         _playerMovement = GetComponent<PlayerMovement>();
     }
 
@@ -93,7 +96,21 @@ public class PlayerSkill : MonoBehaviour
 
             SetSkillingState(true, skillDatas[slot - 1].assignedSkills.skillLifeTime);
 
-        _skillStepCoroutine = skillDatas[slot - 1].assignedSkills.Use(gameObject, _mousePosition);
+        Vector3 targetPosition = Vector3.forward;
+        switch (_settingControllerManager.skillDiraction)
+        {
+            case AttackDiractionType.movement:
+                targetPosition = transform.position + (_playerMovement.lastMoveDirection);
+                Debug.Log($"movement {targetPosition}");
+                break;
+            case AttackDiractionType.mouse:
+                targetPosition = _mousePosition;
+                Debug.Log($"mouse {targetPosition}");
+                break;
+
+        }
+
+        _skillStepCoroutine = skillDatas[slot - 1].assignedSkills.Use(gameObject, targetPosition);
         Invoke(nameof(DoSkillEnd), skillDatas[slot - 1].assignedSkills.skillLifeTime);
         skillDatas[slot - 1].uesdCount--;
         skillDatas[slot - 1].cooldown = skillDatas[slot - 1].assignedSkills.cooldown;

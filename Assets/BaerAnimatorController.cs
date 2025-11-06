@@ -12,6 +12,8 @@ public class BaerAnimatorController : MonoBehaviour
     private NavMeshAgent _agent;
     private BaseEnemyCombat _enemyCombat;
     private BaseEnemyAI _aiController;
+
+    private bool isSkilling;
     private void Awake()
     {
         // ...
@@ -24,14 +26,18 @@ public class BaerAnimatorController : MonoBehaviour
     private void OnEnable()
     {
         _enemyCombat.OnSkillUesd += HandleSkillUesd;
+        _enemyCombat.OnSkillEnd += HandleSkillEnd;
     }
 
     private void OnDisable()
     {
         _enemyCombat.OnSkillUesd -= HandleSkillUesd;
+        _enemyCombat.OnSkillEnd -= HandleSkillEnd;
     }
     private void HandleSkillUesd(int skillNumber)
     {
+        isSkilling = true;
+
         Vector3 attackDirection = (_aiController.playerTarget.position - transform.position).normalized;
         _animator.SetFloat("ActionX", attackDirection.x);
         _animator.SetFloat("ActionZ", attackDirection.z);
@@ -50,6 +56,11 @@ public class BaerAnimatorController : MonoBehaviour
         {
             _animator.SetTrigger("atSkill3");
         }
+    }
+
+    private void HandleSkillEnd()
+    {
+        isSkilling = false  ;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -88,7 +99,13 @@ public class BaerAnimatorController : MonoBehaviour
         _animator.SetBool("IsMoveing", isMoving);
 
         // 4. ถ้ากำลังเคลื่อนที่ ให้คำนวณทิศทาง
-        if (isMoving)
+        if (isSkilling)
+        {
+            Vector3 attackDirection = (_aiController.playerTarget.position - transform.position).normalized;
+            _animator.SetFloat("ActionX", attackDirection.x);
+            _animator.SetFloat("ActionZ", attackDirection.z);
+        }
+        else if (isMoving)
         {
             spriteRenderer.flipX = false;
 

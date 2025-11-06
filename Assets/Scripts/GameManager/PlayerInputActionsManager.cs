@@ -167,6 +167,8 @@ public class PlayerInputActionsManager : MonoBehaviour
 
         _playerControls.Player.OpenInventory.performed += OnOpenInventoryPerformed;
 
+        _playerControls.Player.OpenMenu.performed += OnOpenMenuPerformed;
+
         _playerControls.Player.Skill1.performed += OnSkill1Performed;
         _playerControls.Player.Skill2.performed += OnSkill2Performed;
         _playerControls.Player.Skill3.performed += OnSkill3Performed;
@@ -226,6 +228,10 @@ public class PlayerInputActionsManager : MonoBehaviour
     private void OnOpenInventoryPerformed(InputAction.CallbackContext context)
     {
         OnOpenInventoryInput?.Invoke();
+    }
+    private void OnOpenMenuPerformed(InputAction.CallbackContext context)
+    {
+        OnOpenMenuInput?.Invoke();
     }
 
     private void OnSkill1Performed(InputAction.CallbackContext context)

@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using System.Collections;
 using Inventory;
+using static SettingPlayerControllerManager;
 
 public class PlayerMovement : MonoBehaviour , IKnockbackable
 {
@@ -19,6 +20,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
     public float dashTime = 0.2f;
     [Header("Attack Delay Movement")]
     public float attackMovementDelay = 0.2f; // เวลาหน่วงหลังโจมตี
+    public float dashMovementDelay = 0.2f; // เวลาหน่วงหลังโจมตี
     private Coroutine movementDelayCoroutine;
     [Header("Sliding")]
     public Vector2 slideBrakeFactor = new Vector2(0.9f, 0.98f); // ค่าสัมประสิทธิ์การเบรค (น้อยกว่า 1)
@@ -35,6 +37,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
     [Header("_Manager References")]
     private PlayerInputActionsManager _inputManager;
     private OpenUiManager _uiManager;
+    private SettingPlayerControllerManager _settingControllerManager;
 
     [Header("Knockbackable")]
     public bool canKnockback = true;
@@ -63,7 +66,8 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
 
     //Direction
     private Vector3 _moveDirection;
-    private Vector3 _lastMoveDirection;
+    //[SerializeField] 
+    public Vector3 lastMoveDirection;
     private Vector3 _delayedMoveDirection;
     private Vector3 _beforeMoveDirection;
     private Coroutine _directionUpdateCoroutine;
@@ -98,6 +102,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
 
     private bool _isSkilling = false;
 
+    private Vector3 _mousePosition;
 
     public Action<bool,Vector3> OnDashStateChange;
     public Action<bool> OnSprinteStateChange;
@@ -113,6 +118,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
         //Ref
         _inputManager = PlayerInputActionsManager.instance;
         _uiManager = OpenUiManager.instance;
+        _settingControllerManager = SettingPlayerControllerManager.instance;
         _playerCombat = GetComponent<PlayerCombatController>();
         _playerSkill = GetComponent<PlayerSkill>();
 
@@ -124,6 +130,8 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
         }
 
         OnSkillDash += HandleSkillDash;
+
+        lastMoveDirection = Vector3.back;
     }
 
     private void OnEnable()
@@ -131,6 +139,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
         _inputManager.OnMoveInput += HandleMoveInput;
         _inputManager.OnSprintInput += HandleSprintInput;
         _inputManager.OnDashInput += HandleDashInput;
+        _inputManager.OnMountPosition += HandleGetMountPos;
 
         _uiManager.OnUiOpeningStateChange += HandleUiOpeningStateChange;
 
@@ -146,6 +155,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
         _inputManager.OnMoveInput -= HandleMoveInput;
         _inputManager.OnSprintInput -= HandleSprintInput;
         _inputManager.OnDashInput -= HandleDashInput;
+        _inputManager.OnMountPosition -= HandleGetMountPos;
 
         _uiManager.OnUiOpeningStateChange -= HandleUiOpeningStateChange;
 
@@ -154,6 +164,12 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
 
         _playerSkill.OnSkillingStateChange -= HandleSkillingStateChange;
         
+    }
+
+    internal void HandleGetMountPos(Vector3 mousePosition)
+    {
+        _mousePosition = mousePosition;
+
     }
 
     internal void HandleUiOpeningStateChange(bool isUiOpeningState)
@@ -207,17 +223,64 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
         _dashClick = true;
         _resetDashClickTimer = resetClick;
 
-        if (_moveDirection != Vector3.zero && _canDash && _dashClick)
+        if (!_canDash && !_dashClick) return;
+
+        Vector3 dashDirection = Vector3.forward;
+
+        switch (_settingControllerManager.dashDiraction)
         {
-            SetIsDash(true);
+            case AttackDiractionType.movement:
+                if (_moveDirection != Vector3.zero)
+                {
+                    dashDirection = _moveDirection;
+                }
+                else if (lastMoveDirection != Vector3.zero)
+                {
+                    dashDirection = lastMoveDirection;
+                }
+                    break;
+            case AttackDiractionType.mouse:
+                dashDirection = (_mousePosition - transform.position).normalized;
+
+
+                break;
+
+        }
+
+        if (_canDash && _dashClick)
+        {
+            SetIsDash(true, dashDirection);
 
             SetSprinteCooldown(dashCooldown);
 
-            if(_isSprinting) SetIsSprint(false,false);
-            if(_isDashSkilling) SetIsDashSkill(false);
+            if (_isSprinting) SetIsSprint(false, false);
+            if (_isDashSkilling) SetIsDashSkill(false);
 
             _dashClick = false;
         }
+
+        //if (_moveDirection != Vector3.zero && _canDash && _dashClick)
+        //{
+        //    SetIsDash(true, _moveDirection);
+
+        //    SetSprinteCooldown(dashCooldown);
+
+        //    if (_isSprinting) SetIsSprint(false, false);
+        //    if (_isDashSkilling) SetIsDashSkill(false);
+
+        //    _dashClick = false;
+        //}
+        //else if (lastMoveDirection != Vector3.zero && _canDash && _dashClick)
+        //{
+        //    SetIsDash(true, lastMoveDirection);
+
+        //    SetSprinteCooldown(dashCooldown);
+
+        //    if(_isSprinting) SetIsSprint(false,false);
+        //    if(_isDashSkilling) SetIsDashSkill(false);
+
+        //    _dashClick = false;
+        //}
     }
 
     internal void HandleAttackForward(Vector3 direction, float speed, float time)
@@ -233,6 +296,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
     // ฟังก์ชันสำหรับรับสถานะการโจมตี
     internal void HandleAttackStateChange(bool canAttack)
     {
+
         _canAttack = canAttack;
 
         if (!canAttack)
@@ -245,6 +309,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
 
     private void SetMoveDeley(float delay)
     {
+
         // หยุด Coroutine เก่า (ถ้ามี) ก่อนที่จะเริ่มใหม่
         if (movementDelayCoroutine != null)
         {
@@ -256,7 +321,6 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
 
     internal void HandleSkillDash(Vector3 direction, float dashSkillSpeed, float dashSkillTime, Coroutine skillDelayCoroutine)
     {
-        Debug.Log("HandleSkillDash");
         //Dash Script
 
         SetIsDashSkilling(true, direction, dashSkillSpeed, dashSkillTime, skillDelayCoroutine);
@@ -312,7 +376,8 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
 
             if (_dashTimeCounter <= 0)
             {
-                SetIsDash(false);
+                SetMoveDeley(dashMovementDelay);
+                SetIsDash(false, Vector3.zero);
             }
         }
         else if (_isKnockedBack) // <-- เพิ่ม Knockback เข้ามาในลำดับ
@@ -414,10 +479,10 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
         // หลังจากรอแล้ว ให้ตรวจสอบว่าทิศทางยังคงเหมือนเดิมหรือไม่
         if (_delayedMoveDirection == _moveDirection)
         {
-            _beforeMoveDirection = _lastMoveDirection;
-            _lastMoveDirection = _delayedMoveDirection;
+            _beforeMoveDirection = lastMoveDirection;
+            lastMoveDirection = _delayedMoveDirection;
 
-            OnLastMoveDirectionChange?.Invoke(_lastMoveDirection);
+            OnLastMoveDirectionChange?.Invoke(lastMoveDirection);
         }
     }
 
@@ -503,7 +568,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
             _trueSlideBrakeFactor = Mathf.Lerp(slideBrakeFactor.x, slideBrakeFactor.y, t);
 
             _isSliding = true;
-            _slideVelocity = _lastMoveDirection;
+            _slideVelocity = lastMoveDirection;
             OnSlideStateChange?.Invoke(_isSliding, _slideVelocity);
 
             float timeToStopSliding = Mathf.Log(minSlideSpeed / _currentSpeed) / Mathf.Log(_trueSlideBrakeFactor) * Time.deltaTime;
@@ -576,7 +641,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
     }
 
 
-    private void SetIsDash(bool isSet)
+    private void SetIsDash(bool isSet , Vector3 dashDirection)
     {
         if (isSet == true)
         {
@@ -588,8 +653,9 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
             // Lerp จะคำนวณค่าระหว่าง dashSpeedFactor.x กับ dashSpeedFactor.y ตามค่า t
             float trueDashSpeedFactor = Mathf.Lerp(dashSpeedFactor.x, dashSpeedFactor.y, t);
             // เก็บความเร็วสำหรับใช้ตอนพุ่ง
-            _dashVelocity = _moveDirection.normalized * _currentSpeed * trueDashSpeedFactor;
-            OnDashStateChange?.Invoke(isDashing,_dashVelocity);
+
+            _dashVelocity = dashDirection.normalized * _currentSpeed * trueDashSpeedFactor;
+            OnDashStateChange?.Invoke(isDashing, dashDirection.normalized);
 
             // เริ่ม Coroutine สำหรับ Cooldown
             StartCoroutine(DashCooldownCoroutine(dashCooldown));
@@ -649,7 +715,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
     private IEnumerator ApplyKnockback(Vector3 direction, float force)
     {
         // 1. ยกเลิกสถานะการเคลื่อนที่อื่นๆ ที่ขัดแย้งกัน
-        if (isDashing) SetIsDash(false);
+        if (isDashing) SetIsDash(false, Vector3.zero);
         if (_isDashSkilling) SetIsDashSkill(false);
         if (_isSprinting) SetIsSprint(false, false);
 

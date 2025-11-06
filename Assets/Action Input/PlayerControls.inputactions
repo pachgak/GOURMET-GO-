@@ -128,18 +128,7 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "b9387457-8621-409e-94f0-beb45a5d9997",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Interact",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "2D Vector",
+                    "name": "Key WASD",
                     "id": "e215ec80-7a40-45df-ae5f-8cbcb32c6282",
                     "path": "2DVector",
                     "interactions": "",
@@ -206,17 +195,6 @@
                 },
                 {
                     "name": "",
-                    "id": "8e05c6f3-4bc8-4727-9e94-12e68ed2707f",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Sprint",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "a0edff8b-e685-4406-a677-93fa0b2e68d3",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
@@ -250,30 +228,8 @@
                 },
                 {
                     "name": "",
-                    "id": "1dd6a808-038b-4e76-9834-cb88c4dd8d97",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "OpenInventory",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "dbda542c-75b5-4f15-ae6a-736a137b3112",
                     "path": "<Keyboard>/escape",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "OpenMenu",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "cc764855-1e60-4ee7-bf35-36533286d626",
-                    "path": "",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -339,7 +295,7 @@
                 {
                     "name": "",
                     "id": "06c80b39-4923-4968-b901-a687f85787b7",
-                    "path": "<Keyboard>/y",
+                    "path": "<Keyboard>/l",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -395,17 +351,6 @@
                     "name": "",
                     "id": "1635448b-a61f-43d4-8287-cc8464d1e7b1",
                     "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Dash",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "430bcf29-2b5a-4092-8ed8-875e53323c90",
-                    "path": "",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

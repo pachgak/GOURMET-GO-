@@ -2,6 +2,7 @@
 using UnityEngine;
 using System;
 using System.Linq;
+using static SettingPlayerControllerManager;
 
 public class PlayerCombatController : MonoBehaviour
 {
@@ -30,6 +31,7 @@ public class PlayerCombatController : MonoBehaviour
     private PlayerMovement _playerMovement;
     private PlayerSkill _playerSkill;
     private PlayerInputActionsManager _inputManager;
+    private SettingPlayerControllerManager _settingControllerManager;
     private OpenUiManager _uiManager;
 
     [Header("_System")]
@@ -74,6 +76,7 @@ public class PlayerCombatController : MonoBehaviour
         //Ref
         _inputManager = PlayerInputActionsManager.instance;
         _uiManager = OpenUiManager.instance;
+        _settingControllerManager = SettingPlayerControllerManager.instance;
         _playerSkill = GetComponent<PlayerSkill>();
         _playerMovement = GetComponent<PlayerMovement>();
     }
@@ -136,7 +139,7 @@ public class PlayerCombatController : MonoBehaviour
             _attackIndex = 0; // ���絤���
             _attackCooldownTimer = 0; // ���� Cooldown
             _canAttack = false; // ��駤�����������ѹ��
-            OnAttackStateChange?.Invoke(_canAttack);
+            //OnAttackStateChange?.Invoke(_canAttack);
 
             _isComboing = false;
             OnComboingStateChange?.Invoke(_isComboing);
@@ -162,12 +165,25 @@ public class PlayerCombatController : MonoBehaviour
         if (_isSkilling) return;
 
         // �ӹǳ��ȷҧ�ҡ��������ѧ�����
-        Vector3 directionToMouse = (_mousePosition - transform.position).normalized;
+        Vector3 directionToTarget = Vector3.forward;
+        switch (_settingControllerManager.meleeAttackDiraction)
+        {
+            case AttackDiractionType.movement:
+                directionToTarget = _playerMovement.lastMoveDirection;
+                Debug.Log($"movement {directionToTarget}");
+                break;
+            case AttackDiractionType.mouse:
+                directionToTarget = (_mousePosition - transform.position).normalized;
+                Debug.Log($"mouse {directionToTarget}");
+                break;
+
+        }
+
         // �ӹǳ���˹觡�觡�ҧ�ͧ���ͧ OverlapBox
-        Vector3 overlapCenter = transform.position + directionToMouse * (overlapBoxFart);
+        Vector3 overlapCenter = transform.position + directionToTarget * (overlapBoxFart);
 
         // �� OverlapBox 㹡�õ�Ǩ�Ѻ�ѵ��
-        Collider[] hitColliders = Physics.OverlapBox(overlapCenter, overlapBoxHalfExtents, Quaternion.LookRotation(directionToMouse), enemyLayer);
+        Collider[] hitColliders = Physics.OverlapBox(overlapCenter, overlapBoxHalfExtents, Quaternion.LookRotation(directionToTarget), enemyLayer);
 
         // ������ѵ��
         if (hitColliders.Length > 0)
@@ -203,10 +219,10 @@ public class PlayerCombatController : MonoBehaviour
             int currentAttackIndex = _attackIndex % attackCombo.Length;
 
             // ���ѭ�ҳ������Фþ��仢�ҧ˹��
-            OnAttackForward?.Invoke(directionToMouse, attackForwardSpeed, attackForwardTime);
+            OnAttackForward?.Invoke(directionToTarget, attackForwardSpeed, attackForwardTime);
 
             // ���ҧ GameObject �ͧ�������
-            InstallAttackHit(attackCombo[currentAttackIndex].attackPrefabs, directionToMouse, attackCombo[currentAttackIndex].damage, attackCombo[currentAttackIndex].knockbackForce);
+            InstallAttackHit(attackCombo[currentAttackIndex].attackPrefabs, directionToTarget, attackCombo[currentAttackIndex].damage, attackCombo[currentAttackIndex].knockbackForce);
 
             // �ѻവʶҹ�����Ѻ���⺶Ѵ�
             _attackIndex++;
@@ -273,7 +289,8 @@ public class PlayerCombatController : MonoBehaviour
         attackInstance.transform.position = transform.position + (directionToMouse * attackFart);
 
         // �ӹǳ�����ع (Rotation)
-        Vector3 targetVecter = _mousePosition - transform.position;
+        //Vector3 targetVecter = _mousePosition - transform.position;
+        Vector3 targetVecter = directionToMouse;
         targetVecter.y = 0f;
         Quaternion targetRotation = Quaternion.LookRotation(targetVecter);
         attackInstance.transform.rotation = targetRotation;

@@ -19,7 +19,7 @@ public class RigPlayerAnimatorContorller : MonoBehaviour
     private bool _isCombo = false;
     private bool _isSliding = false;
 
-    private Vector3 _moveDirection;
+    private Vector3 _inputDirection;
 
     private Animator _animatorFDown;
     private Animator _animatorBUp;
@@ -32,10 +32,12 @@ public class RigPlayerAnimatorContorller : MonoBehaviour
     private PlayerInputActionsManager _inputManager;
     private PlayerMovement _playerMovement;
     private PlayerCombatController _playerCombat;
+    private SettingPlayerControllerManager _settingController;
 
     private void Awake()
     {
         _inputManager = PlayerInputActionsManager.instance;
+        _settingController = SettingPlayerControllerManager.instance;
         _playerMovement = GetComponent<PlayerMovement>();
         _playerCombat = GetComponent<PlayerCombatController>();
 
@@ -66,6 +68,7 @@ public class RigPlayerAnimatorContorller : MonoBehaviour
 
         _playerMovement.OnDashStateChange += HandleDashAnimation;
         _playerMovement.OnSprinteStateChange += HandleSprinteAnimation;
+        _playerMovement.OnLastMoveDirectionChange += HandleLastMoveDirectionChange;
 
         _playerCombat.OnAttackForward += HandleAttackForwardAnimation;
         _playerCombat.OnComboingStateChange += HandleComboingdAnimation;
@@ -77,6 +80,7 @@ public class RigPlayerAnimatorContorller : MonoBehaviour
 
         _playerMovement.OnDashStateChange -= HandleDashAnimation;
         _playerMovement.OnSprinteStateChange -= HandleSprinteAnimation;
+        _playerMovement.OnLastMoveDirectionChange -= HandleLastMoveDirectionChange;
 
         _playerCombat.OnAttackForward -= HandleAttackForwardAnimation;
         _playerCombat.OnComboingStateChange -= HandleComboingdAnimation;
@@ -84,61 +88,62 @@ public class RigPlayerAnimatorContorller : MonoBehaviour
 
     internal void HandleMoveAnimation(Vector3 moveDirection)
     {
-        _moveDirection = moveDirection;
+        Debug.Log("HandleMoveAnimation");
 
-        // ถ้ากำลังกลิ้งอยู่ ให้ไม่ต้องทำอะไร
+        _inputDirection = moveDirection;
+
+        //_moveDirection = moveDirection;
+        //ถ้ากำลังกลิ้งอยู่ ให้ไม่ต้องทำอะไร
         if (_isDashing || _isCombo || _isSliding) return;
 
         // ตรวจสอบว่ามีการเคลื่อนที่หรือไม่
         bool isMoving = moveDirection.magnitude > 0.01f;
+
         foreach (Animator animator in _allAnimator)
         {
             animator.SetBool("isMoving", isMoving);
         }
 
-        if (isMoving)
+        if (!isMoving)
         {
-            if (moveDirection.z <= 0) //Font
+            switch (_settingController.meleeAttackDiraction)
             {
-                if (moveDirection.x < 0)
-                {
-                    NewSpritDirection(spriteFLeft);
-                    curreanSprite.flipX = false;
-
-                }
-                else if (moveDirection.x > 0) 
-                {
-                    NewSpritDirection(spriteFLeft);
-                    curreanSprite.flipX = true;
-                }
-                else
-                {
+                case SettingPlayerControllerManager.AttackDiractionType.mouse:
                     NewSpritDirection(spriteFDown);
-                }
+                    break;
+                case SettingPlayerControllerManager.AttackDiractionType.movement:
+                    SetDirectionMoveAnimationSprite(_playerMovement.lastMoveDirection);
+                    //Nope
+                    break;
             }
-            else //Back
-            {
-                if (moveDirection.x < 0)
-                {
-                    NewSpritDirection(spriteBLeft);
-                    curreanSprite.flipX = false;
+        }
 
-                }
-                else if (moveDirection.x > 0)
-                {
-                    NewSpritDirection(spriteBLeft);
-                    curreanSprite.flipX = true;
-                }
-                else
-                {
-                    NewSpritDirection(spriteBUp);
-                }
-            }
-        }
-        else
-        {
-            NewSpritDirection(spriteFDown);
-        }
+        //if (isMoving)
+        //{
+        //    SetDirectionMoveAnimationSprite(moveDirection);
+
+        //}
+        //else
+        //{
+        //    switch (_settingController.meleeAttackDiraction)
+        //    {
+        //        case SettingPlayerControllerManager.AttackDiractionType.mouse:
+        //            NewSpritDirection(spriteFDown);
+        //            break;
+        //        case SettingPlayerControllerManager.AttackDiractionType.movement:
+        //            SetDirectionMoveAnimationSprite(_playerMovement.lastMoveDirection);
+        //            Nope
+        //            break;
+        //    }
+        //}
+    }
+
+    internal void HandleLastMoveDirectionChange(Vector3 lastDirection)
+    {
+
+        if (_isDashing || _isCombo || _isSliding) return;
+
+        SetDirectionMoveAnimationSprite(lastDirection);
     }
 
     internal void HandleDashAnimation(bool isDashingState, Vector3 actionDirection)
@@ -151,13 +156,16 @@ public class RigPlayerAnimatorContorller : MonoBehaviour
                 animator.SetTrigger("atDash");
             }
         }
+        SetActionStateDirection(isDashingState, actionDirection.normalized);
 
-        SetActionStateDirection(isDashingState, actionDirection);
+        //if (!isDashingState) SetDirectionMoveAnimationSprite(_playerMovement.lastMoveDirection);
     }
 
     internal void HandleComboingdAnimation(bool isCombo)
     {
-        if (!_isCombo && !_isDashing)
+        if (_isDashing) return;
+
+        if (!_isCombo)
         {
             //_animatorFLeft.SetTrigger("atStartCombo");
             //_animatorBLeft.SetTrigger("atStartCombo");
@@ -176,7 +184,7 @@ public class RigPlayerAnimatorContorller : MonoBehaviour
             animator.SetBool("isCombo", _isCombo);
         }
 
-        if (!isCombo) HandleMoveAnimation(_moveDirection);
+        if (!isCombo) SetDirectionMoveAnimationSprite(_playerMovement.lastMoveDirection);
     }
 
     internal void HandleAttackForwardAnimation(Vector3 vector, float arg2, float arg3)
@@ -185,8 +193,6 @@ public class RigPlayerAnimatorContorller : MonoBehaviour
         {
             animator.SetTrigger("atAttack");
         }
-
-        Debug.Log($"{vector}");
 
         SetActionStateDirection(true, vector);
     }
@@ -219,11 +225,55 @@ public class RigPlayerAnimatorContorller : MonoBehaviour
     {
         
     }
+    
+    private void SetDirectionMoveAnimationSprite(Vector3 direction)
+    {
+        if (direction.z <= 0) //Font
+        {
+            if (direction.x < 0)
+            {
+                NewSpritDirection(spriteFLeft);
+                curreanSprite.flipX = false;
+
+            }
+            else if (direction.x > 0)
+            {
+                NewSpritDirection(spriteFLeft);
+                curreanSprite.flipX = true;
+            }
+            else
+            {
+                NewSpritDirection(spriteFDown);
+            }
+        }
+        else //Back
+        {
+            if (direction.x < 0)
+            {
+                NewSpritDirection(spriteBLeft);
+                curreanSprite.flipX = false;
+
+            }
+            else if (direction.x > 0)
+            {
+                NewSpritDirection(spriteBLeft);
+                curreanSprite.flipX = true;
+            }
+            else
+            {
+                NewSpritDirection(spriteBUp);
+            }
+        }
+
+    }
+    
     private void NewSpritDirection(SpriteRenderer sprite)
     {
         if(curreanSprite != null) curreanSprite.enabled = false;
         curreanSprite = sprite;
         curreanSprite.enabled = true;
+
+        Debug.Log($"{sprite.name}");
     }
 
     private void MoveFalse()
@@ -250,6 +300,7 @@ public class RigPlayerAnimatorContorller : MonoBehaviour
     //}
     private void SetActionStateDirection(bool isState, Vector3 actionDirection)
     {
+        Debug.Log($"SetActionStateDirection : {isState} | {actionDirection}");
         if (isState)
         {
             if (actionDirection.z <= 0.2) //Font
@@ -268,6 +319,7 @@ public class RigPlayerAnimatorContorller : MonoBehaviour
                 else
                 {
                     NewSpritDirection(spriteFDown);
+                    Debug.Log("5555555555555");
                 }
             }
             else //Back
@@ -292,7 +344,7 @@ public class RigPlayerAnimatorContorller : MonoBehaviour
         }
         else
         {
-            HandleMoveAnimation(_moveDirection);
+            HandleMoveAnimation(_inputDirection);
         }
     }
 }
