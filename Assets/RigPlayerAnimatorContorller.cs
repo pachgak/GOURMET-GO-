@@ -92,17 +92,17 @@ public class RigPlayerAnimatorContorller : MonoBehaviour
 
         _inputDirection = moveDirection;
 
-        //_moveDirection = moveDirection;
-        //ถ้ากำลังกลิ้งอยู่ ให้ไม่ต้องทำอะไร
-        if (_isDashing || _isCombo || _isSliding) return;
-
-        // ตรวจสอบว่ามีการเคลื่อนที่หรือไม่
         bool isMoving = moveDirection.magnitude > 0.01f;
 
         foreach (Animator animator in _allAnimator)
         {
             animator.SetBool("isMoving", isMoving);
         }
+        //_moveDirection = moveDirection;
+        //ถ้ากำลังกลิ้งอยู่ ให้ไม่ต้องทำอะไร
+        if (_isDashing || _isCombo || _isSliding) return;
+
+        // ตรวจสอบว่ามีการเคลื่อนที่หรือไม่
 
         if (!isMoving)
         {
@@ -158,13 +158,11 @@ public class RigPlayerAnimatorContorller : MonoBehaviour
         }
         SetActionStateDirection(isDashingState, actionDirection.normalized);
 
-        //if (!isDashingState) SetDirectionMoveAnimationSprite(_playerMovement.lastMoveDirection);
+        if (!isDashingState) SetDirectionMoveAnimationSprite(_playerMovement.lastMoveDirection);
     }
 
     internal void HandleComboingdAnimation(bool isCombo)
     {
-        if (_isDashing) return;
-
         if (!_isCombo)
         {
             //_animatorFLeft.SetTrigger("atStartCombo");
@@ -179,11 +177,13 @@ public class RigPlayerAnimatorContorller : MonoBehaviour
         }
         _isCombo = isCombo;
 
+
         foreach (Animator animator in _allAnimator)
         {
             animator.SetBool("isCombo", _isCombo);
         }
 
+        if (_isDashing) return;
         if (!isCombo) SetDirectionMoveAnimationSprite(_playerMovement.lastMoveDirection);
     }
 
@@ -272,8 +272,6 @@ public class RigPlayerAnimatorContorller : MonoBehaviour
         if(curreanSprite != null) curreanSprite.enabled = false;
         curreanSprite = sprite;
         curreanSprite.enabled = true;
-
-        Debug.Log($"{sprite.name}");
     }
 
     private void MoveFalse()
@@ -300,7 +298,6 @@ public class RigPlayerAnimatorContorller : MonoBehaviour
     //}
     private void SetActionStateDirection(bool isState, Vector3 actionDirection)
     {
-        Debug.Log($"SetActionStateDirection : {isState} | {actionDirection}");
         if (isState)
         {
             if (actionDirection.z <= 0.2) //Font
@@ -319,7 +316,6 @@ public class RigPlayerAnimatorContorller : MonoBehaviour
                 else
                 {
                     NewSpritDirection(spriteFDown);
-                    Debug.Log("5555555555555");
                 }
             }
             else //Back
