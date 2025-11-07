@@ -77,7 +77,7 @@ namespace Inventory.UI
             if (currentlyDraggedItemIndex > -1) return;
 
             int index = listOfUIItems.IndexOf(inventoryItemUI);
-            Debug.Log($"index : {index} , currentlyDraggedItemIndex : {currentlyDraggedItemIndex}");
+            //Debug.Log($"index : {index} , currentlyDraggedItemIndex : {currentlyDraggedItemIndex}");
             if (index == -1)
             {
                 return;
@@ -91,7 +91,7 @@ namespace Inventory.UI
             if (!byPass) return;
 
             int index = listOfUIItems.IndexOf(inventoryItemUI);
-            Debug.Log($"index : {index} , currentlyDraggedItemIndex : {currentlyDraggedItemIndex}");
+            //Debug.Log($"index : {index} , currentlyDraggedItemIndex : {currentlyDraggedItemIndex}");
             if (index == -1)
             {
                 return;
@@ -202,9 +202,9 @@ namespace Inventory.UI
             OnSwapItems?.Invoke(currentlyDraggedItemIndex, index);
             HandleItemSelection(inventoryItemUI);
 
-            Debug.Log($"currentlyDraggedItemIndex : {currentlyDraggedItemIndex} || inventoryItemUI Index : {listOfUIItems.IndexOf(inventoryItemUI)}");
+            //Debug.Log($"currentlyDraggedItemIndex : {currentlyDraggedItemIndex} || inventoryItemUI Index : {listOfUIItems.IndexOf(inventoryItemUI)}");
             HandlePointEnterItem(inventoryItemUI,true);
-            Debug.Log($"End HandleEndDrad");
+            //Debug.Log($"End HandleEndDrad");
         }
 
         private void HandleDropItem()

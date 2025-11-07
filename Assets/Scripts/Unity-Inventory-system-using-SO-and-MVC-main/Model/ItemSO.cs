@@ -26,22 +26,22 @@ namespace Inventory.Model
         public int MaxStackSize { get; set; } = 1;
 
         //������� Dubility
-        [HideInInspector]
-        public List<ItemParameter> DefaultParametersList { get; set; }
+        //[HideInInspector]
+        //public List<ItemParameter> DefaultParametersList { get; set; }
 
     }
 
-    [Serializable]
-    public struct ItemParameter // : IEquatable<ItemParameter>
-    {
-        public ItemParameterSO itemParameterSO;
-        public float value;
+    //[Serializable]
+    //public struct ItemParameter // : IEquatable<ItemParameter>
+    //{
+    //    public ItemParameterSO itemParameterSO;
+    //    public float value;
 
-        //public bool Equals(ItemParameter other)
-        //{
-        //    return other.itemParameter == itemParameter;
-        //}
-    }
+    //    //public bool Equals(ItemParameter other)
+    //    //{
+    //    //    return other.itemParameter == itemParameter;
+    //    //}
+    //}
 
     public interface IDestroyableItem
     {
@@ -52,7 +52,8 @@ namespace Inventory.Model
     {
         public string ActionName { get; }
         public AudioClip actionSFX { get; }
-        bool PerformAction(GameObject character, List<ItemParameter> itemParameter
+        bool PerformAction(GameObject character
+            //, List<ItemParameter> itemParameter
 );
     }
 

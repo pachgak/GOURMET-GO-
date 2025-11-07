@@ -116,7 +116,6 @@ namespace Inventory
             InventoryItem inventoryItem = inventoryData.GetItemAt(itemIndex);
             if (inventoryItem.IsEmpty)
             {
-                Debug.Log("inventoryItem.IsEmpty");
                 return;
             }
             ItemSO item = inventoryItem.item;
@@ -165,7 +164,7 @@ namespace Inventory
             IItemAction itemAction = inventoryItem.item as IItemAction;
             if (itemAction != null)
             {
-                itemAction.PerformAction(gameObject, inventoryItem.itemParameter);
+                itemAction.PerformAction(gameObject);
                 if(itemAction.actionSFX != null) audioSource.PlayOneShot(itemAction.actionSFX);
                 if (inventoryData.GetItemAt(itemIndex).IsEmpty)
                     inventoryUI.ResetSelection();
@@ -224,13 +223,13 @@ namespace Inventory
             StringBuilder sb = new StringBuilder();
             sb.Append(inventoryItem.item.Description);
             sb.AppendLine();
-            for (int i = 0; i < inventoryItem.itemParameter.Count; i++)
-            {
-                sb.Append($"{inventoryItem.itemParameter[i].itemParameterSO.ParameterName} " +
-                    $": {inventoryItem.itemParameter[i].value} / " +
-                    $"{inventoryItem.item.DefaultParametersList[i].value}");
-                sb.AppendLine();
-            }
+            //for (int i = 0; i < inventoryItem.itemParameter.Count; i++)
+            //{
+            //    sb.Append($"{inventoryItem.itemParameter[i].itemParameterSO.ParameterName} " +
+            //        $": {inventoryItem.itemParameter[i].value} / " +
+            //        $"{inventoryItem.item.DefaultParametersList[i].value}");
+            //    sb.AppendLine();
+            //}
             return sb.ToString();
         }
 

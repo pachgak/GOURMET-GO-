@@ -11,37 +11,38 @@ public class AgentWeapon : MonoBehaviour
     [SerializeField]
     private InventorySO inventoryData;
 
-    [SerializeField]
-    private List<ItemParameter> parametersToModify, itemCurrentState;
+    //[SerializeField]
+    //private List<ItemParameter> parametersToModify, itemCurrentState;
 
-    public void SetWeapon(EquippableItemSO weaponItemSO, List<ItemParameter> itemParameter
+    public void SetWeapon(EquippableItemSO weaponItemSO
+        //, List<ItemParameter> itemParameter
 )
     {
         if (weapon != null)
         {
-            inventoryData.AddItem(weapon, 1, itemCurrentState);
+            inventoryData.AddItem(weapon, 1);
         }
 
         this.weapon = weaponItemSO;
-        this.itemCurrentState = new List<ItemParameter>(itemParameter
-);
+        //this.itemCurrentState = new List<ItemParameter>(itemParameter
+//);
         ModifyParameters();
     }
 
     private void ModifyParameters()
     {
-        foreach (var parameter in parametersToModify)
-        {
-            if (itemCurrentState.Contains(parameter))
-            {
-                int index = itemCurrentState.IndexOf(parameter);
-                float newValue = itemCurrentState[index].value + parameter.value;
-                itemCurrentState[index] = new ItemParameter
-                {
-                    itemParameterSO = parameter.itemParameterSO,
-                    value = newValue
-                };
-            }
-        }
+        //foreach (var parameter in parametersToModify)
+        //{
+        //    if (itemCurrentState.Contains(parameter))
+        //    {
+        //        int index = itemCurrentState.IndexOf(parameter);
+        //        float newValue = itemCurrentState[index].value + parameter.value;
+        //        itemCurrentState[index] = new ItemParameter
+        //        {
+        //            itemParameterSO = parameter.itemParameterSO,
+        //            value = newValue
+        //        };
+        //    }
+        //}
     }
 }

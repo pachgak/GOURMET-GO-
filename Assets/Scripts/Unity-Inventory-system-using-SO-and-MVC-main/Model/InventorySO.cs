@@ -32,7 +32,7 @@ namespace Inventory.Model
             AddItem(item.item, item.quantity);
         }
 
-        public int AddItem(ItemSO item, int quantity, List<ItemParameter> itemParameter = null)
+        public int AddItem(ItemSO item, int quantity)
         {
             int initialQuantity = quantity;
             int collectedQuantity = 0;
@@ -43,7 +43,7 @@ namespace Inventory.Model
                 {
                     while(quantity > 0 && IsInventoryFull() == false)
                     {
-                        quantity -= AddItemToFirstFreeSlot(item, 1, itemParameter);
+                        quantity -= AddItemToFirstFreeSlot(item, 1);
                     }
                     InformAboutChange();
 
@@ -61,17 +61,18 @@ namespace Inventory.Model
         }
 
         private int AddItemToFirstFreeSlot(ItemSO item, int quantity
-            , List<ItemParameter> itemParameter
- = null)
+        //, List<ItemParameter> itemParameter = null
+        )
+
         {
             InventoryItem newItem = new InventoryItem
             {
                 item = item,
                 quantity = quantity,
-                itemParameter = 
-                new List<ItemParameter>(itemParameter
- == null ? item.DefaultParametersList : itemParameter
-)
+//                itemParameter = 
+//                new List<ItemParameter>(itemParameter
+// == null ? item.DefaultParametersList : itemParameter
+//)
             };
 
             for (int i = 0; i < inventoryItems.Count; i++)
@@ -195,7 +196,7 @@ namespace Inventory.Model
     {
         public int quantity;
         public ItemSO item;
-        [SerializeField] public List<ItemParameter> itemParameter;
+        //[SerializeField] public List<ItemParameter> itemParameter;
         public bool IsEmpty => item == null;
 
         public InventoryItem ChangeQuantity(int newQuantity)
@@ -204,7 +205,7 @@ namespace Inventory.Model
             {
                 item = this.item,
                 quantity = newQuantity,
-                itemParameter = new List<ItemParameter>(this.itemParameter)
+                //itemParameter = new List<ItemParameter>(this.itemParameter)
             };
         }
 
@@ -213,7 +214,7 @@ namespace Inventory.Model
             {
                 item = null,
                 quantity = 0,
-                itemParameter = new List<ItemParameter>()
+                //itemParameter = new List<ItemParameter>()
             };
     }
 

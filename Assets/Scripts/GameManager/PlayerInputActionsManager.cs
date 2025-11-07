@@ -63,7 +63,7 @@ public class PlayerInputActionsManager : MonoBehaviour
 
     private void OnDisable()
     {
-        _playerControls.Disable(); // ปิดใช้งานเมื่อ GameObject ถูกปิด
+        if (_playerControls != null) _playerControls.Disable(); // ปิดใช้งานเมื่อ GameObject ถูกปิด
     }
 
     private void Update()

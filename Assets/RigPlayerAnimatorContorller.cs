@@ -88,7 +88,6 @@ public class RigPlayerAnimatorContorller : MonoBehaviour
 
     internal void HandleMoveAnimation(Vector3 moveDirection)
     {
-        Debug.Log("HandleMoveAnimation");
 
         _inputDirection = moveDirection;
 
