@@ -232,6 +232,7 @@ public class PlayerInputActionsManager : MonoBehaviour
     private void OnOpenMenuPerformed(InputAction.CallbackContext context)
     {
         OnOpenMenuInput?.Invoke();
+        OnEscInput?.Invoke();
     }
 
     private void OnSkill1Performed(InputAction.CallbackContext context)

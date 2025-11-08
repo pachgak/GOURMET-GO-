@@ -201,7 +201,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 7cb1903bf73f39a4694672e9d0c58022, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -280,7 +280,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: -1157201090, guid: ecedcfe046ed4724fb689d2ee17da9e9, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -304,6 +304,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemIcon: {fileID: 846736088329705927}
   quantityText: {fileID: 2887613097238847147}
+  colorAdd: {r: 0, g: 1, b: 0, a: 1}
+  colorRemove: {r: 1, g: 0, b: 0, a: 1}
   showDuration: 1.5
   fadeDuration: 0.5
 --- !u!225 &6026405830506913092

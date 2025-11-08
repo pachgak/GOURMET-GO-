@@ -40,6 +40,7 @@ public class CookingManager : MonoBehaviour
 
     private void HandleEscInput()
     {
+        Debug.Log("HandleEscInput");
         if (_isOpenCooking) ChangeStateUi(!_isOpenCooking);
     }
 
