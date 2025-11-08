@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.UI;
+using static SettingPlayerControllerManager;
 
 public class InteractByPoint : MonoBehaviour
 {
@@ -26,6 +27,8 @@ public class InteractByPoint : MonoBehaviour
     [Header("_Manager References")]
     [SerializeField] private PlayerInputActionsManager _inputManager;
     [SerializeField] private OpenUiManager _uiManager;
+    private SettingPlayerControllerManager _settingControllerManager;
+    private PlayerMovement _playerMovement;
 
     [Header("_System")]
      
@@ -43,6 +46,8 @@ public class InteractByPoint : MonoBehaviour
     {
         _inputManager = PlayerInputActionsManager.instance;
         _uiManager = OpenUiManager.instance;
+        _settingControllerManager = SettingPlayerControllerManager.instance;
+        _playerMovement = GetComponent<PlayerMovement>();
     }
 
     private void OnEnable()
@@ -125,10 +130,24 @@ public class InteractByPoint : MonoBehaviour
         if (_isUiOpening) return;
 
         // คำนวณทิศทางจากผู้เล่นไปยังเมาส์ และ คำนวณตำแหน่งกึ่งกลางของกล่อง OverlapBox
-        Vector3 directionToMouse = (_mousePosition - transform.position).normalized;
-        Vector3 overlapCenter = transform.position + directionToMouse * (overlapBoxFart);
+        Vector3 directionToTarget = Vector3.forward;
+        switch (_settingControllerManager.meleeAttackDiraction)
+        {
+            case AttackDiractionType.movement:
+                directionToTarget = _playerMovement.lastMoveDirection;
+                Debug.Log($"movement {directionToTarget}");
+                break;
+            case AttackDiractionType.mouse:
+                directionToTarget = (_mousePosition - transform.position).normalized;
+                Debug.Log($"mouse {directionToTarget}");
+                break;
 
-        Collider[] hitColliders = Physics.OverlapBox(overlapCenter, overlapBoxHalfExtents, Quaternion.LookRotation(directionToMouse), whatInteractable);
+        }
+
+
+        Vector3 overlapCenter = transform.position + directionToTarget * (overlapBoxFart);
+
+        Collider[] hitColliders = Physics.OverlapBox(overlapCenter, overlapBoxHalfExtents, Quaternion.LookRotation(directionToTarget), whatInteractable);
 
 
         if (hitColliders.Length > 0)
