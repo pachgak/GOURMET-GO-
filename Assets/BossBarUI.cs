@@ -16,7 +16,7 @@ public class BossBarUI : MonoBehaviour
 
     private void Awake()
     {
-
+        gameObject.SetActive(false);
     }
 
     public void HeadledTakeDamaget(float hpCurrent)
@@ -32,7 +32,7 @@ public class BossBarUI : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        gameObject.SetActive(false);
+        
     }
 
     // Update is called once per frame

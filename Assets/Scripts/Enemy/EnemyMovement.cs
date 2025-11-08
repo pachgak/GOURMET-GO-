@@ -42,7 +42,7 @@ public class EnemyMovement : MonoBehaviour , IKnockbackable
 
     protected virtual void Update()
     {
-        if (target == null || !agent.enabled || canMove) return;
+        if (target == null || !agent.enabled || !canMove) return;
 
         // คำนวณระยะห่างระหว่าง Enemy กับ ผู้เล่น
         float distance = Vector3.Distance(target.position, transform.position);
