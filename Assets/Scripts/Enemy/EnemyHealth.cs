@@ -8,7 +8,7 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
 {
     // ... (โค้ดเดิม) ...
     public float maxHealth = 100f;
-    [SerializeField] private float currentHealth;
+    [SerializeField] public float currentHealth;
     private Rigidbody rb;
     private NavMeshAgent agent;
     private Coroutine enableAgentCoroutine; // เพิ่มตัวแปรสำหรับเก็บ Coroutine
@@ -16,6 +16,7 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
     //private HitEffect _hitEffect;
 
     public Action<float> OnTakeDamage;
+    public Action<float> OnCurrentChang;
     public Action OnDie;
 
 
@@ -39,20 +40,16 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
 
     public void TakeDamage(float damage)
     {
-        currentHealth -= damage;
         OnTakeDamage?.Invoke(damage);
 
-        if (currentHealth <= 0)
-        {
-            OnDie?.Invoke();
-            Die();
-        }
+        removeHp(damage);
 
         //if(_hitEffect != null) _hitEffect.InstantiateEffect(damage);
     }
 
     private void Die()
     {
+        OnDie?.Invoke();
         Debug.Log(transform.name + " has been defeated.");
         RetrunToPoor();
     }
@@ -60,5 +57,40 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
     private void RetrunToPoor()
     {
         ObjectPoolingManager.Instance.Respawn(gameObject);
+    }
+
+    public void removeHp(float damage)
+    {
+        currentHealth -= damage;
+
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        OnCurrentChang?.Invoke(currentHealth);
+
+        if (currentHealth <= 0)
+        {
+
+            Die();
+        }
+    }
+
+    public void addHp(float heal)
+    {
+        currentHealth += heal;
+
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        OnCurrentChang?.Invoke(currentHealth);
+    }
+
+    public void setHp(float value)
+    {
+        currentHealth = value;
+
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        OnCurrentChang?.Invoke(currentHealth);
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
     }
 }

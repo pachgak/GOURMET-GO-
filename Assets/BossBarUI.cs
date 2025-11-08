@@ -1,16 +1,15 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EnemyBarUI : MonoBehaviour
+public class BossBarUI : MonoBehaviour
 {
     public Slider hpBar;
     public TMP_Text hpCountText;
     public TMP_Text nameText;
-
-
     private EnemyHealth _healthTarget;
-    private EnemyBarController _enemyBarController;
+    private BossBarController _ConttrollerTarget;
 
     //public float timeBossBar;
     //private float _timer;
@@ -29,11 +28,16 @@ public class EnemyBarUI : MonoBehaviour
     {
         DisableBossBar();
     }
+   
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        gameObject.SetActive(false);
+    }
 
     // Update is called once per frame
     void Update()
     {
-        if(_enemyBarController != null) transform.position = (_enemyBarController.transform.position + _enemyBarController.offset);
         //if (_timer > 0)
         //{
         //    _timer -= Time.deltaTime;
@@ -50,18 +54,18 @@ public class EnemyBarUI : MonoBehaviour
         }
     }
 
-    public void SetData(EnemyBarController enemyBarController, EnemyHealth healthTarget, EnemySO enemy)
+    public void SetData(BossBarController bossBarController, EnemyHealth healthTarget,EnemySO enemy)
     {
         if (_healthTarget != null) ResingTarget();
         if (!gameObject.activeSelf) gameObject.SetActive(true);
 
         _healthTarget = healthTarget;
-        _enemyBarController = enemyBarController;
+        _ConttrollerTarget = bossBarController;
 
         _healthTarget.OnCurrentChang += HeadledTakeDamaget;
         _healthTarget.OnDie += HeadleDie;
 
-        //_EnemyBarController.isShowing = true;
+        _ConttrollerTarget.isShowing = true;
 
         hpBar.maxValue = _healthTarget.maxHealth;
         nameText.text = enemy.name;
@@ -69,7 +73,21 @@ public class EnemyBarUI : MonoBehaviour
 
 
         ShowHp(_healthTarget.currentHealth);
+
+        //SetShowBossbar(true);
     }
+
+    //public void SetShowBossbar(bool anser)
+    //{
+    //    _image.enabled = anser;
+    //    hpBar.gameObject.SetActive(anser);
+    //    nameText.gameObject.SetActive(anser);
+
+    //    if (!anser && _healthTarget != null)
+    //    {
+    //        ResingTarget();
+    //    }
+    //}
 
     private void ShowHp(float currentHp)
     {
@@ -81,13 +99,7 @@ public class EnemyBarUI : MonoBehaviour
     {
         ResingTarget();
 
-        ReturnObjectToPool();
-        //gameObject.SetActive(false);
-    }
-
-    public void ReturnObjectToPool()
-    {
-        ObjectPoolingManager.Instance.Respawn(this.gameObject);
+        gameObject.SetActive(false);
     }
 
     private void ResingTarget()
@@ -95,10 +107,8 @@ public class EnemyBarUI : MonoBehaviour
         _healthTarget.OnCurrentChang -= HeadledTakeDamaget;
         _healthTarget.OnDie -= HeadleDie;
 
-        _enemyBarController.enemyBarUI = null;
-
+        _ConttrollerTarget.isShowing = false;
         _healthTarget = null;
-        _enemyBarController = null;
+        _ConttrollerTarget = null;
     }
 }
-
