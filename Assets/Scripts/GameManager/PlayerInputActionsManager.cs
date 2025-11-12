@@ -302,7 +302,7 @@ public class PlayerInputActionsManager : MonoBehaviour
         if (!string.IsNullOrEmpty(rebinds))
         {
             _playerControls.LoadBindingOverridesFromJson(rebinds);
-            Debug.Log($"LoadBindingToPlayerContrlorsCS");
+            //Debug.Log($"LoadBindingToPlayerContrlorsCS");
         }
     }
 }

@@ -128,6 +128,17 @@
                     "isPartOfComposite": false
                 },
                 {
+                    "name": "",
+                    "id": "e1cc9fb2-7c34-4294-a163-2ed5ddb5b1a9",
+                    "path": "<Touchscreen>/touch9/tap",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
                     "name": "Key WASD",
                     "id": "e215ec80-7a40-45df-ae5f-8cbcb32c6282",
                     "path": "2DVector",
@@ -239,17 +250,6 @@
                 },
                 {
                     "name": "",
-                    "id": "59f2ee43-6e2d-492d-a79b-30cdc1a304ce",
-                    "path": "<Keyboard>/leftShift",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Sprint",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "5b1d94be-f481-40e2-9275-46fd0020afcf",
                     "path": "<Keyboard>/rightShift",
                     "interactions": "",
@@ -262,7 +262,7 @@
                 {
                     "name": "",
                     "id": "0b290756-41e8-4790-915a-d7d6820f4342",
-                    "path": "<Touchscreen>/touch9/press",
+                    "path": "<Touchscreen>/touch9/tap",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -283,8 +283,8 @@
                 },
                 {
                     "name": "",
-                    "id": "ee2db89a-32bf-4eb7-84f6-d2ea1daf40e7",
-                    "path": "<Keyboard>/h",
+                    "id": "4a14738b-3fd6-4af0-82c5-59c6b1ba17f9",
+                    "path": "<Touchscreen>/touch9/tap",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -296,6 +296,17 @@
                     "name": "",
                     "id": "4f21fe6f-c504-43ca-a70a-0639d8614a4a",
                     "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenInventory",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e0583c13-1b0c-4f8b-a446-a4860e842fe7",
+                    "path": "<Touchscreen>/touch9/tap",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -327,19 +338,8 @@
                 },
                 {
                     "name": "",
-                    "id": "74311d1c-5a56-4c75-a077-57f6eb506fc6",
-                    "path": "<Keyboard>/j",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Skill1",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "cd243303-8b55-418a-b4d9-de136961b1fc",
-                    "path": "<Keyboard>/r",
+                    "id": "a7456ec9-5581-488d-ba53-9f723af59943",
+                    "path": "<Touchscreen>/touch9/tap",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -360,19 +360,8 @@
                 },
                 {
                     "name": "",
-                    "id": "c09f0bcc-556b-4b04-91ee-8bad91d3ea90",
-                    "path": "<Keyboard>/k",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Skill2",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "95a180c5-c7ba-4fcf-a986-3526196e9c9b",
-                    "path": "<Keyboard>/f",
+                    "path": "<Touchscreen>/touch9/tap",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -394,18 +383,7 @@
                 {
                     "name": "",
                     "id": "06c80b39-4923-4968-b901-a687f85787b7",
-                    "path": "<Keyboard>/l",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Skill3",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "7ccc3e38-f7c9-4235-97fe-07aee1af0a7e",
-                    "path": "<Keyboard>/t",
+                    "path": "<Touchscreen>/touch9/tap",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -427,18 +405,7 @@
                 {
                     "name": "",
                     "id": "2737462b-cd30-48a4-8300-c5ee67093fbf",
-                    "path": "<Keyboard>/u",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Skill4",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "f9f4d7cc-07cd-47e7-b967-aba151aad7e4",
-                    "path": "<Keyboard>/g",
+                    "path": "<Touchscreen>/touch9/tap",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -460,18 +427,7 @@
                 {
                     "name": "",
                     "id": "717553b1-24ac-4708-8245-d3ed16ca66c6",
-                    "path": "<Keyboard>/i",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Skill5",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "209fd97a-d7b0-4b64-9db6-79ab45b4e1e2",
-                    "path": "<Keyboard>/y",
+                    "path": "<Touchscreen>/touch9/tap",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -483,6 +439,17 @@
                     "name": "",
                     "id": "1635448b-a61f-43d4-8287-cc8464d1e7b1",
                     "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Dash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1c7902b1-f4c5-41db-9b9d-66e8ded0bbdf",
+                    "path": "<Touchscreen>/touch9/tap",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

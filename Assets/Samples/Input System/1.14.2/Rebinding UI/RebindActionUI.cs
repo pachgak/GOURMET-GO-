@@ -16,6 +16,7 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
     /// </summary>
     public class RebindActionUI : MonoBehaviour
     {
+        private const string nopePath = "<Touchscreen>/touch9/tap";
         /// <summary>
         /// Reference to the action that is to be rebound.
         /// </summary>
@@ -200,7 +201,17 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
             {
                 var bindingIndex = action.bindings.IndexOf(x => x.id.ToString() == m_BindingId);
                 if (bindingIndex != -1)
+                {
                     displayString = action.GetBindingDisplayString(bindingIndex, out deviceLayoutName, out controlPath, displayStringOptions);
+
+                    //if (displayString == nopePath) displayString = "";
+                    if (GetBindingPath(action, bindingIndex) == nopePath)
+                    {
+                        displayString = ""; // ตั้งค่า Display String เป็นค่าว่าง
+                    }
+                }
+
+
             }
 
             // Set on label (if any).
@@ -209,6 +220,26 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
 
             // Give listeners a chance to configure UI in response.
             m_UpdateBindingUIEvent?.Invoke(this, displayString, deviceLayoutName, controlPath);
+        }
+
+        private string GetBindingPath(InputAction action, int bindingIndex)
+        {
+            var currentBinding = action.bindings[bindingIndex];
+
+            string pathToCheck = currentBinding.overridePath; // ตรวจสอบ Override Path ก่อน
+
+            // ถ้าไม่มี overridePath ให้ใช้ effectivePath หรือ path ดั้งเดิม
+            if (string.IsNullOrEmpty(pathToCheck))
+            {
+                pathToCheck = currentBinding.effectivePath;
+            }
+            // ถ้ายังไม่มี effectivePath ก็ใช้ path ดั้งเดิมที่กำหนดใน Asset
+            if (string.IsNullOrEmpty(pathToCheck))
+            {
+                pathToCheck = currentBinding.path;
+            }
+
+            return pathToCheck;
         }
 
         /// <summary>
@@ -285,6 +316,8 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
         {
             m_RebindOperation?.Cancel(); // Will null out m_RebindOperation.
 
+            string oldPath = GetBindingPath(action, bindingIndex); // ใช้เมธอด GetBindingPath ที่เราสร้างไว้
+
             void CleanUp()
             {
                 m_RebindOperation?.Dispose();
@@ -330,9 +363,15 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
 
                         if (CheckDuplicateBindings(action, bindingIndex, allCompositeParts))
                         {
-                            action.RemoveBindingOverride(bindingIndex);
-                            CleanUp();
+                            //action.RemoveBindingOverride(bindingIndex);
+                            //CleanUp();
+
+                            action.ApplyBindingOverride(bindingIndex, oldPath);
                             PerformInteractiveRebind(action,bindingIndex,allCompositeParts);
+                            if (m_RebindText != null)
+                            {
+                                m_RebindText.text += $"\nKey already in use! Try again...";
+                            }
                             return;
                         }
 
@@ -351,8 +390,13 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
 
             // If it's a part binding, show the name of the part in the UI.
             var partName = default(string);
+
             if (action.bindings[bindingIndex].isPartOfComposite)
                 partName = $"Binding '{action.bindings[bindingIndex].name}'. ";
+            else
+                partName = $"Binding '{action.name}'. ";
+
+            Debug.Log($"partName : {partName}");
 
             // Bring up rebind overlay, if we have one.
             m_RebindOverlay?.SetActive(true);
@@ -381,14 +425,26 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
 
             foreach (InputBinding binding in action.actionMap.bindings)
             {
-                if (binding.action == newBinding.action)
+                //if (binding.action == newBinding.action)
+                //{
+                //    continue;
+                //} 
+
+                // [แก้ไข] 2. ข้ามเฉพาะถ้ามันคือ "Binding เดียวกัน" (เทียบด้วย ID)
+                if (binding.id == newBinding.id)
+                {
+                    continue;
+                }
+
+                // [แก้ไข] 3. ข้าม Binding อื่นๆ ที่เป็นค่าว่าง (nopePath) ด้วย
+                if (string.IsNullOrEmpty(binding.effectivePath) || binding.effectivePath == nopePath)
                 {
                     continue;
                 }
 
                 if (binding.effectivePath == newBinding.effectivePath)
                 {
-                    Debug.Log($"Dup1icate binding found: {newBinding.effectivePath}");
+                    Debug.Log($"Dup1icate binding found: {newBinding.effectivePath}"); 
                     return true; 
                 }
             }
