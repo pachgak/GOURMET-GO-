@@ -418,6 +418,10 @@ GameObject:
   - component: {fileID: 6400354061108447934}
   - component: {fileID: 2502404934221534539}
   - component: {fileID: 6989777961800610526}
+  - component: {fileID: 95377334732484865}
+  - component: {fileID: 8481648086680022768}
+  - component: {fileID: 6008669392829588974}
+  - component: {fileID: 8022842500487276299}
   m_Layer: 8
   m_Name: Dummy2
   m_TagString: Untagged
@@ -528,7 +532,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c84ebf10b65ecd54cb497f840413eb83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 10
+  maxHealth: 9999
   currentHealth: 0
 --- !u!114 &7554316693877056114
 MonoBehaviour:
@@ -566,6 +570,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemy: {fileID: 11400000, guid: 94087030fab38fa419ef4d924fe14ca7, type: 2}
+  _enemyHealth: {fileID: 0}
 --- !u!114 &3924794689547146423
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -597,7 +602,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyBarUIPrefab: {fileID: 2781920912640263108, guid: 7b2c961cfd19290449203635ec34dc05, type: 3}
   canvasWorldParant: {fileID: 0}
-  offset: {x: 0, y: 1.5, z: 0}
+  offset: {x: 0, y: 3.5, z: 0}
   enemyBarUI: {fileID: 0}
   showTime: 30
   enemyHealth: {fileID: 0}
@@ -640,9 +645,76 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 1
-  m_BaseOffset: 0.5
+  m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!54 &95377334732484865
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5358010373877815429}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
+--- !u!114 &8481648086680022768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5358010373877815429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ef2befea833bbc4d951cd39b4f8a801, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6008669392829588974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5358010373877815429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8aa30154d1169043b0a6860aa7e833a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damagePromptPrefab: {fileID: 4903145366339052106, guid: 85022804ff52dc14da631fed9d071121, type: 3}
+  offSet: {x: 0, y: 1.5, z: 0}
+--- !u!114 &8022842500487276299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5358010373877815429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 484ef053f23c58643a21da371d796333, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effecfHitPrefab: {fileID: 5400559683693291329, guid: 6f7b678c455c1264d96a9c05d41584ec, type: 3}
+  offSet: {x: 0, y: 1.5, z: -0.5}
 --- !u!1 &5442569498318861378
 GameObject:
   m_ObjectHideFlags: 0

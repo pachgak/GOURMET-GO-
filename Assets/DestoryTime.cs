@@ -7,6 +7,7 @@ public class DestoryTime : MonoBehaviour
     void Start()
     {
         //Destroy(gameObject, timeDestory);
+
     }
 
     private void OnEnable()
@@ -17,6 +18,8 @@ public class DestoryTime : MonoBehaviour
     private void OnDisable()
     {
         CancelInvoke(nameof(ReturnObjectToPool));
+
+        //PlayerInputActionsManager.instance.LoadBindingToPlayerContrlorsCS();
     }
 
     private void ReturnObjectToPool()

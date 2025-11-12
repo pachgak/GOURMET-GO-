@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea5a85171cab10249bda4e63a305ce4d, type: 3}
   m_Name: Bear Smrachss
   m_EditorClassIdentifier: 
-  skillName: 
   skillIcon: {fileID: 0}
-  cooldown: 0
-  usesCount: 0
+  skillName: 
+  <Description>k__BackingField: 
+  cooldown: 5
   skillLifeTime: 0.8
   spawnSkillPrefabsType: 0
   skillSetp:
   - playAtTime: 0
-    skillPrefabs: {fileID: 8483425440768244396, guid: f57e9b0c5c78a484bbc9b9e3f3869ebc, type: 3}
+    skillPrefabs: {fileID: 4353770289278914447, guid: 1301831ad8839a5418d12f267025e07c, type: 3}
     skillFar: 0
     skillHight: 0
     damage: 0

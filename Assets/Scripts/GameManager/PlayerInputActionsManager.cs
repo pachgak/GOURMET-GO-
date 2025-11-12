@@ -6,7 +6,9 @@ public class PlayerInputActionsManager : MonoBehaviour
 {
     public static PlayerInputActionsManager instance;
 
-    
+    //private PlayerInput _playerInput;
+    //private InputAction _inventoryOpenAction;
+    //public bool IsInventoryOpen;
 
     private PlayerControls _playerControls; // อ้างอิงถึงคลาสที่ถูกสร้างขึ้น
 
@@ -51,9 +53,16 @@ public class PlayerInputActionsManager : MonoBehaviour
 
         DontDestroyOnLoad(gameObject); // (แนะนำ)
 
+        //_playerInput = GetComponent<PlayerInput>();
+
         _playerControls = new PlayerControls();
 
+        LoadBindingToPlayerContrlorsCS();
+
         AddActionControl();
+
+        //_inventoryOpenAction = _playerInput.actions["OpenInventory"];
+        //if(_inventoryOpenAction != null) Debug.Log($"Set _inventoryOpenAction : {_inventoryOpenAction.name}");
     }
 
     private void OnEnable()
@@ -66,8 +75,15 @@ public class PlayerInputActionsManager : MonoBehaviour
         if (_playerControls != null) _playerControls.Disable(); // ปิดใช้งานเมื่อ GameObject ถูกปิด
     }
 
+
     private void Update()
     {
+        //if (_inventoryOpenAction.WasPressedThisFrame())
+        //{
+        //    //OnOpenInventoryInput?.Invoke();
+        //    Debug.Log($"IsInventoryOpen : {IsInventoryOpen}");
+        //}
+
         // สร้าง Ray จากกล้องไปยังตำแหน่งเมาส์
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
@@ -256,4 +272,37 @@ public class PlayerInputActionsManager : MonoBehaviour
         OnSkillInput?.Invoke(5);
     }
 
+    //public void RefreshActionBindingMap()
+    //{
+    //    string rebinds = _playerInput.actions.SaveBindingOverridesAsJson();
+    //    _playerControls.LoadBindingOverridesFromJson(rebinds);
+
+
+    //    return;
+    //    // ** โหลดค่าใหม่กลับเข้าสู่ Instance ที่ถูก Disable **
+    //    //string rebinds = PlayerPrefs.GetString("rebinds");
+    //    if (!string.IsNullOrEmpty(rebinds))
+    //    {
+    //        _playerControls.LoadBindingOverridesFromJson(rebinds);
+    //    }
+
+    //    if (_playerControls.Player.enabled)
+    //    {
+    //        _playerControls.Player.Disable();
+
+    //        _playerControls.Player.Enable();
+    //        Debug.Log("Action Map Refreshed with new bindings.");
+    //    }
+    //}
+
+    public void LoadBindingToPlayerContrlorsCS()
+    {
+        //โหลด 
+        string rebinds = PlayerPrefs.GetString("rebinds");
+        if (!string.IsNullOrEmpty(rebinds))
+        {
+            _playerControls.LoadBindingOverridesFromJson(rebinds);
+            Debug.Log($"LoadBindingToPlayerContrlorsCS");
+        }
+    }
 }

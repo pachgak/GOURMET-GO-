@@ -4,14 +4,14 @@ using static IHurtBox;
 public class PersonHitbox : BaseHitBox
 {
     // กำหนดขนาดและค่า Offset ของ Hitbox ได้ใน Inspector
-    public Vector3 attackOffset = new Vector3(0, 0, 1f);
-    public Vector3 attackSize = new Vector3(1.5f, 1.5f, 1.5f);
+    //public Vector3 attackOffset = new Vector3(0, 0, 1f);
+    //public Vector3 attackSize = new Vector3(1.5f, 1.5f, 1.5f);
 
     public LayerMask wallLayer; // ตั้งค่า Layer ของศัตรูใน Inspector
 
     Collider _colider;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         _colider = GetComponent<Collider>();
     }
@@ -21,8 +21,11 @@ public class PersonHitbox : BaseHitBox
 
     }
 
-    private void OnTriggerEnter(Collider other)
+    protected virtual void OnTriggerEnter(Collider other)
     {
+        Debug.Log($"Hit PersonHitbox by : {gameObject.name}");
+        Debug.Log($"other layer :{other.gameObject.name} / {other.gameObject.layer}");
+
         if (other.gameObject.layer == Mathf.Log(targetLayer.value, 2))
         {
             Collider hitCollider = other;

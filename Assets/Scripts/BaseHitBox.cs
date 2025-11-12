@@ -2,7 +2,7 @@ using UnityEngine;
 
 public abstract class BaseHitBox : MonoBehaviour , IHurtBox
 {
-    protected float damage = 10f; // ค่าดาเมจของการโจมตี
+    public float damage = 10f; // ค่าดาเมจของการโจมตี
     protected float knockbackForce = 5f; // แรงผลัก
     [HideInInspector] public Vector3 knockbackDirection; // ทิศทางการผลัก
     public LayerMask targetLayer; // ตั้งค่า Layer ของศัตรูใน Inspector

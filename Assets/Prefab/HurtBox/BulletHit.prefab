@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4148946305436444869}
   - component: {fileID: 4614340433577181681}
   - component: {fileID: 2972307763752887435}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: HurtHit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 8628049103260422535}
   - component: {fileID: 2527087761343350769}
   - component: {fileID: 2004296499607072984}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: BulletHit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -138,7 +138,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 20
-  destroyTime: 10
 --- !u!114 &4408910023172225433
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,14 +163,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e9ce162ab54d974fb655eb2628b3a62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackOffset: {x: 0, y: 0, z: 1}
-  attackSize: {x: 1.5, y: 1.5, z: 1.5}
-  damage: 10
-  knockbackForce: 5
   knockbackDirection: {x: 0, y: 0, z: 0}
   targetLayer:
     serializedVersion: 2
     m_Bits: 256
+  ownerHit: {fileID: 0}
   wallLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -233,7 +229,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6270594174650860249}
   - component: {fileID: 6418897317676872400}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Triangle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -320,7 +316,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7441768520154542614}
   - component: {fileID: 7177102811251832385}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}

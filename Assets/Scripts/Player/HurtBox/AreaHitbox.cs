@@ -8,9 +8,14 @@ public class AreaHitbox : BaseHitBox
     public Vector3 attackOffset = new Vector3(0, 0, 1f);
     public float attackRadius = 1.5f;
 
-    private void Start()
+    private void OnEnable()
     {
         PerformAttack();
+    }
+
+    private void Start()
+    {
+        //PerformAttack();
     }
 
     // ฟังก์ชันนี้จะถูกเรียกจาก Player เมื่อทำการโจมตี
