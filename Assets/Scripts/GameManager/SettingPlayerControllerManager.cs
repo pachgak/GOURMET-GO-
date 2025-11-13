@@ -82,16 +82,39 @@ public class SettingPlayerControllerManager : MonoBehaviour
         int rebinds = -1;
 
         rebinds = PlayerPrefs.GetInt("meleeAttackDiraction",-1);
-        if (rebinds > -1) meleeAttackDiraction = (AttackDiractionType)rebinds;
-        meleeAttackDropdown.value = rebinds;
+        if (rebinds > -1)
+        {
+            meleeAttackDiraction = (AttackDiractionType)rebinds;
+            meleeAttackDropdown.value = rebinds;
+        }
+        else
+        {
+            meleeAttackDropdown.value = (int)meleeAttackDiraction;
+        }
+        
 
         rebinds = PlayerPrefs.GetInt("skillDiraction", -1);
-        if (rebinds > -1) meleeAttackDiraction = (AttackDiractionType)rebinds;
-        skillDropdown.value = rebinds;
+        if (rebinds > -1)
+        {
+            meleeAttackDiraction = (AttackDiractionType)rebinds;
+            skillDropdown.value = rebinds;
+        }
+        else
+        {
+            meleeAttackDropdown.value = (int)meleeAttackDiraction;
+        }
+
 
         rebinds = PlayerPrefs.GetInt("dashDiraction", -1);
-        if (rebinds > -1) meleeAttackDiraction = (AttackDiractionType)rebinds;
-        dashDropdown.value = rebinds;
+        if (rebinds > -1)
+        {
+            meleeAttackDiraction = (AttackDiractionType)rebinds;
+            dashDropdown.value = rebinds;
+        }
+        else
+        {
+            meleeAttackDropdown.value = (int)meleeAttackDiraction;
+        }
 
     }
 

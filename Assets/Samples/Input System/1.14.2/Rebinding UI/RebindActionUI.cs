@@ -204,15 +204,73 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
                 {
                     displayString = action.GetBindingDisplayString(bindingIndex, out deviceLayoutName, out controlPath, displayStringOptions);
 
-                    //if (displayString == nopePath) displayString = "";
-                    if (GetBindingPath(action, bindingIndex) == nopePath)
+                    // [!!! LOGIC ใหม่เริ่มตรงนี้ !!!]
+                    if (action.bindings[bindingIndex].isComposite)
                     {
-                        displayString = ""; // ตั้งค่า Display String เป็นค่าว่าง
+                        var parts = new List<string>();
+                        bool allPartsAreNope = true;
+
+                        // วนลูปเช็ค "Part" ที่อยู่ถัดไป (เช่น Up, Down, Left, Right)
+                        for (int i = bindingIndex + 1; i < action.bindings.Count && action.bindings[i].isPartOfComposite; i++)
+                        {
+                            // 1. ตรวจสอบ Path ดิบของ Part (index i)
+                            string partPath = GetBindingPath(action, i);
+
+                            if (partPath == nopePath)
+                            {
+                                // 2. ถ้าเป็น nopePath ให้ใช้ "..." (หรือ "" ถ้าไม่อยากให้เห็น)
+                                parts.Add("...");
+                            }
+                            else
+                            {
+                                // 3. ถ้ามี Key (เช่น Arrow Up) ให้ดึง Display String ของ *Part* นั้น (index i)
+                                // (เราเรียก GetBindingDisplayString บน Part Index ไม่ใช่ Composite Index)
+                                string partDisplayString = action.GetBindingDisplayString(i, out _, out _, displayStringOptions);
+                                parts.Add(partDisplayString);
+                                allPartsAreNope = false; // มีอย่างน้อยหนึ่ง Part ที่ถูกตั้งค่า
+                            }
+                        }
+
+                        // 4. ประกอบร่าง String
+                        if (allPartsAreNope && parts.Count > 0)
+                        {
+                            displayString = ""; // ถ้าทุกช่องเป็น "..." ให้แสดงค่าว่าง
+                        }
+                        else if (parts.Count > 0)
+                        {
+                            // เชื่อมกัน: ผลลัพธ์ที่ได้คือ "Up / ... / ... / ..."
+                            displayString = string.Join(" / ", parts);
+                        }
                     }
+                    else
+                    {
+                        if (GetBindingPath(action, bindingIndex) == nopePath)
+                        {
+                            displayString = ""; // ตั้งค่า Display String เป็นค่าว่าง
+                        }
+                    }
+                    // [!!! LOGIC ใหม่สิ้นสุดตรงนี้ !!!]
+
+
+                    ////if (displayString == nopePath) displayString = "";
+                    //if (GetBindingPath(action, bindingIndex) == nopePath)
+                    //{
+                    //    displayString = ""; // ตั้งค่า Display String เป็นค่าว่าง
+                    //}
+
+                    //Debug.Log($"displayString :{displayString}");
+                    //Debug.Log($"BindingPath :{GetBindingPath(action, bindingIndex)}");
+
+                    //if (action.bindings[bindingIndex].isPartOfComposite)
+                    //{
+
+                    //}
                 }
 
 
             }
+
+
 
             // Set on label (if any).
             if (m_BindingText != null)
@@ -250,18 +308,18 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
             if (!ResolveActionAndBinding(out var action, out var bindingIndex))
                 return;
 
-            ResetBinding(action, bindingIndex);
 
-            //if (action.bindings[bindingIndex].isComposite)
-            //{
-            //    // It's a composite. Remove overrides from part bindings.
-            //    for (var i = bindingIndex + 1; i < action.bindings.Count && action.bindings[i].isPartOfComposite; ++i)
-            //        action.RemoveBindingOverride(i);
-            //}
-            //else
-            //{
-            //    action.RemoveBindingOverride(bindingIndex);
-            //}
+            if (action.bindings[bindingIndex].isComposite)
+            {
+                // It's a composite. Remove overrides from part bindings.
+                for (var i = bindingIndex + 1; i < action.bindings.Count && action.bindings[i].isPartOfComposite; ++i)
+                    ResetBinding(action, i);    //action.RemoveBindingOverride(i);
+            }
+            else
+            {
+                ResetBinding(action, bindingIndex);   //action.RemoveBindingOverride(bindingIndex);
+            }
+
             UpdateBindingDisplay();
         }
 
@@ -367,7 +425,7 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
                             //CleanUp();
 
                             action.ApplyBindingOverride(bindingIndex, oldPath);
-                            PerformInteractiveRebind(action,bindingIndex,allCompositeParts);
+                            PerformInteractiveRebind(action, bindingIndex, allCompositeParts);
                             if (m_RebindText != null)
                             {
                                 m_RebindText.text += $"\nKey already in use! Try again...";
@@ -421,7 +479,7 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
 
         private bool CheckDuplicateBindings(InputAction action, int bindingIndex, bool allCompoiteParts = false)
         {
-            InputBinding newBinding = action.bindings[bindingIndex] ;
+            InputBinding newBinding = action.bindings[bindingIndex];
 
             foreach (InputBinding binding in action.actionMap.bindings)
             {
@@ -444,8 +502,8 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
 
                 if (binding.effectivePath == newBinding.effectivePath)
                 {
-                    Debug.Log($"Dup1icate binding found: {newBinding.effectivePath}"); 
-                    return true; 
+                    Debug.Log($"Dup1icate binding found: {newBinding.effectivePath}");
+                    return true;
                 }
             }
 
@@ -578,14 +636,14 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
 
         // We want the label for the action name to update in edit mode, too, so
         // we kick that off from here.
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         protected void OnValidate()
         {
             UpdateActionLabel();
             UpdateBindingDisplay();
         }
 
-        #endif
+#endif
 
         private void UpdateActionLabel()
         {

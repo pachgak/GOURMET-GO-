@@ -293,7 +293,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""up"",
                     ""id"": ""404b62b2-70ca-45bc-9e3e-dddb6632f8f2"",
-                    ""path"": ""<Keyboard>/upArrow"",
+                    ""path"": ""<Touchscreen>/touch9/tap"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -304,7 +304,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""down"",
                     ""id"": ""19a89137-d68d-4ca3-a947-a13eb8ff818e"",
-                    ""path"": ""<Keyboard>/downArrow"",
+                    ""path"": ""<Touchscreen>/touch9/tap"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -315,7 +315,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""left"",
                     ""id"": ""e5c10fc6-cf0b-4dbf-9e86-413aea34fde2"",
-                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""path"": ""<Touchscreen>/touch9/tap"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -326,7 +326,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""right"",
                     ""id"": ""ff5629cd-d616-4ced-a44f-54c915f53b6b"",
-                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""path"": ""<Touchscreen>/touch9/tap"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
