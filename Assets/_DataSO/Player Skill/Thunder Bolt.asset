@@ -10,32 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea5a85171cab10249bda4e63a305ce4d, type: 3}
-  m_Name: Bear Smrachss
+  m_Name: Thunder Bolt
   m_EditorClassIdentifier: 
   skillIcon: {fileID: 0}
-  skillName: 
-  <Description>k__BackingField: 
+  skillName: Thunder Bolt
+  <Description>k__BackingField: Lightning bolt Span Lightning bolt Span
   cooldown: 5
-  skillLifeTime: 0.8
+  skillLifeTime: 0
   spawnSkillPrefabsType: 0
   skillSetp:
   - playAtTime: 0
-    skillPrefabs: {fileID: 4353770289278914447, guid: 1301831ad8839a5418d12f267025e07c, type: 3}
+    skillPrefabs: {fileID: 7457878790590613147, guid: 7a11a9d161a67034194972b8332b4370, type: 3}
     skillFar: 0
     skillHight: 0
-    damage: 0
+    damage: 1
     knockbackForce: 0
-    speed: 0
-    haveDash: 0
-    dashSpeed: 0
-    dashTime: 0
-  - playAtTime: 0.2
-    skillPrefabs: {fileID: 4911351558283754124, guid: 10960960361cc0044ac130214027bcdb, type: 3}
-    skillFar: 0
-    skillHight: 0
-    damage: 0
-    knockbackForce: 30
-    speed: 0
+    speed: 150
     haveDash: 0
     dashSpeed: 0
     dashTime: 0

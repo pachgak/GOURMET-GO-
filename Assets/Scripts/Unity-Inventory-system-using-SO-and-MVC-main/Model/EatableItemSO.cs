@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Inventory.Model
@@ -9,7 +10,7 @@ namespace Inventory.Model
     public class EatableItemSO : ItemSO, IDestroyableItem, IItemAction
     {
         [SerializeField]
-        private List<ModifierData> modifiersData = new List<ModifierData>();
+        public List<ModifierData> modifiersData = new List<ModifierData>();
 
         public string ActionName => "Consume";
 
@@ -20,6 +21,9 @@ namespace Inventory.Model
             //,List<ItemParameter> itemParameter = null
             )
         {
+            Debug.Log($"PerformAction : {ItemName}");
+            if(modifiersData.Count <= 0) return false;
+
             foreach (ModifierData data in modifiersData)
             {
                 data.statModifierSO.AffectCharacter(character, data.value);

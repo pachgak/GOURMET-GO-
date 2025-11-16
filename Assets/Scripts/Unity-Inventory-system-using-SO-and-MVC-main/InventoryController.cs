@@ -28,7 +28,7 @@ namespace Inventory
         [SerializeField]
         private AudioSource audioSource;
 
-        private InventoryManager _inventoryManager ;
+        private InventoryManager _inventoryManager;
         private void Awake()
         {
             _inventoryManager = InventoryManager.instance;
@@ -86,13 +86,13 @@ namespace Inventory
 
         private void UpdateInventoryUI(Dictionary<int, InventoryItem> inventoryState)
         {
-            
-                inventoryUI.ResetAllItems();
+
+            inventoryUI.ResetAllItems();
             foreach (var item in inventoryState)
             {
 
-                    inventoryUI.UpdateData(item.Key, item.Value.item.ItemImage,
-                    item.Value.quantity); 
+                inventoryUI.UpdateData(item.Key, item.Value.item.ItemImage,
+                item.Value.quantity);
             }
         }
 
@@ -107,7 +107,7 @@ namespace Inventory
             inventoryUI.OnPointEnterItem += HandlePointEnterItem;
             inventoryUI.OnPointExitItem += HandlePointExitItem;
 
-            inventoryUI.OnDropItems += HandleDropItem; 
+            inventoryUI.OnDropItems += HandleDropItem;
 
         }
 
@@ -120,7 +120,7 @@ namespace Inventory
             }
             ItemSO item = inventoryItem.item;
             inventoryUI.OpenItemDetail();
-            inventoryUI.UpdateItemDetail(item.ItemImage,item.name, item.Description);
+            inventoryUI.UpdateItemDetail(item.ItemImage, item.name, item.Description);
         }
 
         private void HandlePointExitItem(int itemIndex)
@@ -155,20 +155,31 @@ namespace Inventory
             if (inventoryItem.IsEmpty)
                 return;
 
-            IDestroyableItem destroyableItem = inventoryItem.item as IDestroyableItem;
-            if (destroyableItem != null)
-            {
-                inventoryData.RemoveItem(itemIndex, 1);
-            }
-
+            bool canPerformAction = false;
             IItemAction itemAction = inventoryItem.item as IItemAction;
+
             if (itemAction != null)
             {
-                itemAction.PerformAction(gameObject);
-                if(itemAction.actionSFX != null) audioSource.PlayOneShot(itemAction.actionSFX);
-                if (inventoryData.GetItemAt(itemIndex).IsEmpty)
-                    inventoryUI.ResetSelection();
+                canPerformAction = itemAction.PerformAction(gameObject);
             }
+
+            if (canPerformAction)
+            {
+                if (itemAction != null)
+                {
+                    canPerformAction = itemAction.PerformAction(gameObject);
+                    if (itemAction.actionSFX != null) audioSource.PlayOneShot(itemAction.actionSFX);
+                    if (inventoryData.GetItemAt(itemIndex).IsEmpty)
+                        inventoryUI.ResetSelection();
+                }
+
+                IDestroyableItem destroyableItem = inventoryItem.item as IDestroyableItem;
+                if (destroyableItem != null)
+                {
+                    inventoryData.RemoveItem(itemIndex, 1);
+                }
+            }
+
         }
 
         private void HandleDragging(int itemIndex)
@@ -188,16 +199,16 @@ namespace Inventory
             inventoryData.SwapItems(itemIndex_1, itemIndex_2);
         }
 
-        private void HandleDropItem(int idex) 
+        private void HandleDropItem(int idex)
         {
             if (idex <= -1) return;
             InventoryItem inventoryItem = inventoryData.GetItemAt(idex);
             if (inventoryItem.IsEmpty)
                 return;
-            
+
             if (isNotDeletItem)
             {
-                GameObject itemDrop_clone = ObjectPoolingManager.Instance.Spawn(itemDropPrefab.gameObject,transform.position + Vector3.up);
+                GameObject itemDrop_clone = ObjectPoolingManager.Instance.Spawn(itemDropPrefab.gameObject, transform.position + Vector3.up);
                 if (itemDrop_clone.TryGetComponent(out Item item))
                 {
                     item.Setup(inventoryItem.item, inventoryItem.quantity);
