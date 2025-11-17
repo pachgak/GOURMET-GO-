@@ -11,9 +11,6 @@ using System.Collections.Generic; // ตรวจสอบว่า namespace ถูกต้อง
 /// </summary>
 public class CSVLoader : EditorWindow
 {
-    private static string csvFoodItemPath = "Assets/CSV/Gourmet Go! CSV Stat - Food Item.csv"; // เปลี่ยนเป็น Path ของไฟล์ CSV ของคุณ
-    private static string FoodItemOSPath = "Assets/_DataSO/Inventory/Items/Food Item/"; // Path ที่จะเก็บ ScriptableObject
-
     private static string csvMonsterItemPath = "Assets/CSV/Gourmet Go! CSV Stat - Monster Item.csv"; // เปลี่ยนเป็น Path ของไฟล์ CSV ของคุณ
     private static string MonsterItemOSPath = "Assets/_DataSO/Inventory/Items/Monster Item/"; // Path ที่จะเก็บ ScriptableObject
 
@@ -30,9 +27,13 @@ public class CSVLoader : EditorWindow
     private static string PlayerSkillOSPath = "Assets/_DataSO/Player Skill/"; // Path ที่จะเก็บ ScriptableObject
 
     private static string csvPlayerPassivePath = "Assets/CSV/Gourmet Go! CSV Stat - Passive List.csv"; // เปลี่ยนเป็น Path ของไฟล์ CSV ของคุณ
-    private static string ItemMofifierOSPath = "Assets/_DataSO/Enity/ItemMofifier/"; // Path ที่จะเก็บ ScriptableObject
+    private static string SkillMofifierOSPath = "Assets/_DataSO/Inventory/ItemMofifier/SkillMofifier/"; // Path ที่จะเก็บ ScriptableObject
+    private static string PassiveMofifierOSPath = "Assets/_DataSO/Inventory/ItemMofifier/PassiveMofifier/"; // Path ที่จะเก็บ ScriptableObject
 
-    private static ItemDropRage.ItemDropFormat GetNewItemDropFormat(ItemSO itemDrop,string[] dropRandomCountTexts)
+    private static string csvFoodItemPath = "Assets/CSV/Gourmet Go! CSV Stat - Food Item.csv"; // เปลี่ยนเป็น Path ของไฟล์ CSV ของคุณ
+    private static string FoodItemOSPath = "Assets/_DataSO/Inventory/Items/Food Item/"; // Path ที่จะเก็บ ScriptableObject
+
+    private static ItemDropRage.ItemDropFormat GetNewItemDropFormat(ItemSO itemDrop, string[] dropRandomCountTexts)
     {
         ItemDropRage.ItemDropFormat itemDropFormat = new ItemDropRage.ItemDropFormat();
         itemDropFormat.item = itemDrop;
@@ -114,7 +115,7 @@ public class CSVLoader : EditorWindow
             }
 
             //========= ดึงข้อมูลจาก CSV ================================\
-            
+
             string itemName = fields[0].Trim();
             string description = fields[1].Trim();
             bool canStack = fields[2].ToBool(); // ใช้ Extension Method ที่จะสร้างในขั้นตอนถัดไป
@@ -144,7 +145,7 @@ public class CSVLoader : EditorWindow
             itemSO.MaxStackSize = maxStack;
 
             //=================================================================\
-        
+
 
             if (isNewitemSO)
             {
@@ -355,7 +356,7 @@ public class CSVLoader : EditorWindow
             List<ItemDropRage.ItemDropFormat> drop = new List<ItemDropRage.ItemDropFormat>();
             if (itemDrop1 != null)
             {
-                ItemDropRage.ItemDropFormat itemDropFormat = GetNewItemDropFormat(itemDrop1 , dropRandomCount1Texts);
+                ItemDropRage.ItemDropFormat itemDropFormat = GetNewItemDropFormat(itemDrop1, dropRandomCount1Texts);
                 drop.Add(itemDropFormat);
             }
             //else Debug.Log($"itemDrop1 = null");
@@ -395,7 +396,7 @@ public class CSVLoader : EditorWindow
     }
 
     [MenuItem("Tools/Load from CSV/Player Skill")]
-    public static void LoadNaturalPlayerSkillCSV()
+    public static void LoadPlayerSkillFromCSV()
     {
         string csvThisPath = csvPlayerSkillPath;
         string AssetOSPath = PlayerSkillOSPath;
@@ -445,7 +446,7 @@ public class CSVLoader : EditorWindow
 
             string skillName = fields[0].Trim();
             string description = fields[1].Trim();
-            float cooldown = float.TryParse(fields[3].Trim(), out float result) ? result : 1;
+            float cooldown = float.TryParse(fields[2].Trim(), out float result) ? result : 1;
             // "ได้รับ" (fields[4]) ยังไม่มีใน SO
 
             //======================================================================\
@@ -455,11 +456,11 @@ public class CSVLoader : EditorWindow
             string fullSOPath = AssetOSPath + soFileName;
 
             // 3. ตรวจสอบว่ามี SO อยู่แล้วหรือไม่
-            PlayerSkillSO playerSkillSO = AssetDatabase.LoadAssetAtPath<PlayerSkillSO>(fullSOPath);
+            AttacksSkill playerSkillSO = AssetDatabase.LoadAssetAtPath<AttacksSkill>(fullSOPath);
             bool isNewitemSO = false;
             if (playerSkillSO == null)
             {
-                playerSkillSO = ScriptableObject.CreateInstance<PlayerSkillSO>();
+                playerSkillSO = ScriptableObject.CreateInstance<AttacksSkill>();
                 isNewitemSO = true;
             }
 
@@ -490,6 +491,190 @@ public class CSVLoader : EditorWindow
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
         Debug.Log("CSV loading and ScriptableObject creation/update complete!");
+
+    }
+
+    [MenuItem("Tools/Load from CSV/ItemMofifier")]
+    public static void LoadItemMofifierFromCSV()
+    {
+        LoadSkillMofifierFromCSV();
+
+        LoadPassiveMofifierFromCSV();
+    }
+
+    public static void LoadSkillMofifierFromCSV()
+    {
+        string csvThisPath = csvPlayerPassivePath;
+        string AssetOSPath = SkillMofifierOSPath;
+
+
+        // 1. ตรวจสอบและสร้างโฟลเดอร์สำหรับเก็บ SO ถ้ายังไม่มี
+        if (!Directory.Exists(AssetOSPath))
+        {
+            Directory.CreateDirectory(AssetOSPath);
+            AssetDatabase.Refresh();
+        }
+
+        // 2. อ่านไฟล์ CSV
+        if (!File.Exists(csvThisPath))
+        {
+            Debug.LogError($"CSV file not found at: {csvThisPath}");
+            return;
+        }
+
+        // อ่านทุกบรรทัดใน CSV
+        string[] lines = File.ReadAllLines(csvThisPath);
+
+        // เก็บจำนวนหัวข้อ
+        int expectedColumnCount = 0;
+        if (lines.Length > 0 && !string.IsNullOrWhiteSpace(lines[0]))
+        {
+            // นับจำนวนคอลัมน์จากบรรทัดแรก (Header)
+            expectedColumnCount = lines[0].Split(',').Length;
+        }
+
+        string skillMofifierDescription = lines[1].Split(',')[1].Trim();
+
+        AttacksSkill[] attackSkills = SOAssetLoader.LoadAllSOsInFolder<AttacksSkill>(PlayerSkillOSPath);
+
+        //Get Skill[]
+
+        // ข้ามบรรทัดแรกที่เป็น Header
+        for (int i = 0; i < attackSkills.Length; i++)
+        {
+            //========= ดึงข้อมูลจาก CSV ================================\
+
+            string skillName = attackSkills[i].skillName.Trim();
+            string description = skillMofifierDescription.Replace("'skillName'", skillName);
+            PlayerSkillSO playerSkillSO = attackSkills[i];
+
+            //======================================================================\
+
+            // กำหนดชื่อไฟล์ SO
+            string soFileName = skillName.Replace(" ", "_") + ".asset";
+            string fullSOPath = AssetOSPath + soFileName;
+
+            // 3. ตรวจสอบว่ามี SO อยู่แล้วหรือไม่
+            GetSkillModifierSO skillModifierSO = AssetDatabase.LoadAssetAtPath<GetSkillModifierSO>(fullSOPath);
+            bool isNewitemSO = false;
+            if (skillModifierSO == null)
+            {
+                skillModifierSO = ScriptableObject.CreateInstance<GetSkillModifierSO>();
+                isNewitemSO = true;
+            }
+
+            //========= ตั้งค่าเริ่มต้น ================================\
+
+            skillModifierSO.ModifierName = skillName;
+            skillModifierSO.Description = description;
+            skillModifierSO.playerSkill = playerSkillSO;
+
+            //=================================================================\
+
+
+            if (isNewitemSO)
+            {
+                // สร้าง Asset
+                AssetDatabase.CreateAsset(skillModifierSO, fullSOPath);
+                Debug.Log($"Created new ItemSO: {skillName}");
+            }
+            else
+            {
+                // แจ้ง Unity ว่ามีการเปลี่ยนแปลง
+                EditorUtility.SetDirty(skillModifierSO);
+                Debug.Log($"Updated existing ItemSO: {skillName}");
+            }
+        }
+
+        // 4. บันทึกการเปลี่ยนแปลงทั้งหมด
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+        Debug.Log("CSV loading and ScriptableObject creation/update complete!");
+
+    }
+
+    public static void LoadPassiveMofifierFromCSV()
+    {
+        string csvThisPath = csvPlayerPassivePath;
+        string AssetOSPath = PassiveMofifierOSPath;
+
+
+        // 1. ตรวจสอบและสร้างโฟลเดอร์สำหรับเก็บ SO ถ้ายังไม่มี
+        if (!Directory.Exists(AssetOSPath))
+        {
+            Directory.CreateDirectory(AssetOSPath);
+            AssetDatabase.Refresh();
+        }
+
+        // 2. อ่านไฟล์ CSV
+        if (!File.Exists(csvThisPath))
+        {
+            Debug.LogError($"CSV file not found at: {csvThisPath}");
+            return;
+        }
+
+        // อ่านทุกบรรทัดใน CSV
+        string[] lines = File.ReadAllLines(csvThisPath);
+
+        // เก็บจำนวนหัวข้อ
+        int expectedColumnCount = 0;
+        if (lines.Length > 0 && !string.IsNullOrWhiteSpace(lines[0]))
+        {
+            // นับจำนวนคอลัมน์จากบรรทัดแรก (Header)
+            expectedColumnCount = lines[0].Split(',').Length;
+        }
+
+        // ข้ามบรรทัดแรกและบรรัดที่2 ที่เป็น Header กับ Skill List Mofifier Description
+        for (int i = 2; i < lines.Length; i++)
+        {
+            string line = lines[i];
+            if (string.IsNullOrWhiteSpace(line)) continue;
+
+            string[] fields = line.Split(',');
+
+            // ตรวจสอบจำนวนคอลัมน์ให้เท่ากับจำนวนหัวข้อ
+            if (fields.Length < expectedColumnCount)
+            {
+                Debug.LogWarning($"Skipping line {i + 1} due to insufficient fields: {line}");
+                continue;
+            }
+
+            //========= ดึงข้อมูลจาก CSV ================================\
+
+            string skillName = fields[0].Trim();
+            string description = fields[1].Trim();
+
+            //======================================================================\
+
+            // กำหนดชื่อไฟล์ SO
+            string soFileName = skillName.Replace(" ", "_") + ".asset";
+            string fullSOPath = AssetOSPath + soFileName;
+
+            // 3. ตรวจสอบว่ามี SO อยู่แล้วหรือไม่
+            ItemModifierSO itemModifierSO = AssetDatabase.LoadAssetAtPath<ItemModifierSO>(fullSOPath);
+
+            if (itemModifierSO == null)
+            {
+                Debug.Log($"!!! Dont Have This PassiveMofifier For Load : {skillName} !!!");
+                continue;
+            }
+
+            //========= ตั้งค่าเริ่มต้น ================================\
+
+            itemModifierSO.ModifierName = skillName;
+            itemModifierSO.Description = description;
+
+            //=================================================================\
+
+            // แจ้ง Unity ว่ามีการเปลี่ยนแปลง
+            EditorUtility.SetDirty(itemModifierSO);
+            Debug.Log($"Updated existing itemModifierSO: {skillName}");
+        }
+
+        // 4. บันทึกการเปลี่ยนแปลงทั้งหมด
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+        Debug.Log("CSV loading and ScriptableObject update complete!");
 
     }
 }
