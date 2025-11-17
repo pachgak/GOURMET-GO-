@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e61ef00b1e27f9948b4774ee86ce93d3, type: 3}
   m_Name: Bear
   m_EditorClassIdentifier: 
-  skillIcon: {fileID: 0}
-  skillName: Bear
+  enemyIcon: {fileID: 0}
+  enemyName: bra
   <Description>k__BackingField: "\u0E2B\u0E21\u0E15\u0E31\u0E27\u0E43\u0E2B\u0E0D\u0E48\u0E17\u0E35\u0E48\u0E21\u0E35\u0E40\u0E2B\u0E47\u0E14"
   hp: 80
-  drop: []
+  drop:
+  - item: {fileID: 0}
+    countMin: 0
+    isRandom: 0
+    countMax: 0

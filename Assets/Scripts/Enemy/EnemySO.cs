@@ -7,11 +7,11 @@ using static ItemDropRage;
 public class EnemySO : ScriptableObject
 {
     [Header("Base Skill")]
-    public Sprite skillIcon;
-    public string skillName;
+    public Sprite enemyIcon;
+    public string enemyName;
     [field: SerializeField]
     [field: TextArea]
     public string Description { get; set; }
     public float hp;
-    public List<ItemDropCount> drop;
+    public List<ItemDropFormat> drop;
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class ItemDropRage : MonoBehaviour
 {
-    public List<ItemDropCount> Items;
+    public List<ItemDropFormat> Items;
     public GameObject itemDropPrefab;
     public Vector3 offSet;
     private EnemyHealth enemyHealth;
@@ -46,7 +46,7 @@ public class ItemDropRage : MonoBehaviour
     }
 
     [Serializable]
-    public class ItemDropCount
+    public class ItemDropFormat
     {
         public ItemSO item;
         public int countMin;
