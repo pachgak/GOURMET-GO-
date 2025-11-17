@@ -46,7 +46,7 @@ public class CSVLoader : EditorWindow
         {
             itemDropFormat.countMin = int.TryParse(dropRandomCountTexts[0].Trim(), out int resultB) ? resultB : 0;
             itemDropFormat.isRandom = true;
-            itemDropFormat.countMin = int.TryParse(dropRandomCountTexts[1].Trim(), out int resultC) ? resultC : 0;
+            itemDropFormat.countMax = int.TryParse(dropRandomCountTexts[1].Trim(), out int resultC) ? resultC : 0;
         }
 
         return itemDropFormat;
@@ -55,14 +55,13 @@ public class CSVLoader : EditorWindow
     private static ItemSO FindItemSO(string itemName, string ItemSOPath)
     {
         ItemSO itemFind = null;
-
-        if (string.IsNullOrWhiteSpace(itemName))
+        if (!string.IsNullOrWhiteSpace(itemName))
         {
             string soFileNameitem = itemName.Replace(" ", "_") + ".asset";
             string fullSOPathitem = ItemSOPath + soFileNameitem;
             itemFind = AssetDatabase.LoadAssetAtPath<ItemSO>(fullSOPathitem);
 
-            if(itemFind = null) Debug.Log($"dont have {itemName} in {ItemSOPath}");
+            if (itemFind == null) Debug.Log($"dont have {itemName} in {ItemSOPath}");
         }
         return itemFind;
     }
@@ -319,10 +318,12 @@ public class CSVLoader : EditorWindow
             //========= ดึงข้อมูลจาก CSV ================================\
 
             string enemyName = fields[0].Trim();
+
             string description = fields[1].Trim();
             int hp = int.TryParse(fields[2].Trim(), out int result) ? result : 1;
 
             ItemSO itemDrop1 = FindItemSO(fields[3].Trim(), MonsterItemOSPath);
+
             string[] dropRandomCount1Texts = fields[4].Trim().Split('-');
 
             ItemSO itemDrop2 = FindItemSO(fields[5].Trim(), MonsterItemOSPath);
@@ -350,20 +351,23 @@ public class CSVLoader : EditorWindow
             enemySO.enemyName = enemyName;
             enemySO.Description = description;
             enemySO.hp = hp;
-            List<ItemDropRage.ItemDropFormat> drop = new List<ItemDropRage.ItemDropFormat>();
 
+            List<ItemDropRage.ItemDropFormat> drop = new List<ItemDropRage.ItemDropFormat>();
             if (itemDrop1 != null)
             {
                 ItemDropRage.ItemDropFormat itemDropFormat = GetNewItemDropFormat(itemDrop1 , dropRandomCount1Texts);
                 drop.Add(itemDropFormat);
             }
+            //else Debug.Log($"itemDrop1 = null");
 
             if (itemDrop2 != null)
             {
                 ItemDropRage.ItemDropFormat itemDropFormat = GetNewItemDropFormat(itemDrop2, dropRandomCount2Texts);
                 drop.Add(itemDropFormat);
             }
-            //enemySO.drop.Add();
+            //else Debug.Log($"itemDrop2 = null");
+
+            enemySO.drop = drop;
 
 
             //=================================================================\
@@ -373,13 +377,13 @@ public class CSVLoader : EditorWindow
             {
                 // สร้าง Asset
                 AssetDatabase.CreateAsset(enemySO, fullSOPath);
-                Debug.Log($"Created new ItemSO: {enemyName}");
+                Debug.Log($"# Created new ItemSO: {enemyName}");
             }
             else
             {
                 // แจ้ง Unity ว่ามีการเปลี่ยนแปลง
                 EditorUtility.SetDirty(enemySO);
-                Debug.Log($"Updated existing ItemSO: {enemyName}");
+                Debug.Log($"# Updated existing ItemSO: {enemyName}");
             }
         }
 
