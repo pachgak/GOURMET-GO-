@@ -123,6 +123,33 @@ public class CSVLoader : EditorWindow
             bool canStack = fields[2].ToBool(); // ใช้ Extension Method ที่จะสร้างในขั้นตอนถัดไป
             int maxStack = int.TryParse(fields[3].Trim(), out int result) ? result : 1;
             // "ได้รับ" (fields[4]) ยังไม่มีใน SO
+            
+            List<ModifierData> modifiersDatas = new List<ModifierData>();
+            for (int j = 4; j < 6; j += 2)
+            {
+                string modifiersName = fields[j].Trim();
+                if (string.IsNullOrWhiteSpace(modifiersName)) continue;
+
+
+                string[] searchFolders = new[] { PassiveMofifierOSPath, SkillMofifierOSPath };
+                ItemModifierSO findModifiersData = SOAssetLoader.FindExactSOByName<ItemModifierSO>(modifiersName, searchFolders);
+
+                float valueA = float.TryParse(fields[j + 1].Trim(), out float resultA) ? resultA : 0;
+
+                if (findModifiersData == null)
+                {
+                    Debug.Log($"   !!! Dont Have This {modifiersName} in For Load : {itemName} !!!");
+                    continue;
+                }
+                else
+                {
+                    ModifierData modifiersData = new ModifierData();
+                    modifiersData.statModifierSO = findModifiersData;
+                    modifiersData.value = valueA;
+
+                    modifiersDatas.Add(modifiersData);
+                }
+            }
 
             //======================================================================\
 
@@ -145,6 +172,7 @@ public class CSVLoader : EditorWindow
             itemSO.Description = description;
             itemSO.IsStackable = canStack;
             itemSO.MaxStackSize = maxStack;
+            itemSO.modifiersData = modifiersDatas;
 
             //=================================================================\
 
@@ -224,7 +252,32 @@ public class CSVLoader : EditorWindow
             bool canStack = fields[2].ToBool(); // ใช้ Extension Method ที่จะสร้างในขั้นตอนถัดไป
             int maxStack = int.TryParse(fields[3].Trim(), out int result) ? result : 1;
             // "ได้รับ" (fields[4]) ยังไม่มีใน SO
+            List<ModifierData> modifiersDatas = new List<ModifierData>();
+            for (int j = 4; j < 6; j += 2)
+            {
+                string modifiersName = fields[j].Trim();
+                if (string.IsNullOrWhiteSpace(modifiersName)) continue;
 
+
+                string[] searchFolders = new[] { PassiveMofifierOSPath, SkillMofifierOSPath };
+                ItemModifierSO findModifiersData = SOAssetLoader.FindExactSOByName<ItemModifierSO>(modifiersName, searchFolders);
+
+                float valueA = float.TryParse(fields[j + 1].Trim(), out float resultA) ? resultA : 0;
+
+                if (findModifiersData == null)
+                {
+                    Debug.Log($"   !!! Dont Have This {modifiersName} in For Load : {itemName} !!!");
+                    continue;
+                }
+                else
+                {
+                    ModifierData modifiersData = new ModifierData();
+                    modifiersData.statModifierSO = findModifiersData;
+                    modifiersData.value = valueA;
+
+                    modifiersDatas.Add(modifiersData);
+                }
+            }
             //======================================================================\
 
             // กำหนดชื่อไฟล์ SO
@@ -246,6 +299,7 @@ public class CSVLoader : EditorWindow
             itemSO.Description = description;
             itemSO.IsStackable = canStack;
             itemSO.MaxStackSize = maxStack;
+            itemSO.modifiersData = modifiersDatas;
 
             //=================================================================\
 
