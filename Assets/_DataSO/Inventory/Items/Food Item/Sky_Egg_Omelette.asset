@@ -17,10 +17,12 @@ MonoBehaviour:
   <ItemImage>k__BackingField: {fileID: 0}
   <IsStackable>k__BackingField: 0
   <MaxStackSize>k__BackingField: 1
-  modifiersData: []
+  modifiersData:
+  - statModifierSO: {fileID: 11400000, guid: cf03b40d94766a84d85069e705250f4b, type: 2}
+    value: 10
   <actionSFX>k__BackingField: {fileID: 0}
   recipes:
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: befabb5078b35864bba46de0662cc900, type: 2}
+  - {fileID: 11400000, guid: aa49461f59937c843947905e24e1c8e9, type: 2}
   - {fileID: 0}
   - {fileID: 0}

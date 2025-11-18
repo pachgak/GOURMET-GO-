@@ -744,8 +744,9 @@ public class CSVLoader : EditorWindow
                     continue;
                 }
 
-                string[] searchFolders = new[] { ItemsOSPath };
-                ItemSO itemRecipesSO = SOAssetLoader.FindSOByName<ItemSO>(itemRecipesName, searchFolders);
+                string[] searchFolders = new[] { MonsterItemOSPath , NaturalItemOSPath , FoodItemOSPath };
+                ItemSO itemRecipesSO = SOAssetLoader.FindExactSOByName<ItemSO>(itemRecipesName, searchFolders);
+                
                 //string soFileItemRecipesName = itemRecipesName.Replace(" ", "_") + ".asset";
                 //string fullItemsRecipesSOPath = ItemsOSPath + soFileItemRecipesName;
                 //ItemSO itemRecipesSO = AssetDatabase.LoadAssetAtPath<ItemSO>(fullItemsRecipesSOPath);
@@ -767,10 +768,10 @@ public class CSVLoader : EditorWindow
             {
                 string modifiersName = fields[j].Trim();
                 if (string.IsNullOrWhiteSpace(modifiersName)) continue;
-                    
 
-                string[] searchFolders = new[] { ItemMofifierOSPath };
-                ItemModifierSO findModifiersData = SOAssetLoader.FindSOByName<ItemModifierSO>(modifiersName, searchFolders);
+
+                string[] searchFolders = new[] { PassiveMofifierOSPath, SkillMofifierOSPath};
+                ItemModifierSO findModifiersData = SOAssetLoader.FindExactSOByName<ItemModifierSO>(modifiersName, searchFolders);
                 
                 float valueA = float.TryParse(fields[j + 1].Trim(), out float resultA) ? resultA : 0;
 

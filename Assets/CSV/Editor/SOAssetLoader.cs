@@ -43,6 +43,41 @@ public static class SOAssetLoader
         return items.ToArray();
     }
 
+    public static T FindExactSOByName<T>(string itemName, string[] searchFolders) where T : ScriptableObject
+    {
+        if (string.IsNullOrWhiteSpace(itemName)) return null;
+
+        // 1. สร้างชื่อไฟล์ SO ที่คาดหวัง (ตามหลักการสร้างไฟล์ใน CSVLoader)
+        // เช่น "Apple Salted Caramel Skewer" -> "Apple_Salted_Caramel_Skewer.asset"
+        string expectedFileName = itemName.Trim().Replace(" ", "_") + ".asset";
+
+        // 2. วนลูปค้นหาในแต่ละ Path ที่กำหนด
+        foreach (string folderPath in searchFolders)
+        {
+            // ตรวจสอบและทำให้ Path ถูกต้อง (มี / ต่อท้าย)
+            string cleanedFolderPath = folderPath;
+            if (!cleanedFolderPath.EndsWith("/") && !cleanedFolderPath.EndsWith("\\"))
+            {
+                cleanedFolderPath += "/";
+            }
+
+            // สร้าง Full Path ที่สมบูรณ์แบบ
+            string fullSOPath = cleanedFolderPath + expectedFileName;
+
+            // 3. ใช้ LoadAssetAtPath เพื่อค้นหาไฟล์นั้นโดยตรง (แม่นยำที่สุด)
+            T itemFind = AssetDatabase.LoadAssetAtPath<T>(fullSOPath);
+
+            if (itemFind != null)
+            {
+                // พบ Asset แล้ว คืนค่าทันที
+                return itemFind;
+            }
+        }
+
+        // Debug.LogWarning($"Asset of type {typeof(T).Name} named '{itemName}' (Expected file: {expectedFileName}) not found in specified folders.");
+        return null; // ไม่พบในทุกโฟลเดอร์
+    }
+
     public static T FindSOByName<T>(string itemName, string[] searchFolders) where T : ScriptableObject
     {
         if (string.IsNullOrWhiteSpace(itemName)) return null;
@@ -62,14 +97,31 @@ public static class SOAssetLoader
             return null;
         }
 
+        // 1. ตรวจสอบและ Log เมื่อพบ Asset ซ้ำ
+        if (guids.Length > 1)
+        {
+            // แจ้งเตือนรวมว่าพบกี่รายการ และรายการแรกที่ถูกเลือกใช้คืออะไร
+            Debug.LogWarning($"!!! Found {guids.Length} multiple assets named '{itemName}' of type {typeof(T).Name}. " +
+                             $"Using the first one found at {AssetDatabase.GUIDToAssetPath(guids[0])}.");
+            Debug.LogWarning("--- List of all duplicates found: ---");
+
+            // 2. วนลูป Log ชื่อและ Path ของ Asset ที่ซ้ำกันทั้งหมด
+            int index = 0;
+            foreach (string guid in guids)
+            {
+                // แปลง GUID เป็น Full Asset Path
+                string duplicatePath = AssetDatabase.GUIDToAssetPath(guid);
+
+                // เนื่องจากเราทราบชื่อ ItemName อยู่แล้ว เราจะ Log GUID และ Path
+                Debug.LogWarning($"\t [{index}] GUID: {guid} | Path: {duplicatePath}");
+                index++;
+            }
+            Debug.LogWarning("------------------------------------");
+        }
+
         // 3. โหลด Asset ตัวแรกที่พบ
         string assetPath = AssetDatabase.GUIDToAssetPath(guids[0]);
         T assetFind = AssetDatabase.LoadAssetAtPath<T>(assetPath);
-
-        if (guids.Length > 1)
-        {
-            Debug.LogWarning($"Found multiple assets named '{itemName}' of type {typeof(T).Name}. Using the first one found at {assetPath}.");
-        }
 
         return assetFind;
     }
