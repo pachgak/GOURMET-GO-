@@ -757,7 +757,32 @@ public class CSVLoader : EditorWindow
                     recipes[j - 4] = itemRecipesSO;
                 }
             }
-            
+
+            List<ModifierData> modifiersDatas = new List<ModifierData>();
+            for (int j = 8; j < 12; j += 2) 
+            {
+                string modifiersName = fields[j].Trim();
+                if (string.IsNullOrWhiteSpace(modifiersName)) continue;
+                    
+                string[] searchFolders = new[] { ItemsOSPath };
+                ItemModifierSO findModifiersData = SOAssetLoader.FindSOByName<ItemModifierSO>(modifiersName, searchFolders);
+                float valueA = float.TryParse(fields[j + 1].Trim(), out float resultA) ? resultA : 0;
+
+                if (findModifiersData == null)
+                {
+                    Debug.Log($"   !!! Dont Have This {modifiersName} in For Load : {itemName} !!!");
+                    continue;
+                }
+                else
+                {
+                    ModifierData modifiersData = new ModifierData();
+                    modifiersData.statModifierSO = findModifiersData;
+                    modifiersData.value = valueA;
+
+                    modifiersDatas.Add(modifiersData);
+                }
+            }
+
 
             //======================================================================\
 
@@ -781,6 +806,8 @@ public class CSVLoader : EditorWindow
             itemSO.IsStackable = canStack;
             itemSO.MaxStackSize = maxStack;
             itemSO.recipes = recipes;
+            itemSO.modifiersData = modifiersDatas;
+
             //=================================================================\
 
 
