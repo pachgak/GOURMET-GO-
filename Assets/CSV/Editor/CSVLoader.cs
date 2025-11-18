@@ -451,6 +451,121 @@ public class CSVLoader : EditorWindow
 
     }
 
+    [MenuItem("Tools/Load from CSV/Gourmet Natura")]
+    public static void LoadGourmetNaturaFromCSV()
+    {
+        string csvThisPath = csvGourmetNaturalPath;
+        string AssetOSPath = GourmetNaturalOSPath;
+
+
+        // 1. ตรวจสอบและสร้างโฟลเดอร์สำหรับเก็บ SO ถ้ายังไม่มี
+        if (!Directory.Exists(AssetOSPath))
+        {
+            Directory.CreateDirectory(AssetOSPath);
+            AssetDatabase.Refresh();
+        }
+
+        // 2. อ่านไฟล์ CSV
+        if (!File.Exists(csvThisPath))
+        {
+            Debug.LogError($"CSV file not found at: {csvThisPath}");
+            return;
+        }
+
+        // อ่านทุกบรรทัดใน CSV
+        string[] lines = File.ReadAllLines(csvThisPath);
+
+        // เก็บจำนวนหัวข้อ
+        int expectedColumnCount = 0;
+        if (lines.Length > 0 && !string.IsNullOrWhiteSpace(lines[0]))
+        {
+            // นับจำนวนคอลัมน์จากบรรทัดแรก (Header)
+            expectedColumnCount = lines[0].Split(',').Length;
+        }
+
+        // ข้ามบรรทัดแรกที่เป็น Header
+        for (int i = 1; i < lines.Length; i++)
+        {
+            string line = lines[i];
+            if (string.IsNullOrWhiteSpace(line)) continue;
+
+            string[] fields = line.Split(',');
+
+            // ตรวจสอบจำนวนคอลัมน์ให้เท่ากับจำนวนหัวข้อ
+            if (fields.Length < expectedColumnCount)
+            {
+                Debug.LogWarning($"Skipping line {i + 1} due to insufficient fields: {line}");
+                continue;
+            }
+
+            //========= ดึงข้อมูลจาก CSV ================================\
+
+            string enemyName = fields[0].Trim();
+
+            string description = fields[1].Trim();
+
+            ItemSO itemDrop1 = FindItemSO(fields[2].Trim(), NaturalItemOSPath);
+
+            string[] dropRandomCount1Texts = fields[3].Trim().Split('-');
+
+            //bool canStack = fields[2].ToBool(); // ใช้ Extension Method ที่จะสร้างในขั้นตอนถัดไป
+            // "ได้รับ" (fields[4]) ยังไม่มีใน SO
+
+            //======================================================================\
+
+            // กำหนดชื่อไฟล์ SO
+            string soFileName = enemyName.Replace(" ", "_") + ".asset";
+            string fullSOPath = AssetOSPath + soFileName;
+
+            // 3. ตรวจสอบว่ามี SO อยู่แล้วหรือไม่
+            EnemySO enemySO = AssetDatabase.LoadAssetAtPath<EnemySO>(fullSOPath);
+            bool isNewitemSO = false;
+            if (enemySO == null)
+            {
+                enemySO = ScriptableObject.CreateInstance<EnemySO>();
+                isNewitemSO = true;
+            }
+
+            //========= ตั้งค่าเริ่มต้น ================================\
+
+            enemySO.enemyName = enemyName;
+            enemySO.Description = description;
+
+            List<ItemDropRage.ItemDropFormat> drop = new List<ItemDropRage.ItemDropFormat>();
+            if (itemDrop1 != null)
+            {
+                ItemDropRage.ItemDropFormat itemDropFormat = GetNewItemDropFormat(itemDrop1, dropRandomCount1Texts);
+                drop.Add(itemDropFormat);
+            }
+            //else Debug.Log($"itemDrop1 = null");
+
+            enemySO.drop = drop;
+
+
+            //=================================================================\
+
+
+            if (isNewitemSO)
+            {
+                // สร้าง Asset
+                AssetDatabase.CreateAsset(enemySO, fullSOPath);
+                Debug.Log($"# Created new ItemSO: {enemyName}");
+            }
+            else
+            {
+                // แจ้ง Unity ว่ามีการเปลี่ยนแปลง
+                EditorUtility.SetDirty(enemySO);
+                Debug.Log($"# Updated existing ItemSO: {enemyName}");
+            }
+        }
+
+        // 4. บันทึกการเปลี่ยนแปลงทั้งหมด
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+        Debug.Log("CSV loading and ScriptableObject creation/update complete!");
+
+    }
+
     [MenuItem("Tools/Load from CSV/Player Skill")]
     public static void LoadPlayerSkillFromCSV()
     {

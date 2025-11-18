@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e61ef00b1e27f9948b4774ee86ce93d3, type: 3}
+  m_Name: Hot_Chilli
+  m_EditorClassIdentifier: 
+  enemyIcon: {fileID: 0}
+  enemyName: Hot Chilli
+  <Description>k__BackingField: "\u0E15\u0E49\u0E19\u0E1E\u0E23\u0E34\u0E01\u0E23\u0E49\u0E2D\u0E19\u0E41\u0E23\u0E07"
+  hp: 0
+  drop:
+  - item: {fileID: 11400000, guid: 3652bac0472539c4cb1ca68e16c9ace5, type: 2}
+    countMin: 1
+    isRandom: 1
+    countMax: 3
