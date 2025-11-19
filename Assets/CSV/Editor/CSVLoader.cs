@@ -32,8 +32,8 @@ public class CSVLoader : EditorWindow
 
     private static string csvFoodItemPath = "Assets/CSV/Gourmet Go! CSV Stat - Food Item.csv"; // เปลี่ยนเป็น Path ของไฟล์ CSV ของคุณ
     private static string FoodItemOSPath = "Assets/_DataSO/Inventory/Items/Food Item/"; // Path ที่จะเก็บ ScriptableObject
-    private static string ItemsOSPath = "Assets/_DataSO/Inventory/Items/";
-    private static string ItemMofifierOSPath = "Assets/_DataSO/Inventory/ItemMofifier/";
+    //private static string ItemsOSPath = "Assets/_DataSO/Inventory/Items/";
+    //private static string ItemMofifierOSPath = "Assets/_DataSO/Inventory/ItemMofifier/";
 
     private static ItemDropRage.ItemDropFormat GetNewItemDropFormat(ItemSO itemDrop, string[] dropRandomCountTexts)
     {

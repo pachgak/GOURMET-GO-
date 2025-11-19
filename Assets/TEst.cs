@@ -5,10 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class TEst : MonoBehaviour
 {
+    public static int TestLink = 0;
+
     public bool someCondition;
     private float currentSpeed;
     private float sprintAcceleration;
     private float targetSpeed;
+
 
     public float aSpeed = 1;
     public float bSpeed = 10;
@@ -23,6 +26,19 @@ public class TEst : MonoBehaviour
     private void Awake()
     {
         
+    }
+
+    [ProButton]
+    public void TEstSetTestLink(int anwser)
+    {
+        TestLink = anwser;
+        Debug.Log($"Set TestLink {gameObject.name} : {TestLink}");
+    }
+
+    [ProButton]
+    public void TEstShowTestLink()
+    {
+        Debug.Log($"Show TestLink {gameObject.name} : {TestLink}");
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
