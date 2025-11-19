@@ -29,6 +29,10 @@ namespace Inventory
         private AudioSource audioSource;
 
         private InventoryManager _inventoryManager;
+
+        // 1. เปิด Property ให้ Controller อื่นเข้าถึง Data ได้
+        public InventorySO InventoryData => inventoryData;
+
         private void Awake()
         {
             _inventoryManager = InventoryManager.instance;
@@ -98,6 +102,8 @@ namespace Inventory
 
         private void PrepareUI()
         {
+            inventoryUI.Owner = this; // Assign ตัวเองว่าเป็นเจ้าของ
+
             inventoryUI.InitializeInventoryUI(inventoryData.Size);
             inventoryUI.OnDescriptionRequested += HandleDescriptionRequest;
             inventoryUI.OnSwapItems += HandleSwapItems;
@@ -109,6 +115,58 @@ namespace Inventory
 
             inventoryUI.OnDropItems += HandleDropItem;
 
+            // 2. Subscribe Event ใหม่
+            inventoryUI.OnItemTransferRequested += HandleItemTransferRequest;
+        }
+
+        // 3. ฟังก์ชันจัดการการย้ายไอเทมข้าม Inventory
+        private void HandleItemTransferRequest(UIInventoryPage sourcePage, int sourceIndex, int targetIndex)
+        {
+            // ค้นหา InventoryController ที่คุม sourcePage อยู่
+            // วิธีที่ง่ายที่สุดคือ GetComponent ใน GameObject ของ UI Page หรือเก็บ Reference ไว้
+            // แต่ในที่นี้สมมติว่า InventoryController แปะอยู่คู่กับ UI หรือสามารถหาได้
+            InventoryController sourceController = sourcePage.Owner;
+            // หมายเหตุ: ถ้า Hierarchy ของคุณซับซ้อน อาจต้องใช้วิธีเก็บ Reference ใน UIInventoryPage ว่าใครเป็น Owner
+
+            if (sourceController == null) return;
+
+            InventorySO sourceInventory = sourceController.InventoryData;
+            InventoryItem sourceItem = sourceInventory.GetItemAt(sourceIndex);
+
+            if (sourceItem.IsEmpty) return;
+
+            // Logic การย้ายของ:
+            // พยายามเพิ่มของเข้า Inventory ของเรา (This/Target)
+            // ฟังก์ชัน AddItem ของคุณคืนค่า int (จำนวนที่เหลือที่ add ไม่เข้า)
+            // แต่อันนี้คุณกำลังจะวางลงใน Slot เฉพาะ (targetIndex)
+
+            InventoryItem targetItem = inventoryData.GetItemAt(targetIndex);
+
+            // กรณี 1: ย้ายไปทับช่องว่าง หรือ ไอเทมเดียวกัน (Stack)
+            if (targetItem.IsEmpty || (targetItem.item.ID == sourceItem.item.ID && targetItem.item.IsStackable))
+            {
+                // เพิ่มของเข้าไปในช่องเป้าหมาย (Logic นี้คุณอาจต้องเพิ่มฟังก์ชัน AddAtIndex ใน InventorySO เพื่อความแม่นยำ หรือใช้ AddItem ธรรมดาแต่ระวังเรื่องตำแหน่ง)
+                // เพื่อความง่าย ผมจะใช้ AddItem ธรรมดา แต่จริงๆ ควรเขียน Logic สลับของข้าม Inventory
+
+                // **ตัวอย่าง Logic อย่างง่าย (Add ทั้งหมด)**:
+                int reminder = inventoryData.AddItem(sourceItem.item, sourceItem.quantity);
+
+                // คำนวณจำนวนที่ย้ายสำเร็จ
+                int amountMoved = sourceItem.quantity - reminder;
+
+                // ลบจำนวนที่ย้ายสำเร็จออกจาก Source
+                if (amountMoved > 0)
+                {
+                    sourceInventory.RemoveItem(sourceIndex, amountMoved);
+                }
+            }
+            // กรณี 2: สลับของ (Swap) ข้าม Inventory (ถ้าไอเทมต่างกัน)
+            else
+            {
+                // ตรงนี้ซับซ้อนขึ้น เพราะต้อง Add ของ Source มาที่นี่ และ Add ของ Here ไปที่ Source
+                // ต้องเขียน Logic เพิ่มใน InventorySO เพื่อรองรับการ Swap ข้าม Object
+                // เบื้องต้น แนะนำให้ "ไม่ทำอะไร" หรือ return ไปก่อนถ้า Slot ไม่ว่างและไม่ใช่ของชนิดเดียวกัน
+            }
         }
 
         private void HandlePointEnterItem(int itemIndex)

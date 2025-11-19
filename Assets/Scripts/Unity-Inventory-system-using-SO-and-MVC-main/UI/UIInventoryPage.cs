@@ -29,6 +29,12 @@ namespace Inventory.UI
 
         private int currentlyDraggedItemIndex = -1;
 
+        public InventoryController Owner { get; set; } // เพิ่มบรรทัดนี้
+
+        // 1. เพิ่ม Static Variable เพื่อจำว่าลากมาจากหน้าไหน
+        public static UIInventoryPage DraggedSourcePage { get; private set; }
+        public static int DraggedItemIndex { get; private set; } = -1;
+
         public event Action<int> 
                 OnDescriptionRequested,
                 OnItemActionRequested,
@@ -38,6 +44,7 @@ namespace Inventory.UI
 
         public event Action<int, int> OnSwapItems;
         public event Action<int> OnDropItems;
+        public event Action<UIInventoryPage, int, int> OnItemTransferRequested;
 
         //[SerializeField]
         //private ItemActionPanel actionPanel;
@@ -180,6 +187,11 @@ namespace Inventory.UI
                 return;
 
             currentlyDraggedItemIndex = index;
+
+            // บันทึกข้อมูลลง Static Variable
+            DraggedSourcePage = this;
+            DraggedItemIndex = index;
+
             listOfUIItems[currentlyDraggedItemIndex].ShowCurrentlyDragged();
             HandleItemSelection(inventoryItemUI);
             OnStartDragging?.Invoke(index);
@@ -195,16 +207,22 @@ namespace Inventory.UI
         private void HandleSwap(UIInventoryItem inventoryItemUI)
         {
             int index = listOfUIItems.IndexOf(inventoryItemUI);
-            if (index == -1)
-            {
-                return;
-            }
-            OnSwapItems?.Invoke(currentlyDraggedItemIndex, index);
-            HandleItemSelection(inventoryItemUI);
+            if (index == -1) return;
 
-            //Debug.Log($"currentlyDraggedItemIndex : {currentlyDraggedItemIndex} || inventoryItemUI Index : {listOfUIItems.IndexOf(inventoryItemUI)}");
-            HandlePointEnterItem(inventoryItemUI,true);
-            //Debug.Log($"End HandleEndDrad");
+            if (DraggedSourcePage == this)
+            {
+                OnSwapItems?.Invoke(currentlyDraggedItemIndex, index);
+                HandleItemSelection(inventoryItemUI);
+
+                //Debug.Log($"currentlyDraggedItemIndex : {currentlyDraggedItemIndex} || inventoryItemUI Index : {listOfUIItems.IndexOf(inventoryItemUI)}");
+                HandlePointEnterItem(inventoryItemUI, true);
+                //Debug.Log($"End HandleEndDrad");
+            }
+            else
+            {
+                // ส่งคำสั่งไปที่ Controller ของหน้านี้ (Destination) ให้จัดการดึงของมา
+                OnItemTransferRequested?.Invoke(DraggedSourcePage, DraggedItemIndex, index);
+            }
         }
 
         private void HandleDropItem()
@@ -217,6 +235,10 @@ namespace Inventory.UI
             if(currentlyDraggedItemIndex > -1) listOfUIItems[currentlyDraggedItemIndex].DeShowCurrentlyDragged();
             mouseFollower.Toggle(false);
             currentlyDraggedItemIndex = -1;
+
+            // เคลียร์ค่า Static เมื่อจบการลาก
+            DraggedSourcePage = null;
+            DraggedItemIndex = -1;
         } 
 
         public void CreateDraggedItem(Sprite sprite, int quantity)
