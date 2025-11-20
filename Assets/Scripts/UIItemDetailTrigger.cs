@@ -4,38 +4,40 @@ using UnityEngine.EventSystems;
 
 public class UIItemDetailTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [Header("References")]
-    [SerializeField] private ItemDetailPromptController detailPrompt; // ลากตัว Prompt Controller มาใส่
-    
+    // ไม่ต้อง serialize private แล้ว เพราะจะ set ผ่าน code
+    private ItemDetailPromptController _detailPrompt;
     private ItemSO _currentItem;
 
-    // ฟังก์ชันสำหรับให้ CookingStationController ส่งข้อมูลมาให้
+    // ฟังก์ชันสำหรับรับข้อมูล Item
     public void SetItemData(ItemSO item)
     {
         _currentItem = item;
     }
 
+    // *** ฟังก์ชันใหม่: สำหรับรับ Reference ของ Prompt Controller ***
+    public void SetPromptController(ItemDetailPromptController controller)
+    {
+        _detailPrompt = controller;
+    }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (_currentItem == null) return;
+        if (_currentItem == null || _detailPrompt == null) return;
 
-        // สั่งเปิด Tooltip
-        detailPrompt.Toggle(true);
-        detailPrompt.SetDescription(_currentItem.ItemImage, _currentItem.ItemName, _currentItem.Description);
+        _detailPrompt.Toggle(true);
+        _detailPrompt.SetDescription(_currentItem.ItemImage, _currentItem.ItemName, _currentItem.Description);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        // สั่งปิด Tooltip
-        detailPrompt.Toggle(false);
+        if (_detailPrompt != null)
+        {
+            _detailPrompt.Toggle(false);
+        }
     }
 
-    // กันเหนียว: ถ้า Object ถูกปิดไปขณะเมาส์ชี้อยู่ ให้ปิด Tooltip ด้วย
     private void OnDisable()
     {
-        if (detailPrompt != null)
-        {
-            detailPrompt.Toggle(false);
-        }
+        if (_detailPrompt != null) _detailPrompt.Toggle(false);
     }
 }
