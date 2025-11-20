@@ -27,6 +27,62 @@ namespace Inventory.Model
             }
         }
 
+        public void MoveItemTo(InventorySO targetInventory, int sourceIndex, int targetIndex)
+        {
+            // 1. ดึงข้อมูลไอเทมจากทั้งสองฝั่ง
+            InventoryItem sourceItem = inventoryItems[sourceIndex];
+            InventoryItem targetItem = targetInventory.GetItemAt(targetIndex);
+
+            // 2. ตรวจสอบกรณีรวมกอง (Stacking)
+            // ถ้าไอเทมเหมือนกัน + รวมกองได้ + ปลายทางไม่ว่าง
+            if (!targetItem.IsEmpty && sourceItem.item.ID == targetItem.item.ID && sourceItem.item.IsStackable)
+            {
+                int amountPossibleToTake = targetItem.item.MaxStackSize - targetItem.quantity;
+
+                if (sourceItem.quantity <= amountPossibleToTake)
+                {
+                    // รวมได้หมด: เอา Source ไปโปะ Target แล้ว Source กลายเป็นว่าง
+                    InventoryItem newTargetItem = targetItem.ChangeQuantity(targetItem.quantity + sourceItem.quantity);
+                    targetInventory.SetItemAt(targetIndex, newTargetItem);
+
+                    inventoryItems[sourceIndex] = InventoryItem.GetEmptyItem(); // Source ว่าง
+                }
+                else
+                {
+                    // รวมได้บางส่วน: Target เต็ม MaxStack, Source เหลือเศษ
+                    InventoryItem newTargetItem = targetItem.ChangeQuantity(targetItem.item.MaxStackSize);
+                    targetInventory.SetItemAt(targetIndex, newTargetItem);
+
+                    int remainder = sourceItem.quantity - amountPossibleToTake;
+                    inventoryItems[sourceIndex] = sourceItem.ChangeQuantity(remainder); // Update เศษที่เหลือที่ Source
+                }
+            }
+            else
+            {
+                // 3. กรณีสลับของ (Swap) หรือ ย้ายไปช่องว่าง
+                // เอาของ Target มาใส่ Source (ถ้า Target ว่าง ก็คือเอาความว่างมาใส่ Source)
+                inventoryItems[sourceIndex] = targetItem;
+
+                // เอาของ Source ไปใส่ Target
+                targetInventory.SetItemAt(targetIndex, sourceItem);
+            }
+
+            // 4. แจ้งเตือน UI ให้ Update ทั้งสองฝั่ง
+            InformAboutChange();
+            // เนื่องจาก targetInventory เป็นคนละ Instance เราต้องเรียก Inform ของมันด้วย
+            // (แต่ method InformAboutChange เป็น private เราต้องไปแก้ SetItemAt ให้เรียกแทน หรือทำให้ Inform เป็น public)
+        }
+
+        // เพิ่ม Helper Method เพื่อให้ Inventory อื่นแก้ไขข้อมูลใน List ตัวเองได้ และแจ้งเตือน UI
+        public void SetItemAt(int index, InventoryItem item)
+        {
+            if (index < inventoryItems.Count)
+            {
+                inventoryItems[index] = item;
+                InformAboutChange(); // แจ้งเตือน UI ฝั่ง Target
+            }
+        }
+
         public void AddItem(InventoryItem item)
         {
             AddItem(item.item, item.quantity);
@@ -217,5 +273,6 @@ namespace Inventory.Model
                 //itemParameter = new List<ItemParameter>()
             };
     }
+
 
 }

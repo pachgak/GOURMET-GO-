@@ -57086,9 +57086,37 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 719977939}
     m_Modifications:
+    - target: {fileID: 644284854501194726, guid: b53d9bd61d2b1cb4d9812231b51a4870, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 690871888636245591, guid: b53d9bd61d2b1cb4d9812231b51a4870, type: 3}
       propertyPath: m_Name
       value: SkillItemUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 712638179562776628, guid: b53d9bd61d2b1cb4d9812231b51a4870, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1358760670144226598, guid: b53d9bd61d2b1cb4d9812231b51a4870, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2149279541947856412, guid: b53d9bd61d2b1cb4d9812231b51a4870, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2671971858877280983, guid: b53d9bd61d2b1cb4d9812231b51a4870, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4201403991583486004, guid: b53d9bd61d2b1cb4d9812231b51a4870, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4822488581459422011, guid: b53d9bd61d2b1cb4d9812231b51a4870, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5570603988437165674, guid: b53d9bd61d2b1cb4d9812231b51a4870, type: 3}
       propertyPath: m_Pivot.x
@@ -57170,8 +57198,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5590580859526311644, guid: b53d9bd61d2b1cb4d9812231b51a4870, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7798643004347585799, guid: b53d9bd61d2b1cb4d9812231b51a4870, type: 3}
       propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8867007013067396297, guid: b53d9bd61d2b1cb4d9812231b51a4870, type: 3}
+      propertyPath: m_RaycastTarget
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -59225,9 +59261,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 598268590664722909, guid: ccb51f5c101fb404ebc8c6f6bfd1c768, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4543194973027782181, guid: ccb51f5c101fb404ebc8c6f6bfd1c768, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7208886306295136114, guid: ccb51f5c101fb404ebc8c6f6bfd1c768, type: 3}
       propertyPath: m_Name
       value: ItemUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 8166044165582578561, guid: ccb51f5c101fb404ebc8c6f6bfd1c768, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8868637782177406806, guid: ccb51f5c101fb404ebc8c6f6bfd1c768, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8998351543540676742, guid: ccb51f5c101fb404ebc8c6f6bfd1c768, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

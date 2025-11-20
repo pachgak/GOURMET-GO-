@@ -223,6 +223,9 @@ namespace Inventory.UI
                 // ส่งคำสั่งไปที่ Controller ของหน้านี้ (Destination) ให้จัดการดึงของมา
                 OnItemTransferRequested?.Invoke(DraggedSourcePage, DraggedItemIndex, index);
             }
+
+            //// อย่าลืม Reset การลาก
+            //HandleEndDrag(inventoryItemUI); // หรือ ResetDraggedItem() แล้วแต่การ Implement ของคุณ
         }
 
         private void HandleDropItem()
