@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e526cbe68c63b441a507d417ce9b894, type: 3}
+  m_Name: Devil_Kimchi_Recipe
+  m_EditorClassIdentifier: 
+  ingredients:
+  - item: {fileID: 11400000, guid: 40f03d5fb9d1a694ba259a7a64ad4c52, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: 2657be93f35717244952fe4e0297116b, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: 9bcbac1a867b1ce42b3995734234b9b6, type: 2}
+    quantity: 1
+  resultItem: {fileID: 11400000, guid: d49a45846918e8041b49cd596dd23ba8, type: 2}

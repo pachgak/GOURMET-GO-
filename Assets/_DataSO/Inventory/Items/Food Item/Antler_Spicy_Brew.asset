@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f318654b6fd324448b4ba48d6f1c2484, type: 3}
+  m_Script: {fileID: 11500000, guid: c0756f30a60080a44b7e71b3f899893a, type: 3}
   m_Name: Antler_Spicy_Brew
   m_EditorClassIdentifier: 
   <ItemName>k__BackingField: Antler Spicy Brew
@@ -21,8 +21,3 @@ MonoBehaviour:
   - statModifierSO: {fileID: 11400000, guid: 7943606dfe9b535419720f8b62cf317b, type: 2}
     value: 10
   <actionSFX>k__BackingField: {fileID: 0}
-  recipes:
-  - {fileID: 11400000, guid: be259cd5abb06764eb541ff5ce409390, type: 2}
-  - {fileID: 11400000, guid: 3652bac0472539c4cb1ca68e16c9ace5, type: 2}
-  - {fileID: 11400000, guid: febf18f2d284ad54abf193f035b63944, type: 2}
-  - {fileID: 11400000, guid: 41a4532f72b40f041aa78b99f5e38a35, type: 2}

@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f318654b6fd324448b4ba48d6f1c2484, type: 3}
+  m_Script: {fileID: 11500000, guid: c0756f30a60080a44b7e71b3f899893a, type: 3}
   m_Name: Autumn_Salad
   m_EditorClassIdentifier: 
   <ItemName>k__BackingField: Autumn Salad
@@ -19,10 +19,5 @@ MonoBehaviour:
   <MaxStackSize>k__BackingField: 1
   modifiersData:
   - statModifierSO: {fileID: 11400000, guid: 304229d001df4fb4b93bc3b8226ed469, type: 2}
-    value: 0
+    value: 9
   <actionSFX>k__BackingField: {fileID: 0}
-  recipes:
-  - {fileID: 11400000, guid: a0d74405a10897440be02dd6f232af80, type: 2}
-  - {fileID: 11400000, guid: 60319730b2aecd945b9eed93884fa779, type: 2}
-  - {fileID: 11400000, guid: 47066abea46edf74da886326f675b72e, type: 2}
-  - {fileID: 0}

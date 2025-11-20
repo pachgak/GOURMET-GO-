@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f318654b6fd324448b4ba48d6f1c2484, type: 3}
+  m_Script: {fileID: 11500000, guid: c0756f30a60080a44b7e71b3f899893a, type: 3}
   m_Name: Shining_Shell_Carpaccio
   m_EditorClassIdentifier: 
   <ItemName>k__BackingField: Shining Shell Carpaccio
@@ -22,8 +22,3 @@ MonoBehaviour:
   - statModifierSO: {fileID: 11400000, guid: ce88be15c3bf270449eecfbfeac83fd8, type: 2}
     value: 10
   <actionSFX>k__BackingField: {fileID: 0}
-  recipes:
-  - {fileID: 11400000, guid: 99262f803ab6b014d962de2eae5f4ef6, type: 2}
-  - {fileID: 11400000, guid: febf18f2d284ad54abf193f035b63944, type: 2}
-  - {fileID: 11400000, guid: 9bcbac1a867b1ce42b3995734234b9b6, type: 2}
-  - {fileID: 0}

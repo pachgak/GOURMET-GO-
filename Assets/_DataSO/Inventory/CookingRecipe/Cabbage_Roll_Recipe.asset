@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e526cbe68c63b441a507d417ce9b894, type: 3}
+  m_Name: Cabbage_Roll_Recipe
+  m_EditorClassIdentifier: 
+  ingredients:
+  - item: {fileID: 11400000, guid: 2657be93f35717244952fe4e0297116b, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: c5d39120f1a2d6941bbc2319cf52cb52, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: 500e34e85894d9a40b1c42fc46173c75, type: 2}
+    quantity: 1
+  resultItem: {fileID: 11400000, guid: 421802e2d918c5e46b3e14a33cc25b65, type: 2}

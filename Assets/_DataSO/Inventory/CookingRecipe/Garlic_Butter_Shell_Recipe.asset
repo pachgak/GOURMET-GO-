@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e526cbe68c63b441a507d417ce9b894, type: 3}
+  m_Name: Garlic_Butter_Shell_Recipe
+  m_EditorClassIdentifier: 
+  ingredients:
+  - item: {fileID: 11400000, guid: 99262f803ab6b014d962de2eae5f4ef6, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: 016858af31728444194115c0e42e905e, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: af54a0a13cd0d4f4aa14f72da9884c1e, type: 2}
+    quantity: 1
+  resultItem: {fileID: 11400000, guid: e5b45cb8ac11ac146ba1596c46dd53d1, type: 2}

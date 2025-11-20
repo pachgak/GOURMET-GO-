@@ -32,6 +32,7 @@ public class CSVLoader : EditorWindow
 
     private static string csvFoodItemPath = "Assets/CSV/Gourmet Go! CSV Stat - Food Item.csv"; // เปลี่ยนเป็น Path ของไฟล์ CSV ของคุณ
     private static string FoodItemOSPath = "Assets/_DataSO/Inventory/Items/Food Item/"; // Path ที่จะเก็บ ScriptableObject
+    private static string CookingRecipeSOPath = "Assets/_DataSO/Inventory/CookingRecipe/"; // Path ที่จะเก็บ ScriptableObject
     //private static string ItemsOSPath = "Assets/_DataSO/Inventory/Items/";
     //private static string ItemMofifierOSPath = "Assets/_DataSO/Inventory/ItemMofifier/";
 
@@ -854,11 +855,19 @@ public class CSVLoader : EditorWindow
     {
         string csvThisPath = csvFoodItemPath;
         string AssetOSPath = FoodItemOSPath;
+        string RecipeOSPath = CookingRecipeSOPath; // Path สำหรับเก็บ Recipe
 
-        // 1. ตรวจสอบและสร้างโฟลเดอร์สำหรับเก็บ SO ถ้ายังไม่มี
+        // 1.1 ตรวจสอบและสร้างโฟลเดอร์สำหรับเก็บ Item SO
         if (!Directory.Exists(AssetOSPath))
         {
             Directory.CreateDirectory(AssetOSPath);
+            AssetDatabase.Refresh();
+        }
+
+        // 1.2 ตรวจสอบและสร้างโฟลเดอร์สำหรับเก็บ Recipe SO
+        if (!Directory.Exists(RecipeOSPath))
+        {
+            Directory.CreateDirectory(RecipeOSPath);
             AssetDatabase.Refresh();
         }
 
@@ -869,14 +878,11 @@ public class CSVLoader : EditorWindow
             return;
         }
 
-        // อ่านทุกบรรทัดใน CSV
         string[] lines = File.ReadAllLines(csvThisPath);
 
-        // เก็บจำนวนหัวข้อ
         int expectedColumnCount = 0;
         if (lines.Length > 0 && !string.IsNullOrWhiteSpace(lines[0]))
         {
-            // นับจำนวนคอลัมน์จากบรรทัดแรก (Header)
             expectedColumnCount = lines[0].Split(',').Length;
         }
 
@@ -888,60 +894,29 @@ public class CSVLoader : EditorWindow
 
             string[] fields = line.Split(',');
 
-            // ตรวจสอบจำนวนคอลัมน์ให้เท่ากับจำนวนหัวข้อ
             if (fields.Length < expectedColumnCount)
             {
                 Debug.LogWarning($"Skipping line {i + 1} due to insufficient fields: {line}");
                 continue;
             }
 
-            //========= ดึงข้อมูลจาก CSV ================================\
+            //========= PART 1: สร้าง EatableItemSO (ตัวอาหาร) ===================\
 
             string itemName = fields[0].Trim();
             string description = fields[1].Trim();
-            bool canStack = fields[2].ToBool(); // ใช้ Extension Method ที่จะสร้างในขั้นตอนถัดไป
+            bool canStack = fields[2].ToBool();
             int maxStack = int.TryParse(fields[3].Trim(), out int result) ? result : 1;
 
-            ItemSO[] recipes = new ItemSO[4];
-            for (int j = 4; j < 8; j++)
-            {
-                //หา Recipes 1-4 [4 5 6 7]
-                string itemRecipesName = fields[j].Trim();
-                if (string.IsNullOrWhiteSpace(itemRecipesName))
-                {
-                    recipes[j - 4] = null;
-                    continue;
-                }
-
-                string[] searchFolders = new[] { MonsterItemOSPath , NaturalItemOSPath , FoodItemOSPath };
-                ItemSO itemRecipesSO = SOAssetLoader.FindExactSOByName<ItemSO>(itemRecipesName, searchFolders);
-                
-                //string soFileItemRecipesName = itemRecipesName.Replace(" ", "_") + ".asset";
-                //string fullItemsRecipesSOPath = ItemsOSPath + soFileItemRecipesName;
-                //ItemSO itemRecipesSO = AssetDatabase.LoadAssetAtPath<ItemSO>(fullItemsRecipesSOPath);
-
-                if (itemRecipesSO == null)
-                {
-                    Debug.Log($"   !!! Dont Have This {itemRecipesName} in For Load : {itemName} !!!");
-                    recipes[j - 4] = null;
-                    continue;
-                }
-                else
-                {
-                    recipes[j - 4] = itemRecipesSO;
-                }
-            }
-
+            // --- Load Modifiers (Columns 8-11 in CSV logic) ---
             List<ModifierData> modifiersDatas = new List<ModifierData>();
-            for (int j = 8; j < 12; j += 2) 
+            for (int j = 8; j < 12; j += 2)
             {
                 string modifiersName = fields[j].Trim();
                 if (string.IsNullOrWhiteSpace(modifiersName)) continue;
 
-
-                string[] searchFolders = new[] { PassiveMofifierOSPath, SkillMofifierOSPath};
+                string[] searchFolders = new[] { PassiveMofifierOSPath, SkillMofifierOSPath };
                 ItemModifierSO findModifiersData = SOAssetLoader.FindExactSOByName<ItemModifierSO>(modifiersName, searchFolders);
-                
+
                 float valueA = float.TryParse(fields[j + 1].Trim(), out float resultA) ? resultA : 0;
 
                 if (findModifiersData == null)
@@ -954,57 +929,109 @@ public class CSVLoader : EditorWindow
                     ModifierData modifiersData = new ModifierData();
                     modifiersData.statModifierSO = findModifiersData;
                     modifiersData.value = valueA;
-
                     modifiersDatas.Add(modifiersData);
                 }
             }
 
-
-            //======================================================================\
-
-            // กำหนดชื่อไฟล์ SO
+            // --- Create/Update Item Asset ---
             string soFileName = itemName.Replace(" ", "_") + ".asset";
             string fullSOPath = AssetOSPath + soFileName;
 
-            // 3. ตรวจสอบว่ามี SO อยู่แล้วหรือไม่
-            FoodItemSO itemSO = AssetDatabase.LoadAssetAtPath<FoodItemSO>(fullSOPath);
+            // เปลี่ยน Type เป็น EatableItemSO ตามที่ต้องการ
+            EatableItemSO itemSO = AssetDatabase.LoadAssetAtPath<EatableItemSO>(fullSOPath);
             bool isNewitemSO = false;
+
             if (itemSO == null)
             {
-                itemSO = ScriptableObject.CreateInstance<FoodItemSO>();
+                itemSO = ScriptableObject.CreateInstance<EatableItemSO>();
                 isNewitemSO = true;
             }
 
-            //========= ตั้งค่าเริ่มต้น ================================\
-
+            // Assign Data to Item
             itemSO.ItemName = itemName;
             itemSO.Description = description;
             itemSO.IsStackable = canStack;
             itemSO.MaxStackSize = maxStack;
-            itemSO.recipes = recipes;
             itemSO.modifiersData = modifiersDatas;
-
-            //=================================================================\
-
+            // หมายเหตุ: ใน EatableItemSO ไม่ควรมี field recipes แล้ว ถ้าคุณลบออกไปแล้ว Code บรรทัดนี้ก็ไม่ต้องมี
 
             if (isNewitemSO)
             {
-                // สร้าง Asset
                 AssetDatabase.CreateAsset(itemSO, fullSOPath);
-                Debug.Log($"Created new ItemSO: {itemName}");
+                Debug.Log($"Created new EatableItemSO: {itemName}");
             }
             else
             {
-                // แจ้ง Unity ว่ามีการเปลี่ยนแปลง
                 EditorUtility.SetDirty(itemSO);
-                Debug.Log($"Updated existing ItemSO: {itemName}");
+                Debug.Log($"Updated existing EatableItemSO: {itemName}");
+            }
+
+            //========= PART 2: สร้าง CookingRecipeSO (สูตรอาหาร) ===================\
+
+            // เตรียมรายการวัตถุดิบ
+            List<ItemQuantity> ingredientsList = new List<ItemQuantity>();
+            bool hasIngredients = false;
+
+            // Loop Ingredients 1-4 (Column 4-7)
+            for (int j = 4; j < 8; j++)
+            {
+                string ingredientName = fields[j].Trim();
+                if (string.IsNullOrWhiteSpace(ingredientName)) continue;
+
+                // ค้นหา Item วัตถุดิบ
+                string[] searchFolders = new[] { MonsterItemOSPath, NaturalItemOSPath, FoodItemOSPath };
+                ItemSO ingredientItem = SOAssetLoader.FindExactSOByName<ItemSO>(ingredientName, searchFolders);
+
+                if (ingredientItem != null)
+                {
+                    ItemQuantity iq = new ItemQuantity();
+                    iq.item = ingredientItem;
+                    iq.quantity = 1; // ค่าเริ่มต้นตามที่คุณต้องการ
+                    ingredientsList.Add(iq);
+                    hasIngredients = true;
+                }
+                else
+                {
+                    Debug.LogWarning($"Recipe generation for '{itemName}': Ingredient '{ingredientName}' not found!");
+                }
+            }
+
+            // ถ้ามีวัตถุดิบอย่างน้อย 1 อย่าง ให้สร้างไฟล์ Recipe
+            if (hasIngredients)
+            {
+                // ตั้งชื่อไฟล์ Recipe เช่น "Sky_Egg_Lava_Bun_Recipe.asset"
+                string recipeFileName = itemName.Replace(" ", "_") + "_Recipe.asset";
+                string fullRecipePath = RecipeOSPath + recipeFileName;
+
+                CookingRecipeSO recipeSO = AssetDatabase.LoadAssetAtPath<CookingRecipeSO>(fullRecipePath);
+                bool isNewRecipe = false;
+
+                if (recipeSO == null)
+                {
+                    recipeSO = ScriptableObject.CreateInstance<CookingRecipeSO>();
+                    isNewRecipe = true;
+                }
+
+                // Assign Data to Recipe
+                recipeSO.ingredients = ingredientsList;
+                recipeSO.resultItem = itemSO; // ใช้ itemSO ที่เพิ่งสร้าง/อัปเดตด้านบนเป็น Result โดยตรง
+
+                if (isNewRecipe)
+                {
+                    AssetDatabase.CreateAsset(recipeSO, fullRecipePath);
+                    Debug.Log($"Created Recipe: {recipeFileName}");
+                }
+                else
+                {
+                    EditorUtility.SetDirty(recipeSO);
+                    Debug.Log($"Updated Recipe: {recipeFileName}");
+                }
             }
         }
 
         // 4. บันทึกการเปลี่ยนแปลงทั้งหมด
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
-        Debug.Log("CSV loading and ScriptableObject creation/update complete!");
-
+        Debug.Log("CSV loading (Food & Recipes) complete!");
     }
 }

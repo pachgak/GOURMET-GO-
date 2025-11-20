@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f318654b6fd324448b4ba48d6f1c2484, type: 3}
+  m_Script: {fileID: 11500000, guid: c0756f30a60080a44b7e71b3f899893a, type: 3}
   m_Name: Sky_Pudding
   m_EditorClassIdentifier: 
   <ItemName>k__BackingField: Sky Pudding
@@ -22,8 +22,3 @@ MonoBehaviour:
   - statModifierSO: {fileID: 11400000, guid: 958c476d7ca0f2c42bee62e845b6ac5d, type: 2}
     value: 10
   <actionSFX>k__BackingField: {fileID: 0}
-  recipes:
-  - {fileID: 11400000, guid: befabb5078b35864bba46de0662cc900, type: 2}
-  - {fileID: 11400000, guid: 60319730b2aecd945b9eed93884fa779, type: 2}
-  - {fileID: 11400000, guid: febf18f2d284ad54abf193f035b63944, type: 2}
-  - {fileID: 11400000, guid: 2f55b5d34ee90e24abc3099d08e1c71f, type: 2}

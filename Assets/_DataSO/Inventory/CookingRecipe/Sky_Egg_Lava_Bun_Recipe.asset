@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e526cbe68c63b441a507d417ce9b894, type: 3}
+  m_Name: Sky_Egg_Lava_Bun_Recipe
+  m_EditorClassIdentifier: 
+  ingredients:
+  - item: {fileID: 11400000, guid: d176dcff0aeef0f498c75d0dbfa1e2e1, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: befabb5078b35864bba46de0662cc900, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: af54a0a13cd0d4f4aa14f72da9884c1e, type: 2}
+    quantity: 1
+  resultItem: {fileID: 11400000, guid: e2b9a21284239fa43ae7279d1154d5bd, type: 2}
