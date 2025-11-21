@@ -171,7 +171,7 @@ public class ObjectPoolingManager : MonoBehaviour
             // Instantiating ตัวแรก
             GameObject newObj = InstantiateObject(callObjPrefab, 0, pool.gameObjs);
             newObj.SetActive(true);
-            newObj.transform.parent = setParant;
+            if (newObj.transform.parent != setParant) newObj.transform.parent = setParant;
             // อัพเดทสถิติสำหรับตัวที่ถูกสร้างใหม่และถูกใช้งาน
             UpdateUsageStats(pool, true);
             return newObj;
@@ -183,7 +183,7 @@ public class ObjectPoolingManager : MonoBehaviour
             if (!obj.activeInHierarchy)
             {
                 obj.SetActive(true);
-                obj.transform.parent = setParant;
+                if (obj.transform.parent != setParant) obj.transform.parent = setParant;
                 // อัพเดทสถิติ
                 UpdateUsageStats(pool, true);
                 return obj;
@@ -193,7 +193,7 @@ public class ObjectPoolingManager : MonoBehaviour
         // ถ้าทุกตัวถูกใช้งานหมด: Instantiate ตัวใหม่เพิ่ม (ขยาย Pool)
         GameObject addedObj = InstantiateObject(callObjPrefab, pool.gameObjs.Count, pool.gameObjs);
         addedObj.SetActive(true);
-        addedObj.transform.parent = setParant;
+        if(addedObj.transform.parent != setParant) addedObj.transform.parent = setParant;
         // อัพเดทสถิติสำหรับตัวที่ถูกสร้างใหม่และถูกใช้งาน
         UpdateUsageStats(pool, true);
         return addedObj;
@@ -211,7 +211,7 @@ public class ObjectPoolingManager : MonoBehaviour
             // Instantiating ตัวแรก
             GameObject newObj = InstantiateObject(callObjPrefab, 0, pool.gameObjs);
             newObj.SetActive(true);
-            newObj.transform.parent = setParant;
+            if (newObj.transform.parent != setParant) newObj.transform.parent = setParant;
             newObj.transform.position = setPositon;
             // อัพเดทสถิติสำหรับตัวที่ถูกสร้างใหม่และถูกใช้งาน
             UpdateUsageStats(pool, true);
@@ -224,7 +224,7 @@ public class ObjectPoolingManager : MonoBehaviour
             if (!obj.activeInHierarchy)
             {
                 obj.SetActive(true);
-                obj.transform.parent = setParant;
+                if (obj.transform.parent != setParant) obj.transform.parent = setParant;
                 obj.transform.position = setPositon;
                 // อัพเดทสถิติ
                 UpdateUsageStats(pool, true);
@@ -235,7 +235,7 @@ public class ObjectPoolingManager : MonoBehaviour
         // ถ้าทุกตัวถูกใช้งานหมด: Instantiate ตัวใหม่เพิ่ม (ขยาย Pool)
         GameObject addedObj = InstantiateObject(callObjPrefab, pool.gameObjs.Count, pool.gameObjs);
         addedObj.SetActive(true);
-        addedObj.transform.parent = setParant;
+        if (addedObj.transform.parent != setParant) addedObj.transform.parent = setParant;
         addedObj.transform.position = setPositon;
         // อัพเดทสถิติสำหรับตัวที่ถูกสร้างใหม่และถูกใช้งาน
         UpdateUsageStats(pool, true);
