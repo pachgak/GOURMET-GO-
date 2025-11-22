@@ -13,6 +13,10 @@ namespace Inventory
         [SerializeField] private InventorySO cookingPotInventory; // Inventory ของหม้อ
         [SerializeField] private InventorySO playerInventory;     // Inventory ของตัวผู้เล่น (เพื่อรับอาหาร)
 
+        [Header("Drop System")]
+        [SerializeField] private GameObject itemDropPrefab; // Prefab ตัว ItemDrop ที่เก็บได้
+        [SerializeField] private Transform playerTransform; // ตำแหน่งที่จะดรอปของ (ปกติคือตัว Player)
+
         [Header("Recipe Database")]
         [SerializeField] private List<CookingRecipeSO> allRecipes; // ลากสูตรอาหารทั้งหมดมาใส่ที่นี่
 
@@ -137,6 +141,58 @@ namespace Inventory
                         }
                     }
                 }
+            }
+        }
+
+        public void ReturnItemsToPlayer()
+        {
+            // 1. ดึงของทั้งหมดในหม้อมา
+            Dictionary<int, InventoryItem> itemsInPot = cookingPotInventory.GetCurrentInventoryState();
+
+            if (itemsInPot.Count == 0) return; // หม้อว่าง ก็ไม่ต้องทำอะไร
+
+            // 2. วนลูปคืนของ
+            foreach (var kvp in itemsInPot)
+            {
+                int slotIndex = kvp.Key;
+                InventoryItem item = kvp.Value;
+
+                if (item.IsEmpty) continue;
+
+                // 2.1 พยายามยัดเข้ากระเป๋า Player
+                int remainingQuantity = playerInventory.AddItem(item.item, item.quantity);
+
+                // 2.2 ถ้ามีของเหลือ (กระเป๋าเต็ม) -> ดรอปลงพื้น
+                if (remainingQuantity > 0)
+                {
+                    SpawnItemDrop(item.item, remainingQuantity);
+                }
+
+                // 2.3 ลบของออกจากหม้อ (สำคัญ! ต้องลบหลังจากย้ายเสร็จ)
+                // แต่เนื่องจากเราวนลูปอยู่ การลบทีละอันในนี้อาจซ้ำซ้อน 
+                // วิธีที่ดีที่สุดคือ ล้างหม้อทีเดียวตอนจบ Loop หรือ Reset ทีละช่อง
+                cookingPotInventory.RemoveItem(slotIndex, item.quantity);
+            }
+
+            // (Optional) เพื่อความสะอาดเกลี้ยงเกลา ล้างหม้อทั้งหมดอีกรอบถ้าต้องการ
+            // cookingPotInventory.Initialize(); 
+        }
+
+        private void SpawnItemDrop(ItemSO itemSO, int quantity)
+        {
+            // ใช้ Object Pooling Manager (ถ้ามี) หรือ Instantiate
+            // ในที่นี้สมมติใช้ Instantiate ปกติไปก่อน หรือปรับใช้ Manager ของคุณ
+
+            Vector3 dropPosition = playerTransform.position + (Vector3.up * 1f) + (Vector3.forward * 0.5f); // ดรอปสูงกว่าพื้นนิดหน่อย
+
+            // ใช้ ObjectPoolingManager ที่คุณมี (แนะนำ)
+            GameObject dropObj = ObjectPoolingManager.Instance.Spawn(itemDropPrefab, dropPosition);
+
+            // เข้าถึง Component Item (Script ที่คุมการเก็บของ) แล้ว Setup ข้อมูล
+            // สมมติชื่อ script คือ 'Item'
+            if (dropObj.TryGetComponent(out Item itemScript))
+            {
+                itemScript.Setup(itemSO, quantity);
             }
         }
     }

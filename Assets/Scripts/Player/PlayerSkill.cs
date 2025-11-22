@@ -252,6 +252,7 @@ public class PlayerSkill : MonoBehaviour
     private void PrepareUI()
     {
         skillUI.InitializeInventoryUI(skillSize);
+
         skillUI.OnDescriptionRequested += HandleDescriptionRequest;
         skillUI.OnSwapItems += HandleSwapItems;
         skillUI.OnStartDragging += HandleDragging;

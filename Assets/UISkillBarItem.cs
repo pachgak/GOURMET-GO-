@@ -47,7 +47,7 @@ public class UISkillBarItem : MonoBehaviour , IPointerClickHandler,
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        ResetData();
+        if (skillImage.sprite == null) ResetData();
     }
 
     // Update is called once per frame

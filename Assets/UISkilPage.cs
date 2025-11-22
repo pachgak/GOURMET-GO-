@@ -53,6 +53,7 @@ public class UISkilPage : MonoBehaviour
             //Instantiate(itemPrefab, Vector3.zero, Quaternion.identity);
             //uiItem.transform.SetParent(contentPanel);
             UISkillBarItem uiItem = Instantiate(itemPrefab, contentPanel);
+
             listOfUIItems.Add(uiItem);
             uiItem.OnItemClicked += HandleItemSelection;
             uiItem.OnItemBeginDrag += HandleBeginDrag;

@@ -1,17 +1,18 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(UIActivator))]
-public class CookingManager : MonoBehaviour
+public class StrorageManager : MonoBehaviour
 {
-    public static CookingManager instance;
+    public static StrorageManager instance;
 
-    [SerializeField] private bool _isOpenCooking;
+    [SerializeField] private bool _isOpenStrorage;
     [SerializeField] private bool _canInteractExit = false;
 
     private UIActivator _uiActivator;
 
-    public Action<bool> OnOpenCookingStateChange;
+    public Action<bool> OnOpenStrorageStateChange;
 
     private void Awake()
     {
@@ -26,6 +27,7 @@ public class CookingManager : MonoBehaviour
     }
     private void OnEnable()
     {
+        if (PlayerInputActionsManager.instance) Debug.LogWarning("WTF");
         PlayerInputActionsManager.instance.OnInteractInputDown += HandleInteractInputDown;
         PlayerInputActionsManager.instance.OnEscInput += HandleEscInput;
         //OpenUiManager.instance.OnOpenUiChange += HandleOpenUiChange;
@@ -40,12 +42,16 @@ public class CookingManager : MonoBehaviour
 
     private void HandleEscInput()
     {
-        if (_isOpenCooking) ChangeStateUi(!_isOpenCooking);
+        Debug.Log($"HandleEscInput _isOpenStrorage {_isOpenStrorage} | {_canInteractExit}");
+
+        if (_isOpenStrorage) ChangeStateUi(!_isOpenStrorage);
     }
 
     private void HandleInteractInputDown()
     {
-        if (_isOpenCooking && _canInteractExit) ChangeStateUi(!_isOpenCooking);
+        Debug.Log($"HandleInteractInputDown _isOpenStrorage {_isOpenStrorage} | {_canInteractExit}");
+
+        if (_isOpenStrorage && _canInteractExit) ChangeStateUi(!_isOpenStrorage);
     }
 
     void Start()
@@ -59,22 +65,43 @@ public class CookingManager : MonoBehaviour
         //การทำงานของ inventory ต่างๆ
     }
 
+    // แก้ไขฟังก์ชันนี้: แยก Logic การเปลี่ยนสถานะออกมา
     public void ChangeStateUi(bool isState)
     {
+        // ถ้าสั่ง "ปิด" (false) ให้รอ 1 เฟรมก่อน เพื่อกัน InteractByPoint ทำงานซ้อน
+        if (isState == false)
+        {
+            StartCoroutine(ChangeStateUiRoutine(false));
+        }
+        else
+        {
+            // ถ้าสั่ง "เปิด" (true) ให้ทำทันที
+            ApplyChangeStateUi(true);
+        }
+    }
+
+    // Coroutine สำหรับหน่วงเวลาปิด
+    private IEnumerator ChangeStateUiRoutine(bool isState)
+    {
+        yield return null; // รอจนจบเฟรม หรือขึ้นเฟรมใหม่
+        ApplyChangeStateUi(isState);
+    }
+
+    // ย้าย Logic เดิมมาไว้ที่นี่
+    private void ApplyChangeStateUi(bool isState)
+    {
         Debug.Log($"ChangeStateUi set {isState}");
-        if (_uiActivator.CheckChangeStateUi(_isOpenCooking, isState))
+        if (_uiActivator.CheckChangeStateUi(_isOpenStrorage, isState))
         {
             Debug.Log($"ChangeStateUi : true");
-            _isOpenCooking = isState;
-            OnOpenCookingStateChange?.Invoke(isState);
-
+            _isOpenStrorage = isState;
+            OnOpenStrorageStateChange?.Invoke(isState);
 
             CancelInvoke(nameof(CanInteractExit));
             if (!_canInteractExit) Invoke(nameof(CanInteractExit), 0.01f);
             else _canInteractExit = false;
         }
         else Debug.Log($"ChangeStateUi : false");
-
     }
 
     public void CanInteractExit()
@@ -84,7 +111,6 @@ public class CookingManager : MonoBehaviour
 
     public void TestEvet()
     {
-        Debug.Log($"TestEvet _isOpenCooking : {_isOpenCooking}");
+        Debug.Log($"TestEvet _isOpenStrorage : {_isOpenStrorage}");
     }
 }
-
