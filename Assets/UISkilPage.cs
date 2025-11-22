@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class UISkilPage : MonoBehaviour
 {
-    public UISkillBarItem itemPrefab;
+    //public UISkillBarItem itemPrefab;
 
-    [SerializeField]
-    private RectTransform contentPanel;
+    //[SerializeField]
+    //private RectTransform contentPanel;
 
     //[SerializeField]
     //private UIInventoryDescription itemDescription;
@@ -43,16 +43,17 @@ public class UISkilPage : MonoBehaviour
         //itemDescription.ResetDescription();
     }
 
-    public void InitializeInventoryUI(int inventorysize)
+    public void InitializeInventoryUI(UISkillBarItem[] UISkillBarItems)
     {
         dropitemZone.OnItemDropped += HandleDropItem;
 
-        for (int i = 0; i < inventorysize; i++)
+        for (int i = 0; i < UISkillBarItems.Length; i++)
         {
             //UISkillBarItem uiItem = 
             //Instantiate(itemPrefab, Vector3.zero, Quaternion.identity);
             //uiItem.transform.SetParent(contentPanel);
-            UISkillBarItem uiItem = Instantiate(itemPrefab, contentPanel);
+            //UISkillBarItem uiItem = Instantiate(itemPrefab, contentPanel);
+            UISkillBarItem uiItem = UISkillBarItems[i];
 
             listOfUIItems.Add(uiItem);
             uiItem.OnItemClicked += HandleItemSelection;

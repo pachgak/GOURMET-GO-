@@ -37,7 +37,7 @@ namespace Inventory.UI
         {
             canvasGroup = GetComponent<CanvasGroup>();
 
-            ResetData();
+            if (itemImage.sprite == null) ResetData();
             Deselect();
         }
         public void ResetData()

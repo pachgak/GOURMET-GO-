@@ -11,11 +11,12 @@ using static SettingPlayerControllerManager;
 public class PlayerSkill : MonoBehaviour
 {
     public UISkilPage skillUI;
+    public UISkillBarItem[] UISkillBarItems = new UISkillBarItem[0];
 
     public List<SkillData> initialSkills;
     // ใช้ Array ของ Skill ScriptableObject
     public SkillData[] skillDatas = new SkillData[0];
-    public int skillSize = 5;
+    //public int skillSize = 5;
     public float useSkillDely = 0f;
 
     [Header("System")]
@@ -172,7 +173,7 @@ public class PlayerSkill : MonoBehaviour
 
     public void Initialize()
     {
-        skillDatas = new SkillData[skillSize];
+        skillDatas = new SkillData[UISkillBarItems.Length];
     }
 
     public void SetSkillingState(bool isState , float skillLifeTime)
@@ -251,7 +252,7 @@ public class PlayerSkill : MonoBehaviour
 
     private void PrepareUI()
     {
-        skillUI.InitializeInventoryUI(skillSize);
+        skillUI.InitializeInventoryUI(UISkillBarItems);
 
         skillUI.OnDescriptionRequested += HandleDescriptionRequest;
         skillUI.OnSwapItems += HandleSwapItems;
