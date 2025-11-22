@@ -12,7 +12,7 @@ public class BaseEnemyCombat : MonoBehaviour
     // Events ที่จะถูก Invoke กลับไปหา AI เมื่อโจมตีเสร็จ
     public event Action OnAttackFinished;
     public event Action<int> OnSkillUesd;
-    public event Action OnSkillEnd;
+    //public event Action OnSkillEnd;
 
     public EnemySkillSO[] enemySkills;
     //public EnemySkill[] enemySkills;
@@ -120,10 +120,10 @@ public class BaseEnemyCombat : MonoBehaviour
     {
         OnSkillUesd?.Invoke(index);
     }
-    protected void SkillEnd()
-    {
-        OnSkillEnd?.Invoke();
-    }
+    //protected void SkillEnd()
+    //{
+    //    OnSkillEnd?.Invoke();
+    //}
 
     protected void FaceTarget(Vector3 targetPosition)
     {

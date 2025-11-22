@@ -13,7 +13,7 @@ public class BaerAnimatorController : MonoBehaviour
     private BaseEnemyCombat _enemyCombat;
     private BaseEnemyAI _aiController;
 
-    private bool isSkilling;
+    [SerializeField] private bool isSkilling;
     private void Awake()
     {
         // ...
@@ -26,23 +26,25 @@ public class BaerAnimatorController : MonoBehaviour
     private void OnEnable()
     {
         _enemyCombat.OnSkillUesd += HandleSkillUesd;
-        _enemyCombat.OnSkillEnd += HandleSkillEnd;
+        _enemyCombat.OnAttackFinished += HandleSkillEnd;
     }
 
     private void OnDisable()
     {
         _enemyCombat.OnSkillUesd -= HandleSkillUesd;
-        _enemyCombat.OnSkillEnd -= HandleSkillEnd;
+        _enemyCombat.OnAttackFinished -= HandleSkillEnd;
     }
     private void HandleSkillUesd(int skillNumber)
     {
         isSkilling = true;
 
+        //spriteRenderer.flipX = false;
+
         Vector3 attackDirection = (_aiController.playerTarget.position - transform.position).normalized;
         _animator.SetFloat("ActionX", attackDirection.x);
         _animator.SetFloat("ActionZ", attackDirection.z);
 
-        //spriteRenderer.flipX = (attackDirection.x <= 0) ? true : false;
+        spriteRenderer.flipX = (attackDirection.x >= 0) ? true : false; 
 
         if (skillNumber == 0)
         {
@@ -104,10 +106,12 @@ public class BaerAnimatorController : MonoBehaviour
             Vector3 attackDirection = (_aiController.playerTarget.position - transform.position).normalized;
             _animator.SetFloat("ActionX", attackDirection.x);
             _animator.SetFloat("ActionZ", attackDirection.z);
+
+            spriteRenderer.flipX = (attackDirection.x >= 0) ? true : false;
         }
         else if (isMoving)
         {
-            spriteRenderer.flipX = false;
+            //spriteRenderer.flipX = false;
 
             // 4a. แปลงความเร็วจาก World Space ให้เป็น Local Space ของตัวละคร
             // นี่คือขั้นตอนสำคัญ: มันบอกว่าความเร็วนี้เมื่อเทียบกับทิศทางที่ตัวละครกำลังหันหน้าไปเป็นอย่างไร
@@ -127,6 +131,8 @@ public class BaerAnimatorController : MonoBehaviour
             //_animator.SetFloat("MoveZ", Mathf.Lerp(currentMoveZ, moveZ, dampTime));
             _animator.SetFloat("MoveX", moveX);
             _animator.SetFloat("MoveZ", moveZ);
+
+            spriteRenderer.flipX = (moveX >= 0) ? true : false;
         }
         else
         {

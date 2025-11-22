@@ -40,6 +40,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3224954995386581286}
     m_Modifications:
+    - target: {fileID: 4111516407650479466, guid: 83367e9aa03ee3b4a864c5e35b4ed21f, type: 3}
+      propertyPath: CollisionModule.type
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5883452618691308055, guid: 83367e9aa03ee3b4a864c5e35b4ed21f, type: 3}
       propertyPath: m_Name
       value: Lightning strike
