@@ -28,6 +28,7 @@ public class BaseEnemyCombat : MonoBehaviour
     protected Coroutine _attackSequenceCoroutine;
     protected BaseEnemyAI _aiController;
     protected BaseEnemyMovement _enemyMovement;
+    protected EnemyHealth _enemyHealth;
 
     protected virtual void Awake()
     {
@@ -35,7 +36,7 @@ public class BaseEnemyCombat : MonoBehaviour
         _agent = GetComponent<NavMeshAgent>();
         _aiController = GetComponent<BaseEnemyAI>();
         _enemyMovement = GetComponent<BaseEnemyMovement>();
-
+        _enemyHealth = GetComponent<EnemyHealth>();
         // *Note: ใน Production Game, playerTarget ควรถูกกำหนดค่าใน Start/Setup*
         // สำหรับตอนนี้ สันนิษฐานว่า aiController.playerTarget ถูกกำหนดไว้แล้ว
         if (_aiController == null)
@@ -53,6 +54,7 @@ public class BaseEnemyCombat : MonoBehaviour
             //_playerTarget = _aiController.playerTarget; // ดึง Target จาก AI (เพื่อความง่าย)
             //_aiController.OnStartAttackSequence += HandleStartAttackSequence;
         }
+        _enemyHealth.OnDie += HandleOnDie;
     }
 
     protected virtual void OnDisable()
@@ -61,10 +63,17 @@ public class BaseEnemyCombat : MonoBehaviour
         {
             //_aiController.OnStartAttackSequence -= HandleStartAttackSequence;
         }
+        _enemyHealth.OnDie -= HandleOnDie;
     }
 
+    private void HandleOnDie()
+    {
+        if (_attackSequenceCoroutine != null) StopCoroutine(_attackSequenceCoroutine);
+    }
     protected virtual void Update()
     {
+        if (_enemyHealth.isDead) return;
+
         if (attackTimer > 0 && _attackSequenceCoroutine == null) attackTimer -= Time.deltaTime;
 
 

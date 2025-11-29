@@ -5,6 +5,7 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 
 public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
 {
@@ -20,6 +21,8 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
     private NavMeshAgent _agent;
     private Rigidbody _rb;
     private BaseEnemyAI _aiController;
+    private EnemyHealth _enemyHealth;
+
     private bool _isWaiting;
     private float _timerWaiting;
 
@@ -42,6 +45,7 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         _agent = GetComponent<NavMeshAgent>();
         _aiController = GetComponent<BaseEnemyAI>();
         _rb = GetComponent<Rigidbody>();
+        _enemyHealth = GetComponent<EnemyHealth>();
 
         // Safety Check
         if (_agent == null || _aiController == null)
@@ -59,6 +63,8 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         _aiController.OnStartChase += HandleStartChase;
         _aiController.OnStopMovement += HandleStopMovement;
         _aiController.OnStateChange += HandleStateChange;
+
+        _enemyHealth.OnDie += HandleOnDie;
     }
 
     private void OnDisable()
@@ -69,6 +75,13 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
             _aiController.OnStartChase -= HandleStartChase;
             _aiController.OnStopMovement -= HandleStopMovement;
         }
+
+        _enemyHealth.OnDie -= HandleOnDie;
+    }
+
+    private void HandleOnDie()
+    {
+        _agent.SetDestination(transform.position);
     }
 
     private void HandleStateChange(BaseEnemyAI.EnemyState state)
@@ -100,6 +113,8 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
 
     void Update()
     {
+        if (_enemyHealth.isDead) return;
+
         // Logic การ Roaming: ถ้าอยู่ใน Roaming State และถึงจุดหมายแล้ว ให้สุ่มจุดใหม่
         if (_aiController.currentState == BaseEnemyAI.EnemyState.Roaming && IsAtDestination())
         {

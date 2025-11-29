@@ -11,6 +11,7 @@ public class ItemDropRage : MonoBehaviour
     public Vector3 offSet;
     private EnemyHealth enemyHealth;
 
+    private bool isTriger;
     private void Awake()
     {
         enemyHealth = GetComponent<EnemyHealth>();
@@ -33,6 +34,8 @@ public class ItemDropRage : MonoBehaviour
 
     public void HealdeDropItems()
     {
+        if (isTriger) return;
+
         foreach (var itemsSo in Items)
         {
             if (itemsSo == null) continue;
@@ -43,6 +46,8 @@ public class ItemDropRage : MonoBehaviour
                 item.Setup(itemsSo.item, (!itemsSo.isRandom) ? itemsSo.countMin : UnityEngine.Random.Range(itemsSo.countMin, itemsSo.countMax+1));
             }
         }
+
+        isTriger = true;
     }
 
     [Serializable]

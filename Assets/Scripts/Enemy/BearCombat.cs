@@ -19,6 +19,8 @@ public class BearCombat : BaseEnemyCombat
 
     protected override void Update()
     {
+        if (_enemyHealth.isDead) return;
+
         if (attackTimer > 0 && _attackSequenceCoroutine == null)
         {
             attackTimer -= Time.deltaTime;

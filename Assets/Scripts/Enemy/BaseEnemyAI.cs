@@ -31,12 +31,13 @@ public class BaseEnemyAI : MonoBehaviour
     [SerializeField] protected bool _playerInSightRange;
     [SerializeField] protected bool _playerInAttackRange;
     private BaseEnemyCombat _enemyCombat;
+    private EnemyHealth _enemyHealth;
 
     protected virtual void Awake()
     {
         // AI หา Agent ที่จำเป็นต้องใช้เอง
         _agent = GetComponent<NavMeshAgent>();
-
+        _enemyHealth = GetComponent<EnemyHealth>();
         // หา Combat Component เพื่อสมัครรับ Event จบการโจมตี (ถ้ามี)
         _enemyCombat = GetComponent<BaseEnemyCombat>();
         
@@ -59,6 +60,7 @@ public class BaseEnemyAI : MonoBehaviour
         }
     }
 
+
     protected virtual void Start()
     {
         // ... (สมมติว่ามีการหา playerTarget ที่นี่) ...
@@ -67,6 +69,8 @@ public class BaseEnemyAI : MonoBehaviour
 
     protected virtual void Update()
     {
+        if (_enemyHealth.isDead) return;
+
         CheckPlayerDistance();
 
         switch (currentState)

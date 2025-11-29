@@ -12,6 +12,7 @@ public class BaerAnimatorController : MonoBehaviour
     private NavMeshAgent _agent;
     private BaseEnemyCombat _enemyCombat;
     private BaseEnemyAI _aiController;
+    private EnemyHealth _enemyHealth;
 
     [SerializeField] private bool isSkilling;
     private void Awake()
@@ -20,6 +21,7 @@ public class BaerAnimatorController : MonoBehaviour
         _aiController = GetComponent<BaseEnemyAI>();
         _enemyCombat = GetComponent<BaseEnemyCombat>();
         _agent = GetComponent<NavMeshAgent>();
+        _enemyHealth = GetComponent<EnemyHealth>(); 
         // ...
     }
 
@@ -27,13 +29,21 @@ public class BaerAnimatorController : MonoBehaviour
     {
         _enemyCombat.OnSkillUesd += HandleSkillUesd;
         _enemyCombat.OnAttackFinished += HandleSkillEnd;
+        _enemyHealth.OnDie += HandleOnDie;
     }
 
     private void OnDisable()
     {
         _enemyCombat.OnSkillUesd -= HandleSkillUesd;
         _enemyCombat.OnAttackFinished -= HandleSkillEnd;
+        _enemyHealth.OnDie -= HandleOnDie;
     }
+    
+    private void HandleOnDie()
+    {
+        _animator.SetBool("isDead",true);
+    }
+
     private void HandleSkillUesd(int skillNumber)
     {
         isSkilling = true;
@@ -57,6 +67,10 @@ public class BaerAnimatorController : MonoBehaviour
         else if (skillNumber == 2)
         {
             _animator.SetTrigger("atSkill3");
+        }
+        else if (skillNumber == 3)
+        {
+            _animator.SetTrigger("atSkill4");
         }
     }
 
