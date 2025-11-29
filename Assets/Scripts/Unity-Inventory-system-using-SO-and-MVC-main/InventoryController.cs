@@ -188,7 +188,7 @@ namespace Inventory
             {
                 if (itemAction != null)
                 {
-                    canPerformAction = itemAction.PerformAction(gameObject);
+                    //canPerformAction = itemAction.PerformAction(gameObject);
                     if (itemAction.actionSFX != null) audioSource.PlayOneShot(itemAction.actionSFX);
                     if (inventoryData.GetItemAt(itemIndex).IsEmpty)
                         inventoryUI.ResetSelection();

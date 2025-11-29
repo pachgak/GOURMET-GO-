@@ -4,14 +4,19 @@ public class PlayerParticleController : MonoBehaviour
 {
     [Header("References")]
     private PlayerMovement _playerMovement; // ลาก Player ที่มีสคริปต์ PlayerMovement มาใส่
+    private AudioSource _audioSource; // ลาก Player ที่มีสคริปต์ PlayerMovement มาใส่
     [SerializeField] private ParticleSystem sprintParticle; // ลาก Particle System มาใส่
     [SerializeField] private Vector3 sprintOffSet;
+    [SerializeField] private AudioClip sprintClip;
     [SerializeField] private ParticleSystem dashParticle;   // เอฟเฟกต์ตอนพุ่ง (Dash)
     [SerializeField] private Vector3 dashOffSet;
+    [SerializeField] private AudioClip dashClip;
+
 
     private void Awake()
     {
         _playerMovement = GetComponent<PlayerMovement>();
+        _audioSource = GetComponent<AudioSource>();
 
         sprintParticle.Stop();
         dashParticle.Stop();
@@ -49,10 +54,13 @@ public class PlayerParticleController : MonoBehaviour
 
         if (isSprinting)
         {
+            _audioSource.clip = sprintClip;
+            _audioSource.loop = true;
+            _audioSource.Play();
             // ถ้าวิ่งอยู่ และ Particle ยังไม่เล่น ให้เล่น
             //if (!sprintParticle.isPlaying)
             //{
-                sprintParticle.Play();
+            sprintParticle.Play();
             
             //}
         }
@@ -60,6 +68,8 @@ public class PlayerParticleController : MonoBehaviour
         {
             // ถ้าหยุดวิ่ง ให้หยุด Particle
             sprintParticle.Stop();
+            if(_audioSource.clip == sprintClip) _audioSource.Stop();
+
         }
     }
 
@@ -93,6 +103,13 @@ public class PlayerParticleController : MonoBehaviour
             // 2. สั่งเล่น Particle
             dashParticle.Play();
             dashParticle.transform.position = UpdatePosition(-direction,dashOffSet);
+
+            _audioSource.clip = null;
+            //_audioSource.clip = dashClip;
+            _audioSource.loop = false;
+            //_audioSource.Play();
+
+            _audioSource.PlayOneShot(dashClip);
         }
         else
         {

@@ -67,12 +67,15 @@ public class BearCombat : BaseEnemyCombat
         {
             // Spawn บน NavMesh
             // แนะนำให้ใช้ ObjectPoolingManager ถ้ามี แต่ถ้าไม่มีใช้ Instantiate ไปก่อนได้ครับ
-            Instantiate(mushroomPrefab, hit.position, Quaternion.identity);
+            //Instantiate(mushroomPrefab, hit.position, Quaternion.identity);
+            GameObject clone = ObjectPoolingManager.Instance.Spawn(mushroomPrefab, hit.position);
+            
         }
         else
         {
             // ถ้าหาพื้นไม่เจอ ให้ Spawn ตรงจุดที่สุ่มได้เลย (แต่อาจจะลอยหรือจม)
-            Instantiate(mushroomPrefab, randomPos, Quaternion.identity);
+            //Instantiate(mushroomPrefab, randomPos, Quaternion.identity);
+            GameObject clone = ObjectPoolingManager.Instance.Spawn(mushroomPrefab, randomPos);
         }
     }
 

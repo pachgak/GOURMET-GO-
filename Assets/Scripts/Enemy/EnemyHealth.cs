@@ -11,10 +11,12 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
     [SerializeField] public float currentHealth;
     private Rigidbody rb;
     private NavMeshAgent agent;
+    private AudioSource _audioSource;
     private Collider _collider;
     private Coroutine enableAgentCoroutine; // เพิ่มตัวแปรสำหรับเก็บ Coroutine
     public bool isDead;
     public bool isRespawnNow = true;
+    public AudioClip dieClip;
 
     //private HitEffect _hitEffect;
 
@@ -29,6 +31,7 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
 
     private void Awake()
     {
+        _audioSource = GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         _collider = GetComponent<Collider>();
@@ -69,6 +72,11 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
 
         Debug.Log(transform.name + " has been defeated.");
         if (isRespawnNow) RetrunToPoor();
+
+        if (_audioSource != null && dieClip != null)
+        {
+            _audioSource.PlayOneShot(dieClip);
+        }
     }
 
     private void RetrunToPoor()

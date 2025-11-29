@@ -21,12 +21,19 @@ public class BearParticleController : MonoBehaviour
     {
         //_enemyHealth.OnCurrentChang += HandleCurrentChang;
         _bearAI.OnAngryChang += HandleAngryChang;
+        _enemyHealth.OnDie += HandleDie;
     }
 
     private void OnDisable()
     {
         //_enemyHealth.OnCurrentChang -= HandleCurrentChang;
         _bearAI.OnAngryChang -= HandleAngryChang;
+        _enemyHealth.OnDie -= HandleDie;
+    }
+
+    private void HandleDie()
+    {
+        ToggleAngryVfx(false);
     }
 
     private void HandleAngryChang(bool stat)
@@ -55,6 +62,8 @@ public class BearParticleController : MonoBehaviour
         {
             ToggleAngryVfx(false);
         }
+        
+
     }
 
     public void ToggleAngryVfx(bool awn)
