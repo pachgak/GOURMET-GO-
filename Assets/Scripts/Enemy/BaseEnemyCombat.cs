@@ -11,7 +11,7 @@ public class BaseEnemyCombat : MonoBehaviour
     public float attackTimer;
     // Events ที่จะถูก Invoke กลับไปหา AI เมื่อโจมตีเสร็จ
     public event Action OnAttackFinished;
-    public event Action<int> OnSkillUesd;
+    public event Action<int,float> OnSkillUesd;
     //public event Action OnSkillEnd;
 
     public EnemySkillSO[] enemySkills;
@@ -125,10 +125,11 @@ public class BaseEnemyCombat : MonoBehaviour
 
         OnAttackFinished?.Invoke();
     }
-    protected void TriggerSkillUesd(int index)
+    protected void TriggerSkillUesd(int index , float speedMultiplier = 1f)
     {
-        OnSkillUesd?.Invoke(index);
+        OnSkillUesd?.Invoke(index, speedMultiplier);
     }
+
     //protected void SkillEnd()
     //{
     //    OnSkillEnd?.Invoke();

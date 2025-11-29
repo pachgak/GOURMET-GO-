@@ -3,6 +3,7 @@ using UnityEngine;
 public class BearParticleController : MonoBehaviour
 {
     private EnemyHealth _enemyHealth;
+    private BearAI _bearAI;
     [SerializeField] private ParticleSystem auraParticle; // ลาก Particle System มาใส่
     [SerializeField] private SpriteRenderer iconAngry; // ลาก Particle System มาใส่
     [SerializeField] private Vector3 auraOffSet;
@@ -13,16 +14,33 @@ public class BearParticleController : MonoBehaviour
         ToggleAngryVfx(false);
 
         _enemyHealth = GetComponent<EnemyHealth>();
+        _bearAI = GetComponent<BearAI>();
     }
 
     private void OnEnable()
     {
-        _enemyHealth.OnCurrentChang += HandleCurrentChang;
+        //_enemyHealth.OnCurrentChang += HandleCurrentChang;
+        _bearAI.OnAngryChang += HandleAngryChang;
     }
 
     private void OnDisable()
     {
-        _enemyHealth.OnCurrentChang -= HandleCurrentChang;
+        //_enemyHealth.OnCurrentChang -= HandleCurrentChang;
+        _bearAI.OnAngryChang -= HandleAngryChang;
+    }
+
+    private void HandleAngryChang(bool stat)
+    {
+        if (auraParticle == null) return;
+
+        if (stat && !auraParticle.isPlaying)
+        {
+            ToggleAngryVfx(true);
+        }
+        else if (!stat && auraParticle.isPlaying)
+        {
+            ToggleAngryVfx(false);
+        }
     }
 
     private void HandleCurrentChang(float hp)

@@ -14,6 +14,7 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
     private Collider _collider;
     private Coroutine enableAgentCoroutine; // เพิ่มตัวแปรสำหรับเก็บ Coroutine
     public bool isDead;
+    public bool isRespawnNow = true;
 
     //private HitEffect _hitEffect;
 
@@ -26,6 +27,13 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
 
     Action<float> ITakeDamage.OnTakeDamage { get => OnTakeDamage; set => OnTakeDamage = value;}
 
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+        agent = GetComponent<NavMeshAgent>();
+        _collider = GetComponent<Collider>();
+    }
+
     private void OnEnable()
     {
         _collider.enabled = true;
@@ -34,9 +42,7 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
     void Start()
     {
         currentHealth = maxHealth;
-        rb = GetComponent<Rigidbody>();
-        agent = GetComponent<NavMeshAgent>();
-        _collider = GetComponent<Collider>();
+        
         //_hitEffect = GetComponent<HitEffect>();
 
         // ตั้งค่าเริ่มต้น: ให้ Rigidbody เป็น Kinematic
@@ -62,7 +68,7 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
         _collider.enabled = false;
 
         Debug.Log(transform.name + " has been defeated.");
-        //Invoke(nameof(RetrunToPoor),10f);
+        if (isRespawnNow) RetrunToPoor();
     }
 
     private void RetrunToPoor()

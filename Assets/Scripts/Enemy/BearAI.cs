@@ -1,12 +1,22 @@
+using System;
 using UnityEngine;
 
 public class BearAI : BaseEnemyAI
 {
-    public float chaseDurationForSkill3 = 5f; // เวลาที่ต้องอยู่ใน ChaseState (5 วินาที)
+    [Header("Chase Settings")]
+    public float chaseTimeoutDuration = 4f; // นานแค่ไหนถึงจะตัดบทใช้สกิล (เช่น 4 วินาที)
+    public float chaseTimeoutMinAttack = 2f; // นานแค่ไหนถึงจะตัดบทใช้สกิล (เช่น 4 วินาที)
+    [SerializeField] private float chaseTimer = 0f;
+    
+    // ตัวแปรนี้จะให้ Combat มาเช็คว่าเป็นการโจมตีแบบไหน
+    public bool isChaseTimeoutAttack = false;
 
     // FSM Variables
-    private float chaseTimer = 0f;
     private bool forceUseSkill3 = false;
+
+    public bool isAngry = false;
+
+    public Action<bool> OnAngryChang;
 
     protected override void Awake()
     {
@@ -15,11 +25,15 @@ public class BearAI : BaseEnemyAI
     protected override void OnEnable()
     {
         base.OnEnable();
+
+        _enemyHealth.OnCurrentChang += HandleCurrentChang;
     }
 
     protected override void OnDisable()
     {
         base.OnDisable();
+
+        _enemyHealth.OnCurrentChang -= HandleCurrentChang;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -34,28 +48,46 @@ public class BearAI : BaseEnemyAI
         base.Update();
     }
 
+    private void HandleCurrentChang(float hp)
+    {
+        if (hp <= _enemyHealth.maxHealth / 2)
+        {
+            isAngry = true;
+            
+        }
+        else if (hp > _enemyHealth.maxHealth / 2)
+        {
+            isAngry = false;
+        }
+
+        OnAngryChang?.Invoke(isAngry);
+    }
+
     protected override void ChaseChangeStateLogic()
     {
+        // 1. ถ้าเข้าระยะโจมตีปกติ -> ให้โจมตีแบบปกติ (Reset Flag)
         if (_playerInAttackRange)
         {
-            chaseTimer = 0f;
-            ChangeState(EnemyState.Attack); // เข้า Attack State ตามปกติ
+            if(chaseTimer >= chaseTimeoutDuration - chaseTimeoutMinAttack) chaseTimer = chaseTimeoutDuration - chaseTimeoutMinAttack;
+            isChaseTimeoutAttack = false; // บอกว่านี่คือการตีปกติ
+            ChangeState(EnemyState.Attack);
             return;
         }
 
-        // 1. เงื่อนไขพิเศษ: Chase State นานเกินไป
+        // 2. ถ้ายังไม่ถึงระยะ แต่ "ไล่นานเกินไป" -> บังคับโจมตีด้วยสกิล 1 หรือ 3
         chaseTimer += Time.deltaTime;
-        if (chaseTimer >= chaseDurationForSkill3)
+        if (chaseTimer >= chaseTimeoutDuration)
         {
-            forceUseSkill3 = true; // <--- ตั้งค่าแฟล็ก!
             chaseTimer = 0f;
-            ChangeState(EnemyState.Attack); // เข้า Attack State (เพื่อใช้ Skill 3 พิเศษ)
+            isChaseTimeoutAttack = true; // บอกว่านี่คือการตีเพราะหมดเวลาไล่
+            ChangeState(EnemyState.Attack); // สั่งเข้า Attack State ทั้งที่ยังไม่ถึงระยะ
             return;
         }
 
+        // 3. Logic การไล่ตามปกติ
         if (!_playerInSightRange)
         {
-            chaseTimer = 0f;
+            //chaseTimer = 0f;
             ChangeState(EnemyState.Roaming);
         }
         else

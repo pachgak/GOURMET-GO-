@@ -41,12 +41,16 @@ public class BaerAnimatorController : MonoBehaviour
     
     private void HandleOnDie()
     {
+        _animator.speed = 1f;
+
         _animator.SetBool("isDead",true);
     }
 
-    private void HandleSkillUesd(int skillNumber)
+    private void HandleSkillUesd(int skillNumber, float speedMultiplier)
     {
         isSkilling = true;
+
+        _animator.speed = speedMultiplier;
 
         //spriteRenderer.flipX = false;
 
@@ -77,6 +81,8 @@ public class BaerAnimatorController : MonoBehaviour
     private void HandleSkillEnd()
     {
         isSkilling = false  ;
+
+        _animator.speed = 1f;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

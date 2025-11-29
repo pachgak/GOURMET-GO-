@@ -30,8 +30,8 @@ public class BaseEnemyAI : MonoBehaviour
 
     [SerializeField] protected bool _playerInSightRange;
     [SerializeField] protected bool _playerInAttackRange;
-    private BaseEnemyCombat _enemyCombat;
-    private EnemyHealth _enemyHealth;
+    protected BaseEnemyCombat _enemyCombat;
+    protected EnemyHealth _enemyHealth;
 
     protected virtual void Awake()
     {
