@@ -44,8 +44,9 @@ public class BearCombat : BaseEnemyCombat
 
     protected override IEnumerator AttackLogic(bool forceSkill3Sequence)
     {
-       
-
+        TriggerSkillUesd(3);
+        yield return enemySkills[3].UseSkill(this.gameObject, _aiController.playerTarget);
+        /*
         // 1. ตรวจสอบเงื่อนไขการใช้สกิล 3 ก่อน
         if (forceSkill3Sequence)
         {
@@ -73,5 +74,6 @@ public class BearCombat : BaseEnemyCombat
             TriggerSkillUesd(randomSkillIndex);
             yield return enemySkills[randomSkillIndex].UseSkill(this.gameObject, _aiController.playerTarget);
         }
+        */
     }
 }
