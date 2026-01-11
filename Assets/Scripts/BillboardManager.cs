@@ -36,7 +36,9 @@ public class BillboardManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
     }
+
 
     private void LateUpdate()
     {

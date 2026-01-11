@@ -23,6 +23,11 @@ public class Billboard : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        HandleCameraChange(BillboardManager.instance.lastCameraRotation);
+    }
+
     private void OnEnable()
     {
         // สมัครรับฟัง Action จาก LookAtCameraManager
@@ -31,8 +36,6 @@ public class Billboard : MonoBehaviour
             BillboardManager.instance.OnCameraChange += HandleCameraChange;
             BillboardManager.instance.OnCameraFollowChange += HandleCameraFollowChange;
         }
-
-        HandleCameraChange(BillboardManager.instance.lastCameraRotation);
     }
 
     private void HandleCameraFollowChange(bool obj)

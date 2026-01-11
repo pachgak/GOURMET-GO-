@@ -351,13 +351,17 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
             _resetDashClickTimer -= Time.deltaTime;
             if (_resetDashClickTimer <= 0)
             {
-                _dashClick = false;
+                _dashClick = false; 
             }
         }
 
         Vector3 finalMovement = Vector3.zero;
 
-        if (_isDashSkilling)
+        if (_isKnockedBack) // <-- à¾ÔèÁ Knockback à¢éÒÁÒã¹ÅÓ´Ñº
+        {
+            finalMovement = _knockbackVelocity;
+        }
+        else if(_isDashSkilling)
         {
 
             finalMovement = _dashSkillVelocity;
@@ -379,10 +383,6 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
                 SetMoveDeley(dashMovementDelay);
                 SetIsDash(false, Vector3.zero);
             }
-        }
-        else if (_isKnockedBack) // <-- à¾ÔèÁ Knockback à¢éÒÁÒã¹ÅÓ´Ñº
-        {
-            finalMovement = _knockbackVelocity;
         }
         else if (_isAttackingForward)
         {
