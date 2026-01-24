@@ -41,9 +41,13 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
 
     [Header("Knockbackable")]
     public bool canKnockback = true;
+    bool IKnockbackable._canKnockback { get => canKnockback; set => canKnockback = value; }
     private Coroutine KnockbackCoroutine;
     [Range(0.001f, 0.1f)][SerializeField] private float StillThreshold = 0.05f;
     [SerializeField] private float MaxKnockbackTime = 0.5f;
+    [SerializeField] private float knockbackMultiplier = 1f;
+    float IKnockbackable._knockbackMultiplier { get => knockbackMultiplier; set => knockbackMultiplier = value; }
+
     [Header("Knockback")] 
     public float knockbackDeceleration = 20f; // อัตราการลดความเร็วของการกระเด็น (ค่าที่สูงขึ้นจะหยุดเร็วขึ้น)
     [SerializeField] private bool _isKnockedBack = false;
@@ -283,11 +287,11 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
         //}
     }
 
-    internal void HandleAttackForward(Vector3 direction, float speed, float time)
+    internal void HandleAttackForward(bool isForward ,Vector3 direction, float speed, float time)
     {
         _isAttackingForward = true;
         _attackForwardTimeCounter = time;
-        _attackForwardDirection = direction * speed;
+        _attackForwardDirection = ((isForward)?direction:-direction) * speed;
 
         SetSprinteCooldown(_attackForwardTimeCounter);
 
@@ -702,17 +706,17 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
         }
     }
 
-    public void GetKnockedBack(Vector3 direction, float force)
+    public void GetKnockedBack(Vector3 direction, float force, float time)
     {
         if (!canKnockback) return;
         if (isDashing) return;
 
         if (KnockbackCoroutine != null) StopCoroutine(KnockbackCoroutine);
         _isKnockedBack = false;
-        KnockbackCoroutine = StartCoroutine(ApplyKnockback(direction, force));
+        KnockbackCoroutine = StartCoroutine(ApplyKnockback(direction, force, time));
     }
 
-    private IEnumerator ApplyKnockback(Vector3 direction, float force)
+    private IEnumerator ApplyKnockback(Vector3 direction, float force, float time)
     {
         // 1. ยกเลิกสถานะการเคลื่อนที่อื่นๆ ที่ขัดแย้งกัน
         if (isDashing) SetIsDash(false, Vector3.zero);

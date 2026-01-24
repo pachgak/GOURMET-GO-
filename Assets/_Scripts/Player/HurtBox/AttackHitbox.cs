@@ -1,6 +1,6 @@
 // ใน Script AttackHitbox.cs
 using UnityEngine;
-using static IHurtBox;
+using static IHitBox;
 
 public class AttackHitbox : BaseHitBox
 {
@@ -17,7 +17,9 @@ public class AttackHitbox : BaseHitBox
     public override void PerformAttack()
     {
         // คำนวณตำแหน่งและทิศทางของ Hitbox
-        Vector3 position = transform.position + transform.rotation * attackOffset;
+        //Vector3 position = transform.position + transform.rotation * attackOffset;
+        Vector3 frontOffset = new Vector3(0, attackSize.y / 2, attackSize.z / 2) + attackOffset;
+        Vector3 position = transform.position + transform.rotation * frontOffset;
 
         // ใช้ Physics.OverlapBox เพื่อหา Collider ทั้งหมดที่อยู่ใน Hitbox
         Collider[] hitColliders = Physics.OverlapBox(position, attackSize / 2, transform.rotation, targetLayer);
@@ -31,14 +33,18 @@ public class AttackHitbox : BaseHitBox
 
             if (hitCollider.TryGetComponent(out IKnockbackable knockbackable))
             {
-                knockbackable.GetKnockedBack(knockbackDirection, knockbackForce);
+                knockbackable.GetKnockedBack(knockbackDirection, knockbackForce, knockbackTime);
             }
         }
 
-        //playerSound and CameraShack
-        if (hitColliders.Length > 0 && ownerHit == CameraShakeManager.instance.playerGameObject)
+        if (hitColliders.Length > 0) //&& ownerHit == CameraShakeManager.instance.playerGameObject)
         {
-            CameraShakeManager.instance.ShakePlayerAttack();
+            //CameraShakeManager.instance.ShakePlayerAttack();
+            OnAttackHit?.Invoke(hitColliders);
+        }
+        else
+        {
+            OnNoHit?.Invoke();
         }
     }
 
@@ -46,7 +52,10 @@ public class AttackHitbox : BaseHitBox
     void OnDrawGizmos()
     {
         // คำนวณตำแหน่งและทิศทางของ Hitbox
-        Vector3 position = transform.position + transform.rotation * attackOffset;
+        //Vector3 position = transform.position + transform.rotation * attackOffset;
+
+        Vector3 frontOffset = new Vector3(0, attackSize.y / 2, attackSize.z / 2) + attackOffset;
+        Vector3 position = transform.position + transform.rotation * frontOffset;
 
         // ตั้งค่าสีของ Gizmos ให้มองเห็นได้ชัด
         Gizmos.color = new Color(1f, 0, 0, 0.5f);

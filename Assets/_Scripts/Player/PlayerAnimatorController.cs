@@ -70,7 +70,7 @@ public class PlayerAnimatorController : MonoBehaviour
         if(!isCombo) HandleMoveAnimation(_moveDirection);
     }
 
-    internal void HandleAttackForwardAnimation(Vector3 vector, float arg2, float arg3)
+    internal void HandleAttackForwardAnimation(bool isForward, Vector3 vector, float arg2, float arg3)
     {
         animator.SetTrigger("atAttack");
 

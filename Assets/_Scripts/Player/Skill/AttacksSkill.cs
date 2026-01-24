@@ -25,6 +25,7 @@ public class AttacksSkill : PlayerSkillSO
         public float skillHight = 0f;
         public float damage;
         public float knockbackForce;
+        public float knockbackTime;
 
         [Header("Bullte Prefabs")]
         public float speed;
@@ -65,6 +66,7 @@ public class AttacksSkill : PlayerSkillSO
             bool haveDash = skillSetp[i].haveDash;
             float damage = skillSetp[i].damage;
             float knockbackForce = skillSetp[i].knockbackForce;
+            float knockbackTime = skillSetp[i].knockbackTime;
             float speed = skillSetp[i].speed;
             float skillFar = skillSetp[i].skillFar;
 
@@ -75,14 +77,14 @@ public class AttacksSkill : PlayerSkillSO
 
                 playerMovement.OnSkillDash?.Invoke(attackDirection, dashSpeed, dashTime, null);
             }
-            else if (skillPrefabs != null) InstallAttackHit(skillPrefabs, player, mousePosition, attackDirection, skillFar, damage, knockbackForce, speed);
+            else if (skillPrefabs != null) InstallAttackHit(skillPrefabs, player, mousePosition, attackDirection, skillFar, damage, knockbackForce, knockbackTime, speed);
         }
 
         Debug.Log("Setplay End");
         //EndSkilling();
     }
 
-    private void InstallAttackHit(GameObject skillPrefabs, GameObject player, Vector3 mousePosition, Vector3 attackDirection , float skillFar ,  float damage, float knockbackForce,float speed)
+    private void InstallAttackHit(GameObject skillPrefabs, GameObject player, Vector3 mousePosition, Vector3 attackDirection , float skillFar ,  float damage, float knockbackForce, float knockbackTime, float speed)
     {
         Debug.Log($"InstallAttackHit : {skillPrefabs.name}");
         GameObject attackInstance = null;
@@ -127,13 +129,15 @@ public class AttacksSkill : PlayerSkillSO
         Quaternion targetRotation = Quaternion.LookRotation(targetVecter);
         attackInstance.transform.rotation = targetRotation;
 
-        if (attackInstance.TryGetComponent(out IHurtBox iHurtBox))
+        if (attackInstance.TryGetComponent(out IHitBox iHurtBox))
         {
-            iHurtBox._targetLayer = LayerMask.GetMask("Enemy");
+            LayerMask selecttargetLayer = LayerMask.GetMask("Enemy");
             iHurtBox._ownerHit = player;
             iHurtBox._damage = damage;
             iHurtBox._knockbackDirection = directionToMouse;
             iHurtBox._knockbackForce = knockbackForce;
+
+            iHurtBox.SetUpHitBox(selecttargetLayer, player, damage, directionToMouse, knockbackForce, knockbackTime);
             iHurtBox.PerformAttack();
         }
         if (attackInstance.TryGetComponent(out ISpeed iSpeed))

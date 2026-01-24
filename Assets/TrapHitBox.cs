@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.Timeline;
-using static IHurtBox;
+using static IHitBox;
 
 public class TrapHitBox : BaseHitBox
 {
@@ -41,7 +41,7 @@ public class TrapHitBox : BaseHitBox
                 if (hitCollider.TryGetComponent(out IKnockbackable knockbackable))
                 {
                     knockbackDirection = (hitCollider.transform.position - transform.position).normalized;
-                    knockbackable.GetKnockedBack(knockbackDirection, knockbackForce);
+                    knockbackable.GetKnockedBack(knockbackDirection, knockbackForce, knockbackTime);
                 }
             }
 
@@ -97,7 +97,7 @@ public class TrapHitBox : BaseHitBox
 
             if (hitCollider.TryGetComponent(out IKnockbackable knockbackable))
             {
-                knockbackable.GetKnockedBack(transform.position - other.transform.position, knockbackForce);
+                knockbackable.GetKnockedBack(transform.position - other.transform.position, knockbackForce,knockbackTime);
             }
 
             //playerSound and CameraShack

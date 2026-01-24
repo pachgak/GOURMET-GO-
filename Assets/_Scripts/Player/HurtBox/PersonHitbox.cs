@@ -1,5 +1,5 @@
 using UnityEngine;
-using static IHurtBox;
+using static IHitBox;
 
 public class PersonHitbox : BaseHitBox
 {
@@ -61,7 +61,7 @@ public class PersonHitbox : BaseHitBox
 
             if (hitCollider.TryGetComponent(out IKnockbackable knockbackable))
             {
-                knockbackable.GetKnockedBack(knockbackDirection, knockbackForce);
+                knockbackable.GetKnockedBack(knockbackDirection, knockbackForce, knockbackTime);
             }
 
             //playerSound and CameraShack

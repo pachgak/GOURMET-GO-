@@ -4,7 +4,10 @@ using UnityEngine;
 
 public interface IKnockbackable
 {
-    void GetKnockedBack(Vector3 direction, float force);
+    public float _knockbackMultiplier { get; set; }
+    public bool _canKnockback { get; set; }
+
+    void GetKnockedBack(Vector3 direction, float force,float time);
     /*
     {
         if (!canKnockback) return;

@@ -124,7 +124,7 @@ public class EnemySkillSO : ScriptableObject
             attackInstance.transform.rotation = targetRotation;
         }
 
-        if (attackInstance.TryGetComponent(out IHurtBox iHurtBox))
+        if (attackInstance.TryGetComponent(out IHitBox iHurtBox))
         {
             iHurtBox._targetLayer = LayerMask.GetMask("Player");
             iHurtBox._ownerHit = enemy;

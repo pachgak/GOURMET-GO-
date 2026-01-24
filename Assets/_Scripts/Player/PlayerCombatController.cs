@@ -3,6 +3,7 @@ using UnityEngine;
 using System;
 using System.Linq;
 using static SettingPlayerControllerManager;
+using UnityEngine.Timeline;
 
 public class PlayerCombatController : MonoBehaviour
 {
@@ -35,8 +36,9 @@ public class PlayerCombatController : MonoBehaviour
     private OpenUiManager _uiManager;
 
     [Header("_System")]
-    private int _attackIndex = 0;
+    [SerializeField] private int _attackIndex = 0;
     private float _lastAttackTime;
+    private Vector3 _lastDirectionToTarget;
 
     // ���������Ѻ�红����ŷ������ OnDrawGizmos
     private Vector3 _attackDirection;
@@ -58,17 +60,24 @@ public class PlayerCombatController : MonoBehaviour
 
 
     [Header("Action")]
-    public Action<Vector3, float, float> OnAttackForward;
+    public Action<bool , Vector3, float, float> OnAttackForward;
     public Action<bool> OnAttackStateChange;
     public Action<bool> OnComboingStateChange;
+
+    [Header("Setting")]
+    public bool setAttackBackwardCantKnockback;
+    public bool setLimitAttack;
 
     [System.Serializable]
     public class AttackComboSet
     {
         public GameObject attackPrefabs;
+
         public float comboCooldown;
         public float damage;
         public float knockbackForce;
+        public float knockbackTime;
+        public bool isSnapKnockback = true;
     }
 
     private void Awake()
@@ -179,28 +188,30 @@ public class PlayerCombatController : MonoBehaviour
 
         }
 
-        // �ӹǳ���˹觡�觡�ҧ�ͧ���ͧ OverlapBox
-        Vector3 overlapCenter = transform.position + directionToTarget * (overlapBoxFart);
+        _lastDirectionToTarget = directionToTarget;
 
-        // �� OverlapBox 㹡�õ�Ǩ�Ѻ�ѵ��
-        Collider[] hitColliders = Physics.OverlapBox(overlapCenter, overlapBoxHalfExtents, Quaternion.LookRotation(directionToTarget), enemyLayer);
+        //// �ӹǳ���˹觡�觡�ҧ�ͧ���ͧ OverlapBox
+        //Vector3 overlapCenter = transform.position + directionToTarget * (overlapBoxFart);
 
-        // ������ѵ��
-        if (hitColliders.Length > 0)
-        {
-            // �ҵ�Ƿ��������ش
-            Collider nearestEnemyCollider = hitColliders.OrderBy(c => Vector3.Distance(transform.position, c.transform.position)).FirstOrDefault();
+        //// �� OverlapBox 㹡�õ�Ǩ�Ѻ�ѵ��
+        //Collider[] hitColliders = Physics.OverlapBox(overlapCenter, overlapBoxHalfExtents, Quaternion.LookRotation(directionToTarget), enemyLayer);
 
-            if (nearestEnemyCollider != null)
-            {
-                _nearestEnemyCollider = nearestEnemyCollider.gameObject;
-            }
-        }
-        else
-        {
-            // ���������ѵ�� ����� null
-            _nearestEnemyCollider = null;
-        }
+        //// ������ѵ��
+        //if (hitColliders.Length > 0)
+        //{
+        //    // �ҵ�Ƿ��������ش
+        //    Collider nearestEnemyCollider = hitColliders.OrderBy(c => Vector3.Distance(transform.position, c.transform.position)).FirstOrDefault();
+
+        //    if (nearestEnemyCollider != null)
+        //    {
+        //        _nearestEnemyCollider = nearestEnemyCollider.gameObject;
+        //    }
+        //}
+        //else
+        //{
+        //    // ���������ѵ�� ����� null
+        //    _nearestEnemyCollider = null;
+        //}
 
         //ShowPointClicker(_mousePosition);
         _attackClick = true;
@@ -212,6 +223,7 @@ public class PlayerCombatController : MonoBehaviour
         if (!_canAttack || _isDashing) return;
 
         _attackClick = false;
+        _canAttack = false;
 
         if (attackCombo.Length != 0)
         {
@@ -219,10 +231,10 @@ public class PlayerCombatController : MonoBehaviour
             int currentAttackIndex = _attackIndex % attackCombo.Length;
 
             // ���ѭ�ҳ������Фþ��仢�ҧ˹��
-            OnAttackForward?.Invoke(directionToTarget, attackForwardSpeed, attackForwardTime);
+            //OnAttackForward?.Invoke(directionToTarget, attackForwardSpeed, attackForwardTime);
 
             // ���ҧ GameObject �ͧ�������
-            InstallAttackHit(attackCombo[currentAttackIndex].attackPrefabs, directionToTarget, attackCombo[currentAttackIndex].damage, attackCombo[currentAttackIndex].knockbackForce);
+            InstallAttackHit(attackCombo[currentAttackIndex].attackPrefabs, directionToTarget, attackCombo[currentAttackIndex].damage, attackCombo[currentAttackIndex].knockbackForce, attackCombo[currentAttackIndex].knockbackTime);
 
             // �ѻവʶҹ�����Ѻ���⺶Ѵ�
             _attackIndex++;
@@ -233,7 +245,7 @@ public class PlayerCombatController : MonoBehaviour
                 _isComboing = true;
                 OnComboingStateChange?.Invoke(_isComboing);
             }
-            _canAttack = false;
+            
             // ���ѭ�ҳ����������������
             OnAttackStateChange?.Invoke(_canAttack);
             // ��駤�� Cooldown ����
@@ -276,7 +288,7 @@ public class PlayerCombatController : MonoBehaviour
         }
     }
 
-    private void InstallAttackHit(GameObject attackPrefabs, Vector3 directionToMouse, float damage, float knockbackForce)
+    private void InstallAttackHit(GameObject attackPrefabs, Vector3 directionToMouse, float damage, float knockbackForce , float knockbackTime)
     {
         // ���ҧ GameObject �ͧ�������
         //GameObject attackInstance = Instantiate(attackPrefabs, transform);
@@ -295,13 +307,19 @@ public class PlayerCombatController : MonoBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(targetVecter);
         attackInstance.transform.rotation = targetRotation;
 
-        if (attackInstance.TryGetComponent(out IHurtBox iHurtBox))
+        if (attackInstance.TryGetComponent(out IHitBox iHurtBox))
         {
-            iHurtBox._ownerHit = this.gameObject;
-            iHurtBox._targetLayer = enemyLayer;
-            iHurtBox._damage = damage;
-            iHurtBox._knockbackDirection = directionToMouse;
-            iHurtBox._knockbackForce = knockbackForce;
+            //iHurtBox._targetLayer = enemyLayer;
+            //iHurtBox._ownerHit = this.gameObject;
+            //iHurtBox._damage = damage;
+            //iHurtBox._knockbackDirection = directionToMouse;
+            //iHurtBox._knockbackForce = knockbackForce;
+
+            iHurtBox.SetUpHitBox(enemyLayer, this.gameObject, damage, directionToMouse, knockbackForce, knockbackTime);
+
+            iHurtBox._OnAttackHit += OnHitEnemy;
+            iHurtBox._OnNoHit += OnNoEnemy;
+
             iHurtBox.PerformAttack(); 
         }
     }
@@ -309,8 +327,77 @@ public class PlayerCombatController : MonoBehaviour
     public GameObject showPoitPrefab;
     private GameObject showPoitLast;
 
+    public void OnHitEnemy(Collider[] hitColliders)
+    {
+        int currentAttackIndex = _attackIndex % attackCombo.Length;
 
-    private void ShowPointClicker(Vector3 point)
+        float minKnockbackMultiplier = -1;
+        bool isCanKnockback = true;
+
+            foreach (var hitCollider in hitColliders)
+            {
+                if (hitCollider.TryGetComponent(out IKnockbackable knockbackable))
+                {
+                    if (minKnockbackMultiplier <= -1 || minKnockbackMultiplier > knockbackable._knockbackMultiplier)
+                        minKnockbackMultiplier = knockbackable._knockbackMultiplier;
+
+                    if(!knockbackable._canKnockback) isCanKnockback = false;
+                }
+            }
+
+        if (minKnockbackMultiplier <= -1)
+        {
+            OnNoEnemy();
+            return;
+        }
+
+        float thisKnockbackMultiplier = minKnockbackMultiplier;
+
+        if (isCanKnockback)
+        {
+            if (attackCombo[currentAttackIndex].isSnapKnockback)
+            {
+                float adjKnockbackMultiplier = attackCombo[currentAttackIndex].knockbackForce * thisKnockbackMultiplier / 1 ;
+
+                if (setLimitAttack) CheckLimitAttackForward(adjKnockbackMultiplier, currentAttackIndex);
+                else OnAttackForward?.Invoke(true, _lastDirectionToTarget, adjKnockbackMultiplier, attackCombo[currentAttackIndex].knockbackTime);
+            }
+            else
+            {
+                float adjKnockbackMultiplier = attackCombo[currentAttackIndex].knockbackForce * thisKnockbackMultiplier / 1.5f;
+
+                if (setLimitAttack) CheckLimitAttackForward(adjKnockbackMultiplier, currentAttackIndex);
+                else OnAttackForward?.Invoke(true, _lastDirectionToTarget, adjKnockbackMultiplier, attackCombo[currentAttackIndex].knockbackTime);
+            }
+        }
+        else
+        {
+            if(setAttackBackwardCantKnockback) 
+                OnAttackForward?.Invoke(false,_lastDirectionToTarget, attackForwardSpeed/2, attackForwardTime);
+            else if (attackCombo[currentAttackIndex].isSnapKnockback) 
+                OnAttackForward?.Invoke(true, _lastDirectionToTarget, attackCombo[currentAttackIndex].knockbackForce * thisKnockbackMultiplier, attackCombo[currentAttackIndex].knockbackTime);
+            else 
+                OnAttackForward?.Invoke(true,_lastDirectionToTarget, attackCombo[currentAttackIndex].knockbackForce * thisKnockbackMultiplier / 1.5f, attackCombo[currentAttackIndex].knockbackTime);
+        }
+
+        CameraShakeManager.instance.ShakePlayerAttack();
+    }
+
+    public void CheckLimitAttackForward(float adjKnockbackMultiplier,int currentAttackIndex)
+    {
+        if (adjKnockbackMultiplier < attackForwardSpeed)
+            OnAttackForward?.Invoke(true, _lastDirectionToTarget, adjKnockbackMultiplier, attackCombo[currentAttackIndex].knockbackTime);
+        else
+            OnAttackForward?.Invoke(true, _lastDirectionToTarget, attackForwardSpeed, attackForwardTime);
+    }
+
+
+    public void OnNoEnemy()
+    {
+        OnAttackForward?.Invoke(true, _lastDirectionToTarget, attackForwardSpeed, attackForwardTime);
+    }
+
+        private void ShowPointClicker(Vector3 point)
     {
         if (showPoitLast != null) Destroy(showPoitLast);
         showPoitLast = Instantiate(showPoitPrefab, point, Quaternion.identity);
@@ -319,6 +406,7 @@ public class PlayerCombatController : MonoBehaviour
     // �������ʴ�������� Scene View ��ҹ��
     private void OnDrawGizmos()
     {
+
         // �Ҵ�ش��ᴧ�����˹������
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(_mousePosition, 0.2f);

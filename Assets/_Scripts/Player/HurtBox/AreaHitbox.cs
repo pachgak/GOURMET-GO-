@@ -1,6 +1,6 @@
 // ใน Script AttackHitbox.cs
 using UnityEngine;
-using static IHurtBox;
+using static IHitBox;
 
 public class AreaHitbox : BaseHitBox
 {
@@ -10,7 +10,7 @@ public class AreaHitbox : BaseHitBox
 
     private void OnEnable()
     {
-        PerformAttack();
+        //PerformAttack();
     }
 
     private void Start()
@@ -37,7 +37,7 @@ public class AreaHitbox : BaseHitBox
             if (hitCollider.TryGetComponent(out IKnockbackable knockbackable))
             {
                 knockbackDirection = (hitCollider.transform.position - transform.position).normalized;
-                knockbackable.GetKnockedBack(knockbackDirection, knockbackForce);
+                knockbackable.GetKnockedBack(knockbackDirection, knockbackForce, knockbackTime);
             }
         }
 

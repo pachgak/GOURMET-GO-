@@ -30,9 +30,13 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
     //KnockbackableStat
     [Header("Knockbackable")]
     public bool canKnockback = true;
+    bool IKnockbackable._canKnockback { get => canKnockback; set => canKnockback = value; }
     private Coroutine KnockbackCoroutine;
     [Range(0.001f, 0.1f)][SerializeField] private float StillThreshold = 0.05f;
     [SerializeField] private float MaxKnockbackTime = 0.5f;
+
+    [SerializeField] private float knockbackMultiplier = 1f;
+    float IKnockbackable._knockbackMultiplier { get => knockbackMultiplier; set => knockbackMultiplier = value; }
 
     private Coroutine _dashCoroutine;
     [Header("Dash Settings")]
@@ -192,15 +196,15 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         }
     }
 
-    public void GetKnockedBack(Vector3 direction, float force)
+    public void GetKnockedBack(Vector3 direction, float force, float time)
     {
         if (!canKnockback) return;
 
         if (KnockbackCoroutine != null) StopCoroutine(KnockbackCoroutine);
-        KnockbackCoroutine = StartCoroutine(ApplyKnockback(direction, force));
+        KnockbackCoroutine = StartCoroutine(ApplyKnockback(direction, force, time));
     }
 
-    private IEnumerator ApplyKnockback(Vector3 direction, float force)
+    private IEnumerator ApplyKnockback(Vector3 direction, float force,float time)
     {
 
         yield return null;

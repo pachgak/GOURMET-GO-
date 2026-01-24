@@ -186,7 +186,7 @@ public class RigPlayerAnimatorContorller : MonoBehaviour
         if (!isCombo) SetDirectionMoveAnimationSprite(_playerMovement.lastMoveDirection);
     }
 
-    internal void HandleAttackForwardAnimation(Vector3 vector, float arg2, float arg3)
+    internal void HandleAttackForwardAnimation(bool isForward, Vector3 vector, float arg2, float arg3)
     {
         foreach (Animator animator in _allAnimator)
         {

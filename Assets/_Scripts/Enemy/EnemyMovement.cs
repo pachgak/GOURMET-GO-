@@ -8,14 +8,18 @@ public class EnemyMovement : MonoBehaviour , IKnockbackable
     [Header("Enemy Stats")]
     [SerializeField] private float lookRadius = 10f; // ระยะการมองเห็นของผู้เล่น
 
-    [Range(0.001f, 0.1f)][SerializeField] private float StillThreshold = 0.05f;
-    [SerializeField] private float MaxKnockbackTime = 0.5f;
+    //[SerializeField] private float StillThreshold = 0.05f;
+    //[SerializeField] private float MaxKnockbackTime = 0.5f;
+    [SerializeField] private float knockbackMultiplier = 1f;
+    float IKnockbackable._knockbackMultiplier { get => knockbackMultiplier; set => knockbackMultiplier = value; }
+    //[SerializeField] private float knockbackTime = 0.15f;
 
     [SerializeField] private Transform target; // เป้าหมาย (ผู้เล่น)
     [SerializeField] private NavMeshAgent agent; // Component NavMeshagent
     private Rigidbody rb;
 
     [SerializeField] private bool canKnockback = true;
+    bool IKnockbackable._canKnockback { get => canKnockback; set => canKnockback = value; }
 
     [SerializeField] private Coroutine KnockbackCoroutine;
 
@@ -70,51 +74,90 @@ public class EnemyMovement : MonoBehaviour , IKnockbackable
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
     }
 
-    public void GetKnockedBack(Vector3 direction, float force)
+    public void GetKnockedBack(Vector3 direction, float force, float time)
     {
+
+        Debug.Log($"direction : {direction} | force : {force} | time : {time}");
+
         if (!canKnockback) return;
 
         if(KnockbackCoroutine != null) StopCoroutine(KnockbackCoroutine);
-        KnockbackCoroutine = StartCoroutine(ApplyKnockback(direction,force));
+        KnockbackCoroutine = StartCoroutine(ApplyKnockback(direction,force, time));
     }
 
-    private IEnumerator ApplyKnockback(Vector3 direction, float force)
+    private IEnumerator ApplyKnockback(Vector3 direction, float force, float time)
     {
-        Debug.Log($"ApplyKnockback : {direction} | {force}");
+        //Debug.Log($"ApplyKnockback : {direction} | {force}");
 
-        yield return null;
+        //yield return null;
+        //agent.enabled = false;
+        //rb.useGravity = false;
+        //rb.isKinematic = false;
+
+        //rb.AddForce(direction * force, ForceMode.Impulse);
+
+        //yield return new WaitForFixedUpdate();
+        //float knockbackTime = Time.time;
+        //yield return new WaitUntil(
+        //    () => rb.linearVelocity.magnitude < StillThreshold || Time.time > knockbackTime + MaxKnockbackTime
+        //);
+        //yield return new WaitForSeconds(0.25f);
+
+        //rb.linearVelocity = Vector3.zero;
+        //rb.angularVelocity = Vector3.zero;
+        //rb.useGravity = false;
+        //rb.isKinematic = true;
+        //agent.Warp(transform.position);
+        //agent.enabled = true;
+
+        //yield return null;
+
+
+        ////กลับไป stest เดิน
+        ////if (Player != null)
+        ////{
+        ////    KnockbackCoroutine = StartCoroutine(ChasePlayer(Player));
+        ////}
+        ////else
+        ////{
+        ////    KnockbackCoroutine = StartCoroutine(Roam());
+        ////}
+        ///
+        // 1. คำนวณแรงตาม Multiplier ของศัตรูตัวนี้
+
+        float finalForce = force * knockbackMultiplier;
+
+        // ถ้า multiplier เป็น 0 หรือแรงเป็น 0 ไม่ต้องทำอะไร
+        if (finalForce <= 0) yield break;
+
         agent.enabled = false;
-        rb.useGravity = true;
         rb.isKinematic = false;
-
-        rb.AddForce(direction * force, ForceMode.Impulse);
-
-        yield return new WaitForFixedUpdate();
-        float knockbackTime = Time.time;
-        yield return new WaitUntil(
-            () => rb.linearVelocity.magnitude < StillThreshold || Time.time > knockbackTime + MaxKnockbackTime
-        );
-        yield return new WaitForSeconds(0.25f);
-
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
+        // ปิด Gravity ชั่วคราวเพื่อให้กระเด็นในแนวราบได้อย่างแม่นยำ
         rb.useGravity = false;
+
+        float timer = 0;
+        Vector3 knockbackVelocity = direction.normalized * finalForce;
+
+        while (timer < time)
+        {
+            // คุมความเร็วให้คงที่ตลอดเวลาที่กำหนด
+            rb.linearVelocity = knockbackVelocity;
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        // จบการพุ่ง
+        rb.linearVelocity = Vector3.zero;
         rb.isKinematic = true;
+
+        // วาง Agent ลงตำแหน่งปัจจุบันก่อนเปิดใช้งาน
         agent.Warp(transform.position);
         agent.enabled = true;
 
-        yield return null;
+        KnockbackCoroutine = null;
 
-
-        //กลับไป stest เดิน
-        //if (Player != null)
-        //{
-        //    KnockbackCoroutine = StartCoroutine(ChasePlayer(Player));
-        //}
-        //else
-        //{
-        //    KnockbackCoroutine = StartCoroutine(Roam());
-        //}
+        Debug.Log("Eemy ApplyKnockback");
     }
 
     void OnDrawGizmosSelected()

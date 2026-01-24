@@ -31,7 +31,7 @@ public class AoeHitBox : PersonHitbox
 
             if (hitCollider.TryGetComponent(out IKnockbackable knockbackable))
             {
-                knockbackable.GetKnockedBack((hitCollider.transform.position - ownerHit.transform.position).normalized, knockbackForce);
+                knockbackable.GetKnockedBack((hitCollider.transform.position - ownerHit.transform.position).normalized, knockbackForce,knockbackTime);
             }
 
             //playerSound and CameraShack
