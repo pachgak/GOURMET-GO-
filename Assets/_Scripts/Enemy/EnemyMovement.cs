@@ -76,9 +76,6 @@ public class EnemyMovement : MonoBehaviour , IKnockbackable
 
     public void GetKnockedBack(Vector3 direction, float force, float time)
     {
-
-        Debug.Log($"direction : {direction} | force : {force} | time : {time}");
-
         if (!canKnockback) return;
 
         if(KnockbackCoroutine != null) StopCoroutine(KnockbackCoroutine);
@@ -87,7 +84,7 @@ public class EnemyMovement : MonoBehaviour , IKnockbackable
 
     private IEnumerator ApplyKnockback(Vector3 direction, float force, float time)
     {
-        /*
+        
         //Debug.Log($"ApplyKnockback : {direction} | {force}");
 
         //yield return null;
@@ -159,45 +156,45 @@ public class EnemyMovement : MonoBehaviour , IKnockbackable
         KnockbackCoroutine = null;
 
         Debug.Log("Eemy ApplyKnockback");
-        */
-        // 1. คำนวณแรงตาม Multiplier (ความหนักเบาของมอนสเตอร์)
-        float finalForce = force * knockbackMultiplier;
-        if (finalForce <= 0) yield break;
+        
+        //// 1. คำนวณแรงตาม Multiplier (ความหนักเบาของมอนสเตอร์)
+        //float finalForce = force * knockbackMultiplier;
+        //if (finalForce <= 0) yield break;
 
-        agent.enabled = false;
-        rb.isKinematic = false;
-        rb.useGravity = true; // เปิดไว้เพื่อให้ดูสมจริงเวลาโดนดีด
+        //agent.enabled = false;
+        //rb.isKinematic = false;
+        //rb.useGravity = true; // เปิดไว้เพื่อให้ดูสมจริงเวลาโดนดีด
 
-        // 2. ใช้ AddForce แบบ Impulse (ดีดทีเดียวแล้วปล่อยให้ Drag ทำงาน)
-        // หรือจะใช้ ForceMode.VelocityChange เพื่อไม่ให้มวล (Mass) มาเกี่ยว
-        rb.AddForce(direction.normalized * finalForce, ForceMode.Impulse);
+        //// 2. ใช้ AddForce แบบ Impulse (ดีดทีเดียวแล้วปล่อยให้ Drag ทำงาน)
+        //// หรือจะใช้ ForceMode.VelocityChange เพื่อไม่ให้มวล (Mass) มาเกี่ยว
+        //rb.AddForce(direction.normalized * finalForce, ForceMode.Impulse);
 
-        // 3. ช่วงเวลาที่ "เสียหลัก" (Stun/Knockback Time)
-        // แทนที่จะรอจนนิ่ง (StillThreshold) เราจะรอตาม duration ที่ส่งมา
-        float timer = 0;
-        while (timer < time)
-        {
-            timer += Time.deltaTime;
-            yield return null;
-        }
+        //// 3. ช่วงเวลาที่ "เสียหลัก" (Stun/Knockback Time)
+        //// แทนที่จะรอจนนิ่ง (StillThreshold) เราจะรอตาม duration ที่ส่งมา
+        //float timer = 0;
+        //while (timer < time)
+        //{
+        //    timer += Time.deltaTime;
+        //    yield return null;
+        //}
 
-        // 4. การหยุด (เพื่อให้กลับไปใช้ NavMesh ได้อย่างปลอดภัย)
-        // ค่อยๆ ลดความเร็วที่เหลืออยู่ให้เป็น 0
-        float stopTimer = 0;
-        Vector3 currentVel = rb.linearVelocity;
-        while (stopTimer < 0.1f) // ใช้เวลา 0.1 วิในการเบรกให้สนิท
-        {
-            rb.linearVelocity = Vector3.Lerp(currentVel, Vector3.zero, stopTimer / 0.1f);
-            stopTimer += Time.deltaTime;
-            yield return null;
-        }
+        //// 4. การหยุด (เพื่อให้กลับไปใช้ NavMesh ได้อย่างปลอดภัย)
+        //// ค่อยๆ ลดความเร็วที่เหลืออยู่ให้เป็น 0
+        //float stopTimer = 0;
+        //Vector3 currentVel = rb.linearVelocity;
+        //while (stopTimer < 0.1f) // ใช้เวลา 0.1 วิในการเบรกให้สนิท
+        //{
+        //    rb.linearVelocity = Vector3.Lerp(currentVel, Vector3.zero, stopTimer / 0.1f);
+        //    stopTimer += Time.deltaTime;
+        //    yield return null;
+        //}
 
-        rb.linearVelocity = Vector3.zero;
-        rb.isKinematic = true;
-        agent.Warp(transform.position);
-        agent.enabled = true;
+        //rb.linearVelocity = Vector3.zero;
+        //rb.isKinematic = true;
+        //agent.Warp(transform.position);
+        //agent.enabled = true;
 
-        KnockbackCoroutine = null;
+        //KnockbackCoroutine = null;
     }
 
     void OnDrawGizmosSelected()

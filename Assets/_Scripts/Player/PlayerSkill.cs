@@ -113,7 +113,7 @@ public class PlayerSkill : MonoBehaviour
 
         _skillStepCoroutine = skillDatas[slot - 1].assignedSkills.Use(gameObject, targetPosition);
         Invoke(nameof(DoSkillEnd), skillDatas[slot - 1].assignedSkills.skillLifeTime);
-        skillDatas[slot - 1].uesdCount--;
+        //skillDatas[slot - 1].uesdCount--;
         skillDatas[slot - 1].cooldown = skillDatas[slot - 1].assignedSkills.cooldown;
 
         skillDatas[slot - 1].cooldownCoroutine = StartCoroutine(SetCountDownCooldown(slot - 1, skillDatas[slot - 1].assignedSkills.cooldown));

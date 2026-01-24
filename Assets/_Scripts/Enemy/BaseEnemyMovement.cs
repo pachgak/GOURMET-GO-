@@ -207,41 +207,75 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
     private IEnumerator ApplyKnockback(Vector3 direction, float force,float time)
     {
 
-        yield return null;
-        _agent.isStopped = true;
-        //_agent.enabled = false;
-        _rb.useGravity = true;
+        float finalForce = force * knockbackMultiplier;
+
+        // ถ้า multiplier เป็น 0 หรือแรงเป็น 0 ไม่ต้องทำอะไร
+        if (finalForce <= 0) yield break;
+
+        _agent.enabled = false;
         _rb.isKinematic = false;
-
-        _rb.AddForce(direction * force, ForceMode.Impulse);
-
-        yield return new WaitForFixedUpdate();
-        float knockbackTime = Time.time;
-        yield return new WaitUntil(
-            () => _rb.linearVelocity.magnitude < StillThreshold || Time.time > knockbackTime + MaxKnockbackTime
-        );
-        yield return new WaitForSeconds(0.25f);
-
-        _rb.linearVelocity = Vector3.zero;
-        _rb.angularVelocity = Vector3.zero;
+        // ปิด Gravity ชั่วคราวเพื่อให้กระเด็นในแนวราบได้อย่างแม่นยำ
         _rb.useGravity = false;
+
+        float timer = 0;
+        Vector3 knockbackVelocity = direction.normalized * finalForce;
+
+        while (timer < time)
+        {
+            // คุมความเร็วให้คงที่ตลอดเวลาที่กำหนด
+            _rb.linearVelocity = knockbackVelocity;
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        // จบการพุ่ง
+        _rb.linearVelocity = Vector3.zero;
         _rb.isKinematic = true;
+
+        // วาง Agent ลงตำแหน่งปัจจุบันก่อนเปิดใช้งาน
         _agent.Warp(transform.position);
-        //_agent.enabled = true;
-        _agent.isStopped = false;
+        _agent.enabled = true;
 
-        yield return null;
+        KnockbackCoroutine = null;
+
+        Debug.Log("Eemy ApplyKnockback");
+
+        //yield return null;
+        //_agent.isStopped = true;
+        ////_agent.enabled = false;
+        //_rb.useGravity = true;
+        //_rb.isKinematic = false;
+
+        //_rb.AddForce(direction * force, ForceMode.Impulse);
+
+        //yield return new WaitForFixedUpdate();
+        //float knockbackTime = Time.time;
+        //yield return new WaitUntil(
+        //    () => _rb.linearVelocity.magnitude < StillThreshold || Time.time > knockbackTime + MaxKnockbackTime
+        //);
+        //yield return new WaitForSeconds(0.25f);
+
+        //_rb.linearVelocity = Vector3.zero;
+        //_rb.angularVelocity = Vector3.zero;
+        //_rb.useGravity = false;
+        //_rb.isKinematic = true;
+        //_agent.Warp(transform.position);
+        ////_agent.enabled = true;
+        //_agent.isStopped = false;
+
+        //yield return null;
 
 
-        //กลับไป stest เดิน
-        //if (Player != null)
-        //{
-        //    KnockbackCoroutine = StartCoroutine(ChasePlayer(Player));
-        //}
-        //else
-        //{
-        //    KnockbackCoroutine = StartCoroutine(Roam());
-        //}
+        ////กลับไป stest เดิน
+        ////if (Player != null)
+        ////{
+        ////    KnockbackCoroutine = StartCoroutine(ChasePlayer(Player));
+        ////}
+        ////else
+        ////{
+        ////    KnockbackCoroutine = StartCoroutine(Roam());
+        ////}
     }
 
     public void SkillDash(Vector3 direction, float speed, float duration)

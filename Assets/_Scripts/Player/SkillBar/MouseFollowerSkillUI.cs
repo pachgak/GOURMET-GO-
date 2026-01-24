@@ -6,14 +6,14 @@ using UnityEngine;
 public class MouseFollowerSkillUI : MonoBehaviour
 {
     //[SerializeField]
-    private Canvas canvas;
+    public Canvas canvas;
 
     //[SerializeField]
     private UISkillBarItem item;
 
     public void Awake()
     {
-        canvas = transform.root.GetComponent<Canvas>();
+        canvas = transform.parent.GetComponent<Canvas>();
         item = GetComponentInChildren<UISkillBarItem>();
     }
 
