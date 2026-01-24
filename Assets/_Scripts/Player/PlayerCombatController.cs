@@ -66,18 +66,22 @@ public class PlayerCombatController : MonoBehaviour
 
     [Header("Setting")]
     public bool setAttackBackwardCantKnockback;
+    public float AttackBackwardDivide = 2;
     public bool setLimitAttack;
 
     [System.Serializable]
     public class AttackComboSet
     {
         public GameObject attackPrefabs;
-
         public float comboCooldown;
         public float damage;
+
         public float knockbackForce;
         public float knockbackTime;
         public bool isSnapKnockback = true;
+        public float attackForwardForce;
+        public float attackForwardTime;
+
     }
 
     private void Awake()
@@ -357,44 +361,49 @@ public class PlayerCombatController : MonoBehaviour
         {
             if (attackCombo[currentAttackIndex].isSnapKnockback)
             {
-                float adjKnockbackMultiplier = attackCombo[currentAttackIndex].knockbackForce * thisKnockbackMultiplier / 1 ;
+                float adjAttackForwardMultiplier = attackCombo[currentAttackIndex].attackForwardForce * thisKnockbackMultiplier ;
 
-                if (setLimitAttack) CheckLimitAttackForward(adjKnockbackMultiplier, currentAttackIndex);
-                else OnAttackForward?.Invoke(true, _lastDirectionToTarget, adjKnockbackMultiplier, attackCombo[currentAttackIndex].knockbackTime);
+                if (setLimitAttack) CheckLimitAttackForward(adjAttackForwardMultiplier, currentAttackIndex);
+                else OnAttackForward?.Invoke(true, _lastDirectionToTarget, adjAttackForwardMultiplier, attackCombo[currentAttackIndex].attackForwardTime);
             }
             else
-            {
-                float adjKnockbackMultiplier = attackCombo[currentAttackIndex].knockbackForce * thisKnockbackMultiplier / 1.5f;
-
-                if (setLimitAttack) CheckLimitAttackForward(adjKnockbackMultiplier, currentAttackIndex);
-                else OnAttackForward?.Invoke(true, _lastDirectionToTarget, adjKnockbackMultiplier, attackCombo[currentAttackIndex].knockbackTime);
-            }
+                OnAttackForward?.Invoke(true, _lastDirectionToTarget, 0, attackCombo[currentAttackIndex].knockbackTime);
         }
         else
         {
-            if(setAttackBackwardCantKnockback) 
-                OnAttackForward?.Invoke(false,_lastDirectionToTarget, attackForwardSpeed/2, attackForwardTime);
-            else if (attackCombo[currentAttackIndex].isSnapKnockback) 
-                OnAttackForward?.Invoke(true, _lastDirectionToTarget, attackCombo[currentAttackIndex].knockbackForce * thisKnockbackMultiplier, attackCombo[currentAttackIndex].knockbackTime);
-            else 
-                OnAttackForward?.Invoke(true,_lastDirectionToTarget, attackCombo[currentAttackIndex].knockbackForce * thisKnockbackMultiplier / 1.5f, attackCombo[currentAttackIndex].knockbackTime);
+            if (setAttackBackwardCantKnockback)
+                OnAttackForward?.Invoke(false, _lastDirectionToTarget, attackForwardSpeed / AttackBackwardDivide, attackForwardTime);
+            else
+            {
+                if (attackCombo[currentAttackIndex].isSnapKnockback)
+                {
+                    float adjKnockbackMultiplier = attackCombo[currentAttackIndex].knockbackForce * thisKnockbackMultiplier / 1.5f;
+
+                    if (setLimitAttack) CheckLimitAttackForward(adjKnockbackMultiplier, currentAttackIndex);
+                    else OnAttackForward?.Invoke(true, _lastDirectionToTarget, adjKnockbackMultiplier, attackCombo[currentAttackIndex].knockbackTime);
+                }
+                else
+                {
+                    OnAttackForward?.Invoke(true, _lastDirectionToTarget, 0, attackCombo[currentAttackIndex].knockbackTime);
+                }
+            }
+            
         }
 
         CameraShakeManager.instance.ShakePlayerAttack();
     }
 
-    public void CheckLimitAttackForward(float adjKnockbackMultiplier,int currentAttackIndex)
+    public void CheckLimitAttackForward(float adjAttackForwardMultiplier,int currentAttackIndex)
     {
-        if (adjKnockbackMultiplier < attackForwardSpeed)
-            OnAttackForward?.Invoke(true, _lastDirectionToTarget, adjKnockbackMultiplier, attackCombo[currentAttackIndex].knockbackTime);
-        else
-            OnAttackForward?.Invoke(true, _lastDirectionToTarget, attackForwardSpeed, attackForwardTime);
+        float limitattackForwardForce = Mathf.Min(adjAttackForwardMultiplier, attackCombo[currentAttackIndex].attackForwardForce);
+        OnAttackForward?.Invoke(true, _lastDirectionToTarget, limitattackForwardForce, attackCombo[currentAttackIndex].attackForwardTime);
     }
 
 
     public void OnNoEnemy()
     {
-        OnAttackForward?.Invoke(true, _lastDirectionToTarget, attackForwardSpeed, attackForwardTime);
+        int currentAttackIndex = _attackIndex % attackCombo.Length;
+        OnAttackForward?.Invoke(true, _lastDirectionToTarget, attackCombo[currentAttackIndex].attackForwardForce, attackCombo[currentAttackIndex].attackForwardTime);
     }
 
         private void ShowPointClicker(Vector3 point)

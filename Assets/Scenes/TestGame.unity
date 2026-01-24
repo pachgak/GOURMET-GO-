@@ -128899,24 +128899,32 @@ MonoBehaviour:
     knockbackForce: 10
     knockbackTime: 0.15
     isSnapKnockback: 1
+    attackForwardForce: 10
+    attackForwardTime: 0.15
   - attackPrefabs: {fileID: 5400245806064550419, guid: 9de208ea034421748b19c7c2a31759d0, type: 3}
     comboCooldown: 0.28
     damage: 1
     knockbackForce: 10
     knockbackTime: 0.15
     isSnapKnockback: 1
+    attackForwardForce: 10
+    attackForwardTime: 0.15
   - attackPrefabs: {fileID: 7411569378006972243, guid: 3e60e31cdc7b27b4c860da9cc3b13d92, type: 3}
     comboCooldown: 0.28
     damage: 1
     knockbackForce: 10
     knockbackTime: 0.15
     isSnapKnockback: 1
+    attackForwardForce: 10
+    attackForwardTime: 0.15
   - attackPrefabs: {fileID: 2710200308815571354, guid: e4492f7b149578440900807e777775e8, type: 3}
     comboCooldown: 0.6
     damage: 2
     knockbackForce: 20
     knockbackTime: 0.2
-    isSnapKnockback: 0
+    isSnapKnockback: 1
+    attackForwardForce: 13
+    attackForwardTime: 0.2
   attackFart: 0
   attackHight: 1
   comboWindow: 0.7
@@ -128932,6 +128940,8 @@ MonoBehaviour:
     knockbackForce: 7
     knockbackTime: 0
     isSnapKnockback: 0
+    attackForwardForce: 0
+    attackForwardTime: 0
   sonicAttact:
     attackPrefabs: {fileID: 4657273407765786520, guid: be80092ab20c381448afdc593b7d9b26, type: 3}
     comboCooldown: 0.5
@@ -128939,12 +128949,15 @@ MonoBehaviour:
     knockbackForce: 7
     knockbackTime: 0
     isSnapKnockback: 0
+    attackForwardForce: 0
+    attackForwardTime: 0
   snapDirectionAttact: {x: 4, y: 1}
   overlapBoxHalfExtents: {x: 3, y: 2, z: 3}
   overlapBoxFart: 3
   resetAttackClick: 0.3
   _attackIndex: 0
   setAttackBackwardCantKnockback: 0
+  AttackBackwardDivide: 2
   setLimitAttack: 0
   _nearestEnemyCollider: {fileID: 0}
   showPoitPrefab: {fileID: 2893583747362727740, guid: 9840249a0751e2f4187807a2ed33c3da, type: 3}
