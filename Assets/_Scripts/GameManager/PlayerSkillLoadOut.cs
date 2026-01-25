@@ -1,8 +1,12 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class SkillLoadOutPage : MonoBehaviour
+public class PlayerSkillLoadOut : MonoBehaviour
 {
-    public SkillDataList data;
+    public PlayerSkill playerSkill;
+
+    public AttacksSkill[] skillListLoadout;
+    public List<SkillDataList> data;
 
     [System.Serializable]
     public class SkillDataList

@@ -37,7 +37,7 @@ public class PlayerSkill : MonoBehaviour
 
     public Action<bool> OnCanSkillUseStateChange;
     public Action<bool,float> OnSkillingStateChange;
-    public Action OnInventoryUpdated;
+    public Action OnSkillSlotUpdated;
 
     private void Awake()
     {
@@ -234,7 +234,9 @@ public class PlayerSkill : MonoBehaviour
     private void InformAboutChange()
     {
         UpdateSkillUI();
-    }
+
+        OnSkillSlotUpdated?.Invoke();
+}
 
     private void PrepareSkillData()
     {
