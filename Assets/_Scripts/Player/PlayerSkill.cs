@@ -36,7 +36,7 @@ public class PlayerSkill : MonoBehaviour
 
 
     public Action<bool> OnCanSkillUseStateChange;
-    public Action<bool,float> OnSkillingStateChange;
+    public Action<bool, float> OnSkillingStateChange;
     public Action OnSkillSlotUpdated;
 
     private void Awake()
@@ -70,7 +70,7 @@ public class PlayerSkill : MonoBehaviour
 
         if (_isDash)
         {
-            if(_skillStepCoroutine != null) StopCoroutine(_skillStepCoroutine);
+            if (_skillStepCoroutine != null) StopCoroutine(_skillStepCoroutine);
             DoSkillEnd();
 
         }
@@ -95,7 +95,7 @@ public class PlayerSkill : MonoBehaviour
         if (skillDatas[slot - 1].assignedSkills == null) return;
         if (skillDatas[slot - 1].cooldown > 0) return;
 
-            SetSkillingState(true, skillDatas[slot - 1].assignedSkills.skillLifeTime);
+        SetSkillingState(true, skillDatas[slot - 1].assignedSkills.skillLifeTime);
 
         Vector3 targetPosition = Vector3.forward;
         switch (_settingControllerManager.skillDiraction)
@@ -167,7 +167,7 @@ public class PlayerSkill : MonoBehaviour
             {
                 _canSkill = true;
                 OnCanSkillUseStateChange?.Invoke(_canSkill);
-            } 
+            }
         }
     }
 
@@ -176,7 +176,7 @@ public class PlayerSkill : MonoBehaviour
         skillDatas = new SkillData[UISkillBarItems.Length];
     }
 
-    public void SetSkillingState(bool isState , float skillLifeTime)
+    public void SetSkillingState(bool isState, float skillLifeTime)
     {
         _isSkilling = isState;
         OnSkillingStateChange?.Invoke(isState, skillLifeTime);
@@ -184,12 +184,12 @@ public class PlayerSkill : MonoBehaviour
 
     public void DoSkillEnd()
     {
-        SetSkillingState(false,0);
+        SetSkillingState(false, 0);
     }
 
-    public bool AddSkill(PlayerSkillSO skill,int usedCount)
+    public bool AddSkill(PlayerSkillSO skill, int usedCount)
     {
-        for (int i = 0; i < skillDatas.Length; i++) 
+        for (int i = 0; i < skillDatas.Length; i++)
         {
             if (skillDatas[i].assignedSkills == null)
             {
@@ -236,7 +236,7 @@ public class PlayerSkill : MonoBehaviour
         UpdateSkillUI();
 
         OnSkillSlotUpdated?.Invoke();
-}
+    }
 
     private void PrepareSkillData()
     {
@@ -322,7 +322,7 @@ public class PlayerSkill : MonoBehaviour
         if (skillItem.IsEmpty)
             return;
         skillUI.CreateDraggedItem(skillItem.assignedSkills.skillIcon, skillItem.uesdCount, null, 0, skillItem.assignedSkills.cooldown);
-        
+
     }
 
     private void HandleItemActionRequest(int itemIndex)

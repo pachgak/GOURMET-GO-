@@ -1,24 +1,30 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using System.Drawing;
 
-public class UISkillLoadoutPage : MonoBehaviour
+public class UILoadoutSkillPage : MonoBehaviour
 {
+    [SerializeField]
+    private UILoadoutSkillItem itemPrefab;
+    [SerializeField]
+    private RectTransform contentPanel;
+
     [SerializeField]
     private ItemDetailPromptController itemDescription;
 
     [SerializeField]
-    private MouseFollowerSkillUI mouseFollower;
+    private MouseFollowerLoadoutSkillUI mouseFollower;
 
-    [SerializeField]
+    //[SerializeField]
     //private DropItemZoneUI dropitemZone;
 
-    List<UISkillBarItem> listOfUIItems = new List<UISkillBarItem>();
+    List<UILoadoutSkillItem> listOfUIItems = new List<UILoadoutSkillItem>();
 
     [SerializeField] private int currentlyDraggedItemIndex = -1;
 
     public event Action<int>
-            OnDescriptionRequested,
+            OnItemSelection,
             OnItemActionRequested,
             OnItemPerformAction,
             OnStartDragging,
@@ -35,17 +41,21 @@ public class UISkillLoadoutPage : MonoBehaviour
         //itemDescription.ResetDescription();
     }
 
-    public void InitializeInventoryUI(UISkillBarItem[] UISkillBarItems)
+    public int GetListOfUIItems()
+    {
+        return listOfUIItems.Count;
+    }
+
+    public void InitializeUI(int size)
     {
         //dropitemZone.OnItemDropped += HandleDropItem;
 
-        for (int i = 0; i < UISkillBarItems.Length; i++)
+        for (int i = 0; i < size; i++)
         {
-            //UISkillBarItem uiItem = 
-            //Instantiate(itemPrefab, Vector3.zero, Quaternion.identity);
+            //UISkillLoadoutItem uiItem = Instantiate(itemPrefab, Vector3.zero, Quaternion.identity);
             //uiItem.transform.SetParent(contentPanel);
-            //UISkillBarItem uiItem = Instantiate(itemPrefab, contentPanel);
-            UISkillBarItem uiItem = UISkillBarItems[i];
+            //UILoadoutSkillItem uiItem = UISkillLoadoutItems[i];
+            UILoadoutSkillItem uiItem = Instantiate(itemPrefab, contentPanel);
 
             listOfUIItems.Add(uiItem);
             uiItem.OnItemClicked += HandleItemSelection;
@@ -60,7 +70,7 @@ public class UISkillLoadoutPage : MonoBehaviour
     }
 
 
-    private void HandlePointEnterItem(UISkillBarItem skillItemUI)
+    private void HandlePointEnterItem(UILoadoutSkillItem skillItemUI)
     {
         if (currentlyDraggedItemIndex > -1) return;
 
@@ -74,7 +84,7 @@ public class UISkillLoadoutPage : MonoBehaviour
         OnPointEnterItem?.Invoke(index);
     }
 
-    private void HandlePointEnterItem(UISkillBarItem skillItemUI, bool byPass)
+    private void HandlePointEnterItem(UILoadoutSkillItem skillItemUI, bool byPass)
     {
         if (!byPass) return;
 
@@ -89,7 +99,7 @@ public class UISkillLoadoutPage : MonoBehaviour
     }
 
 
-    private void HandlePointExitItem(UISkillBarItem skillItemUI)
+    private void HandlePointExitItem(UILoadoutSkillItem skillItemUI)
     {
         if (currentlyDraggedItemIndex > -1) return;
 
@@ -102,17 +112,17 @@ public class UISkillLoadoutPage : MonoBehaviour
         OnPointExitItem?.Invoke(index);
     }
 
-    public void OpenItemDetail()
+    public void OpenItemDescription()
     {
         itemDescription.Toggle(true);
     }
 
-    public void CheckCloseItemDetail()
+    public void CloseItemDescription()
     {
         itemDescription.Toggle(false);
     }
 
-    internal void UpdateItemDetail(Sprite itemImage, string name, string description)
+    internal void UpdateItemDescription(Sprite itemImage, string name, string description)
     {
         itemDescription.SetDescription(itemImage, name, description);
     }
@@ -126,19 +136,18 @@ public class UISkillLoadoutPage : MonoBehaviour
         }
     }
 
-    internal void UpdateDescription(int itemIndex, Sprite itemImage, string name, string description)
+    internal void UpdateSelect(int itemIndex)
     {
-        //itemDescription.SetDescription(itemImage, name, description);
         DeselectAllItems();
         listOfUIItems[itemIndex].Select();
     }
 
     public void UpdateData(int itemIndex,
-        Sprite itemImage, int itemQuantity, Sprite typeSprite, float countdown, float maxCooldown)
+        Sprite itemImage, int itemExp)
     {
         if (listOfUIItems.Count > itemIndex)
         {
-            listOfUIItems[itemIndex].SetData(itemImage, itemQuantity, typeSprite, countdown, maxCooldown);
+            listOfUIItems[itemIndex].SetData(itemImage, itemExp);
         }
     }
 
@@ -147,7 +156,7 @@ public class UISkillLoadoutPage : MonoBehaviour
         listOfUIItems[itemIndex].CooldownUpdate(countdown);
     }
 
-    private void HandleShowItemActions(UISkillBarItem skillItemUI)
+    private void HandleShowItemActions(UILoadoutSkillItem skillItemUI)
     {
         int index = listOfUIItems.IndexOf(skillItemUI);
         if (index == -1)
@@ -157,7 +166,7 @@ public class UISkillLoadoutPage : MonoBehaviour
         OnItemActionRequested?.Invoke(index);
     }
 
-    private void HandleItemPerformAction(UISkillBarItem skillItemUI)
+    private void HandleItemPerformAction(UILoadoutSkillItem skillItemUI)
     {
         int index = listOfUIItems.IndexOf(skillItemUI);
         if (index == -1)
@@ -166,7 +175,7 @@ public class UISkillLoadoutPage : MonoBehaviour
         }
         OnItemPerformAction?.Invoke(index);
     }
-    private void HandleBeginDrag(UISkillBarItem skillItemUI)
+    private void HandleBeginDrag(UILoadoutSkillItem skillItemUI)
     {
         int index = listOfUIItems.IndexOf(skillItemUI);
         if (index == -1)
@@ -176,16 +185,16 @@ public class UISkillLoadoutPage : MonoBehaviour
         listOfUIItems[currentlyDraggedItemIndex].ShowCurrentlyDragged();
         HandleItemSelection(skillItemUI);
         OnStartDragging?.Invoke(index);
-        CheckCloseItemDetail();
+        CloseItemDescription();
     }
 
-    private void HandleEndDrag(UISkillBarItem skillItemUI)
+    private void HandleEndDrag(UILoadoutSkillItem skillItemUI)
     {
         if (currentlyDraggedItemIndex > -1) listOfUIItems[currentlyDraggedItemIndex].DeShowCurrentlyDragged();
         ResetDraggedItem();
     }
 
-    private void HandleSwap(UISkillBarItem skillItemUI)
+    private void HandleSwap(UILoadoutSkillItem skillItemUI)
     {
         int index = listOfUIItems.IndexOf(skillItemUI);
         if (index == -1)
@@ -212,18 +221,26 @@ public class UISkillLoadoutPage : MonoBehaviour
         currentlyDraggedItemIndex = -1;
     }
 
-    public void CreateDraggedItem(Sprite skillSprite, int uesdCount, Sprite typeSprite, float countdown, float maxCooldown)
+    public void CreateDraggedItem(Sprite skillSprite, int expPoint)
     {
         mouseFollower.Toggle(true);
-        mouseFollower.SetData(skillSprite, uesdCount, typeSprite, countdown, maxCooldown);
+        mouseFollower.SetData(skillSprite, expPoint);
     }
 
-    private void HandleItemSelection(UISkillBarItem skillItemUI)
+    private void HandleItemSelection(UILoadoutSkillItem skillItemUI)
     {
         int index = listOfUIItems.IndexOf(skillItemUI);
         if (index == -1)
             return;
-        OnDescriptionRequested?.Invoke(index);
+        OnItemSelection?.Invoke(index);
+    }
+
+    private void HandleItemDescriptionRequested(UILoadoutSkillItem skillItemUI)
+    {
+        int index = listOfUIItems.IndexOf(skillItemUI);
+        if (index == -1)
+            return;
+        OnItemSelection?.Invoke(index);
     }
 
     public void Show()
@@ -251,7 +268,7 @@ public class UISkillLoadoutPage : MonoBehaviour
 
     private void DeselectAllItems()
     {
-        foreach (UISkillBarItem item in listOfUIItems)
+        foreach (UILoadoutSkillItem item in listOfUIItems)
         {
             item.Deselect();
         }
@@ -263,6 +280,6 @@ public class UISkillLoadoutPage : MonoBehaviour
         //actionPanel.Toggle(false);
         //gameObject.SetActive(false);
         ResetDraggedItem();
-        CheckCloseItemDetail();
+        CloseItemDescription();
     }
 }
