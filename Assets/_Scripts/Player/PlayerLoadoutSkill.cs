@@ -13,7 +13,7 @@ using static UnityEditor.Timeline.Actions.MenuPriority;
 
 public class PlayerLoadoutSkill : MonoBehaviour
 {
-    public PlayerSkill playerSkill;
+    private PlayerSkill _playerSkill;
 
     public UILoadoutSkillPage loadoutUI;
     public LoadoutData loadoutData;
@@ -155,6 +155,11 @@ public class PlayerLoadoutSkill : MonoBehaviour
         loadoutData.InformAboutChange();
     }
 
+    private void Awake()
+    {
+        _playerSkill = GetComponent<PlayerSkill>();
+    }
+
     private void Start()
     {
         loadoutData = new LoadoutData();
@@ -164,6 +169,29 @@ public class PlayerLoadoutSkill : MonoBehaviour
         PrepareUI();
 
         UpdateUI(loadoutData.loadoutItems);
+
+        //Invoke(nameof(PrepareSkillPage), 0.01f);
+        PrepareSkillPage();
+    }
+
+
+    private void PrepareSkillPage()
+    {
+        _playerSkill.skillUI.OnSwapItems += HandleAddSkillBar;
+    }
+
+    private void HandleAddSkillBar(int currentlyDraggedItemIndex,int targetDrop)
+    {
+        int loadoutIndex = loadoutUI.GetCurrentlyDraggedItemIndex();
+
+        if (loadoutIndex <= -1)
+            return;
+
+        int skillBarIndex = targetDrop;
+
+        loadoutItem inventoryItem = loadoutData.GetItemAt(loadoutIndex);
+
+        _playerSkill.SetAtSkill(inventoryItem.skill, 1, skillBarIndex);
     }
 
     // Update is called once per frame

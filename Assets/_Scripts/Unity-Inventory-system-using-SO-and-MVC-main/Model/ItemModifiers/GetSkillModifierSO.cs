@@ -6,14 +6,24 @@ using UnityEngine;
 public class GetSkillModifierSO : ItemModifierSO
 {
     public PlayerSkillSO playerSkill;
+    public AttacksSkill playerAttackSkill;
     public override bool AffectCharacter(GameObject character, float val)
     {
-        PlayerSkill playerSkillController = character.GetComponent<PlayerSkill>();
-        if (playerSkillController != null)
+        PlayerLoadoutSkill playerLoadoutSkill = character.GetComponent<PlayerLoadoutSkill>();
+        if (playerLoadoutSkill != null)
         {
-           bool addSkillComplet = playerSkillController.AddSkill(playerSkill, (int)val);
+            //playerLoadoutSkill.loadoutData.AddItem(playerAttackSkill, ((int)val));
+            playerLoadoutSkill.loadoutData.AddItem(playerAttackSkill, 1);
             return true;
         }
         return false;
+
+        //PlayerSkill playerSkillController = character.GetComponent<PlayerSkill>();
+        //if (playerSkillController != null)
+        //{
+        //   bool addSkillComplet = playerSkillController.AddSkill(playerSkill, (int)val);
+        //    return true;
+        //}
+        //return false;
     }
 }

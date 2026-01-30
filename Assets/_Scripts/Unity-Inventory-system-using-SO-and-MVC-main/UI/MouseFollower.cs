@@ -13,7 +13,8 @@ public class MouseFollower : MonoBehaviour
 
     public void Awake()
     {
-        canvas = transform.root.GetComponent<Canvas>();
+        canvas = transform.parent.GetComponent<Canvas>();
+
         item = GetComponentInChildren<UIInventoryItem>();
     }
 
@@ -22,6 +23,11 @@ public class MouseFollower : MonoBehaviour
         item.SetData(sprite, quantity);
     }
     void Update()
+    {
+        PositionUpdate();
+    }
+    
+    private void PositionUpdate()
     {
         Vector2 position;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -32,9 +38,10 @@ public class MouseFollower : MonoBehaviour
                 );
         transform.position = canvas.transform.TransformPoint(position);
     }
-    
+
     public void Toggle(bool val)
     {
         gameObject.SetActive(val);
+        if(val) PositionUpdate();
     }
 }

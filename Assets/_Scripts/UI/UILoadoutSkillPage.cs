@@ -35,6 +35,11 @@ public class UILoadoutSkillPage : MonoBehaviour
     public event Action<int, int> OnSwapItems;
     public event Action<int> OnDropItems;
 
+    public int GetCurrentlyDraggedItemIndex()
+    {
+        return currentlyDraggedItemIndex;
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
     {
@@ -55,15 +60,12 @@ public class UILoadoutSkillPage : MonoBehaviour
 
         int awnChild = size - contentPanel.childCount ;
 
-        Debug.Log($"Size : {size} | childCount : {contentPanel.childCount} | awnChild {awnChild}");
-
 
         if (awnChild < 0)
         {
             // วนลูปจากตัวสุดท้าย
             for (int i = contentPanel.childCount - 1; i >= size; i--)
             {
-                Debug.Log($"Remove[{i}]");
 
                 // 1. ดึงตัวที่จะลบออกมาพักไว้ก่อน
                 var itemToRemove = listOfUIItems[i];
@@ -90,7 +92,6 @@ public class UILoadoutSkillPage : MonoBehaviour
         {
             for (int i = 0; i < awnChild; i++)
             {
-                Debug.Log($"add[{i}]");
                 //UISkillLoadoutItem uiItem = Instantiate(itemPrefab, Vector3.zero, Quaternion.identity);
                 //uiItem.transform.SetParent(contentPanel);
                 //UILoadoutSkillItem uiItem = UISkillLoadoutItems[i];

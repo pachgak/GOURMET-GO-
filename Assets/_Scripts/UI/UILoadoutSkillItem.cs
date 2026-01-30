@@ -68,6 +68,7 @@ public class UILoadoutSkillItem : MonoBehaviour, IPointerClickHandler,
         lockSkillImage.sprite = skillSprite;
 
         expText.text = $"{expPoint}";
+        expText.gameObject.SetActive(false);
 
         if (expPoint > 0)
         {

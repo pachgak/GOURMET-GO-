@@ -20,6 +20,11 @@ public class MouseFollowerLoadoutSkillUI : MonoBehaviour
     }
     void Update()
     {
+        PositionUpdate();
+    }
+    
+    private void PositionUpdate()
+    {
         Vector2 position;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             (RectTransform)canvas.transform,
@@ -29,9 +34,10 @@ public class MouseFollowerLoadoutSkillUI : MonoBehaviour
                 );
         transform.position = canvas.transform.TransformPoint(position);
     }
-    
+
     public void Toggle(bool val)
     {
         gameObject.SetActive(val);
+        if(val) PositionUpdate();
     }
 }

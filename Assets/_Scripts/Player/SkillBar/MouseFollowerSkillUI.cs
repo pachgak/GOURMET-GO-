@@ -8,7 +8,7 @@ public class MouseFollowerSkillUI : MonoBehaviour
     //[SerializeField]
     private Canvas canvas;
 
-    [SerializeField]
+    //[SerializeField]
     private UISkillBarItem item;
 
     public void Awake()
@@ -23,6 +23,11 @@ public class MouseFollowerSkillUI : MonoBehaviour
     }
     void Update()
     {
+        PositionUpdate();
+    }
+
+    private void PositionUpdate()
+    {
         Vector2 position;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             (RectTransform)canvas.transform,
@@ -32,9 +37,10 @@ public class MouseFollowerSkillUI : MonoBehaviour
                 );
         transform.position = canvas.transform.TransformPoint(position);
     }
-    
+
     public void Toggle(bool val)
     {
         gameObject.SetActive(val);
+        if (val) PositionUpdate();
     }
 }

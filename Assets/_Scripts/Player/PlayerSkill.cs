@@ -203,6 +203,23 @@ public class PlayerSkill : MonoBehaviour
         return false;
     }
 
+    public bool SetAtSkill(PlayerSkillSO skill, int usedCount, int index)
+    {
+        for (int i = 0; i < skillDatas.Length; i++)
+        {
+            if (skillDatas[i].assignedSkills == skill)
+            {
+                ResetSkill(i);
+            }
+        }
+
+        skillDatas[index].assignedSkills = skill;
+        skillDatas[index].uesdCount = usedCount;
+
+        InformAboutChange();
+        return true;
+    }
+
     public void ResetSkill(int Slot)
     {
         skillDatas[Slot] = new SkillData();

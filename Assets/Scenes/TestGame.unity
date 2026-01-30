@@ -5672,6 +5672,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecd47b94410e16f45bacea006d6c4f97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvas: {fileID: 0}
+  item: {fileID: 0}
 --- !u!114 &287980481
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48382,6 +48384,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6a5e58c5ee7d3d47aa27f6933c094bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvas: {fileID: 0}
   item: {fileID: 1877858741}
 --- !u!225 &719977941
 CanvasGroup:
@@ -51834,6 +51837,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bae5d510914b7844b9d375992647691a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvas: {fileID: 0}
 --- !u!225 &921928717
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -130723,6 +130727,12 @@ MonoBehaviour:
   - quantity: 99
     item: {fileID: 11400000, guid: aa49461f59937c843947905e24e1c8e9, type: 2}
     lvlQuality: 0
+  - quantity: 1
+    item: {fileID: 11400000, guid: 372f1dd328510934994741fc2810f211, type: 2}
+    lvlQuality: 0
+  - quantity: 1
+    item: {fileID: 11400000, guid: 421802e2d918c5e46b3e14a33cc25b65, type: 2}
+    lvlQuality: 0
   isNotDeletItem: 0
   itemDropPrefab: {fileID: 5090562170970945799, guid: 6b32a4f0d2203a24b81b26541645abbd, type: 3}
   dropClip: {fileID: 0}
@@ -130989,7 +130999,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55d022f1f9954784bb329546e4cca288, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSkill: {fileID: 0}
   loadoutUI: {fileID: 1367283629}
   loadoutData:
     loadoutItems: []
