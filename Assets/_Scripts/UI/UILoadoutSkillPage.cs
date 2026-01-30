@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using System.Drawing;
+using static UnityEditor.Progress;
 
 public class UILoadoutSkillPage : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class UILoadoutSkillPage : MonoBehaviour
     //[SerializeField]
     //private DropItemZoneUI dropitemZone;
 
+    [SerializeField]
     List<UILoadoutSkillItem> listOfUIItems = new List<UILoadoutSkillItem>();
 
     [SerializeField] private int currentlyDraggedItemIndex = -1;
@@ -48,8 +50,65 @@ public class UILoadoutSkillPage : MonoBehaviour
 
     public void InitializeUI(int size)
     {
+
         //dropitemZone.OnItemDropped += HandleDropItem;
 
+        int awnChild = size - contentPanel.childCount ;
+
+        Debug.Log($"Size : {size} | childCount : {contentPanel.childCount} | awnChild {awnChild}");
+
+
+        if (awnChild < 0)
+        {
+            // วนลูปจากตัวสุดท้าย
+            for (int i = contentPanel.childCount - 1; i >= size; i--)
+            {
+                Debug.Log($"Remove[{i}]");
+
+                // 1. ดึงตัวที่จะลบออกมาพักไว้ก่อน
+                var itemToRemove = listOfUIItems[i];
+
+                // 2. ถอด Event ออกให้หมด (Clean Up) -> *ทำหรือไม่ทำก็ได้ในเคสนี้*
+                itemToRemove.OnItemClicked -= HandleItemSelection;
+                itemToRemove.OnItemBeginDrag -= HandleBeginDrag;
+                itemToRemove.OnItemDroppedOn -= HandleSwap;
+                itemToRemove.OnItemEndDrag -= HandleEndDrag;
+                itemToRemove.OnPointEnterItem -= HandlePointEnterItem;
+                itemToRemove.OnPointExitItem -= HandlePointExitItem;
+
+                // 3. ลบจาก List
+                listOfUIItems.RemoveAt(i);
+
+                // 4. ลบ GameObject
+                GameObject removeItemUI = contentPanel.GetChild(i).gameObject;
+                removeItemUI.transform.parent = transform.root;
+                GameObject.Destroy(removeItemUI);
+            }
+        }
+
+        if (awnChild > 0)
+        {
+            for (int i = 0; i < awnChild; i++)
+            {
+                Debug.Log($"add[{i}]");
+                //UISkillLoadoutItem uiItem = Instantiate(itemPrefab, Vector3.zero, Quaternion.identity);
+                //uiItem.transform.SetParent(contentPanel);
+                //UILoadoutSkillItem uiItem = UISkillLoadoutItems[i];
+                UILoadoutSkillItem uiItem = Instantiate(itemPrefab, contentPanel);
+
+                listOfUIItems.Add(uiItem);
+                uiItem.OnItemClicked += HandleItemSelection;
+                uiItem.OnItemBeginDrag += HandleBeginDrag;
+                uiItem.OnItemDroppedOn += HandleSwap;
+                uiItem.OnItemEndDrag += HandleEndDrag;
+                uiItem.OnPointEnterItem += HandlePointEnterItem;
+                uiItem.OnPointExitItem += HandlePointExitItem;
+                //uiItem.OnRightMouseBtnClick += HandleItemPerformAction;
+
+            }
+        }
+
+        /*
         for (int i = 0; i < size; i++)
         {
             //UISkillLoadoutItem uiItem = Instantiate(itemPrefab, Vector3.zero, Quaternion.identity);
@@ -67,6 +126,7 @@ public class UILoadoutSkillPage : MonoBehaviour
             uiItem.OnPointExitItem += HandlePointExitItem;
 
         }
+        */
     }
 
 

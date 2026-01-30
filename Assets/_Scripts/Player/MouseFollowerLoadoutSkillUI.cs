@@ -3,7 +3,7 @@ using UnityEngine;
 public class MouseFollowerLoadoutSkillUI : MonoBehaviour
 {
     //[SerializeField]
-    public Canvas canvas;
+    private Canvas canvas;
 
     //[SerializeField]
     private UILoadoutSkillItem item;

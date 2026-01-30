@@ -6,15 +6,15 @@ using UnityEngine;
 public class MouseFollowerSkillUI : MonoBehaviour
 {
     //[SerializeField]
-    public Canvas canvas;
+    private Canvas canvas;
 
-    //[SerializeField]
+    [SerializeField]
     private UISkillBarItem item;
 
     public void Awake()
     {
         canvas = transform.parent.GetComponent<Canvas>();
-        item = GetComponentInChildren<UISkillBarItem>();
+        //item = GetComponentInChildren<UISkillBarItem>();
     }
 
     public void SetData(Sprite skillSprite, int uesdCount, Sprite typeSprite, float countdown, float maxCooldown)

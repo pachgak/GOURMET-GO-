@@ -1,3 +1,4 @@
+using com.cyborgAssets.inspectorButtonPro;
 using Inventory.Model;
 using System;
 using System.Collections.Generic;
@@ -126,7 +127,7 @@ public class PlayerLoadoutSkill : MonoBehaviour
             return 0;
         }
 
-        private void InformAboutChange()
+        public void InformAboutChange()
         {
             OnLoadoutUpdated?.Invoke(loadoutItems);
             //OnLoadoutUpdated?.Invoke(GetCurrentInventoryState());
@@ -148,10 +149,17 @@ public class PlayerLoadoutSkill : MonoBehaviour
 
     }
 
+    [ProButton]
+    public void TestInformAboutData()
+    {
+        loadoutData.InformAboutChange();
+    }
+
     private void Start()
     {
         loadoutData = new LoadoutData();
 
+        //ห้ามสลับ data ก่อน UI เพราะ loadoutUI.InitializeUI(baseSkillList.Length); มาหลังแล้วมันจะ ผิดพลาด
         PrepareData();
         PrepareUI();
 

@@ -53,6 +53,6 @@ public class CameraControllerManager : MonoBehaviour
         // เพื่อป้องกันไม่ให้ SmoothDamp คำนวณความเร็วเดิมในเฟรมถัดไป
         velocity = Vector3.zero;
 
-        Debug.Log("Camera JUMPED to new position.");
+        //Debug.Log("Camera JUMPED to new position.");
     }
 }

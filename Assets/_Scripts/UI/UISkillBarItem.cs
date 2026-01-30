@@ -13,8 +13,6 @@ public class UISkillBarItem : MonoBehaviour , IPointerClickHandler,
     private Image borderImage;
     [SerializeField]
     private Image skillImage;
-    [SerializeField]
-    private GameObject uesCountUI;
     [SerializeField] private TMP_Text _uesdCountTxt;
     [SerializeField]
     private Image typeImage;
@@ -40,7 +38,6 @@ public class UISkillBarItem : MonoBehaviour , IPointerClickHandler,
     {
         _canvasGroup = GetComponent<CanvasGroup>();
 
-        _uesdCountTxt = uesCountUI.GetComponentInChildren<TMP_Text>();
         _keyTxt = keyUI.GetComponentInChildren<TMP_Text>();
     }
 

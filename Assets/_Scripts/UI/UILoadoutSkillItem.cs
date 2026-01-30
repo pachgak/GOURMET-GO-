@@ -11,8 +11,9 @@ public class UILoadoutSkillItem : MonoBehaviour, IPointerClickHandler,
     private Image borderImage;
     [SerializeField]
     private Image skillImage;
+    [SerializeField]
     private Image lockSkillImage;
-
+    [SerializeField]
     private TMP_Text expText;
 
     [SerializeField]
@@ -22,6 +23,7 @@ public class UILoadoutSkillItem : MonoBehaviour, IPointerClickHandler,
 
     private CanvasGroup _canvasGroup;
 
+    [SerializeField]
     private bool lockSkill;
 
 
@@ -51,22 +53,28 @@ public class UILoadoutSkillItem : MonoBehaviour, IPointerClickHandler,
 
     public void ResetData()
     {
-        if (skillImage != null) skillImage.gameObject.SetActive(false);
-
         lockSkill = true;
+
+        skillImage.gameObject.SetActive(false);
+        lockSkillImage.gameObject.SetActive(true);
+
     }
 
     public void SetData(Sprite skillSprite, int expPoint)
     {
-        skillImage.gameObject.SetActive(true);
+        //skillImage.gameObject.SetActive(true);
 
         skillImage.sprite = skillSprite;
         lockSkillImage.sprite = skillSprite;
 
         expText.text = $"{expPoint}";
 
-        //_keyTxt.text = keyText;
-        if (expPoint > 0) lockSkill = false;
+        if (expPoint > 0)
+        {
+            lockSkill = false;
+            skillImage.gameObject.SetActive(true);
+            lockSkillImage.gameObject.SetActive(false);
+        }
     }
 
     public void Select()
@@ -101,6 +109,8 @@ public class UILoadoutSkillItem : MonoBehaviour, IPointerClickHandler,
 
     public void OnPointerClick(PointerEventData pointerData)
     {
+        if (lockSkill)
+            return;
         if (pointerData.button == PointerEventData.InputButton.Right)
         {
             OnRightMouseBtnClick?.Invoke(this);
@@ -122,26 +132,35 @@ public class UILoadoutSkillItem : MonoBehaviour, IPointerClickHandler,
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (lockSkill)
+            return;
         OnItemEndDrag?.Invoke(this);
     }
 
     public void OnDrop(PointerEventData eventData)
     {
+        if (lockSkill)
+            return;
         OnItemDroppedOn?.Invoke(this);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-
+        if (lockSkill)
+            return;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (lockSkill)
+            return;
         OnPointEnterItem?.Invoke(this);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (lockSkill)
+            return;
         OnPointExitItem?.Invoke(this);
     }
 }
