@@ -149,12 +149,6 @@ public class PlayerLoadoutSkill : MonoBehaviour
 
     }
 
-    [ProButton]
-    public void TestInformAboutData()
-    {
-        loadoutData.InformAboutChange();
-    }
-
     private void Awake()
     {
         _playerSkill = GetComponent<PlayerSkill>();

@@ -199,6 +199,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenLoadoutSkill"",
+                    ""type"": ""Button"",
+                    ""id"": ""d4ea5d8b-e660-4d00-9fb8-5d91ec4f3a39"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -542,6 +551,28 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Dash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f8532bec-3d1f-443a-9fa2-6e48c8eadc35"",
+                    ""path"": ""<Keyboard>/k"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenLoadoutSkill"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4dc67cc8-63b2-4800-b683-48bc3d374b3f"",
+                    ""path"": ""<Touchscreen>/touch9/tap"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenLoadoutSkill"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -562,6 +593,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Player_Skill4 = m_Player.FindAction("Skill4", throwIfNotFound: true);
         m_Player_Skill5 = m_Player.FindAction("Skill5", throwIfNotFound: true);
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
+        m_Player_OpenLoadoutSkill = m_Player.FindAction("OpenLoadoutSkill", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -654,6 +686,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Skill4;
     private readonly InputAction m_Player_Skill5;
     private readonly InputAction m_Player_Dash;
+    private readonly InputAction m_Player_OpenLoadoutSkill;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -713,6 +746,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Dash".
         /// </summary>
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/OpenLoadoutSkill".
+        /// </summary>
+        public InputAction @OpenLoadoutSkill => m_Wrapper.m_Player_OpenLoadoutSkill;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -775,6 +812,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Dash.started += instance.OnDash;
             @Dash.performed += instance.OnDash;
             @Dash.canceled += instance.OnDash;
+            @OpenLoadoutSkill.started += instance.OnOpenLoadoutSkill;
+            @OpenLoadoutSkill.performed += instance.OnOpenLoadoutSkill;
+            @OpenLoadoutSkill.canceled += instance.OnOpenLoadoutSkill;
         }
 
         /// <summary>
@@ -822,6 +862,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Dash.started -= instance.OnDash;
             @Dash.performed -= instance.OnDash;
             @Dash.canceled -= instance.OnDash;
+            @OpenLoadoutSkill.started -= instance.OnOpenLoadoutSkill;
+            @OpenLoadoutSkill.performed -= instance.OnOpenLoadoutSkill;
+            @OpenLoadoutSkill.canceled -= instance.OnOpenLoadoutSkill;
         }
 
         /// <summary>
@@ -946,5 +989,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDash(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "OpenLoadoutSkill" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnOpenLoadoutSkill(InputAction.CallbackContext context);
     }
 }

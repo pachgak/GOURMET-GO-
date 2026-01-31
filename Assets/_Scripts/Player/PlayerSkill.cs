@@ -88,14 +88,16 @@ public class PlayerSkill : MonoBehaviour
 
     internal void HandleSkillSlotInput(int slot)
     {
+        int indexSkillSlect = slot - 1;
+
         Debug.Log($"slot : {slot}");
         if (slot > skillDatas.Length) return;
         if (_isSkilling) return;
         if (!_canSkill) return;
-        if (skillDatas[slot - 1].assignedSkills == null) return;
-        if (skillDatas[slot - 1].cooldown > 0) return;
+        if (skillDatas[indexSkillSlect].assignedSkills == null) return;
+        if (skillDatas[indexSkillSlect].cooldown > 0) return;
 
-        SetSkillingState(true, skillDatas[slot - 1].assignedSkills.skillLifeTime);
+        SetSkillingState(true, skillDatas[indexSkillSlect].assignedSkills.skillLifeTime);
 
         Vector3 targetPosition = Vector3.forward;
         switch (_settingControllerManager.skillDiraction)
@@ -111,16 +113,15 @@ public class PlayerSkill : MonoBehaviour
 
         }
 
-        _skillStepCoroutine = skillDatas[slot - 1].assignedSkills.Use(gameObject, targetPosition);
-        Invoke(nameof(DoSkillEnd), skillDatas[slot - 1].assignedSkills.skillLifeTime);
-        //skillDatas[slot - 1].uesdCount--;
-        skillDatas[slot - 1].cooldown = skillDatas[slot - 1].assignedSkills.cooldown;
+        _skillStepCoroutine = skillDatas[indexSkillSlect].assignedSkills.Use(gameObject, targetPosition);
+        Invoke(nameof(DoSkillEnd), skillDatas[indexSkillSlect].assignedSkills.skillLifeTime);
+        //skillDatas[indexSkillSlect].uesdCount--;
 
-        skillDatas[slot - 1].cooldownCoroutine = StartCoroutine(SetCountDownCooldown(slot - 1, skillDatas[slot - 1].assignedSkills.cooldown));
+        SetSkillCooldown(indexSkillSlect);
 
-        if (skillDatas[slot - 1].uesdCount <= 0)
+        if (skillDatas[indexSkillSlect].uesdCount <= 0)
         {
-            ResetSkill(slot - 1);
+            ResetSkill(indexSkillSlect);
         }
 
         _canSkill = false;
@@ -131,6 +132,13 @@ public class PlayerSkill : MonoBehaviour
 
         //float skillLifeTime = assignedSkills[slot - 1].skillLifeTime;
         //_skillingEndTimer = skillLifeTime;
+    }
+
+    private void SetSkillCooldown(int index)
+    {
+        skillDatas[index].cooldown = skillDatas[index].assignedSkills.cooldown;
+
+        skillDatas[index].cooldownCoroutine = StartCoroutine(SetCountDownCooldown(index, skillDatas[index].assignedSkills.cooldown));
     }
 
     internal IEnumerator SetCountDownCooldown(int index, float initialCooldown)
@@ -205,16 +213,25 @@ public class PlayerSkill : MonoBehaviour
 
     public bool SetAtSkill(PlayerSkillSO skill, int usedCount, int index)
     {
+        bool isHave = false;
+        SkillData haveskill = new SkillData();
+
         for (int i = 0; i < skillDatas.Length; i++)
         {
             if (skillDatas[i].assignedSkills == skill)
             {
+                haveskill = skillDatas[i];
+                isHave = true;
+
                 ResetSkill(i);
             }
         }
 
         skillDatas[index].assignedSkills = skill;
         skillDatas[index].uesdCount = usedCount;
+
+        if(haveskill.IsEmpty) SetSkillCooldown(index);
+        else skillDatas[index].cooldownCoroutine = StartCoroutine(SetCountDownCooldown(index, haveskill.cooldown));
 
         InformAboutChange();
         return true;
@@ -369,7 +386,7 @@ public class PlayerSkill : MonoBehaviour
         PerformAction(itemIndex);
 
         SkillData skillItem = skillDatas[itemIndex];
-        if (skillItem.IsEmpty) skillUI.CheckCloseItemDetail();
+        if (skillItem.IsEmpty) skillUI.CloseItemDetail();
     }
 
     public void PerformAction(int itemIndex)
@@ -415,6 +432,6 @@ public class PlayerSkill : MonoBehaviour
             return;
         }
 
-        skillUI.CheckCloseItemDetail();
+        skillUI.CloseItemDetail();
     }
 }

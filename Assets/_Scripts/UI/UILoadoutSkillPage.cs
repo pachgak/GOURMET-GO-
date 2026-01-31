@@ -25,6 +25,8 @@ public class UILoadoutSkillPage : MonoBehaviour
 
     [SerializeField] private int currentlyDraggedItemIndex = -1;
 
+
+
     public event Action<int>
             OnItemSelection,
             OnItemActionRequested,
@@ -34,6 +36,9 @@ public class UILoadoutSkillPage : MonoBehaviour
 
     public event Action<int, int> OnSwapItems;
     public event Action<int> OnDropItems;
+
+
+
 
     public int GetCurrentlyDraggedItemIndex()
     {
@@ -46,7 +51,16 @@ public class UILoadoutSkillPage : MonoBehaviour
         Hide();
         mouseFollower.Toggle(false);
         //itemDescription.ResetDescription();
+
+        for (int i = contentPanel.childCount - 1; i >= 0; i--)
+        {
+            // 4. ź GameObject
+            GameObject removeItemUI = contentPanel.GetChild(i).gameObject;
+            removeItemUI.transform.parent = transform.root;
+            GameObject.Destroy(removeItemUI);
+        }
     }
+
 
     public int GetListOfUIItems()
     {
@@ -176,11 +190,13 @@ public class UILoadoutSkillPage : MonoBehaviour
     public void OpenItemDescription()
     {
         itemDescription.Toggle(true);
+        Debug.Log("OpenItemDescription Loadout");
     }
 
     public void CloseItemDescription()
     {
         itemDescription.Toggle(false);
+        Debug.Log("CloseItemDescription Loadout");
     }
 
     internal void UpdateItemDescription(Sprite itemImage, string name, string description)

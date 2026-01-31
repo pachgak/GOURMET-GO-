@@ -19,7 +19,7 @@ public class ItemDetailPromptController : MonoBehaviour
     void Awake()
     {
         // รับ RectTransform ของตัว Panel เมื่อ script ทำงาน
-        Toggle(false);
+        //if(Time.time < 0.01f) Toggle(false);
         rectTransform = GetComponent<RectTransform>();
         ResetDescription();
     }
@@ -84,5 +84,7 @@ public class ItemDetailPromptController : MonoBehaviour
     public void Toggle(bool val)
     {
         gameObject.SetActive(val);
+
+        Debug.Log($"[set : {val}] ItemDetailPromptController : {gameObject.activeSelf}");
     }
 }

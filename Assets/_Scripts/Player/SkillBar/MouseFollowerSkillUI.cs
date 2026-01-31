@@ -8,7 +8,7 @@ public class MouseFollowerSkillUI : MonoBehaviour
     //[SerializeField]
     private Canvas canvas;
 
-    //[SerializeField]
+    [SerializeField]
     private UISkillBarItem item;
 
     public void Awake()

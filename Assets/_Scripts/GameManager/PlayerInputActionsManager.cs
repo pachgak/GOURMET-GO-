@@ -33,6 +33,8 @@ public class PlayerInputActionsManager : MonoBehaviour
 
     public Action OnOpenInventoryInput;
 
+    public Action OnOpenLoadoutSkillInput;
+
     public Action OnOpenMenuInput;
 
     public Action OnEscInput;
@@ -182,6 +184,7 @@ public class PlayerInputActionsManager : MonoBehaviour
         _playerControls.Player.Interact.canceled += OnInteractCanceled; // เหมือน GetKeyUp
 
         _playerControls.Player.OpenInventory.performed += OnOpenInventoryPerformed;
+        _playerControls.Player.OpenLoadoutSkill.performed += OnOpenLoadoutSkillPerformed;
 
         _playerControls.Player.OpenMenu.performed += OnOpenMenuPerformed;
 
@@ -246,6 +249,11 @@ public class PlayerInputActionsManager : MonoBehaviour
     private void OnOpenInventoryPerformed(InputAction.CallbackContext context)
     {
         OnOpenInventoryInput?.Invoke();
+    }
+    private void OnOpenLoadoutSkillPerformed(InputAction.CallbackContext context)
+    {
+        Debug.Log("K OnOpenLoadoutSkillPerformed");
+        OnOpenLoadoutSkillInput?.Invoke();
     }
     private void OnOpenMenuPerformed(InputAction.CallbackContext context)
     {
