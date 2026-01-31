@@ -16,66 +16,83 @@ MonoBehaviour:
   skillName: Triple Claw
   <Description>k__BackingField: "\u0E1F\u0E32\u0E14\u0E01\u0E07\u0E40\u0E25\u0E47\u0E1A\u0E44\u0E1B\u0E02\u0E49\u0E32\u0E07\u0E2B\u0E19\u0E49\u0E32\u0E17\u0E31\u0E49\u0E07\u0E2B\u0E21\u0E143\u0E04\u0E23\u0E31\u0E49\u0E07\u0E40\u0E1B\u0E47\u0E19\u0E27\u0E07\u0E04\u0E23\u0E36\u0E48\u0E07\u0E27\u0E07\u0E01\u0E25\u0E21"
   cooldown: 5
-  skillLifeTime: 1.05
+  skillLifeTime: 0.6
   spawnSkillPrefabsType: 0
   skillSetp:
+  - playAtTime: 0
+    skillPrefabs: {fileID: 2815813365741621853, guid: 90bf0e2b512167f45b32dd72a096560e, type: 3}
+    skillFar: 0
+    skillHight: 0
+    damage: 0
+    knockbackForce: 0
+    knockbackTime: 0
+    speed: 0
+    haveDash: 0
+    dashSpeed: 0
+    dashTime: 0
+  - playAtTime: 0
+    skillPrefabs: {fileID: 4911351558283754124, guid: d46754abc4d74ad4fa971580a5914b0d, type: 3}
+    skillFar: 0
+    skillHight: 0
+    damage: 1
+    knockbackForce: 10
+    knockbackTime: 0
+    speed: 0
+    haveDash: 0
+    dashSpeed: 0
+    dashTime: 0
   - playAtTime: 0
     skillPrefabs: {fileID: 0}
     skillFar: 0
     skillHight: 0
     damage: 0
     knockbackForce: 0
+    knockbackTime: 0
     speed: 0
     haveDash: 1
     dashSpeed: 10
     dashTime: 0.2
   - playAtTime: 0.25
-    skillPrefabs: {fileID: 4911351558283754124, guid: 3f1642a4a0bc3104582e038ce5499cb3, type: 3}
-    skillFar: 0.5
-    skillHight: 1
-    damage: 3
+    skillPrefabs: {fileID: 4911351558283754124, guid: d46754abc4d74ad4fa971580a5914b0d, type: 3}
+    skillFar: 0
+    skillHight: 0
+    damage: 2
     knockbackForce: 10
+    knockbackTime: 0
     speed: 0
     haveDash: 0
     dashSpeed: 0
     dashTime: 0
   - playAtTime: 0.25
-    skillPrefabs: {fileID: 2815813365741621853, guid: 0d77adccd36f47f4e9b32edd2b544430, type: 3}
-    skillFar: 0.5
-    skillHight: 0.5
+    skillPrefabs: {fileID: 0}
+    skillFar: 0
+    skillHight: 0
     damage: 0
     knockbackForce: 0
-    speed: 0
-    haveDash: 0
-    dashSpeed: 0
-    dashTime: 0
-  - playAtTime: 0.45
-    skillPrefabs: {fileID: 0}
-    skillFar: 0.5
-    skillHight: 10
-    damage: 3
-    knockbackForce: 20
+    knockbackTime: 0
     speed: 0
     haveDash: 1
     dashSpeed: 10
     dashTime: 0.2
-  - playAtTime: 0.7
-    skillPrefabs: {fileID: 4911351558283754124, guid: 3f1642a4a0bc3104582e038ce5499cb3, type: 3}
-    skillFar: 0.5
-    skillHight: 1
-    damage: 0
-    knockbackForce: 10
-    speed: 0
-    haveDash: 0
-    dashSpeed: 0
-    dashTime: 0
-  - playAtTime: 0.45
-    skillPrefabs: {fileID: 6549989765425649637, guid: 0221f562679577b4c859ccd109bfb55a, type: 3}
-    skillFar: 0.5
-    skillHight: 0.5
+  - playAtTime: 0.5
+    skillPrefabs: {fileID: 4911351558283754124, guid: d46754abc4d74ad4fa971580a5914b0d, type: 3}
+    skillFar: 0
+    skillHight: 0
     damage: 3
-    knockbackForce: 20
+    knockbackForce: 10
+    knockbackTime: 0
     speed: 0
     haveDash: 0
     dashSpeed: 0
     dashTime: 0
+  - playAtTime: 0.5
+    skillPrefabs: {fileID: 0}
+    skillFar: 0
+    skillHight: 0
+    damage: 0
+    knockbackForce: 0
+    knockbackTime: 0
+    speed: 0
+    haveDash: 1
+    dashSpeed: 10
+    dashTime: 0.2
