@@ -114,7 +114,7 @@ public class PersonHitbox : BaseHitBox
             Gizmos.DrawCube(Vector3.zero, boxCol.size);
 
             // วาดเส้นขอบให้ดูคมชัดขึ้น
-            Gizmos.color = Color.red;
+            Gizmos.color = Color.green;
             Gizmos.DrawWireCube(Vector3.zero, boxCol.size);
 
             // คืนค่า Matrix กลับเป็นค่าเริ่มต้น

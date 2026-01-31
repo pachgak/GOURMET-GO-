@@ -2,7 +2,7 @@
 using UnityEngine;
 using static IHitBox;
 
-public class AreaHitbox : BaseHitBox
+public class AttactHitRadius : BaseHitBox
 {
     // กำหนดขนาดและค่า Offset ของ Hitbox ได้ใน Inspector
     public Vector3 attackOffset = new Vector3(0, 0, 1f);
@@ -49,15 +49,40 @@ public class AreaHitbox : BaseHitBox
     }
 
     // ฟังก์ชันสำหรับวาด Hitbox ใน Unity Editor
-    void OnDrawGizmos()
+    //void OnDrawGizmos()
+    //{
+    //    // คำนวณตำแหน่งและทิศทางของ Hitbox
+    //    Vector3 position = transform.position + transform.rotation * attackOffset;
+
+    //    // ตั้งค่าสีของ Gizmos ให้มองเห็นได้ชัด
+    //    Gizmos.color = new Color(1f, 0, 0, 0.5f);
+
+    //    // วาดทรงกลม Hitbox
+    //    Gizmos.DrawWireSphere(position, attackRadius);
+    //}
+
+    private void OnDrawGizmos()
     {
-        // คำนวณตำแหน่งและทิศทางของ Hitbox
-        Vector3 position = transform.position + transform.rotation * attackOffset;
+        // 1. คำนวณตำแหน่งจริงที่เกิดการโจมตี (World Space)
+        // โดยเอาตำแหน่งตัวเอง + (การหมุน * ระยะ Offset)
+        Vector3 position = transform.position + (transform.rotation * attackOffset);
 
-        // ตั้งค่าสีของ Gizmos ให้มองเห็นได้ชัด
-        Gizmos.color = new Color(1f, 0, 0, 0.5f);
+        // 2. ตั้งค่าสี
+        Gizmos.color = new Color(1f, 0f, 0f, 0.4f); // สีเขียวโปร่งแสง
 
-        // วาดทรงกลม Hitbox
-        Gizmos.DrawWireSphere(position, attackRadius);
+        // 3. ใช้ Matrix เพื่อรองรับการเคลื่อนที่และ Scale
+        // สำหรับ Sphere เราเน้นไปที่ Position และ Scale
+        Gizmos.matrix = Matrix4x4.TRS(position, Quaternion.identity, Vector3.one);
+
+        // 4. วาดทรงกลม
+        // วาดที่ Vector3.zero เพราะเราย้ายตำแหน่งไปไว้ใน Matrix แล้ว
+        Gizmos.DrawSphere(Vector3.zero, attackRadius);
+
+        // 5. วาดเส้นขอบเพื่อให้เห็นมิติ (WireSphere)
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(Vector3.zero, attackRadius);
+
+        // 6. คืนค่า Matrix
+        Gizmos.matrix = Matrix4x4.identity;
     }
 }

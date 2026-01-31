@@ -20,21 +20,23 @@ MonoBehaviour:
   spawnSkillPrefabsType: 0
   skillSetp:
   - playAtTime: 0
-    skillPrefabs: {fileID: 4353770289278914447, guid: 3d1d1bcb0f198f049b0b15a7d68e10ce, type: 3}
+    skillPrefabs: {fileID: 4353770289278914447, guid: 10c3d54b7c3e003478168b6bee8f548f, type: 3}
     skillFar: 0
     skillHight: 0
     damage: 0
     knockbackForce: 0
+    knockbackTime: 0
     speed: 0
     haveDash: 0
     dashSpeed: 0
     dashTime: 0
   - playAtTime: 0.2
-    skillPrefabs: {fileID: 4911351558283754124, guid: 10960960361cc0044ac130214027bcdb, type: 3}
+    skillPrefabs: {fileID: 4911351558283754124, guid: aef6fe06ecc6253458bed1d8bf2db098, type: 3}
     skillFar: 0
     skillHight: 0
     damage: 7
     knockbackForce: 30
+    knockbackTime: 0
     speed: 0
     haveDash: 0
     dashSpeed: 0

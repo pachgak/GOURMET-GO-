@@ -63,6 +63,11 @@ public class AttackHitbox : BaseHitBox
         // วาดกล่อง Hitbox
         Gizmos.matrix = Matrix4x4.TRS(position, transform.rotation, Vector3.one);
         Gizmos.DrawCube(Vector3.zero, attackSize);
+
+        // วาดเส้นขอบให้ดูคมชัดขึ้น
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(Vector3.zero, attackSize);
+
         Gizmos.matrix = Matrix4x4.identity;
     }
 }
