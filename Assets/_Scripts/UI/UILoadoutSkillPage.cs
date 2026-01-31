@@ -52,19 +52,26 @@ public class UILoadoutSkillPage : MonoBehaviour
         mouseFollower.Toggle(false);
         //itemDescription.ResetDescription();
 
-        for (int i = contentPanel.childCount - 1; i >= 0; i--)
-        {
-            // 4. ź GameObject
-            GameObject removeItemUI = contentPanel.GetChild(i).gameObject;
-            removeItemUI.transform.parent = transform.root;
-            GameObject.Destroy(removeItemUI);
-        }
+        
     }
 
 
     public int GetListOfUIItems()
     {
         return listOfUIItems.Count;
+    }
+
+    public void CleanLoadoutSlot()
+    {
+        for (int i = contentPanel.childCount - 1; i >= 0; i--)
+        {
+            // 4. ź GameObject
+            GameObject removeItemUI = contentPanel.GetChild(i).gameObject;
+            removeItemUI.transform.parent = transform.root;
+            GameObject.Destroy(removeItemUI);
+
+            Debug.Log($"contentPanel.childCount : {contentPanel.childCount}");
+        }
     }
 
     public void InitializeUI(int size)

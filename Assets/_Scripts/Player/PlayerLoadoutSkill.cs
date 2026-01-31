@@ -158,6 +158,8 @@ public class PlayerLoadoutSkill : MonoBehaviour
     {
         loadoutData = new LoadoutData();
 
+        loadoutUI.CleanLoadoutSlot();
+
         //ห้ามสลับ data ก่อน UI เพราะ loadoutUI.InitializeUI(baseSkillList.Length); มาหลังแล้วมันจะ ผิดพลาด
         PrepareData();
         PrepareUI();

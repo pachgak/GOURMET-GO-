@@ -88,4 +88,37 @@ public class PersonHitbox : BaseHitBox
         _colider.enabled = false;
         ObjectPoolingManager.Instance.Respawn(gameObject);
     }
+
+    private void OnDrawGizmos()
+    {
+        // พยายามดึง BoxCollider มาใช้งาน
+        BoxCollider boxCol = GetComponent<BoxCollider>();
+
+        if (boxCol != null)
+        {
+            // ตั้งค่าสี (แดงโปร่งแสง)
+            Gizmos.color = new Color(1f, 0f, 0f, 0.5f);
+
+            // คำนวณ Matrix เพื่อให้ Gizmo หมุนและขยับตาม Object
+            // boxCol.center คือตำแหน่ง Offset ภายใน Collider
+            Matrix4x4 rotationMatrix = Matrix4x4.TRS(
+                transform.TransformPoint(boxCol.center),
+                transform.rotation,
+                transform.lossyScale // ใช้ lossyScale เพื่อให้ขนาด Gizmo ตรงกับ Scale ของ Object จริงๆ
+            );
+
+            Gizmos.matrix = rotationMatrix;
+
+            // วาดกล่องตามขนาดของ BoxCollider
+            // วาดที่ Vector3.zero เพราะเราเซตตำแหน่งไว้ที่ Matrix แล้ว
+            Gizmos.DrawCube(Vector3.zero, boxCol.size);
+
+            // วาดเส้นขอบให้ดูคมชัดขึ้น
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(Vector3.zero, boxCol.size);
+
+            // คืนค่า Matrix กลับเป็นค่าเริ่มต้น
+            Gizmos.matrix = Matrix4x4.identity;
+        }
+    }
 }
