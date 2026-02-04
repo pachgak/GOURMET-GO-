@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemDropRage : MonoBehaviour
+public class ItemDropRageOld : MonoBehaviour
 {
-    public List<ItemDropFormat> Items;
     public GameObject itemDropPrefab;
+    public List<ItemDropFormat> Items;
     public Vector3 offSet;
     private EnemyHealth enemyHealth;
 

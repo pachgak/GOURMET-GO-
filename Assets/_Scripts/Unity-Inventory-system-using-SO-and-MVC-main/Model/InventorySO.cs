@@ -252,7 +252,6 @@ namespace Inventory.Model
     {
         public int quantity;
         public ItemSO item;
-        public int lvlQuality;
         //[SerializeField] public List<ItemParameter> itemParameter;
         public bool IsEmpty => item == null;
 

@@ -1,11 +1,11 @@
 using UnityEngine;
 
-public class FoodTree : ItemDropRage
+public class FoodTree : SpawnItemDropPoor
 {
-    public Sprite inteactSprite;
-    public bool isTakeIt = false;
+    public SpriteRenderer spriteRenderer;
+    public Sprite imageEmptyTree;
+    private bool _isEmpty = false;
 
-    public SpriteRenderer _spriteRenderer;
 
     private void Awake()
     {
@@ -26,10 +26,14 @@ public class FoodTree : ItemDropRage
 
     public void IntractTree()
     {
-        _spriteRenderer.sprite = inteactSprite;
+        spriteRenderer.sprite = imageEmptyTree;
 
-        HealdeDropItems();
+        HealdeDropPoorItems();
 
         gameObject.layer = 0;
+
+        _isEmpty = true;
+
+        this.enabled = false;
     }
 }

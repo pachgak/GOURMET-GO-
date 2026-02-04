@@ -36,9 +36,9 @@ public class CSVLoader : EditorWindow
     //private static string ItemsOSPath = "Assets/_DataSO/Inventory/Items/";
     //private static string ItemMofifierOSPath = "Assets/_DataSO/Inventory/ItemMofifier/";
 
-    private static ItemDropRage.ItemDropFormat GetNewItemDropFormat(ItemSO itemDrop, string[] dropRandomCountTexts)
+    private static ItemDropRageOld.ItemDropFormat GetNewItemDropFormat(ItemSO itemDrop, string[] dropRandomCountTexts)
     {
-        ItemDropRage.ItemDropFormat itemDropFormat = new ItemDropRage.ItemDropFormat();
+        ItemDropRageOld.ItemDropFormat itemDropFormat = new ItemDropRageOld.ItemDropFormat();
         itemDropFormat.item = itemDrop;
 
         if (dropRandomCountTexts.Length == 1)
@@ -410,17 +410,17 @@ public class CSVLoader : EditorWindow
             enemySO.Description = description;
             enemySO.hp = hp;
 
-            List<ItemDropRage.ItemDropFormat> drop = new List<ItemDropRage.ItemDropFormat>();
+            List<ItemDropRageOld.ItemDropFormat> drop = new List<ItemDropRageOld.ItemDropFormat>();
             if (itemDrop1 != null)
             {
-                ItemDropRage.ItemDropFormat itemDropFormat = GetNewItemDropFormat(itemDrop1, dropRandomCount1Texts);
+                ItemDropRageOld.ItemDropFormat itemDropFormat = GetNewItemDropFormat(itemDrop1, dropRandomCount1Texts);
                 drop.Add(itemDropFormat);
             }
             //else Debug.Log($"itemDrop1 = null");
 
             if (itemDrop2 != null)
             {
-                ItemDropRage.ItemDropFormat itemDropFormat = GetNewItemDropFormat(itemDrop2, dropRandomCount2Texts);
+                ItemDropRageOld.ItemDropFormat itemDropFormat = GetNewItemDropFormat(itemDrop2, dropRandomCount2Texts);
                 drop.Add(itemDropFormat);
             }
             //else Debug.Log($"itemDrop2 = null");
@@ -532,10 +532,10 @@ public class CSVLoader : EditorWindow
             enemySO.enemyName = enemyName;
             enemySO.Description = description;
 
-            List<ItemDropRage.ItemDropFormat> drop = new List<ItemDropRage.ItemDropFormat>();
+            List<ItemDropRageOld.ItemDropFormat> drop = new List<ItemDropRageOld.ItemDropFormat>();
             if (itemDrop1 != null)
             {
-                ItemDropRage.ItemDropFormat itemDropFormat = GetNewItemDropFormat(itemDrop1, dropRandomCount1Texts);
+                ItemDropRageOld.ItemDropFormat itemDropFormat = GetNewItemDropFormat(itemDrop1, dropRandomCount1Texts);
                 drop.Add(itemDropFormat);
             }
             //else Debug.Log($"itemDrop1 = null");

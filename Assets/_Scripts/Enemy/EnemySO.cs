@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using static ItemDropRage;
+using static ItemDropRageOld;
 
 //// Attribute นี้จะทำให้เราสร้าง ScriptableObject จากเมนู Assets ได้
 [CreateAssetMenu(fileName = "New Enemy", menuName = "Enemys/BaseData")] 
