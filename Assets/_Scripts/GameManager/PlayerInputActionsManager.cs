@@ -163,7 +163,7 @@ public class PlayerInputActionsManager : MonoBehaviour
         //}
         */
     }
-
+    [ContextMenu("AddActionControl")]
     public void AddActionControl()
     {
         // ** การเคลื่อนที่ (Value) **
@@ -305,6 +305,7 @@ public class PlayerInputActionsManager : MonoBehaviour
     //    }
     //}
 
+    [ContextMenu("LoadBindingToPlayerContrlorsCS")]
     public void LoadBindingToPlayerContrlorsCS()
     {
         //โหลด 

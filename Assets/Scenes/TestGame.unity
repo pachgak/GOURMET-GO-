@@ -3663,6 +3663,84 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7765357599406106554, guid: 4727199b0d52aec45af28e25fad6873b, type: 3}
   m_PrefabInstance: {fileID: 140944387}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &143025537
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 143025539}
+  - component: {fileID: 143025538}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &143025538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143025537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fac4286193cb63a4fa3fc8bcae28e7e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myListofA:
+  - rid: -2
+  - rid: 3016931369013215302
+  - rid: 3016931369013215525
+  actions:
+  - rid: 3016931369013215521
+  - rid: 3016931369013215522
+  hitBoxs: []
+  takeDamages: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 3016931369013215302
+      type: {class: ExMono/C, ns: , asm: Assembly-CSharp}
+      data:
+        intA: 10
+        stringC: String_C
+    - rid: 3016931369013215521
+      type: {class: DashAction, ns: , asm: Assembly-CSharp}
+      data:
+        dashForce: 10
+        duration: 0.5
+    - rid: 3016931369013215522
+      type: {class: SpawnHitboxAction, ns: , asm: Assembly-CSharp}
+      data:
+        prefab: {fileID: 0}
+        damage: 50
+    - rid: 3016931369013215525
+      type: {class: ExMono/B, ns: , asm: Assembly-CSharp}
+      data:
+        intA: 0
+        floatB: 0
+--- !u!4 &143025539
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143025537}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -345.53427, y: 3.7136424, z: 115.44138}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &146870590
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6636,6 +6714,37 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4887522280051142211, guid: be0971259d0e22048b9b622b909ffee7, type: 3}
   m_PrefabInstance: {fileID: 279790404}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &281729345
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 281729346}
+  m_Layer: 0
+  m_Name: TEstSkillListRef
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &281729346
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 281729345}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -345.53427, y: 3.7136424, z: 115.44138}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &285262683
 GameObject:
   m_ObjectHideFlags: 0
@@ -183281,3 +183390,5 @@ SceneRoots:
   - {fileID: 828670882}
   - {fileID: 4928770945832480745}
   - {fileID: 1626659544}
+  - {fileID: 281729346}
+  - {fileID: 143025539}
