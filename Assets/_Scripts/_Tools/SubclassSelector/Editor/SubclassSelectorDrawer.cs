@@ -53,7 +53,7 @@ public class SubclassSelectorDrawer : PropertyDrawer
             GenericMenu menu = new GenericMenu();
 
             // เมนูสำหรับ Reset ค่าเป็น Null
-            menu.AddItem(new GUIContent("None"), false, () => {
+            menu.AddItem(new GUIContent("[None]"), false, () => {
                 property.managedReferenceValue = null;
                 property.serializedObject.ApplyModifiedProperties();
             });

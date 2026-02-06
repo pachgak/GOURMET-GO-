@@ -15,10 +15,12 @@ MonoBehaviour:
   actions:
   - rid: 3016931369013215515
   - rid: 3016931369013215516
-  - rid: 3016931369013215529
+  - rid: -2
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 3016931369013215515
       type: {class: DashAction, ns: , asm: Assembly-CSharp}
       data:
@@ -29,8 +31,3 @@ MonoBehaviour:
       data:
         prefab: {fileID: 0}
         damage: 50
-    - rid: 3016931369013215529
-      type: {class: DashAction, ns: , asm: Assembly-CSharp}
-      data:
-        dashForce: 10
-        duration: 0.5

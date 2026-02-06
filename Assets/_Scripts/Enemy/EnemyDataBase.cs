@@ -4,7 +4,7 @@ public class EnemyDataBase : MonoBehaviour
 {
     public EnemySO enemy;
 
-    public EnemyHealth _enemyHealth;
+    private EnemyHealth _enemyHealth;
     private void Awake()
     {
         _enemyHealth = GetComponent<EnemyHealth>();

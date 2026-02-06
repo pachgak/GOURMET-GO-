@@ -151,13 +151,23 @@ public class BearCombat : BaseEnemyCombat
             }
         }
 
-        if (_aiController.currentState == BaseEnemyAI.EnemyState.Attack && attackTimer <= 0 && _attackSequenceCoroutine == null)
+        // ---  State Logi ---
+        switch (_aiController.currentState)
         {
-            HandleStartAttackSequence(false);
-            attackTimer = attackCooldown;
+            case BaseEnemyAI.EnemyState.Attack:
+
+                if (attackTimer <= 0 && _attackSequenceCoroutine == null)
+                {
+                    HandleStartAttackSequence(false);
+                    attackTimer = attackCooldown;
+                }
+
+                if (_attackSequenceCoroutine == null) _aiController.TriggerChangeState(BaseEnemyAI.EnemyState.Chase);
+
+                break;
         }
 
-        if (_aiController.currentState == BaseEnemyAI.EnemyState.Attack && _attackSequenceCoroutine == null) _aiController.TriggerChangeState(BaseEnemyAI.EnemyState.Chase);
+        
     }
 
     protected override IEnumerator AttackLogic(bool forceSkill3Sequence)

@@ -132018,9 +132018,9 @@ GameObject:
   - component: {fileID: 1011214409}
   - component: {fileID: 1011214408}
   - component: {fileID: 1011214407}
-  - component: {fileID: 1011214406}
   - component: {fileID: 1011214405}
   - component: {fileID: 1011214402}
+  - component: {fileID: 1011214406}
   - component: {fileID: 1011214404}
   - component: {fileID: 1011214403}
   - component: {fileID: 1011214401}
@@ -132045,7 +132045,7 @@ Transform:
   m_GameObject: {fileID: 1011214394}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -345.7, y: 0, z: 114}
+  m_LocalPosition: {x: -288.3, y: 0, z: 192.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -132356,8 +132356,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e52be6b8ed1b1f4cb1660cb5849a6ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roamRadius: 20
-  waitRoamTime: 1
+  roamRadius: 15
+  waitRoamTime: 3
   roamSpeed: 3.6
   chaseSpeed: 5
   canKnockback: 1
@@ -132372,7 +132372,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1011214394}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: efc60a19c23d768459ba280c1baa8deb, type: 3}
   m_Name: 
@@ -132401,7 +132401,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemy: {fileID: 11400000, guid: 6b158f0f50ac6e543a930c868021fb70, type: 2}
-  _enemyHealth: {fileID: 0}
 --- !u!195 &1011214410
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -182544,7 +182543,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemy: {fileID: 11400000, guid: 6b158f0f50ac6e543a930c868021fb70, type: 2}
-  _enemyHealth: {fileID: 0}
 --- !u!114 &7078686920769093053
 MonoBehaviour:
   m_ObjectHideFlags: 0

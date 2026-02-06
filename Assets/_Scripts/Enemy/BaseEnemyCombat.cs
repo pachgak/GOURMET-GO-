@@ -11,7 +11,7 @@ public class BaseEnemyCombat : MonoBehaviour
     public float attackTimer;
     // Events ที่จะถูก Invoke กลับไปหา AI เมื่อโจมตีเสร็จ
     public event Action OnAttackFinished;
-    public event Action<int,float> OnSkillUesd;
+    public event Action<int, float> OnSkillUesd;
     //public event Action OnSkillEnd;
 
     public EnemySkillSO[] enemySkills;
@@ -74,16 +74,38 @@ public class BaseEnemyCombat : MonoBehaviour
     {
         if (_enemyHealth.isDead) return;
 
-        if (attackTimer > 0 && _attackSequenceCoroutine == null) attackTimer -= Time.deltaTime;
-
-
-        if (_aiController.currentState == BaseEnemyAI.EnemyState.Attack && attackTimer <= 0 && _attackSequenceCoroutine == null)
+        if (attackTimer > 0 && _attackSequenceCoroutine == null)
         {
-            HandleStartAttackSequence(false);
-            attackTimer = attackCooldown;
+            attackTimer -= Time.deltaTime;
+
+            if (attackTimer <= 0)
+            {
+                _agent.isStopped = false;
+            }
+            else
+            {
+                _agent.isStopped = true;
+            }
         }
-        
-        if(_aiController.currentState == BaseEnemyAI.EnemyState.Attack &&_attackSequenceCoroutine == null) _aiController.TriggerChangeState(BaseEnemyAI.EnemyState.Chase);
+
+        // ---  State Logi ---
+        switch (_aiController.currentState)
+        {
+            case BaseEnemyAI.EnemyState.Attack:
+
+
+                if (attackTimer <= 0 && _attackSequenceCoroutine == null)
+                {
+                    HandleStartAttackSequence(false);
+                    attackTimer = attackCooldown;
+                }
+
+                if (_attackSequenceCoroutine == null) _aiController.TriggerChangeState(BaseEnemyAI.EnemyState.Chase);
+
+                break;
+
+        }
+
     }
 
     // --- Event Handler (Subscriber) ---
@@ -125,7 +147,7 @@ public class BaseEnemyCombat : MonoBehaviour
 
         OnAttackFinished?.Invoke();
     }
-    protected void TriggerSkillUesd(int index , float speedMultiplier = 1f)
+    protected void TriggerSkillUesd(int index, float speedMultiplier = 1f)
     {
         OnSkillUesd?.Invoke(index, speedMultiplier);
     }

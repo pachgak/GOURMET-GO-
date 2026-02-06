@@ -32,8 +32,8 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
     public bool canKnockback = true;
     bool IKnockbackable._canKnockback { get => canKnockback; set => canKnockback = value; }
     private Coroutine KnockbackCoroutine;
-    [Range(0.001f, 0.1f)][SerializeField] private float StillThreshold = 0.05f;
-    [SerializeField] private float MaxKnockbackTime = 0.5f;
+    //[Range(0.001f, 0.1f)][SerializeField] private float StillThreshold = 0.05f;
+    //[SerializeField] private float MaxKnockbackTime = 0.5f;
 
     [SerializeField] private float knockbackMultiplier = 1f;
     float IKnockbackable._knockbackMultiplier { get => knockbackMultiplier; set => knockbackMultiplier = value; }
@@ -78,6 +78,7 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         {
             _aiController.OnStartChase -= HandleStartChase;
             _aiController.OnStopMovement -= HandleStopMovement;
+            _aiController.OnStateChange -= HandleStateChange;
         }
 
         _enemyHealth.OnDie -= HandleOnDie;
