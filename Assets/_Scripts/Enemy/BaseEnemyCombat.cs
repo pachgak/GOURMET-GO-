@@ -4,11 +4,14 @@ using System;
 using System.Collections;
 using UnityEngine.AI;
 using Unity.VisualScripting;
+using static UnityEngine.EventSystems.EventTrigger;
+using static UnityEngine.GraphicsBuffer;
 
 public class BaseEnemyCombat : MonoBehaviour
 {
     public float attackCooldown;
     public float attackTimer;
+
     // Events ที่จะถูก Invoke กลับไปหา AI เมื่อโจมตีเสร็จ
     public event Action OnAttackFinished;
     public event Action<int, float> OnSkillUesd;
@@ -16,6 +19,12 @@ public class BaseEnemyCombat : MonoBehaviour
 
     public EnemySkillSO[] enemySkills;
     //public EnemySkill[] enemySkills;
+
+    // ตัวแปรใหม่: เก็บ Skill ที่กำลังใช้อยู่ เพื่อให้รู้ว่าต้องดึง Action ตัวไหน
+    protected EnemySkillSO currentActiveSkill;
+    protected bool isSkillAnimating = false; // ตัวเช็คว่าจบหรือยัง
+    protected Vector3 currentDiractionSkill;
+    protected float currentSpeedMultiplier;
 
     //[System.Serializable]
     //public class EnemySkill
@@ -29,6 +38,8 @@ public class BaseEnemyCombat : MonoBehaviour
     protected BaseEnemyAI _aiController;
     protected BaseEnemyMovement _enemyMovement;
     protected EnemyHealth _enemyHealth;
+
+
 
     protected virtual void Awake()
     {
@@ -96,7 +107,7 @@ public class BaseEnemyCombat : MonoBehaviour
 
                 if (attackTimer <= 0 && _attackSequenceCoroutine == null)
                 {
-                    HandleStartAttackSequence();
+                    StartAttackSequence();
                     attackTimer = attackCooldown;
                 }
 
@@ -111,45 +122,124 @@ public class BaseEnemyCombat : MonoBehaviour
     // --- Event Handler (Subscriber) ---
 
     // ถูกเรียกเมื่อ OnStartAttackSequence ถูก Invoke
-    public virtual void HandleStartAttackSequence()
+    public virtual void StartAttackSequence()
     {
         _enemyMovement.canKnockback = false;
         // Base Combat ไม่ใช้ forceUseSkill3 แต่คลาสลูกสามารถนำไปใช้ได้
         if (_attackSequenceCoroutine != null) StopCoroutine(_attackSequenceCoroutine);
-        _attackSequenceCoroutine = StartCoroutine(AttackSequence());
+        _attackSequenceCoroutine = StartCoroutine(CoroutineAttackSequence());
     }
 
     // --- Combat Logic ---
 
-    protected virtual IEnumerator AttackSequence()
+    protected virtual IEnumerator CoroutineAttackSequence()
     {
         //if (_agent != null) _agent.isStopped = true;
 
         yield return AttackLogic();
 
         // แจ้ง AI ว่าโจมตีเสร็จแล้ว
-        TriggerAttackFinished();
-        _attackSequenceCoroutine = null;
+        AttackFinished();
     }
 
     protected virtual IEnumerator AttackLogic()
     {
-        // 1. Logic การหันหน้าไปหา Player
-        TriggerSkillUesd(0);
-        yield return enemySkills[0].UseSkill(this.gameObject, _aiController.playerTarget);
+        // 1. สุ่มสกิล หรือ เลือกสกิล (Logic เดิมของคุณ)
+        // สมมติว่าเลือกสกิล index 0
+        int skillIndex = 0;
+        // (คุณไปใส่ Logic เลือกสกิลแบบเดิมของคุณตรงนี้)
+
+        // 2. เริ่มใช้สกิล
+        yield return UseSkill(skillIndex);
+
+        //// 1. Logic การหันหน้าไปหา Player
+        //TriggerSkillUesd(0);
+        //yield return enemySkills[0].UseSkill(this.gameObject, _aiController.playerTarget);
 
         // 3. Apply Damage (TODO)
     }
 
-    protected void TriggerAttackFinished()
+    // ฟังก์ชันนี้มาแทนที่ UseSkill แบบเก่า
+    protected virtual IEnumerator UseSkill(int index, float speedMultiplier = 1.0f)
+    {
+        if (index >= enemySkills.Length) yield break;
+
+        currentActiveSkill = enemySkills[index];
+        isSkillAnimating = true;
+        currentDiractionSkill = ( _aiController.playerTarget.position - transform.position).normalized;
+        currentSpeedMultiplier = speedMultiplier;
+
+        // 1. สั่ง Animator ให้เล่นท่า (ผ่าน Event เดิมที่คุณมี)
+        // ส่ง index ไปให้ BaerAnimatorController รู้ว่าจะเล่นท่าไหน
+        OnSkillUesd?.Invoke(index, speedMultiplier);
+
+        // 2. *** รอจนกว่า Animation จะเล่นจบ ***
+        // แทนที่จะ WaitForSeconds เราจะรอตัวแปร isSkillAnimating เป็น false
+        // *** เพิ่มส่วนนี้: ตัวจับเวลากันค้าง ***
+        float safetyTimer = 0f;
+        float maxWaitTime = 5.0f; // สมมติว่าไม่มีท่าไหนยาวเกิน 5 วิ
+
+        while (isSkillAnimating)
+        {
+            safetyTimer += Time.deltaTime;
+
+            // ถ้าผ่านไป 5 วิแล้วยังไม่จบ แสดงว่าบั๊กแล้ว ให้สั่งจบเลย
+            if (safetyTimer > maxWaitTime)
+            {
+                Debug.LogWarning($"Animation Skill {index} ใช้เวลานานผิดปกติ! สั่ง Force Stop");
+                //isSkillAnimating = false;
+            }
+
+            yield return null;
+        }
+
+        // เคลียร์ค่าเมื่อจบ
+        currentActiveSkill = null;
+        currentDiractionSkill = Vector3.forward; 
+        currentSpeedMultiplier = 1.0f;
+
+    }
+
+    protected void AttackFinished()
     {
         _enemyMovement.canKnockback = true;
 
         OnAttackFinished?.Invoke();
+
+        _attackSequenceCoroutine = null;
     }
-    protected void TriggerSkillUesd(int index, float speedMultiplier = 1f)
+    //protected void TriggerSkillUesd(int index, float speedMultiplier = 1f)
+    //{
+    //    OnSkillUesd?.Invoke(index, speedMultiplier);
+    //}
+
+    // ใส่ฟังก์ชันนี้ใน Animation Event: Int (0, 1, 2...)
+    public void ExecuteSkillAction(int actionIndex)
     {
-        OnSkillUesd?.Invoke(index, speedMultiplier);
+        if (currentActiveSkill == null) return;
+        if (actionIndex >= currentActiveSkill.actions.Count) return;
+
+        // ดึง Action ออกมาจาก List ตาม Index ที่ Animation ส่งมา
+        var action = currentActiveSkill.actions[actionIndex];
+
+        // สั่งรัน Action! (โดยส่ง User, Target, Direction เข้าไป)
+        // สมมติว่า Target คือ _aiController.playerTarget
+        Transform target = _aiController != null ? _aiController.playerTarget : null;
+
+        // คำนวณทิศทาง (ใช้ทิศที่ตัวละครหันหน้าอยู่)
+        Vector3 dir = currentDiractionSkill;
+        float speed = currentSpeedMultiplier;
+
+        if (target != null)
+        {
+            action.Execute(this.gameObject, target.gameObject, dir, speed);
+        }
+    }
+
+    // ใส่ฟังก์ชันนี้ใน Animation Event: ที่เฟรมสุดท้ายของ Animation
+    public void FinishSkillAnimation()
+    {
+        isSkillAnimating = false; // ปลดล็อค Loop ให้ทำงานต่อ
     }
 
     //protected void SkillEnd()
@@ -157,13 +247,13 @@ public class BaseEnemyCombat : MonoBehaviour
     //    OnSkillEnd?.Invoke();
     //}
 
-    protected void FaceTarget(Vector3 targetPosition)
-    {
-        Vector3 direction = (targetPosition - transform.position).normalized;
-        if (direction != Vector3.zero)
-        {
-            Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10f);
-        }
-    }
+    //protected void FaceTarget(Vector3 targetPosition)
+    //{
+    //    Vector3 direction = (targetPosition - transform.position).normalized;
+    //    if (direction != Vector3.zero)
+    //    {
+    //        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+    //        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10f);
+    //    }
+    //}
 }

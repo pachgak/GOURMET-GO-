@@ -84,7 +84,6 @@ public class Teleporter : MonoBehaviour
 
         playerController.enabled = true;
 
-        Debug.Log("ผู้เล่นถูกวาร์ปไปยัง: " + destination.position);
 
         if (cameraController != null)
         {

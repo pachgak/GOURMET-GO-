@@ -42,14 +42,12 @@ public class StrorageManager : MonoBehaviour
 
     private void HandleEscInput()
     {
-        Debug.Log($"HandleEscInput _isOpenStrorage {_isOpenStrorage} | {_canInteractExit}");
 
         if (_isOpenStrorage) ChangeStateUi(!_isOpenStrorage);
     }
 
     private void HandleInteractInputDown()
     {
-        Debug.Log($"HandleInteractInputDown _isOpenStrorage {_isOpenStrorage} | {_canInteractExit}");
 
         if (_isOpenStrorage && _canInteractExit) ChangeStateUi(!_isOpenStrorage);
     }

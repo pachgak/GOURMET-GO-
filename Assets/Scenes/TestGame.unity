@@ -3697,8 +3697,8 @@ MonoBehaviour:
   - rid: 3016931369013215302
   - rid: 3016931369013215525
   actions:
-  - rid: 3016931369013215521
-  - rid: 3016931369013215522
+  - rid: -2
+  - rid: -2
   hitBoxs: []
   takeDamages: []
   references:
@@ -3711,16 +3711,6 @@ MonoBehaviour:
       data:
         intA: 10
         stringC: String_C
-    - rid: 3016931369013215521
-      type: {class: DashAction, ns: , asm: Assembly-CSharp}
-      data:
-        dashForce: 10
-        duration: 0.5
-    - rid: 3016931369013215522
-      type: {class: SpawnHitboxAction, ns: , asm: Assembly-CSharp}
-      data:
-        prefab: {fileID: 0}
-        damage: 50
     - rid: 3016931369013215525
       type: {class: ExMono/B, ns: , asm: Assembly-CSharp}
       data:
@@ -5295,7 +5285,7 @@ Transform:
   m_GameObject: {fileID: 225248331}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.38268343, z: -0, w: 0.92387956}
-  m_LocalPosition: {x: -306, y: 0, z: 103.8}
+  m_LocalPosition: {x: -315, y: 0, z: 180.6}
   m_LocalScale: {x: 5, y: 2.8725688, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5704,7 +5694,7 @@ Transform:
   m_GameObject: {fileID: 236698995}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -306, y: 0, z: 99.1}
+  m_LocalPosition: {x: -315, y: 0, z: 175.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -12367,7 +12357,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: c8ffcb7b183e0214a98ea5f7c7b21d1e, type: 3}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.49019608}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.74509805}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -132049,9 +132039,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1904700659}
   - {fileID: 1987050234}
   - {fileID: 27867428}
-  - {fileID: 1904700659}
   - {fileID: 1784883799}
   - {fileID: 370222682}
   m_Father: {fileID: 721024468}
@@ -132361,8 +132351,6 @@ MonoBehaviour:
   roamSpeed: 3.6
   chaseSpeed: 5
   canKnockback: 1
-  StillThreshold: 0.03
-  MaxKnockbackTime: 0.5
   knockbackMultiplier: 1
   _dashStoppingThreshold: 0.5
 --- !u!114 &1011214408
@@ -134998,6 +134986,7 @@ GameObject:
   - component: {fileID: 1114518523}
   - component: {fileID: 1114518522}
   - component: {fileID: 1114518521}
+  - component: {fileID: 1114518525}
   m_Layer: 0
   m_Name: MBearN
   m_TagString: Untagged
@@ -135145,6 +135134,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1114518525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1114518519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2602100b566eb84d9c55da83bc22758, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  combatScript: {fileID: 1011214405}
 --- !u!1 &1119496877
 GameObject:
   m_ObjectHideFlags: 0
@@ -182448,8 +182450,6 @@ MonoBehaviour:
   roamSpeed: 3.6
   chaseSpeed: 5
   canKnockback: 1
-  StillThreshold: 0.03
-  MaxKnockbackTime: 0.5
   knockbackMultiplier: 1
   _dashStoppingThreshold: 0.5
 --- !u!114 &7078686920769093048

@@ -85,8 +85,9 @@ public class BearCombat : BaseEnemyCombat
             // ** แทรก Logic เสกเห็ดตรงนี้ **
             CheckAndSpawnMushroom(selectedSkill);
 
-            TriggerSkillUesd(selectedSkill, skillSpeedMultiplier);
-            yield return enemySkills[selectedSkill].UseSkill(this.gameObject, _aiController.playerTarget, skillSpeedMultiplier);
+            yield return UseSkill(selectedSkill, skillSpeedMultiplier);
+            //TriggerSkillUesd(selectedSkill, skillSpeedMultiplier);
+            //yield return enemySkills[selectedSkill].UseSkill(this.gameObject, _aiController.playerTarget, skillSpeedMultiplier);
 
             // จบการทำงานของ Function นี้เลย (ไม่ไปทำ Logic ข้างล่างต่อ)
             yield break;
@@ -105,8 +106,9 @@ public class BearCombat : BaseEnemyCombat
         // ** แทรก Logic เสกเห็ดตรงนี้ (Skill สุ่ม) **
         CheckAndSpawnMushroom(firstSkillIndex);
 
-        TriggerSkillUesd(firstSkillIndex, skillSpeedMultiplier);
-        yield return enemySkills[firstSkillIndex].UseSkill(this.gameObject, _aiController.playerTarget, skillSpeedMultiplier);
+        yield return UseSkill(firstSkillIndex, skillSpeedMultiplier);
+        //TriggerSkillUesd(firstSkillIndex, skillSpeedMultiplier);
+        //yield return enemySkills[firstSkillIndex].UseSkill(this.gameObject, _aiController.playerTarget, skillSpeedMultiplier);
 
         // 3. ใช้สกิลที่สุ่มได้คือ Skill 3 ให้ทำต่อ
         if (firstSkillIndex == 2)
@@ -118,8 +120,9 @@ public class BearCombat : BaseEnemyCombat
             // ** แทรก Logic เสกเห็ดตรงนี้ (Combo Skill) **
             CheckAndSpawnMushroom(randomSkillIndex);
 
-            TriggerSkillUesd(randomSkillIndex, skillSpeedMultiplier);
-            yield return enemySkills[randomSkillIndex].UseSkill(this.gameObject, _aiController.playerTarget, skillSpeedMultiplier);
+            yield return UseSkill(randomSkillIndex, skillSpeedMultiplier);
+            //TriggerSkillUesd(randomSkillIndex, skillSpeedMultiplier);
+            //yield return enemySkills[randomSkillIndex].UseSkill(this.gameObject, _aiController.playerTarget, skillSpeedMultiplier);
         }
 
         yield break;
@@ -205,27 +208,30 @@ public class BearCombat : BaseEnemyCombat
 
     private IEnumerator ForceSkill2CounterAttack()
     {
+        int skillAngery = 2;
+
         // แจ้ง Animator ว่าใช้สกิล 2 (index 2)
-        CheckAndSpawnMushroom(2);
+        CheckAndSpawnMushroom(skillAngery);
 
-        TriggerSkillUesd(2, skillSpeedMultiplier);
+        yield return UseSkill(skillAngery, skillSpeedMultiplier);
 
-        // รอจนกว่าจะหันหน้าเสร็จ (Optional: ถ้าอยากให้หันหาคนเล่นก่อนใช้สกิลแบบเป๊ะๆ)
-        // yield return FaceTargetCoroutine(_aiController.playerTarget.position);
+        //TriggerSkillUesd(2, skillSpeedMultiplier);
 
-        // *** ใช้สกิล 2 ทันที ***
-        if (enemySkills.Length > 2)
-        {
-            yield return enemySkills[2].UseSkill(this.gameObject, _aiController.playerTarget, skillSpeedMultiplier);
-        }
-        else
-        {
-            Debug.LogError("ลืมใส่ Enemy Skills ช่องที่ 2 หรือเปล่า?");
-        }
+        //// รอจนกว่าจะหันหน้าเสร็จ (Optional: ถ้าอยากให้หันหาคนเล่นก่อนใช้สกิลแบบเป๊ะๆ)
+        //// yield return FaceTargetCoroutine(_aiController.playerTarget.position);
+
+        //// *** ใช้สกิล 2 ทันที ***
+        //if (enemySkills.Length > 2)
+        //{
+        //    yield return enemySkills[2].UseSkill(this.gameObject, _aiController.playerTarget, skillSpeedMultiplier);
+        //}
+        //else
+        //{
+        //    Debug.LogError("ลืมใส่ Enemy Skills ช่องที่ 2 หรือเปล่า?");
+        //}
 
         // จบการทำงาน แจ้ง AI ว่าว่างแล้ว (AI จะกลับไป Chase หรือทำอย่างอื่นต่อ)
-        TriggerAttackFinished();
-        _attackSequenceCoroutine = null;
+        AttackFinished();
     }
 
 }

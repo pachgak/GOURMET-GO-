@@ -183,11 +183,9 @@ public class PlayerCombatController : MonoBehaviour
         {
             case AttackDiractionType.movement:
                 directionToTarget = _playerMovement.lastMoveDirection;
-                Debug.Log($"movement {directionToTarget}");
                 break;
             case AttackDiractionType.mouse:
                 directionToTarget = (_mousePosition - transform.position).normalized;
-                Debug.Log($"mouse {directionToTarget}");
                 break;
 
         }

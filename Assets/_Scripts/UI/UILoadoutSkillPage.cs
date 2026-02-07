@@ -69,8 +69,6 @@ public class UILoadoutSkillPage : MonoBehaviour
             GameObject removeItemUI = contentPanel.GetChild(i).gameObject;
             removeItemUI.transform.parent = transform.root;
             GameObject.Destroy(removeItemUI);
-
-            Debug.Log($"contentPanel.childCount : {contentPanel.childCount}");
         }
     }
 

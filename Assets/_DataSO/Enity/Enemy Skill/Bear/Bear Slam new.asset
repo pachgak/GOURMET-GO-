@@ -21,6 +21,7 @@ MonoBehaviour:
     skillHight: 0.1
     damage: 0
     knockbackForce: 0
+    knockbackTime: 0
     speed: 0
     haveDash: 0
     dashSpeed: 0
@@ -31,6 +32,7 @@ MonoBehaviour:
     skillHight: 0
     damage: 5
     knockbackForce: 30
+    knockbackTime: 0
     speed: 46.5
     haveDash: 0
     dashSpeed: 0
@@ -41,7 +43,30 @@ MonoBehaviour:
     skillHight: 0
     damage: 0
     knockbackForce: 0
+    knockbackTime: 0
     speed: 0
     haveDash: 0
     dashSpeed: 0
     dashTime: 0
+  actions:
+  - rid: 3016931430327910484
+  - rid: 3016931430327910485
+  references:
+    version: 2
+    RefIds:
+    - rid: 3016931430327910484
+      type: {class: SpawnVFXAction, ns: , asm: Assembly-CSharp}
+      data:
+        dirType: 0
+        prefab: {fileID: 4353770289278914447, guid: 1301831ad8839a5418d12f267025e07c, type: 3}
+        spawnType: 0
+        offset: {x: 0, y: 0}
+    - rid: 3016931430327910485
+      type: {class: SpawnHitboxAction, ns: , asm: Assembly-CSharp}
+      data:
+        dirType: 0
+        prefab: {fileID: 7389834317261449249, guid: e7dfc5341e2d7a64298b92c04f7523fb, type: 3}
+        spawnType: 1
+        offset: {x: 0, y: 0}
+        damage: 5
+        knockbackForce: 30

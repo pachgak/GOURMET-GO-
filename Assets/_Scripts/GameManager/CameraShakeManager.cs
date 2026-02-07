@@ -47,7 +47,7 @@ public class CameraShakeManager : MonoBehaviour
     public void ShakePlayerAttack()
     {
         shakeParent.DOKill(true);
-        Debug.Log("ShakePlayerAttack");
+        //Debug.Log("ShakePlayerAttack");
 
         shakeParent.transform.DOShakePosition(
     duration: 0.2f,
@@ -66,7 +66,7 @@ public class CameraShakeManager : MonoBehaviour
     public void ShakePlayerTakeDamage()
     {
         shakeParent.DOKill(true);
-        Debug.Log("ShakePlayerTakeDamage");
+        //Debug.Log("ShakePlayerTakeDamage");
 
         shakeParent.transform.DOShakePosition(
     duration: 0.2f,

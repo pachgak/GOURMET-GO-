@@ -9,9 +9,13 @@ public class EnemySkillSO : ScriptableObject
 {
     public string skillName;
 
-    public AttacksSkill.SpawnSkillPrefabsType spawnSkillPrefabsType;
-    public AttacksSkill.SkillSetp[] _skillSetp;
+    [HideInInspector] public AttacksSkill.SpawnSkillPrefabsType spawnSkillPrefabsType;
+    [HideInInspector] public AttacksSkill.SkillSetp[] _skillSetp;
 
+    [SubclassSelector, SerializeReference]
+    public List<SkillAction> actions = new List<SkillAction>();
+
+    /*
     // รับ parameter speedMultiplier (default = 1.0f คือความเร็วปกติ)
     public IEnumerator UseSkill(GameObject enemy, Transform target, float speedMultiplier = 1.0f)
     {
@@ -138,4 +142,5 @@ public class EnemySkillSO : ScriptableObject
             iSpeed._speed = speed;
         }
     }
+    */
 }

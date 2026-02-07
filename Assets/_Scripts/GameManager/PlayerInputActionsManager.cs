@@ -214,13 +214,11 @@ public class PlayerInputActionsManager : MonoBehaviour
     private void OnSprintStarted(InputAction.CallbackContext context)
     {
         OnSprintInput?.Invoke(true); // กด Shift ลง
-        Debug.Log("OnSprintStarted : true");
     }
 
     private void OnSprintCanceled(InputAction.CallbackContext context)
     {
         OnSprintInput?.Invoke(false); // ปล่อย Shift ขึ้น
-        Debug.Log("OnSprintStarted : false");
     }
 
     private void OnDashPerformed(InputAction.CallbackContext context)

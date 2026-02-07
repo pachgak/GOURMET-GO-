@@ -84,7 +84,5 @@ public class ItemDetailPromptController : MonoBehaviour
     public void Toggle(bool val)
     {
         gameObject.SetActive(val);
-
-        Debug.Log($"[set : {val}] ItemDetailPromptController : {gameObject.activeSelf}");
     }
 }

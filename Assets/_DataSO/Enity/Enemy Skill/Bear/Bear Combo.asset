@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea9305386f6b18c4780c167459107c07, type: 3}
-  m_Name: Bear Scratch
+  m_Name: Bear Combo
   m_EditorClassIdentifier: 
   skillName: 
   spawnSkillPrefabsType: 0
@@ -92,3 +92,58 @@ MonoBehaviour:
     haveDash: 0
     dashSpeed: 0
     dashTime: 0
+  actions:
+  - rid: 3016931425684553822
+  - rid: 3016931425684553823
+  - rid: 3016931425684553824
+  - rid: 3016931425684553825
+  - rid: 3016931425684553832
+  - rid: 3016931425684553833
+  references:
+    version: 2
+    RefIds:
+    - rid: 3016931425684553822
+      type: {class: DashAction, ns: , asm: Assembly-CSharp}
+      data:
+        dirType: 0
+        dashSpeed: 30
+        dashDuration: 0.25
+    - rid: 3016931425684553823
+      type: {class: SpawnHitboxAction, ns: , asm: Assembly-CSharp}
+      data:
+        dirType: 0
+        prefab: {fileID: 8207986665541837172, guid: ce1ac4d019a01bd47a091e2ad2a3eeef, type: 3}
+        spawnType: 0
+        offset: {x: 0, y: 0}
+        damage: 3
+        knockbackForce: 10
+    - rid: 3016931425684553824
+      type: {class: DashAction, ns: , asm: Assembly-CSharp}
+      data:
+        dirType: 0
+        dashSpeed: 30
+        dashDuration: 0.25
+    - rid: 3016931425684553825
+      type: {class: SpawnHitboxAction, ns: , asm: Assembly-CSharp}
+      data:
+        dirType: 0
+        prefab: {fileID: 8207986665541837172, guid: ce1ac4d019a01bd47a091e2ad2a3eeef, type: 3}
+        spawnType: 0
+        offset: {x: 0, y: 0}
+        damage: 3
+        knockbackForce: 5
+    - rid: 3016931425684553832
+      type: {class: DashAction, ns: , asm: Assembly-CSharp}
+      data:
+        dirType: 0
+        dashSpeed: 30
+        dashDuration: 0.25
+    - rid: 3016931425684553833
+      type: {class: SpawnHitboxAction, ns: , asm: Assembly-CSharp}
+      data:
+        dirType: 0
+        prefab: {fileID: 8207986665541837172, guid: ce1ac4d019a01bd47a091e2ad2a3eeef, type: 3}
+        spawnType: 0
+        offset: {x: 0, y: 0}
+        damage: 3
+        knockbackForce: 5

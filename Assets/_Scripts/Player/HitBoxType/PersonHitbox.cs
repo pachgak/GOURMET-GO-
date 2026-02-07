@@ -23,8 +23,8 @@ public class PersonHitbox : BaseHitBox
 
     protected virtual void OnTriggerEnter(Collider other)
     {
-        Debug.Log($"Hit PersonHitbox by : {gameObject.name}");
-        Debug.Log($"other layer :{other.gameObject.name} / {other.gameObject.layer}");
+        //Debug.Log($"Hit PersonHitbox by : {gameObject.name}");
+        //Debug.Log($"other layer :{other.gameObject.name} / {other.gameObject.layer}");
 
         if (other.gameObject.layer == Mathf.Log(targetLayer.value, 2))
         {
