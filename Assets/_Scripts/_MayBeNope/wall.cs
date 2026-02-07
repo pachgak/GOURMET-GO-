@@ -5,7 +5,7 @@ public class wall : MonoBehaviour , IKnockbackable
     public bool canKnockback;
     bool IKnockbackable._canKnockback { get => canKnockback; set => canKnockback = value; }
     
-    [SerializeField] private float knockbackMultiplier;
+    [SerializeField] private float knockbackMultiplier = 1;
     float IKnockbackable._knockbackMultiplier { get => knockbackMultiplier; set => knockbackMultiplier = value; }
 
     public void GetKnockedBack(Vector3 direction, float force, float time)

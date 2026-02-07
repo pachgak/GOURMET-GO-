@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class FoodTree : SpawnItemDropPoor
@@ -6,6 +7,7 @@ public class FoodTree : SpawnItemDropPoor
     public Sprite imageEmptyTree;
     private bool _isEmpty = false;
 
+    public event Action OnPick;
 
     private void Awake()
     {
@@ -35,5 +37,7 @@ public class FoodTree : SpawnItemDropPoor
         _isEmpty = true;
 
         this.enabled = false;
+
+        OnPick?.Invoke();
     }
 }

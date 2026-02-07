@@ -23,7 +23,7 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
     private BaseEnemyAI _aiController;
     private EnemyHealth _enemyHealth;
 
-    private bool _isWaiting;
+    [SerializeField] private bool _isWaiting;
     private float _timerWaiting;
 
     //public KnockbackableStat knockbackableStat;
@@ -64,11 +64,19 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
     private void OnEnable()
     {
         // *** สมัครรับ Events จาก BaseEnemyAI เพื่อรับคำสั่ง ***
-        _aiController.OnStartChase += HandleStartChase;
+        if (_aiController != null)
+        {
+            _aiController.OnStartChase += HandleStartChase;
         _aiController.OnStopMovement += HandleStopMovement;
         _aiController.OnStateChange += HandleStateChange;
 
-        _enemyHealth.OnDie += HandleOnDie;
+        }
+
+        if (_enemyHealth != null)
+        {
+            _enemyHealth.OnDie += HandleOnDie;
+
+        }
     }
 
     private void OnDisable()
@@ -80,8 +88,10 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
             _aiController.OnStopMovement -= HandleStopMovement;
             _aiController.OnStateChange -= HandleStateChange;
         }
-
-        _enemyHealth.OnDie -= HandleOnDie;
+        if (_enemyHealth != null)
+        {
+            _enemyHealth.OnDie -= HandleOnDie;
+        }
     }
 
     private void HandleOnDie()
@@ -118,7 +128,8 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
 
     void Update()
     {
-        if (_enemyHealth.isDead) return;
+
+        if (_enemyHealth != null && _enemyHealth.isDead) return;
 
         // Logic การ Roaming: ถ้าอยู่ใน Roaming State และถึงจุดหมายแล้ว ให้สุ่มจุดใหม่
         if (_aiController.currentState == BaseEnemyAI.EnemyState.Roaming && IsAtDestination())

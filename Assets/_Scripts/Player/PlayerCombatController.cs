@@ -333,24 +333,18 @@ public class PlayerCombatController : MonoBehaviour
     {
         int currentAttackIndex = _attackIndex % attackCombo.Length;
 
-        float minKnockbackMultiplier = -1;
+        float minKnockbackMultiplier = 1000f;
         bool isCanKnockback = true;
 
-            foreach (var hitCollider in hitColliders)
-            {
-                if (hitCollider.TryGetComponent(out IKnockbackable knockbackable))
-                {
-                    if (minKnockbackMultiplier <= -1 || minKnockbackMultiplier > knockbackable._knockbackMultiplier)
-                        minKnockbackMultiplier = knockbackable._knockbackMultiplier;
-
-                    if(!knockbackable._canKnockback) isCanKnockback = false;
-                }
-            }
-
-        if (minKnockbackMultiplier <= -1)
+        foreach (var hitCollider in hitColliders)
         {
-            OnNoEnemy();
-            return;
+            if (hitCollider.TryGetComponent(out IKnockbackable knockbackable))
+            {
+                if (minKnockbackMultiplier > knockbackable._knockbackMultiplier)
+                    minKnockbackMultiplier = knockbackable._knockbackMultiplier;
+
+                if (!knockbackable._canKnockback) isCanKnockback = false;
+            }
         }
 
         float thisKnockbackMultiplier = minKnockbackMultiplier;
@@ -359,7 +353,7 @@ public class PlayerCombatController : MonoBehaviour
         {
             if (attackCombo[currentAttackIndex].isSnapKnockback)
             {
-                float adjAttackForwardMultiplier = attackCombo[currentAttackIndex].attackForwardForce * thisKnockbackMultiplier ;
+                float adjAttackForwardMultiplier = attackCombo[currentAttackIndex].attackForwardForce * thisKnockbackMultiplier;
 
                 if (setLimitAttack) CheckLimitAttackForward(adjAttackForwardMultiplier, currentAttackIndex);
                 else OnAttackForward?.Invoke(true, _lastDirectionToTarget, adjAttackForwardMultiplier, attackCombo[currentAttackIndex].attackForwardTime);
@@ -375,7 +369,7 @@ public class PlayerCombatController : MonoBehaviour
             {
                 if (attackCombo[currentAttackIndex].isSnapKnockback)
                 {
-                    float adjKnockbackMultiplier = attackCombo[currentAttackIndex].knockbackForce * thisKnockbackMultiplier / 1.5f;
+                    float adjKnockbackMultiplier = attackCombo[currentAttackIndex].knockbackForce * thisKnockbackMultiplier;
 
                     if (setLimitAttack) CheckLimitAttackForward(adjKnockbackMultiplier, currentAttackIndex);
                     else OnAttackForward?.Invoke(true, _lastDirectionToTarget, adjKnockbackMultiplier, attackCombo[currentAttackIndex].knockbackTime);
@@ -385,11 +379,73 @@ public class PlayerCombatController : MonoBehaviour
                     OnAttackForward?.Invoke(true, _lastDirectionToTarget, 0, attackCombo[currentAttackIndex].knockbackTime);
                 }
             }
-            
+
         }
 
         CameraShakeManager.instance.ShakePlayerAttack();
     }
+
+    //public void OnHitEnemy(Collider[] hitColliders)
+    //{
+    //    int currentAttackIndex = _attackIndex % attackCombo.Length;
+
+    //    float minKnockbackMultiplier = -1;
+    //    bool isCanKnockback = true;
+
+    //        foreach (var hitCollider in hitColliders)
+    //        {
+    //            if (hitCollider.TryGetComponent(out IKnockbackable knockbackable))
+    //            {
+    //                if (minKnockbackMultiplier <= -1 || minKnockbackMultiplier > knockbackable._knockbackMultiplier)
+    //                    minKnockbackMultiplier = knockbackable._knockbackMultiplier;
+
+    //                if(!knockbackable._canKnockback) isCanKnockback = false;
+    //            }
+    //        }
+
+    //    if (minKnockbackMultiplier <= -1)
+    //    {
+    //        OnNoEnemy();
+    //        return;
+    //    }
+
+    //    float thisKnockbackMultiplier = minKnockbackMultiplier;
+
+    //    if (isCanKnockback)
+    //    {
+    //        if (attackCombo[currentAttackIndex].isSnapKnockback)
+    //        {
+    //            float adjAttackForwardMultiplier = attackCombo[currentAttackIndex].attackForwardForce * thisKnockbackMultiplier ;
+
+    //            if (setLimitAttack) CheckLimitAttackForward(adjAttackForwardMultiplier, currentAttackIndex);
+    //            else OnAttackForward?.Invoke(true, _lastDirectionToTarget, adjAttackForwardMultiplier, attackCombo[currentAttackIndex].attackForwardTime);
+    //        }
+    //        else
+    //            OnAttackForward?.Invoke(true, _lastDirectionToTarget, 0, attackCombo[currentAttackIndex].knockbackTime);
+    //    }
+    //    else
+    //    {
+    //        if (setAttackBackwardCantKnockback)
+    //            OnAttackForward?.Invoke(false, _lastDirectionToTarget, attackForwardSpeed / AttackBackwardDivide, attackForwardTime);
+    //        else
+    //        {
+    //            if (attackCombo[currentAttackIndex].isSnapKnockback)
+    //            {
+    //                float adjKnockbackMultiplier = attackCombo[currentAttackIndex].knockbackForce * thisKnockbackMultiplier / 1.5f;
+
+    //                if (setLimitAttack) CheckLimitAttackForward(adjKnockbackMultiplier, currentAttackIndex);
+    //                else OnAttackForward?.Invoke(true, _lastDirectionToTarget, adjKnockbackMultiplier, attackCombo[currentAttackIndex].knockbackTime);
+    //            }
+    //            else
+    //            {
+    //                OnAttackForward?.Invoke(true, _lastDirectionToTarget, 0, attackCombo[currentAttackIndex].knockbackTime);
+    //            }
+    //        }
+
+    //    }
+
+    //    CameraShakeManager.instance.ShakePlayerAttack();
+    //}
 
     public void CheckLimitAttackForward(float adjAttackForwardMultiplier,int currentAttackIndex)
     {

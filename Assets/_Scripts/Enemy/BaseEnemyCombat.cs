@@ -65,7 +65,7 @@ public class BaseEnemyCombat : MonoBehaviour
             //_playerTarget = _aiController.playerTarget; // ดึง Target จาก AI (เพื่อความง่าย)
             //_aiController.OnStartAttackSequence += HandleStartAttackSequence;
         }
-        _enemyHealth.OnDie += HandleOnDie;
+        if (_enemyHealth != null)  _enemyHealth.OnDie += HandleOnDie;
     }
 
     protected virtual void OnDisable()
@@ -74,7 +74,7 @@ public class BaseEnemyCombat : MonoBehaviour
         {
             //_aiController.OnStartAttackSequence -= HandleStartAttackSequence;
         }
-        _enemyHealth.OnDie -= HandleOnDie;
+        if (_enemyHealth != null) _enemyHealth.OnDie -= HandleOnDie;
     }
 
     private void HandleOnDie()
@@ -83,7 +83,7 @@ public class BaseEnemyCombat : MonoBehaviour
     }
     protected virtual void Update()
     {
-        if (_enemyHealth.isDead) return;
+        if (_enemyHealth != null && _enemyHealth.isDead) return;
 
         if (attackTimer > 0 && _attackSequenceCoroutine == null)
         {
@@ -150,7 +150,7 @@ public class BaseEnemyCombat : MonoBehaviour
         // (คุณไปใส่ Logic เลือกสกิลแบบเดิมของคุณตรงนี้)
 
         // 2. เริ่มใช้สกิล
-        yield return UseSkill(skillIndex);
+        if(enemySkills[skillIndex] != null) yield return UseSkill(skillIndex);
 
         //// 1. Logic การหันหน้าไปหา Player
         //TriggerSkillUesd(0);

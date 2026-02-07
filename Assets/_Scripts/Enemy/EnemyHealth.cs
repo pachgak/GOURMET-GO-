@@ -79,7 +79,7 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
         }
     }
 
-    private void RetrunToPoor()
+    public void RetrunToPoor()
     {
         ObjectPoolingManager.Instance.Respawn(gameObject);
     }

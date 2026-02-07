@@ -69,7 +69,7 @@ public class BaseEnemyAI : MonoBehaviour
 
     protected virtual void Update()
     {
-        if (_enemyHealth.isDead) return;
+        if (_enemyHealth != null && _enemyHealth.isDead) return;
 
         CheckPlayerDistance();
 
