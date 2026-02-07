@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using static IHitBox;
 
@@ -10,6 +11,8 @@ public class PersonHitbox : BaseHitBox
     public LayerMask wallLayer; // ตั้งค่า Layer ของศัตรูใน Inspector
 
     Collider _colider;
+
+    public event Action OnHit;
 
     protected virtual void Awake()
     {
@@ -70,11 +73,22 @@ public class PersonHitbox : BaseHitBox
                 CameraShakeManager.instance.ShakePlayerAttack();
             }
 
-            ReturnObjectToPool();
+            //OnHit Active
+            Collider[] colliders = new Collider[1] { hitCollider };
+            OnAttackHit?.Invoke(colliders);
+
+            DisableAttack();
+            //ReturnObjectToPool();
         }
         if (other.gameObject.layer == Mathf.Log(wallLayer.value, 2))
         {
-            ReturnObjectToPool();
+            //OnHit Active
+            Collider[] colliders = new Collider[1];
+            colliders[0] = other;
+            OnAttackHit?.Invoke(colliders);
+
+            DisableAttack();
+            //ReturnObjectToPool();
         }
     }
 
@@ -82,6 +96,13 @@ public class PersonHitbox : BaseHitBox
     {
         _colider.enabled = true;
     }
+
+    public void DisableAttack()
+    {
+        _colider.enabled = false;
+    }
+
+
 
     private void ReturnObjectToPool()
     {

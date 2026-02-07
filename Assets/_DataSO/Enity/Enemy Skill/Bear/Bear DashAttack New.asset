@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea9305386f6b18c4780c167459107c07, type: 3}
-  m_Name: Bear DashAttack
+  m_Name: Bear DashAttack New
   m_EditorClassIdentifier: 
   skillName: 
   spawnSkillPrefabsType: 0
@@ -94,10 +94,8 @@ MonoBehaviour:
     dashTime: 0
   actions:
   - rid: 3016931430327910400
-  - rid: 3016931430327910478
   - rid: 3016931430327910402
   - rid: 3016931430327910403
-  - rid: 3016931430327910479
   - rid: 3016931430327910405
   references:
     version: 2
@@ -112,7 +110,7 @@ MonoBehaviour:
       type: {class: SpawnHitboxAction, ns: , asm: Assembly-CSharp}
       data:
         dirType: 0
-        prefab: {fileID: 4132065170442862893, guid: ae755f0d125b3ec45b17bec3ba0a9daf, type: 3}
+        prefab: {fileID: 1191421158767498713, guid: 56b3ec3c7670241479c2cacb92aaa1fb, type: 3}
         spawnType: 0
         offset: {x: 0, y: 0}
         damage: 3
@@ -127,22 +125,8 @@ MonoBehaviour:
       type: {class: SpawnHitboxAction, ns: , asm: Assembly-CSharp}
       data:
         dirType: 0
-        prefab: {fileID: 4132065170442862893, guid: ae755f0d125b3ec45b17bec3ba0a9daf, type: 3}
+        prefab: {fileID: 1191421158767498713, guid: 56b3ec3c7670241479c2cacb92aaa1fb, type: 3}
         spawnType: 0
         offset: {x: 0, y: 0}
         damage: 3
         knockbackForce: 20
-    - rid: 3016931430327910478
-      type: {class: SpawnVFXAction, ns: , asm: Assembly-CSharp}
-      data:
-        dirType: 0
-        prefab: {fileID: 1167484039012917625, guid: aeee4079a43f16b47a9ecf856ee5394c, type: 3}
-        spawnType: 0
-        offset: {x: 0, y: 0}
-    - rid: 3016931430327910479
-      type: {class: SpawnVFXAction, ns: , asm: Assembly-CSharp}
-      data:
-        dirType: 0
-        prefab: {fileID: 1167484039012917625, guid: aeee4079a43f16b47a9ecf856ee5394c, type: 3}
-        spawnType: 0
-        offset: {x: 0, y: 0}
