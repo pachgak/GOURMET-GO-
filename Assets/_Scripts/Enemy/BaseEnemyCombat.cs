@@ -96,7 +96,7 @@ public class BaseEnemyCombat : MonoBehaviour
 
                 if (attackTimer <= 0 && _attackSequenceCoroutine == null)
                 {
-                    HandleStartAttackSequence(false);
+                    HandleStartAttackSequence();
                     attackTimer = attackCooldown;
                 }
 
@@ -111,28 +111,28 @@ public class BaseEnemyCombat : MonoBehaviour
     // --- Event Handler (Subscriber) ---
 
     // ถูกเรียกเมื่อ OnStartAttackSequence ถูก Invoke
-    public virtual void HandleStartAttackSequence(bool forceUseSkill3)
+    public virtual void HandleStartAttackSequence()
     {
         _enemyMovement.canKnockback = false;
         // Base Combat ไม่ใช้ forceUseSkill3 แต่คลาสลูกสามารถนำไปใช้ได้
         if (_attackSequenceCoroutine != null) StopCoroutine(_attackSequenceCoroutine);
-        _attackSequenceCoroutine = StartCoroutine(AttackSequence(forceUseSkill3));
+        _attackSequenceCoroutine = StartCoroutine(AttackSequence());
     }
 
     // --- Combat Logic ---
 
-    protected virtual IEnumerator AttackSequence(bool forceUseSkill3)
+    protected virtual IEnumerator AttackSequence()
     {
         //if (_agent != null) _agent.isStopped = true;
 
-        yield return AttackLogic(forceUseSkill3);
+        yield return AttackLogic();
 
         // แจ้ง AI ว่าโจมตีเสร็จแล้ว
         TriggerAttackFinished();
         _attackSequenceCoroutine = null;
     }
 
-    protected virtual IEnumerator AttackLogic(bool forceUseSkill3)
+    protected virtual IEnumerator AttackLogic()
     {
         // 1. Logic การหันหน้าไปหา Player
         TriggerSkillUesd(0);

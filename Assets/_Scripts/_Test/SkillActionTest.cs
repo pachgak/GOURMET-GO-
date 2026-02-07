@@ -9,7 +9,7 @@ public abstract class SkillActionTest // ไม่สืบทอดจาก ScriptableObject
 }
 
 [System.Serializable]
-public class DashAction : SkillActionTest
+public class DashActionTest : SkillActionTest
 {
     public float dashForce = 10f; // ปรับค่า Default ได้
     public float duration = 0.5f;
@@ -22,7 +22,7 @@ public class DashAction : SkillActionTest
 }
 
 [System.Serializable]
-public class SpawnHitboxAction : SkillActionTest
+public class SpawnHitboxActionTest : SkillActionTest
 {
     public GameObject prefab;
     public float damage = 50;

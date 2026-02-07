@@ -21,7 +21,7 @@ public class BearCombat : BaseEnemyCombat
     protected override void OnEnable()
     {
         base.OnEnable();
-        
+
         _bearAI.OnAngryChang += HandleAngryChang;
     }
 
@@ -31,6 +31,101 @@ public class BearCombat : BaseEnemyCombat
 
         _bearAI.OnAngryChang -= HandleAngryChang;
     }
+
+   
+    protected override void Update()
+    {
+        base.Update();
+        //if (_enemyHealth.isDead) return;
+
+        //if (attackTimer > 0 && _attackSequenceCoroutine == null)
+        //{
+        //    attackTimer -= Time.deltaTime;
+
+        //    if (attackTimer <= 0)
+        //    {
+        //        _agent.isStopped = false;
+        //    }
+        //    else
+        //    {
+        //        _agent.isStopped = true;
+        //    }
+        //}
+
+        //// ---  State Logi ---
+        //switch (_aiController.currentState)
+        //{
+        //    case BaseEnemyAI.EnemyState.Attack:
+
+        //        if (attackTimer <= 0 && _attackSequenceCoroutine == null)
+        //        {
+        //            HandleStartAttackSequence();
+        //            attackTimer = attackCooldown;
+        //        }
+
+        //        if (_attackSequenceCoroutine == null) _aiController.TriggerChangeState(BaseEnemyAI.EnemyState.Chase);
+
+        //        break;
+        //}
+    }
+
+    protected override IEnumerator AttackLogic()
+    {
+        
+        // ================================================================
+        // เงื่อนไขใหม่: ถ้าเป็นการโจมตีเพราะ "ไล่นานเกินไป" (Chase Timeout)
+        // ================================================================
+        if (_bearAI != null && _bearAI.isChaseTimeoutAttack)
+        {
+            // สุ่มเลือกระหว่างสกิล 1 หรือ 3
+            // สร้าง Array เลข 1 กับ 3 แล้วสุ่มหยิบมา 1 ตัว
+            int[] specialSkills = { 1, 3 };
+            int selectedSkill = specialSkills[UnityEngine.Random.Range(0, specialSkills.Length)];
+
+            // ** แทรก Logic เสกเห็ดตรงนี้ **
+            CheckAndSpawnMushroom(selectedSkill);
+
+            TriggerSkillUesd(selectedSkill, skillSpeedMultiplier);
+            yield return enemySkills[selectedSkill].UseSkill(this.gameObject, _aiController.playerTarget, skillSpeedMultiplier);
+
+            // จบการทำงานของ Function นี้เลย (ไม่ไปทำ Logic ข้างล่างต่อ)
+            yield break;
+        }
+
+        // ================================================================
+        // เงื่อนไขเดิม: การโจมตีปกติเมื่อถึงระยะ (Normal Attack Logic)
+        // ================================================================
+
+        // 2. ถ้า AI ไม่ได้สั่งบังคับ ให้สุ่ม 1 ใน 3
+        //SkillType firstSkill = (SkillType)UnityEngine.Random.Range(0, 3);
+        //int firstSkillIndex = UnityEngine.Random.Range(0, 4);
+        int[] firstSkills = { 0 , 1, 2, 3 };
+        int firstSkillIndex = firstSkills[UnityEngine.Random.Range(0, firstSkills.Length)];
+
+        // ** แทรก Logic เสกเห็ดตรงนี้ (Skill สุ่ม) **
+        CheckAndSpawnMushroom(firstSkillIndex);
+
+        TriggerSkillUesd(firstSkillIndex, skillSpeedMultiplier);
+        yield return enemySkills[firstSkillIndex].UseSkill(this.gameObject, _aiController.playerTarget, skillSpeedMultiplier);
+
+        // 3. ใช้สกิลที่สุ่มได้คือ Skill 3 ให้ทำต่อ
+        if (firstSkillIndex == 2)
+        {
+            //int randomSkillIndex = UnityEngine.Random.Range(0, 2);
+            int[] nextSkills = { 0, 1 };
+            int randomSkillIndex = nextSkills[UnityEngine.Random.Range(0, nextSkills.Length)];
+
+            // ** แทรก Logic เสกเห็ดตรงนี้ (Combo Skill) **
+            CheckAndSpawnMushroom(randomSkillIndex);
+
+            TriggerSkillUesd(randomSkillIndex, skillSpeedMultiplier);
+            yield return enemySkills[randomSkillIndex].UseSkill(this.gameObject, _aiController.playerTarget, skillSpeedMultiplier);
+        }
+
+        yield break;
+    }
+
+    //======================================
 
     private void CheckAndSpawnMushroom(int skillIndex)
     {
@@ -69,7 +164,7 @@ public class BearCombat : BaseEnemyCombat
             // แนะนำให้ใช้ ObjectPoolingManager ถ้ามี แต่ถ้าไม่มีใช้ Instantiate ไปก่อนได้ครับ
             //Instantiate(mushroomPrefab, hit.position, Quaternion.identity);
             GameObject clone = ObjectPoolingManager.Instance.Spawn(mushroomPrefab, hit.position);
-            
+
         }
         else
         {
@@ -133,110 +228,4 @@ public class BearCombat : BaseEnemyCombat
         _attackSequenceCoroutine = null;
     }
 
-    protected override void Update()
-    {
-        if (_enemyHealth.isDead) return;
-
-        if (attackTimer > 0 && _attackSequenceCoroutine == null)
-        {
-            attackTimer -= Time.deltaTime;
-            
-            if (attackTimer <= 0)
-            {
-                _agent.isStopped = false;
-            }
-            else
-            {
-                _agent.isStopped = true;
-            }
-        }
-
-        // ---  State Logi ---
-        switch (_aiController.currentState)
-        {
-            case BaseEnemyAI.EnemyState.Attack:
-
-                if (attackTimer <= 0 && _attackSequenceCoroutine == null)
-                {
-                    HandleStartAttackSequence(false);
-                    attackTimer = attackCooldown;
-                }
-
-                if (_attackSequenceCoroutine == null) _aiController.TriggerChangeState(BaseEnemyAI.EnemyState.Chase);
-
-                break;
-        }
-
-        
-    }
-
-    protected override IEnumerator AttackLogic(bool forceSkill3Sequence)
-    {
-
-        // ================================================================
-        // เงื่อนไขใหม่: ถ้าเป็นการโจมตีเพราะ "ไล่นานเกินไป" (Chase Timeout)
-        // ================================================================
-        if (_bearAI != null && _bearAI.isChaseTimeoutAttack)
-        {
-            // สุ่มเลือกระหว่างสกิล 1 หรือ 3
-            // สร้าง Array เลข 1 กับ 3 แล้วสุ่มหยิบมา 1 ตัว
-            int[] specialSkills = { 1, 3 };
-            int selectedSkill = specialSkills[UnityEngine.Random.Range(0, specialSkills.Length)];
-
-            // ** แทรก Logic เสกเห็ดตรงนี้ **
-            CheckAndSpawnMushroom(selectedSkill);
-
-            TriggerSkillUesd(selectedSkill, skillSpeedMultiplier);
-            yield return enemySkills[selectedSkill].UseSkill(this.gameObject, _aiController.playerTarget, skillSpeedMultiplier);
-
-            // จบการทำงานของ Function นี้เลย (ไม่ไปทำ Logic ข้างล่างต่อ)
-            yield break;
-        }
-
-        // ================================================================
-        // เงื่อนไขเดิม: การโจมตีปกติเมื่อถึงระยะ (Normal Attack Logic)
-        // ================================================================
-
-        // 1. ตรวจสอบเงื่อนไขการใช้สกิล 3 ก่อน
-        if (forceSkill3Sequence)
-
-        {
-
-            // ** แทรก Logic เสกเห็ดตรงนี้ **
-            CheckAndSpawnMushroom(2);
-
-            TriggerSkillUesd(2 , skillSpeedMultiplier);
-            yield return enemySkills[2].UseSkill(this.gameObject, _aiController.playerTarget, skillSpeedMultiplier);
-        }
-        else
-        {
-            // 2. ถ้า AI ไม่ได้สั่งบังคับ ให้สุ่ม 1 ใน 3
-            //SkillType firstSkill = (SkillType)UnityEngine.Random.Range(0, 3);
-            int firstSkillIndex = UnityEngine.Random.Range(0, 4);
-
-            // ** แทรก Logic เสกเห็ดตรงนี้ (Skill สุ่ม) **
-            CheckAndSpawnMushroom(firstSkillIndex);
-
-            TriggerSkillUesd(firstSkillIndex, skillSpeedMultiplier);
-            yield return enemySkills[firstSkillIndex].UseSkill(this.gameObject, _aiController.playerTarget, skillSpeedMultiplier);
-
-            if (firstSkillIndex == 2)
-            {
-                forceSkill3Sequence = true;
-            }
-        }
-
-        // 3. ใช้สกิลที่สุ่มได้คือ Skill 3 ให้ทำต่อ
-        if (forceSkill3Sequence)
-        {
-            int randomSkillIndex = UnityEngine.Random.Range(0, 2);
-
-            // ** แทรก Logic เสกเห็ดตรงนี้ (Combo Skill) **
-            CheckAndSpawnMushroom(randomSkillIndex);
-
-            TriggerSkillUesd(randomSkillIndex, skillSpeedMultiplier);
-            yield return enemySkills[randomSkillIndex].UseSkill(this.gameObject, _aiController.playerTarget, skillSpeedMultiplier);
-        }
-
-    }
 }
