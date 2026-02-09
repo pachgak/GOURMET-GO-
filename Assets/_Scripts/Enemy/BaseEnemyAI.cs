@@ -71,6 +71,8 @@ public class BaseEnemyAI : MonoBehaviour
     {
         if (_enemyHealth != null && _enemyHealth.isDead) return;
 
+        if (!_agent.isActiveAndEnabled) return;
+
         CheckPlayerDistance();
 
         switch (currentState)

@@ -65,7 +65,7 @@ public class BaseEnemyCombat : MonoBehaviour
             //_playerTarget = _aiController.playerTarget; // ดึง Target จาก AI (เพื่อความง่าย)
             //_aiController.OnStartAttackSequence += HandleStartAttackSequence;
         }
-        if (_enemyHealth != null)  _enemyHealth.OnDie += HandleOnDie;
+        if (_enemyHealth != null) _enemyHealth.OnDie += HandleOnDie;
     }
 
     protected virtual void OnDisable()
@@ -89,13 +89,17 @@ public class BaseEnemyCombat : MonoBehaviour
         {
             attackTimer -= Time.deltaTime;
 
-            if (attackTimer <= 0)
+            if (_agent.isActiveAndEnabled)
             {
-                _agent.isStopped = false;
-            }
-            else
-            {
-                _agent.isStopped = true;
+                if (attackTimer <= 0)
+                {
+                    _agent.isStopped = false;
+                }
+                else
+                {
+                    _agent.isStopped = true;
+                }
+
             }
         }
 
@@ -105,7 +109,7 @@ public class BaseEnemyCombat : MonoBehaviour
             case BaseEnemyAI.EnemyState.Attack:
 
 
-                if (attackTimer <= 0 && _attackSequenceCoroutine == null)
+                if (attackTimer <= 0 && _attackSequenceCoroutine == null && _agent.isActiveAndEnabled)
                 {
                     StartAttackSequence();
                     attackTimer = attackCooldown;
@@ -150,7 +154,7 @@ public class BaseEnemyCombat : MonoBehaviour
         // (คุณไปใส่ Logic เลือกสกิลแบบเดิมของคุณตรงนี้)
 
         // 2. เริ่มใช้สกิล
-        if(enemySkills[skillIndex] != null) yield return UseSkill(skillIndex);
+        if (enemySkills[skillIndex] != null) yield return UseSkill(skillIndex);
 
         //// 1. Logic การหันหน้าไปหา Player
         //TriggerSkillUesd(0);
@@ -166,7 +170,7 @@ public class BaseEnemyCombat : MonoBehaviour
 
         currentActiveSkill = enemySkills[index];
         isSkillAnimating = true;
-        currentDiractionSkill = ( _aiController.playerTarget.position - transform.position).normalized;
+        currentDiractionSkill = (_aiController.playerTarget.position - transform.position).normalized;
         currentSpeedMultiplier = speedMultiplier;
 
         // 1. สั่ง Animator ให้เล่นท่า (ผ่าน Event เดิมที่คุณมี)
@@ -195,7 +199,7 @@ public class BaseEnemyCombat : MonoBehaviour
 
         // เคลียร์ค่าเมื่อจบ
         currentActiveSkill = null;
-        currentDiractionSkill = Vector3.forward; 
+        currentDiractionSkill = Vector3.forward;
         currentSpeedMultiplier = 1.0f;
 
     }
