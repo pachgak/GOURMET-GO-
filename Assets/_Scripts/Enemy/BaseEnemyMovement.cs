@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 
+[RequireComponent(typeof(Rigidbody))]
 public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
 {
     [Header("Roaming")]
@@ -92,6 +93,8 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         {
             _enemyHealth.OnDie -= HandleOnDie;
         }
+
+        if (KnockbackCoroutine != null) StopCoroutine(KnockbackCoroutine);
     }
 
     private void HandleOnDie()

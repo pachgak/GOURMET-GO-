@@ -17,8 +17,8 @@ public class BaseEnemyAI : MonoBehaviour
     public event Action<EnemyState> OnStateChange;
     public event Action<Vector3> OnStartChase;
     public event Action OnStopMovement;
-    public event Action<bool> OnAttackStateChange; // สำหรับ Animation/Visuals
-    public event Action<bool> OnStartAttackSequence; // สั่ง Combat ให้เริ่มโจมตี (พร้อม flag พิเศษ)
+    //public event Action<bool> OnAttackStateChange; // สำหรับ Animation/Visuals
+    //public event Action<bool> OnStartAttackSequence; // สั่ง Combat ให้เริ่มโจมตี (พร้อม flag พิเศษ)
 
     [Header("Base References")]
     protected NavMeshAgent _agent;
@@ -166,14 +166,14 @@ public class BaseEnemyAI : MonoBehaviour
         switch (newState)
         {
             case EnemyState.Roaming:
-                OnAttackStateChange?.Invoke(false);
+                //OnAttackStateChange?.Invoke(false);
                 break;
             case EnemyState.Chase:
-                OnAttackStateChange?.Invoke(false);
+                //OnAttackStateChange?.Invoke(false);
                 break;
             case EnemyState.Attack:
                 OnStopMovement?.Invoke();
-                OnAttackStateChange?.Invoke(true);
+                //OnAttackStateChange?.Invoke(true);
 
                 // 1. ตรวจสอบ: ถ้าไม่มี Combat Component
                 if (_enemyCombat == null)

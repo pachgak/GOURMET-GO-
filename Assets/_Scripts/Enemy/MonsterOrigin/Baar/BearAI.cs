@@ -11,8 +11,8 @@ public class BearAI : BaseEnemyAI
     // ตัวแปรนี้จะให้ Combat มาเช็คว่าเป็นการโจมตีแบบไหน
     public bool isChaseTimeoutAttack = false;
 
-    // FSM Variables
-    private bool forceUseSkill3 = false;
+    //// FSM Variables
+    //private bool forceUseSkill3 = false;
 
     public bool isAngry = false;
 

@@ -33,7 +33,11 @@ public class PickUpSystem : MonoBehaviour
             int collectedQuantity = initialQuantity - reminder;
 
             if (reminder == 0)
+            {
                 item.DestroyItem();
+                OnPickUpItem?.Invoke(item, initialQuantity);
+            }
+
             else
                 item.Quantity = reminder;
         }
