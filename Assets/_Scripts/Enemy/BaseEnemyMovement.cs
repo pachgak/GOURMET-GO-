@@ -95,6 +95,7 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         }
 
         if (KnockbackCoroutine != null) StopCoroutine(KnockbackCoroutine);
+
     }
 
     private void HandleOnDie()
@@ -133,6 +134,8 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
     {
 
         if (_enemyHealth != null && _enemyHealth.isDead) return;
+
+        if (!_agent.isActiveAndEnabled) return;
 
         // Logic การ Roaming: ถ้าอยู่ใน Roaming State และถึงจุดหมายแล้ว ให้สุ่มจุดใหม่
         if (_aiController.currentState == BaseEnemyAI.EnemyState.Roaming && IsAtDestination())
@@ -214,6 +217,9 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
     public void GetKnockedBack(Vector3 direction, float force, float time)
     {
         if (!canKnockback) return;
+
+        if (!gameObject.activeSelf) return;
+        if (_enemyHealth != null && _enemyHealth.isDead) return;
 
         if (KnockbackCoroutine != null) StopCoroutine(KnockbackCoroutine);
         KnockbackCoroutine = StartCoroutine(ApplyKnockback(direction, force, time));
