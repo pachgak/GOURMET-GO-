@@ -66,6 +66,8 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
 
     private void Die()
     {
+        if (isDead) return;
+
         isDead = true;
         OnDie?.Invoke();
         _collider.enabled = false;

@@ -7,8 +7,16 @@ public class DestoryPersonHitbox : MonoBehaviour
     private void Awake()
     {
         personHitbox = GetComponent<PersonHitbox>();
+    }
 
-        personHitbox.OnAttackHit += ReturnObjectToPool;
+    private void OnEnable()
+    {
+        if(personHitbox != null) personHitbox.OnAttackHit += ReturnObjectToPool;
+    }
+
+    private void OnDisable()
+    {
+        if (personHitbox != null) personHitbox.OnAttackHit -= ReturnObjectToPool;
     }
 
     private void ReturnObjectToPool(Collider[] hits)
