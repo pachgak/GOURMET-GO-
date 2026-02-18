@@ -29,7 +29,7 @@ public class PersonHitbox : BaseHitBox
         //Debug.Log($"Hit PersonHitbox by : {gameObject.name}");
         //Debug.Log($"other layer :{other.gameObject.name} / {other.gameObject.layer}");
 
-        if (other.gameObject.layer == Mathf.Log(targetLayer.value, 2))
+        if (((1 << other.gameObject.layer) & targetLayer.value) != 0)
         {
             Collider hitCollider = other;
 

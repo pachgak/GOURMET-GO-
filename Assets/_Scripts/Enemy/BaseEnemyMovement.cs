@@ -350,6 +350,29 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
 
         _dashCoroutine = null;
     }
+    public void StopDashImmediately()
+    {
+        // 1. หยุด Coroutine Dash
+        if (_dashCoroutine != null) StopCoroutine(_dashCoroutine);
+        _dashCoroutine = null;
+
+        // 2. หยุดแรงฟิสิกส์
+        if (_rb != null)
+        {
+            _rb.linearVelocity = Vector3.zero;
+            _rb.angularVelocity = Vector3.zero;
+            _rb.useGravity = true;
+            _rb.isKinematic = true;
+        }
+
+        // 3. คืนค่า Agent
+        if (_agent != null)
+        {
+            _agent.Warp(transform.position);
+            _agent.enabled = true;
+            _agent.isStopped = true; // หยุดเดินด้วย
+        }
+    }
 
     private void OnDrawGizmosSelected()
     {
@@ -357,10 +380,12 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         Gizmos.DrawWireSphere(_roamPoint, roamRadius);
     }
 
-    [ProButton]
+    [ProButton] 
     public void TestIsStop(bool resu)
     {
         _agent.isStopped = resu;
     }
+
+
 
 }

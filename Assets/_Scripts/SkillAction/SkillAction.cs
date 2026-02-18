@@ -8,7 +8,7 @@ public abstract class SkillAction // ไม่สืบทอดจาก ScriptableObject
     [Header("Diration Set")]
     public DirMethod dirType = DirMethod.LoockTarget;
     // บังคับให้ลูกๆ ต้องมีฟังก์ชันนี้
-    public abstract void Execute(GameObject user, GameObject target, Vector3 diractionSkill , float speedMultiplier = 1.0f);
+    public abstract void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f, LayerMask? layerTarget = null);
 }
 
 public enum DirMethod
@@ -24,7 +24,7 @@ public class DashAction : SkillAction
     public float dashSpeed = 10f;
     public float dashDuration = 0.5f;
 
-    public override void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f)
+    public override void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f , LayerMask? layerTarget = null)
     {
         // ต้องมี BaseEnemyMovement ถึงจะ Dash ได้
         if (user.TryGetComponent(out BaseEnemyMovement enemyMovement))
@@ -54,8 +54,6 @@ public class DashAction : SkillAction
             // - เวลาต้อง "หาร" speedMultiplier (จบไวขึ้น)
             float adjustedSpeed = dashSpeed * speedMultiplier;
             float adjustedTime = dashDuration / speedMultiplier;
-
-            Debug.Log($"Dash: Speed {adjustedSpeed}, Time {adjustedTime}, Dir : {finalDirection}");
 
             // สั่ง Dash
             enemyMovement.SkillDash(finalDirection, adjustedSpeed, adjustedTime);
@@ -89,7 +87,7 @@ public class SpawnHitboxAction : SkillAction
     public float damage = 1;
     public float knockbackForce = 5f;
 
-    public override void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f)
+    public override void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f , LayerMask? layerTarget = null)
     {
         if (prefab == null) return;
 
@@ -153,7 +151,8 @@ public class SpawnHitboxAction : SkillAction
         if (attackInstance.TryGetComponent(out IHitBox hitBox))
         {
             // เป้าหมายของ Enemy คือ Player
-            hitBox._targetLayer = LayerMask.GetMask("Player");
+            LayerMask finalLayer = (layerTarget.HasValue && layerTarget.Value.value != 0) ? layerTarget.Value : LayerMask.GetMask("Player");
+            hitBox._targetLayer = finalLayer;
             hitBox._ownerHit = user;
             hitBox._damage = damage;
             hitBox._knockbackDirection = targetVector;
@@ -180,7 +179,7 @@ public class SpawnprojectileHitboxAction : SkillAction
     public float knockbackForce = 5f;
     public float projectileSpeed = 0f; // สำหรับ IProjectile / ISpeed
 
-    public override void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f)
+    public override void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f , LayerMask? layerTarget = null)
     {
         if (prefab == null) return;
 
@@ -244,7 +243,8 @@ public class SpawnprojectileHitboxAction : SkillAction
         if (attackInstance.TryGetComponent(out IHitBox hitBox))
         {
             // เป้าหมายของ Enemy คือ Player
-            hitBox._targetLayer = LayerMask.GetMask("Player");
+            LayerMask finalLayer = (layerTarget.HasValue && layerTarget.Value.value != 0) ? layerTarget.Value : LayerMask.GetMask("Player");
+            hitBox._targetLayer = finalLayer;
             hitBox._ownerHit = user;
             hitBox._damage = damage;
             hitBox._knockbackDirection = directionSkill;
@@ -274,7 +274,7 @@ public class SpawnVFXAction : SkillAction
     [Header("Offset & Position")]
     public Vector2 offset = Vector2.zero; // x = ระยะห่าง (Far), y = ความสูง (Height)
 
-    public override void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f)
+    public override void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f , LayerMask? layerTarget = null)
     {
         if (prefab == null) return;
 
@@ -334,5 +334,113 @@ public class SpawnVFXAction : SkillAction
             attackInstance.transform.rotation = Quaternion.LookRotation(targetVector);
         }
         Debug.Log($"Spawned {prefab.name} via Action");
+    }
+}
+
+[System.Serializable]
+public class SpawnWallHitStunAction : SkillAction
+{
+    [Header("Wall Hit Logic")]
+    public LayerMask wallLayer; // เลเยอร์กำแพงที่จะทำให้มึน
+
+    [Header("Prefab & Settings")]
+    public GameObject prefab; // ใส่ PersonHitbox หรือ Hitbox ธรรมดาได้เลย
+    public SpawnMethod spawnType = SpawnMethod.ParentToOwner;
+    public Vector2 offset = Vector2.zero; // x = ระยะห่าง, y = ความสูง
+
+    [Header("Combat Stats")]
+    public float damage = 10f;
+    public float knockbackForce = 10f;
+
+    // ใช้ LayerMask? เพื่อรองรับค่า Default เป็น null
+    public override void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f, LayerMask? layerTarget = null)
+    {
+        if (prefab == null) return;
+
+        // 1. จัดการ Layer: ถ้าไม่ส่งมา (null) ให้ใช้ Layer "Player" เป็นค่าเริ่มต้น
+        LayerMask finalLayer = (layerTarget.HasValue && layerTarget.Value.value != 0) ? layerTarget.Value : LayerMask.GetMask("Player");
+
+        // 2. คำนวณทิศทาง
+        Vector3 targetVector = Vector3.forward;
+        switch (dirType)
+        {
+            case DirMethod.SkillDiraction:
+                targetVector = directionSkill;
+                break;
+            case DirMethod.LoockTarget:
+                if (target != null)
+                    targetVector = (target.transform.position - user.transform.position).normalized;
+                break;
+        }
+
+        // 3. Spawn Logic
+        GameObject attackInstance = null;
+        Vector3 spawnPos = Vector3.zero;
+
+        switch (spawnType)
+        {
+            case SpawnMethod.ParentToOwner:
+                attackInstance = ObjectPoolingManager.Instance.Spawn(prefab, user.transform);
+                spawnPos = user.transform.position + (targetVector * offset.x);
+                break;
+            default: // SpawnAtOwner หรือ SpawnAtTarget
+                attackInstance = ObjectPoolingManager.Instance.Spawn(prefab, user.transform.position);
+                spawnPos = user.transform.position + (targetVector * offset.x);
+                break;
+        }
+
+        // Set Position & Rotation
+        attackInstance.transform.position = spawnPos + new Vector3(0, offset.y, 0);
+
+        targetVector.y = 0f;
+        if (targetVector != Vector3.zero)
+            attackInstance.transform.rotation = Quaternion.LookRotation(targetVector);
+
+        // --- 4. LOGIC INJECTION (ส่วนสำคัญ) ---
+        if (attackInstance.TryGetComponent(out IHitBox hitBox))
+        {
+            // Setup ค่าปกติให้ Hitbox
+            hitBox._targetLayer = finalLayer;
+            hitBox._ownerHit = user;
+            hitBox._damage = damage;
+            hitBox._knockbackDirection = directionSkill;
+            hitBox._knockbackForce = knockbackForce;
+
+            // *** ฝัง Logic: เคลียร์ Event เก่า -> ใส่ Logic ใหม่ ***
+
+            // ล้าง Event เก่าทิ้ง (สำคัญมากสำหรับ Object Pooling เพื่อไม่ให้ Logic ซ้อนทับ)
+            //hitBox._OnAttackHit = null;
+
+            // Subscribe Event ใหม่: เมื่อชนอะไรก็ตาม ให้เรียก CheckHitLogic
+            hitBox._OnAttackHit += (colliders) =>
+            {
+                CheckHitLogic(user, attackInstance, colliders);
+                ObjectPoolingManager.Instance.Respawn(attackInstance);
+            };
+
+            // สั่งเริ่มทำงาน
+            hitBox.PerformAttack();
+        }
+    }
+
+    // แยก Logic การเช็คชนออกมา
+    private void CheckHitLogic(GameObject user, GameObject hitboxObj, Collider[] hits)
+    {
+        foreach (var col in hits)
+        {
+            // เช็คว่า ชนกำแพง หรือไม่? (ใช้ Bitwise Check กับ LayerMask)
+            if (((1 << col.gameObject.layer) & wallLayer) != 0)
+            {
+                Debug.Log("SpawnWallHitStunAction: Hit Wall!");
+
+                // ถ้า User มี HogCombat ให้สั่งหยุดและมึน
+                if (user.TryGetComponent(out HogCombat hogCombat))
+                {
+                    hogCombat.OnHitWall();
+                }
+
+                return; // จบงานทันที
+            }
+        }
     }
 }

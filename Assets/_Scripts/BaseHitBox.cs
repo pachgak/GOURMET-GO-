@@ -15,6 +15,12 @@ public abstract class BaseHitBox : MonoBehaviour , IHitBox
 
     //public IHurtBox.DamageType damageType;
 
+    public virtual void OnDisable()
+    {
+        OnAttackHit = null;
+        OnNoHit = null;
+    }
+
     //IHurtBox.DamageType IHurtBox._damageType { get => damageType; set => damageType = value; }
     GameObject IHitBox._ownerHit { get => ownerHit; set => ownerHit = value; }
     LayerMask IHitBox._targetLayer { get => targetLayer; set => targetLayer = value; }

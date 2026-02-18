@@ -223,6 +223,11 @@ public class BaseEnemyAI : MonoBehaviour
         }
     }
 
+    protected void TriggerStopMovement()
+    {
+        OnStopMovement?.Invoke();
+    }
+
     protected virtual void OnDrawGizmosSelected()
     {
         // วงกลมระยะการมองเห็น (Sight Range)

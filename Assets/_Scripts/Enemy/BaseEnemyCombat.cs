@@ -9,6 +9,8 @@ using static UnityEngine.GraphicsBuffer;
 
 public class BaseEnemyCombat : MonoBehaviour
 {
+    public LayerMask attackMask;
+
     public float attackCooldown;
     public float attackTimer;
 
@@ -89,18 +91,18 @@ public class BaseEnemyCombat : MonoBehaviour
         {
             attackTimer -= Time.deltaTime;
 
-            if (_agent.isActiveAndEnabled)
-            {
-                if (attackTimer <= 0)
-                {
-                    _agent.isStopped = false;
-                }
-                else
-                {
-                    _agent.isStopped = true;
-                }
+            //if (_agent.isActiveAndEnabled)
+            //{
+            //    if (attackTimer <= 0)
+            //    {
+            //        _agent.isStopped = false;
+            //    }
+            //    else
+            //    {
+            //        _agent.isStopped = true;
+            //    }
 
-            }
+            //}
         }
 
         // ---  State Logi ---
@@ -233,10 +235,11 @@ public class BaseEnemyCombat : MonoBehaviour
         // คำนวณทิศทาง (ใช้ทิศที่ตัวละครหันหน้าอยู่)
         Vector3 dir = currentDiractionSkill;
         float speed = currentSpeedMultiplier;
+        LayerMask mask = attackMask;
 
         if (target != null)
         {
-            action.Execute(this.gameObject, target.gameObject, dir, speed);
+            action.Execute(this.gameObject, target.gameObject, dir, speed , mask);
         }
     }
 
