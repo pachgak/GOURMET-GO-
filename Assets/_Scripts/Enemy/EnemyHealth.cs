@@ -29,7 +29,7 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
 
     Action<float> ITakeDamage.OnTakeDamage { get => OnTakeDamage; set => OnTakeDamage = value;}
 
-    private void Awake()
+    protected virtual void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody>();
@@ -55,7 +55,7 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
         }
     }
 
-    public void TakeDamage(float damage)
+    public virtual void TakeDamage(float damage)
     {
         OnTakeDamage?.Invoke(damage);
 

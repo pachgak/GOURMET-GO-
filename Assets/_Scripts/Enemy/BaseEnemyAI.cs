@@ -28,6 +28,10 @@ public class BaseEnemyAI : MonoBehaviour
     public float sightRange = 15f;
     public float attackRange = 2f;
 
+    [Header("Status Effects")]
+    public bool IsStunned { get; protected set; } = false; // ให้ลูกๆ อ่านค่าได้
+    protected Coroutine _stunCoroutine;
+
     [SerializeField] protected bool _playerInSightRange;
     [SerializeField] protected bool _playerInAttackRange;
     protected BaseEnemyCombat _enemyCombat;
@@ -72,6 +76,9 @@ public class BaseEnemyAI : MonoBehaviour
         if (_enemyHealth != null && _enemyHealth.isDead) return;
 
         if (!_agent.isActiveAndEnabled) return;
+
+        // ถ้ามึนอยู่ ห้ามคิด ห้ามเปลี่ยน State ห้ามเดิน
+        if (IsStunned) return;
 
         CheckPlayerDistance();
 
@@ -226,6 +233,30 @@ public class BaseEnemyAI : MonoBehaviour
     protected void TriggerStopMovement()
     {
         OnStopMovement?.Invoke();
+    }
+
+    // ประกาศเป็น virtual เผื่อลูกบางตัวอยากสตันแบบแปลกๆ
+    public virtual void ApplyStun(float duration = 3.0f)
+    {
+        if (_stunCoroutine != null) StopCoroutine(_stunCoroutine);
+        _stunCoroutine = StartCoroutine(StunRoutine(duration));
+    }
+
+    protected virtual System.Collections.IEnumerator StunRoutine(float duration)
+    {
+        IsStunned = true;
+        TriggerStopMovement(); // สั่งหยุดเดิน (จาก Event ที่คุณมีอยู่แล้ว)
+
+        Debug.Log($"<color=cyan>{gameObject.name} is STUNNED for {duration} secs!</color>");
+
+        // TODO: เล่น Animation หรือ Effect สตันตรงนี้ได้เลย (มีผลกับมอนทุกตัวทันที!)
+
+        yield return new WaitForSeconds(duration);
+
+        IsStunned = false;
+        Debug.Log($"<color=cyan>{gameObject.name} woke up!</color>");
+
+        ChangeState(EnemyState.Chase); // กลับไปไล่ล่า
     }
 
     protected virtual void OnDrawGizmosSelected()

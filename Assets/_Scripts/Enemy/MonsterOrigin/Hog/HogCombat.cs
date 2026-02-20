@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class HogCombat : BaseEnemyCombat
+public class HogCombat : BaseEnemyCombat , IWallCollidable
 {
     private HogAI _hogAI;
 
@@ -11,7 +11,7 @@ public class HogCombat : BaseEnemyCombat
     }
 
     // ฟังก์ชันนี้จะถูกเรียกโดย SpawnWallHitStunAction เมื่อ Hitbox ชนกำแพง
-    public void OnHitWall()
+    public void OnHitWall(float stunDuration)
     {
         Debug.Log("HogCombat: Hit Wall -> Stopping Everything!");
 
@@ -28,7 +28,7 @@ public class HogCombat : BaseEnemyCombat
         // 3. สั่งให้ AI เข้าสถานะ Stun
         if (_hogAI != null)
         {
-            _hogAI.ApplyStun();
+            _hogAI.ApplyStun(stunDuration);
         }
     }
 }

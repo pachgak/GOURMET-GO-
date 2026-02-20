@@ -33,6 +33,8 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
     public bool canKnockback = true;
     bool IKnockbackable._canKnockback { get => canKnockback; set => canKnockback = value; }
     private Coroutine KnockbackCoroutine;
+    protected Coroutine _jumpCoroutine;
+
     //[Range(0.001f, 0.1f)][SerializeField] private float StillThreshold = 0.05f;
     //[SerializeField] private float MaxKnockbackTime = 0.5f;
 
@@ -371,6 +373,51 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
             _agent.Warp(transform.position);
             _agent.enabled = true;
             _agent.isStopped = true; // หยุดเดินด้วย
+        }
+    }
+
+    // ฟังก์ชันสั่งกระโดด
+    public void SkillJump(Vector3 targetPosition, float jumpHeight, float duration)
+    {
+        if (_jumpCoroutine != null) StopCoroutine(_jumpCoroutine);
+        _jumpCoroutine = StartCoroutine(JumpRoutine(targetPosition, jumpHeight, duration));
+    }
+
+    private System.Collections.IEnumerator JumpRoutine(Vector3 targetPosition, float jumpHeight, float duration)
+    {
+        // 1. ปิด Agent และเก็บค่าเริ่มต้น
+        if (_agent != null) _agent.enabled = false;
+
+        Vector3 startPos = transform.position;
+        float timePassed = 0f;
+
+        // 2. ลูปคำนวณตำแหน่งแบบ Parabola
+        while (timePassed < duration)
+        {
+            timePassed += Time.deltaTime;
+            // คำนวณความคืบหน้า (0 ถึง 1)
+            float percent = Mathf.Clamp01(timePassed / duration);
+
+            // คำนวณตำแหน่ง X, Z (พุ่งไปข้างหน้า) แบบ Linear
+            Vector3 currentPos = Vector3.Lerp(startPos, targetPosition, percent);
+
+            // คำนวณแกน Y (ความสูง) ด้วยสมการ Parabola (โค้งระฆังคว่ำ)
+            // สูตร: 4 * h * p * (1 - p) -> จะได้ค่า 0 ตอนเริ่ม, พุ่งสูงสุดตอนกลาง, และ 0 ตอนจบ
+            float parabolaY = jumpHeight * (percent * (1f - percent) * 4f);
+            currentPos.y += parabolaY;
+
+            // อัปเดตตำแหน่ง
+            transform.position = currentPos;
+
+            yield return null;
+        }
+
+        // 3. จบการกระโดด ตกถึงพื้นพอดี
+        transform.position = targetPosition;
+        if (_agent != null)
+        {
+            _agent.Warp(targetPosition); // Sync ตำแหน่งกับ NavMesh
+            _agent.enabled = true;
         }
     }
 

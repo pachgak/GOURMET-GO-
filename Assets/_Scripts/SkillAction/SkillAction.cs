@@ -339,6 +339,7 @@ public class SpawnWallHitStunAction : SkillAction
     public float damage = 10f;
     public float knockbackForce = 10f;
 
+    public float stunDuration = 3.0f;
     // ใช้ LayerMask? เพื่อรองรับค่า Default เป็น null
     public override void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f, LayerMask? layerTarget = null)
     {
@@ -379,7 +380,7 @@ public class SpawnWallHitStunAction : SkillAction
             // Subscribe Event ใหม่: เมื่อชนอะไรก็ตาม ให้เรียก CheckHitLogic
             hitBox._OnAttackHit += (colliders) =>
             {
-                CheckHitLogic(user, attackInstance, colliders);
+                CheckHitLogic(user, attackInstance, colliders ,stunDuration);
                 ObjectPoolingManager.Instance.Respawn(attackInstance);
             };
 
@@ -389,23 +390,111 @@ public class SpawnWallHitStunAction : SkillAction
     }
 
     // แยก Logic การเช็คชนออกมา
-    private void CheckHitLogic(GameObject user, GameObject hitboxObj, Collider[] hits)
+    private void CheckHitLogic(GameObject user, GameObject hitboxObj, Collider[] hits, float stunDuration)
     {
         foreach (var col in hits)
         {
-            // เช็คว่า ชนกำแพง หรือไม่? (ใช้ Bitwise Check กับ LayerMask)
             if (((1 << col.gameObject.layer) & wallLayer) != 0)
             {
                 Debug.Log("SpawnWallHitStunAction: Hit Wall!");
 
-                // ถ้า User มี HogCombat ให้สั่งหยุดและมึน
-                if (user.TryGetComponent(out HogCombat hogCombat))
+                // *** เพิ่มตรงนี้: ถ้าชนกำแพงเปราะบาง ให้สั่งมันแตก! ***
+                if (col.TryGetComponent(out FragileWall fragileWall))
                 {
-                    hogCombat.OnHitWall();
+                    fragileWall.BreakWall();
                 }
 
-                return; // จบงานทันที
+                //if (user.TryGetComponent(out BaseEnemyCombat combat))
+                //{
+                //    // คุณอาจจะต้องแคสต์เป็น KumongaCombat หรือถ้า Base มี OnHitWall ก็เรียกได้เลย
+                //    if (combat is HogCombat hogCombat) hogCombat.OnHitWall();
+                //    if (combat is KumongaCombat kumongaCombat) kumongaCombat.OnHitWall();
+                //}
+
+                // 2. เช็คผ่าน Interface เลย! (ไม่ต้องดึง BaseEnemyCombat แล้ว)
+                if (user.TryGetComponent(out IWallCollidable wallCollidable))
+                {
+                    // ไม่ว่า user จะเป็นตัวอะไรก็ตาม ถ้ามันแปะ Interface นี้ไว้ มันจะทำงานทันที
+                    wallCollidable.OnHitWall(stunDuration);
+                }
+
+                return;
             }
         }
+    }
+}
+
+[System.Serializable]
+public class StunSelfAction : SkillAction
+{
+    public override void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f, LayerMask? layerTarget = null)
+    {
+        // ถ้าเป็น Kumonga ก็เรียก AI ของมัน
+        if (user.TryGetComponent(out KumongaAI kumongaAI))
+        {
+            kumongaAI.ApplyStun();
+        }
+        // (เผื่ออนาคต) ถ้าเป็นตัวอื่นที่มีระบบ Stun
+        else if (user.TryGetComponent(out HogAI hogAI))
+        {
+            hogAI.ApplyStun();
+        }
+
+        Debug.Log($"{user.name} Applied Stun to Self!");
+    }
+}
+
+[System.Serializable]
+public class JumpAction : SkillAction
+{
+    [Header("Jump Settings")]
+    public float jumpHeight = 5f;
+    public float jumpDuration = 1.0f; // เวลาที่ลอยอยู่
+
+    public override void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f, LayerMask? layerTarget = null)
+    {
+        if (user.TryGetComponent(out BaseEnemyMovement movement))
+        {
+            // คำนวณทิศทาง (ใช้ Helper ที่เราทำไว้)
+            Vector3 targetVector = CalculateTargetVector(user, target, directionSkill);
+
+            // สมมติว่ากระโดดไปข้างหน้านิดนึง หรือกระโดดอยู่กับที่
+            // ถ้าอยากให้อยู่กับที่ ก็ใช้ user.transform.position
+            Vector3 jumpTargetPos = user.transform.position;
+
+            // สั่งกระโดด (คูณ speedMultiplier ด้วยก็ได้ถ้าต้องการ)
+            movement.SkillJump(jumpTargetPos, jumpHeight, jumpDuration / speedMultiplier);
+            Debug.Log($"{user.name} Jumped!");
+        }
+    }
+}
+
+[System.Serializable]
+public class TeleportAction : SkillAction
+{
+    [Header("Teleport Settings")]
+    public Vector3 offset = Vector3.zero; // ใส่ Y ติดลบเพื่อให้อยู่ใต้ดิน
+
+    public override void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f, LayerMask? layerTarget = null)
+    {
+        if (target == null) return;
+
+        // คำนวณตำแหน่งที่จะวาปไป
+        Vector3 targetPos = target.transform.position + offset;
+
+        // สั่งวาป (ถ้ามี NavMeshAgent ควรปิดก่อนย้ายตำแหน่ง หรือใช้ Warp)
+        if (user.TryGetComponent(out UnityEngine.AI.NavMeshAgent agent))
+        {
+            agent.Warp(targetPos);
+        }
+        else
+        {
+            user.transform.position = targetPos;
+        }
+
+        // หันหน้าหาเป้าหมาย
+        user.transform.LookAt(new Vector3(target.transform.position.x, user.transform.position.y, target.transform.position.z));
+
+        Debug.Log($"{user.name} Teleported to {targetPos}");
     }
 }
