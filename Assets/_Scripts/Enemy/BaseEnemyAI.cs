@@ -28,7 +28,8 @@ public class BaseEnemyAI : MonoBehaviour
     public float sightRange = 15f;
     public float attackRange = 2f;
 
-    [Header("Status Effects")]
+    //[field: Header("Status Effects")]
+    [field: SerializeField]
     public bool IsStunned { get; protected set; } = false; // ให้ลูกๆ อ่านค่าได้
     protected Coroutine _stunCoroutine;
 

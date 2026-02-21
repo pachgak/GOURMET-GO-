@@ -12,10 +12,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea9305386f6b18c4780c167459107c07, type: 3}
   m_Name: Kumonga_1_DashAttack
   m_EditorClassIdentifier: 
-  skillName: 
+  skillName: Hog Dash
   spawnSkillPrefabsType: 0
   _skillSetp: []
-  actions: []
+  actions:
+  - rid: 3016931676488204288
+  - rid: 3016931676488204289
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 3016931676488204288
+      type: {class: DashAction, ns: , asm: Assembly-CSharp}
+      data:
+        dirType: 0
+        dashSpeed: 20
+        dashDuration: 1
+    - rid: 3016931676488204289
+      type: {class: SpawnWallHitStunAction, ns: , asm: Assembly-CSharp}
+      data:
+        dirType: 0
+        wallLayer:
+          serializedVersion: 2
+          m_Bits: 8192
+        prefab: {fileID: 1191421158767498713, guid: 040b0fa1b789bb84597dd9fd8df29bf1, type: 3}
+        spawnType: 0
+        offset: {x: 0, y: 0}
+        damage: 10
+        knockbackForce: 10
+        stunDuration: 3

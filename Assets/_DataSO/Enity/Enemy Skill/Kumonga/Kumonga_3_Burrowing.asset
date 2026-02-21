@@ -15,7 +15,61 @@ MonoBehaviour:
   skillName: 
   spawnSkillPrefabsType: 0
   _skillSetp: []
-  actions: []
+  actions:
+  - rid: 3016931736082448455
+  - rid: 3016931736082448457
+  - rid: 3016931747640377418
+  - rid: 3016931747640377415
+  - rid: 3016931736082448456
+  - rid: 3016931747640377416
+  - rid: 3016931736082448458
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 3016931736082448455
+      type: {class: SpawnVFXAction, ns: , asm: Assembly-CSharp}
+      data:
+        dirType: 0
+        prefab: {fileID: 0}
+        spawnType: 0
+        offset: {x: 0, y: 0}
+    - rid: 3016931736082448456
+      type: {class: JumpAction, ns: , asm: Assembly-CSharp}
+      data:
+        dirType: 0
+        jumpHeight: 5
+        jumpDuration: 1
+    - rid: 3016931736082448457
+      type: {class: SpawnVFXAction, ns: , asm: Assembly-CSharp}
+      data:
+        dirType: 0
+        prefab: {fileID: 0}
+        spawnType: 0
+        offset: {x: 0, y: 0}
+    - rid: 3016931736082448458
+      type: {class: StunSelfAction, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 3016931747640377415
+      type: {class: SpawnHitAction_M, ns: , asm: Assembly-CSharp}
+      data:
+        dirType: 0
+        prefab: {fileID: 6624619197033366972, guid: c2a2d1ff7ddc73d42920520fbfff9eea, type: 3}
+        spawnType: 0
+        offset: {x: 0, y: 0}
+        damage: 1
+        knockbackForce: 5
+        modifiers: []
+    - rid: 3016931747640377416
+      type: {class: SpawnHitAction_M, ns: , asm: Assembly-CSharp}
+      data:
+        dirType: 0
+        prefab: {fileID: 6624619197033366972, guid: c2a2d1ff7ddc73d42920520fbfff9eea, type: 3}
+        spawnType: 0
+        offset: {x: 0, y: 0}
+        damage: 1
+        knockbackForce: 5
+        modifiers: []
+    - rid: 3016931747640377418
+      type: {class: TeleportAction, ns: , asm: Assembly-CSharp}
+      data:
+        offset: {x: 0, y: 0, z: 0}

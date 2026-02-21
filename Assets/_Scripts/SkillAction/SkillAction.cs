@@ -4,13 +4,10 @@ using UnityEngine;
 [System.Serializable]
 public abstract class SkillAction
 {
-    [Header("Diration Set")]
-    public DirMethod dirType = DirMethod.LoockTarget;
-
     public abstract void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f, LayerMask? layerTarget = null);
 
     // --- Helper Method 1: คำนวณทิศทาง ---
-    protected Vector3 CalculateTargetVector(GameObject user, GameObject target, Vector3 directionSkill)
+    protected Vector3 CalculateTargetVector(GameObject user, GameObject target, Vector3 directionSkill, DirMethod dirType)
     {
         Vector3 targetVector = Vector3.forward;
         switch (dirType)
@@ -21,9 +18,11 @@ public abstract class SkillAction
             case DirMethod.LoockTarget:
                 if (target != null)
                     targetVector = (target.transform.position - user.transform.position).normalized;
-                // ถ้าไม่มี Target ก็ใช้ directionSkill หรือ forward ไปก่อน
                 else
                     targetVector = user.transform.forward;
+                break;
+            case DirMethod.Origin:
+                targetVector = Vector3.zero;
                 break;
         }
         return targetVector;
@@ -53,12 +52,16 @@ public abstract class SkillAction
 
             case SpawnMethod.SpawnAtTarget:
                 Vector3 targetPos = (target != null) ? target.transform.position : (user.transform.position + targetVector * 5f);
+
+                string targetName = (target != null) ? target.name : "null";
+                Debug.Log($"Target : {targetName}");
+
                 attackInstance = ObjectPoolingManager.Instance.Spawn(prefab, targetPos);
 
                 float dist = Vector3.Distance(targetPos, user.transform.position);
                 float skillFarTrue = (offset.x >= 0) ? Mathf.Clamp(dist, 0, offset.x) : dist;
 
-                spawnPos = user.transform.position + (targetVector * skillFarTrue);
+                spawnPos = targetPos + (targetVector * skillFarTrue);
                 break;
         }
     }
@@ -66,12 +69,16 @@ public abstract class SkillAction
 public enum DirMethod
 {
     LoockTarget,  // หันตาม player
-    SkillDiraction   // หันตาม Dir
+    SkillDiraction,   // หันตาม Dir
+    Origin
 }
 
 [System.Serializable]
 public class DashAction : SkillAction
 {
+    [Header("Diration Set")]
+    public DirMethod dirType = DirMethod.LoockTarget;
+
     [Header("Dash Settings")]
     public float dashSpeed = 10f;
     public float dashDuration = 0.5f;
@@ -82,7 +89,7 @@ public class DashAction : SkillAction
         if (user.TryGetComponent(out BaseEnemyMovement enemyMovement))
         {
 
-            Vector3 targetVector = CalculateTargetVector(user, target, directionSkill);
+            Vector3 targetVector = CalculateTargetVector(user, target, directionSkill,dirType);
 
             // *** สูตรคำนวณ Dash เมื่อความเร็วเปลี่ยน (จากโค้ดเก่า) ***
             // - ความเร็วต้อง "คูณ" speedMultiplier (ไวขึ้น)
@@ -110,6 +117,9 @@ public enum SpawnMethod
 [System.Serializable]
 public class SpawnHitAction_M : SkillAction
 {
+    [Header("Diration Set")]
+    public DirMethod dirType = DirMethod.LoockTarget;
+
     [Header("Prefab & Settings")]
     public GameObject prefab;
     public SpawnMethod spawnType = SpawnMethod.ParentToOwner;
@@ -132,7 +142,7 @@ public class SpawnHitAction_M : SkillAction
         if (prefab == null) return;
 
         // 1. คำนวณทิศทาง (ใช้ Helper)
-        Vector3 targetVector = CalculateTargetVector(user, target, directionSkill);
+        Vector3 targetVector = CalculateTargetVector(user, target, directionSkill, dirType);
 
         // 2. Spawn และหาตำแหน่ง (ใช้ Helper)
         SpawnAndCalculatePosition(prefab, user, target, spawnType, offset, targetVector,
@@ -172,6 +182,8 @@ public class SpawnHitAction_M : SkillAction
 [System.Serializable]
 public class SpawnHitboxAction : SkillAction
 {
+    [Header("Diration Set")]
+    public DirMethod dirType = DirMethod.LoockTarget;
 
     [Header("Prefab & Settings")]
     public GameObject prefab;
@@ -189,7 +201,7 @@ public class SpawnHitboxAction : SkillAction
         if (prefab == null) return;
 
         // เตรียมตัวแปร
-        Vector3 targetVector = CalculateTargetVector(user, target, directionSkill);
+        Vector3 targetVector = CalculateTargetVector(user, target, directionSkill, dirType);
 
         Vector3 heightOffset = new Vector3(0, offset.y, 0);
 
@@ -227,6 +239,8 @@ public class SpawnHitboxAction : SkillAction
 [System.Serializable]
 public class SpawnprojectileHitboxAction : SkillAction
 {
+    [Header("Diration Set")]
+    public DirMethod dirType = DirMethod.LoockTarget;
 
     [Header("Prefab & Settings")]
     public GameObject prefab;
@@ -244,7 +258,7 @@ public class SpawnprojectileHitboxAction : SkillAction
     {
         if (prefab == null) return;
 
-        Vector3 targetVector = CalculateTargetVector(user, target, directionSkill);
+        Vector3 targetVector = CalculateTargetVector(user, target, directionSkill, dirType);
 
         Vector3 heightOffset = new Vector3(0, offset.y, 0);
 
@@ -290,6 +304,8 @@ public class SpawnprojectileHitboxAction : SkillAction
 [System.Serializable]
 public class SpawnVFXAction : SkillAction
 {
+    [Header("Diration Set")]
+    public DirMethod dirType = DirMethod.LoockTarget;   
 
     [Header("Prefab & Settings")]
     public GameObject prefab;
@@ -302,7 +318,7 @@ public class SpawnVFXAction : SkillAction
     {
         if (prefab == null) return;
 
-        Vector3 targetVector = CalculateTargetVector(user, target, directionSkill);
+        Vector3 targetVector = CalculateTargetVector(user, target, directionSkill, dirType);
 
         Vector3 heightOffset = new Vector3(0, offset.y, 0);
 
@@ -327,6 +343,9 @@ public class SpawnVFXAction : SkillAction
 [System.Serializable]
 public class SpawnWallHitStunAction : SkillAction
 {
+    [Header("Diration Set")]
+    public DirMethod dirType = DirMethod.LoockTarget;
+
     [Header("Wall Hit Logic")]
     public LayerMask wallLayer; // เลเยอร์กำแพงที่จะทำให้มึน
 
@@ -346,7 +365,7 @@ public class SpawnWallHitStunAction : SkillAction
         if (prefab == null) return;
 
         // 2. คำนวณทิศทาง
-        Vector3 targetVector = CalculateTargetVector(user, target, directionSkill);
+        Vector3 targetVector = CalculateTargetVector(user, target, directionSkill, dirType);
 
         // คำนวณตำแหน่งตาม SpawnMethod (Logic เดิมจาก InstallAttackHit)
         // 2. เรียก Helper: Spawn และหาตำแหน่ง (ใช้ out เพื่อรับค่ากลับมา 2 ตัว)
@@ -427,17 +446,12 @@ public class SpawnWallHitStunAction : SkillAction
 [System.Serializable]
 public class StunSelfAction : SkillAction
 {
+    public float stunDuration = 3f;
     public override void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f, LayerMask? layerTarget = null)
     {
-        // ถ้าเป็น Kumonga ก็เรียก AI ของมัน
-        if (user.TryGetComponent(out KumongaAI kumongaAI))
+        if (user.TryGetComponent(out BaseEnemyAI BaseEnemyAI))
         {
-            kumongaAI.ApplyStun();
-        }
-        // (เผื่ออนาคต) ถ้าเป็นตัวอื่นที่มีระบบ Stun
-        else if (user.TryGetComponent(out HogAI hogAI))
-        {
-            hogAI.ApplyStun();
+            BaseEnemyAI.ApplyStun(stunDuration);
         }
 
         Debug.Log($"{user.name} Applied Stun to Self!");
@@ -447,20 +461,61 @@ public class StunSelfAction : SkillAction
 [System.Serializable]
 public class JumpAction : SkillAction
 {
+    [Header("Diration Set")]
+    public DirMethod dirType = DirMethod.LoockTarget;
+
     [Header("Jump Settings")]
     public float jumpHeight = 5f;
     public float jumpDuration = 1.0f; // เวลาที่ลอยอยู่
+
+    public bool randomPos = false;
+    public float range;
 
     public override void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f, LayerMask? layerTarget = null)
     {
         if (user.TryGetComponent(out BaseEnemyMovement movement))
         {
             // คำนวณทิศทาง (ใช้ Helper ที่เราทำไว้)
-            Vector3 targetVector = CalculateTargetVector(user, target, directionSkill);
-
+            //Vector3 targetVector = CalculateTargetVector(user, target, directionSkill, dirType);
+            Vector3 jumpCenter = Vector3.zero;  
+            Vector3 jumpTargetPos = Vector3.zero;  
             // สมมติว่ากระโดดไปข้างหน้านิดนึง หรือกระโดดอยู่กับที่
             // ถ้าอยากให้อยู่กับที่ ก็ใช้ user.transform.position
-            Vector3 jumpTargetPos = user.transform.position;
+            switch (dirType)
+            {
+                case DirMethod.SkillDiraction:
+                    jumpCenter = user.transform.position + directionSkill;
+                    break;
+                case DirMethod.LoockTarget:
+                    if (target != null)
+                        jumpCenter = target.transform.position;
+                    else
+                        jumpCenter = user.transform.position + user.transform.forward;
+                    break;
+                case DirMethod.Origin:
+                    jumpCenter = user.transform.position;
+                    break;
+            }
+
+            if (randomPos)
+            {
+                // 1. สุ่มจุดในวงกลมรัศมี 1 หน่วย แล้วคูณด้วย range
+                Vector2 randomCircle = UnityEngine.Random.insideUnitCircle * range;
+
+                // 2. เอาค่าที่สุ่มได้มาบวกกับ jumpCenter โดยใส่ในแกน X และ Z (ให้ Y คงเดิม)
+                jumpTargetPos = jumpCenter + new Vector3(randomCircle.x, 0f, randomCircle.y);
+
+                // --- (Pro Tip: แนะนำให้ใส่เพิ่มเพื่อกันกระโดดทะลุกำแพง) ---
+                // ใช้ NavMesh.SamplePosition เพื่อดึงจุดที่สุ่มได้ ให้กลับมาอยู่บนพื้นที่เดินได้ (NavMesh)
+                if (UnityEngine.AI.NavMesh.SamplePosition(jumpTargetPos, out UnityEngine.AI.NavMeshHit hit, range, UnityEngine.AI.NavMesh.AllAreas))
+                {
+                    jumpTargetPos = hit.position; // ใช้จุดที่ปลอดภัยบน NavMesh
+                }
+            }
+            else
+            {
+                jumpTargetPos = jumpCenter;
+            }
 
             // สั่งกระโดด (คูณ speedMultiplier ด้วยก็ได้ถ้าต้องการ)
             movement.SkillJump(jumpTargetPos, jumpHeight, jumpDuration / speedMultiplier);
@@ -496,5 +551,72 @@ public class TeleportAction : SkillAction
         user.transform.LookAt(new Vector3(target.transform.position.x, user.transform.position.y, target.transform.position.z));
 
         Debug.Log($"{user.name} Teleported to {targetPos}");
+    }
+}
+
+[System.Serializable]
+public class SplitSelfAction : SkillAction
+{
+    [Header("Split Settings")]
+    public List<GameObject> minionPrefabs; // ลาก Prefab 3 ตัว (Melee, Range, AoE) มาใส่ในนี้
+    public float spawnRadius = 2.0f; // รัศมีที่จะกระจายตัวออกมา
+    public bool killUserAfterSplit = true; // แยกร่างเสร็จ ตัวต้นตายไหม?
+    public GameObject spawnVFX; // เอฟเฟกต์ควันตอนระเบิดตัว (ถ้ามี)
+
+    public override void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f, LayerMask? layerTarget = null)
+    {
+        if (minionPrefabs == null || minionPrefabs.Count == 0) return;
+
+        Vector3 centerPos = user.transform.position;
+
+        // 1. วนลูปสร้างมอนสเตอร์แต่ละตัว
+        for (int i = 0; i < minionPrefabs.Count; i++)
+        {
+            if (minionPrefabs[i] == null) continue;
+
+            // คำนวณตำแหน่งเกิดให้กระจายเป็นวงกลม
+            // มุม = (360 / จำนวนตัว) * i
+            float angle = i * (360f / minionPrefabs.Count);
+            Vector3 offset = Quaternion.Euler(0, angle, 0) * Vector3.forward * spawnRadius;
+            Vector3 spawnPos = centerPos + offset;
+
+            // Spawn มอนสเตอร์
+            GameObject minion = ObjectPoolingManager.Instance.Spawn(minionPrefabs[i], spawnPos);
+
+            // หันหน้าหา Target ทันทีเพื่อให้พร้อมสู้
+            if (target != null)
+            {
+                minion.transform.LookAt(new Vector3(target.transform.position.x, minion.transform.position.y, target.transform.position.z));
+            }
+
+            // ถ้ามอนสเตอร์ที่เกิดมา มี AI ให้สั่งมันเริ่มไล่ล่าทันที (Optional)
+            if (minion.TryGetComponent(out BaseEnemyAI ai))
+            {
+                // บังคับเปลี่ยน State เป็น Chase เลย ผู้เล่นจะได้ไม่ต้องรอมันคิด
+                ai.TriggerChangeState(BaseEnemyAI.EnemyState.Chase);
+            }
+        }
+
+        // 2. เล่น Effect (ถ้ามี)
+        if (spawnVFX != null)
+        {
+            ObjectPoolingManager.Instance.Spawn(spawnVFX, centerPos);
+        }
+
+        // 3. จัดการตัวต้น (User)
+        if (killUserAfterSplit)
+        {
+            // ถ้ามี Health ให้สั่งตายแบบเนียนๆ หรือสั่ง Disable ไปเลย
+            if (user.TryGetComponent(out EnemyHealth health))
+            {
+                // สั่งให้ตาย (อาจจะปิดเสียงตาย หรือปิด Loot ถ้าไม่อยากให้ดรอปของ)
+                health.isRespawnNow = false; // กันมันเกิดใหม่ทันทีถ้าใช้ Pool
+                health.setHp(0);
+            }
+            else
+            {
+                user.SetActive(false); // ปิดดื้อๆ
+            }
+        }
     }
 }

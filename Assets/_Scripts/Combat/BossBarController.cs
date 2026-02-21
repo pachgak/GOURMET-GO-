@@ -5,7 +5,7 @@ public class BossBarController : MonoBehaviour
     public BossBarUI bossBarUI;
     [HideInInspector] public bool isShowing = false;
 
-    [HideInInspector] public EnemyHealth enemyHealth;
+    public EnemyHealth enemyHealth;
     [HideInInspector] public EnemyDataBase enemy;
 
 

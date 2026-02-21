@@ -3,9 +3,9 @@ using System;
 
 public abstract class BaseHitBox : MonoBehaviour , IHitBox
 {
-    public GameObject ownerHit;
-    public LayerMask targetLayer; // ตั้งค่า Layer ของศัตรูใน Inspector
-    public float damage = 0f; // ค่าดาเมจของการโจมตี
+    [HideInInspector] public GameObject ownerHit;
+    [HideInInspector] public LayerMask targetLayer; // ตั้งค่า Layer ของศัตรูใน Inspector
+    [HideInInspector] public float damage = 0f; // ค่าดาเมจของการโจมตี
     [HideInInspector] public Vector3 knockbackDirection; // ทิศทางการผลัก
     protected float knockbackForce = 0f; // แรงผลัก
     protected float knockbackTime = 0f; // แรงผลัก

@@ -15,7 +15,18 @@ MonoBehaviour:
   skillName: 
   spawnSkillPrefabsType: 0
   _skillSetp: []
-  actions: []
+  actions:
+  - rid: 3016931747640377414
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 3016931747640377414
+      type: {class: SpawnHitAction_M, ns: , asm: Assembly-CSharp}
+      data:
+        dirType: 2
+        prefab: {fileID: 553844610465297452, guid: 6dbf764db0a074a499389ddaacd2784c, type: 3}
+        spawnType: 2
+        offset: {x: 0, y: 0}
+        damage: 1
+        knockbackForce: 5
+        modifiers: []

@@ -28,6 +28,8 @@ public class BaseEnemyCombat : MonoBehaviour
     protected Vector3 currentDiractionSkill;
     protected float currentSpeedMultiplier;
 
+    protected int _currentSkillIndex = 0;
+
     //[System.Serializable]
     //public class EnemySkill
     //{
@@ -150,19 +152,23 @@ public class BaseEnemyCombat : MonoBehaviour
 
     protected virtual IEnumerator AttackLogic()
     {
-        // 1. สุ่มสกิล หรือ เลือกสกิล (Logic เดิมของคุณ)
-        // สมมติว่าเลือกสกิล index 0
-        int skillIndex = 0;
-        // (คุณไปใส่ Logic เลือกสกิลแบบเดิมของคุณตรงนี้)
+        // 1. ป้องกัน Error ในกรณีที่ลืมใส่สกิลใน Inspector
+        if (enemySkills == null || enemySkills.Length == 0)
+        {
+            Debug.LogWarning($"{gameObject.name} ไม่มีสกิลใน enemySkills!");
+            yield break; // จบการทำงานทันที
+        }
 
-        // 2. เริ่มใช้สกิล
-        if (enemySkills[skillIndex] != null) yield return UseSkill(skillIndex);
+        // 2. เริ่มใช้สกิลตาม Index ปัจจุบัน
+        if (enemySkills[_currentSkillIndex] != null)
+        {
+            yield return UseSkill(_currentSkillIndex);
+        }
 
-        //// 1. Logic การหันหน้าไปหา Player
-        //TriggerSkillUesd(0);
-        //yield return enemySkills[0].UseSkill(this.gameObject, _aiController.playerTarget);
-
-        // 3. Apply Damage (TODO)
+        // 3. เลื่อนคิว Index ไปสกิลถัดไป สำหรับการโจมตีรอบหน้า
+        // เครื่องหมาย % (หารเอาเศษ) จะช่วยให้มันวนกลับไปที่ 0 อัตโนมัติเมื่อครบจำนวน Array
+        // เช่น สมมติมี 3 สกิล: (2 + 1) % 3 = 0 (วนกลับจุดเริ่มต้นพอดี)
+        _currentSkillIndex = (_currentSkillIndex + 1) % enemySkills.Length;
     }
 
     // ฟังก์ชันนี้มาแทนที่ UseSkill แบบเก่า

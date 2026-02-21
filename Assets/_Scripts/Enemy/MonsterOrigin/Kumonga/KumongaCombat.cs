@@ -15,6 +15,9 @@ public class KumongaCombat : BaseEnemyCombat , IWallCollidable// สืบทอดจากคลาสแม
     {
         Debug.Log("Kumonga ชนกำแพงเต็มๆ!");
 
+        // 1. สั่งหยุด Animation Skill (เช่น ท่าวิ่ง) ทันที
+        FinishSkillAnimation();
+
         // สั่งให้ AI ติดสตัน
         if (_ai != null)
         {
@@ -25,7 +28,7 @@ public class KumongaCombat : BaseEnemyCombat , IWallCollidable// สืบทอดจากคลาสแม
         if (TryGetComponent(out BaseEnemyMovement movement))
         {
             // ถ้าคุณมีฟังก์ชัน StopDash() ก็เรียกตรงนี้ เพื่อไม่ให้มันไถลต่อ
-            // movement.StopDash(); 
+             movement.StopDashImmediately(); ; 
         }
     }
 }
