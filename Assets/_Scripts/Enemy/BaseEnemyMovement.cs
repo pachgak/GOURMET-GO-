@@ -262,8 +262,6 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
 
         KnockbackCoroutine = null;
 
-        Debug.Log("Eemy ApplyKnockback");
-
         //yield return null;
         //_agent.isStopped = true;
         ////_agent.enabled = false;

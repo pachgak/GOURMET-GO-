@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea9305386f6b18c4780c167459107c07, type: 3}
+  m_Name: jumper_0_trit
+  m_EditorClassIdentifier: 
+  skillName: 
+  spawnSkillPrefabsType: 0
+  _skillSetp: []
+  actions:
+  - rid: 3016931747640377465
+  references:
+    version: 2
+    RefIds:
+    - rid: 3016931747640377465
+      type: {class: SplitSelfAction, ns: , asm: Assembly-CSharp}
+      data:
+        minionPrefabs:
+        - {fileID: 709896967342680748, guid: a3139a8a68774dd4c8f7cc7c35279b9e, type: 3}
+        - {fileID: 4468386374685865033, guid: b247e385f25575241bcd7ece85665b1c, type: 3}
+        - {fileID: 8248806429086153625, guid: 7a209f007bb130142a4c2ed98f5bfd04, type: 3}
+        spawnRadius: 10
+        killUserAfterSplit: 1
+        spawnVFX: {fileID: 0}

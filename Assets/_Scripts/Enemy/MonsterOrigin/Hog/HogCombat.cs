@@ -13,7 +13,6 @@ public class HogCombat : BaseEnemyCombat , IWallCollidable
     // ฟังก์ชันนี้จะถูกเรียกโดย SpawnWallHitStunAction เมื่อ Hitbox ชนกำแพง
     public void OnHitWall(float stunDuration)
     {
-        Debug.Log("HogCombat: Hit Wall -> Stopping Everything!");
 
         // 1. สั่งหยุด Animation Skill (เช่น ท่าวิ่ง) ทันที
         FinishSkillAnimation();

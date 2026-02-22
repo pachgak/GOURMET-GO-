@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea9305386f6b18c4780c167459107c07, type: 3}
+  m_Name: jumper_3_Aoe
+  m_EditorClassIdentifier: 
+  skillName: 
+  spawnSkillPrefabsType: 0
+  _skillSetp: []
+  actions:
+  - rid: 3016931747640377452
+  - rid: 3016931747640377453
+  - rid: 3016931747640377454
+  references:
+    version: 2
+    RefIds:
+    - rid: 3016931747640377452
+      type: {class: JumpAction, ns: , asm: Assembly-CSharp}
+      data:
+        dirType: 0
+        jumpHeight: 5
+        jumpDuration: 1
+        randomPos: 0
+        range: 0
+    - rid: 3016931747640377453
+      type: {class: SpawnHitAction_M, ns: , asm: Assembly-CSharp}
+      data:
+        dirType: 0
+        prefab: {fileID: 9112066071117175999, guid: b4eccd341ae3b8b4aacc3dd786ce2e08, type: 3}
+        spawnType: 1
+        offset: {x: 0, y: 0}
+        damage: 1
+        knockbackForce: 5
+        modifiers: []
+    - rid: 3016931747640377454
+      type: {class: JumpAction, ns: , asm: Assembly-CSharp}
+      data:
+        dirType: 0
+        jumpHeight: 5
+        jumpDuration: 1
+        randomPos: 1
+        range: 15

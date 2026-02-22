@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea9305386f6b18c4780c167459107c07, type: 3}
+  m_Name: jumper_2_rang
+  m_EditorClassIdentifier: 
+  skillName: 
+  spawnSkillPrefabsType: 0
+  _skillSetp: []
+  actions:
+  - rid: 3016931747640377455
+  references:
+    version: 2
+    RefIds:
+    - rid: 3016931747640377455
+      type: {class: SpawnHitAction_M, ns: , asm: Assembly-CSharp}
+      data:
+        dirType: 0
+        prefab: {fileID: 908989359750471700, guid: 0b3f6d9f9bd9584428c0164ea458902f, type: 3}
+        spawnType: 1
+        offset: {x: 0, y: 0}
+        damage: 1
+        knockbackForce: 5
+        modifiers:
+        - rid: 3016931747640377456
+    - rid: 3016931747640377456
+      type: {class: SpeedModifier, ns: , asm: Assembly-CSharp}
+      data:
+        baseSpeed: 10
+        applySpeedMultiplier: 0

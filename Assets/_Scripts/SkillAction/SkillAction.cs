@@ -610,7 +610,7 @@ public class SplitSelfAction : SkillAction
             if (user.TryGetComponent(out EnemyHealth health))
             {
                 // สั่งให้ตาย (อาจจะปิดเสียงตาย หรือปิด Loot ถ้าไม่อยากให้ดรอปของ)
-                health.isRespawnNow = false; // กันมันเกิดใหม่ทันทีถ้าใช้ Pool
+                health.isRespawnNow = true; // กันมันเกิดใหม่ทันทีถ้าใช้ Pool
                 health.setHp(0);
             }
             else

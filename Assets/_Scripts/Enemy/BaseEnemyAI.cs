@@ -46,6 +46,7 @@ public class BaseEnemyAI : MonoBehaviour
         // หา Combat Component เพื่อสมัครรับ Event จบการโจมตี (ถ้ามี)
         _enemyCombat = GetComponent<BaseEnemyCombat>();
         
+        if(playerTarget == null) playerTarget = GameObject.FindWithTag("Player").transform;
     }
 
     protected virtual void OnEnable()

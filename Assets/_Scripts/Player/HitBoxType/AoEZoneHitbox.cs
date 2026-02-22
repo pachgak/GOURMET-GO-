@@ -43,4 +43,15 @@ public class AoEZoneHitbox : BaseHitBox
             }
         }
     }
+
+    public override void PerformAttack()
+    {
+        _colider.enabled = true;
+    }
+
+    public void DisableAttack()
+    {
+        _colider.enabled = false;
+    }
+
 }

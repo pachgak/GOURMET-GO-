@@ -9794,7 +9794,7 @@ GameObject:
   - component: {fileID: 4761197154058296008}
   - component: {fileID: 2543441446560613364}
   - component: {fileID: 9087876423925251039}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: HitBox_VFX_Jamper Slat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9945,8 +9945,8 @@ MonoBehaviour:
     m_Bits: 256
   damage: 10
   knockbackDirection: {x: 0, y: 0, z: 0}
-  attackOffset: {x: 0, y: 1, z: 0}
-  attackSize: {x: 3, y: 1.5, z: 6}
+  attackOffset: {x: 0, y: 1, z: -1}
+  attackSize: {x: 4, y: 1.5, z: 6}
 --- !u!1 &1477081234627333143
 GameObject:
   m_ObjectHideFlags: 0

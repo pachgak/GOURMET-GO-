@@ -36,9 +36,11 @@ MonoBehaviour:
     - rid: 3016931736082448456
       type: {class: JumpAction, ns: , asm: Assembly-CSharp}
       data:
-        dirType: 0
+        dirType: 2
         jumpHeight: 5
         jumpDuration: 1
+        randomPos: 0
+        range: 0
     - rid: 3016931736082448457
       type: {class: SpawnVFXAction, ns: , asm: Assembly-CSharp}
       data:
@@ -48,7 +50,8 @@ MonoBehaviour:
         offset: {x: 0, y: 0}
     - rid: 3016931736082448458
       type: {class: StunSelfAction, ns: , asm: Assembly-CSharp}
-      data: 
+      data:
+        stunDuration: 3
     - rid: 3016931747640377415
       type: {class: SpawnHitAction_M, ns: , asm: Assembly-CSharp}
       data:
