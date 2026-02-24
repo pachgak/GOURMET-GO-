@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyDisguise : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class EnemyDisguise : MonoBehaviour
     private BaseEnemyMovement _myMovement;
     private BaseEnemyCombat _myCombat;
     private Collider _myCollider;
+    private DropShadowController _dropShadowController;
+    private NavMeshAgent _agent;
 
     private bool _isDisguised = false;
 
@@ -27,6 +30,8 @@ public class EnemyDisguise : MonoBehaviour
         _myMovement = GetComponent<BaseEnemyMovement>();
         _myCombat = GetComponent<BaseEnemyCombat>();
         _myCollider = GetComponent<Collider>();
+        _dropShadowController = GetComponent<DropShadowController>();
+        _agent = GetComponent<NavMeshAgent>();
     }
 
     private void Start()
@@ -56,6 +61,13 @@ public class EnemyDisguise : MonoBehaviour
             cloneCombat.enabled = false;
         }
 
+        // 
+        if (_currentClone.TryGetComponent(out BaseEnemyAI cloneAI))
+        {
+            // ใช้ Lambda ส่งดาเมจกลับมาให้ร่างจริงด้วย
+            cloneAI.enabled = false;
+        }
+
         // 5. ดักจับตอนที่โคลนโดนโจมตี ให้เรียกฟังก์ชันคืนร่าง
         if (_currentClone.TryGetComponent(out EnemyHealth cloneHealth))
         {
@@ -63,12 +75,15 @@ public class EnemyDisguise : MonoBehaviour
             cloneHealth.OnTakeDamage += (damage) => RevealTrueForm(damage);
         }
 
+
         // 6. ซ่อนร่างจริง ปิด AI, Movement, และ Collider
         enemyGraphics.SetActive(false);
         if (_myAI != null) _myAI.enabled = false;
         if (_myMovement != null) _myMovement.enabled = false;
         if (_myCombat != null) _myCombat.enabled = false;
         if (_myCollider != null) _myCollider.enabled = false;
+        if (_dropShadowController != null) _dropShadowController.enabled = false;
+        if (_agent != null) _agent.enabled = false;
 
         _isDisguised = true;
     }
@@ -118,6 +133,8 @@ public class EnemyDisguise : MonoBehaviour
         if (_myMovement != null) _myMovement.enabled = true;
         if (_myCombat != null) _myCombat.enabled = true;
         if (_myCollider != null) _myCollider.enabled = true;
+        if (_dropShadowController != null) _dropShadowController.enabled = true;
+        if (_agent != null) _agent.enabled = true;
 
         // 4. ถ้าร่างโคลนโดนตี ร่างจริงก็รับดาเมจนั้นด้วย
         if (damageTaken > 0 && _myHealth != null)

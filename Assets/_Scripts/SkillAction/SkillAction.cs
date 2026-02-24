@@ -1,5 +1,8 @@
+using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Timeline.Actions;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 [System.Serializable]
 public abstract class SkillAction
@@ -558,10 +561,11 @@ public class TeleportAction : SkillAction
 public class SplitSelfAction : SkillAction
 {
     [Header("Split Settings")]
-    public List<GameObject> minionPrefabs; // ลาก Prefab 3 ตัว (Melee, Range, AoE) มาใส่ในนี้
-    public float spawnRadius = 2.0f; // รัศมีที่จะกระจายตัวออกมา
-    public bool killUserAfterSplit = true; // แยกร่างเสร็จ ตัวต้นตายไหม?
-    public GameObject spawnVFX; // เอฟเฟกต์ควันตอนระเบิดตัว (ถ้ามี)
+    public List<GameObject> minionPrefabs;
+    public float spawnRadius = 2.0f;
+    public float timeSpawnDelay = 0.2f; // เปลี่ยนชื่อตัวสะกดนิดนึงให้ถูกหลัก
+    public bool killUserAfterSplit = true;
+    public GameObject spawnVFX;
 
     public override void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f, LayerMask? layerTarget = null)
     {
@@ -569,13 +573,48 @@ public class SplitSelfAction : SkillAction
 
         Vector3 centerPos = user.transform.position;
 
+        // 1. เล่น Effect (ถ้ามี)
+        if (spawnVFX != null)
+        {
+            ObjectPoolingManager.Instance.Spawn(spawnVFX, centerPos);
+        }
+
+        // 2. สั่งยืมตัว ObjectPoolingManager (ซึ่งไม่ถูก Destroy แน่นอน) ในการรัน Coroutine เสกมอน
+        if (ObjectPoolingManager.Instance != null)
+        {
+            ObjectPoolingManager.Instance.StartCoroutine(SpawnMinion(centerPos, target));
+        }
+        else
+        {
+            Debug.LogError("หา ObjectPoolingManager.Instance ไม่เจอ สั่งแยกร่างไม่ได้!");
+        }
+
+        // 3. จัดการฆ่าตัวต้น (User) ได้อย่างสบายใจ! เพราะ Coroutine ไม่ได้ฝากไว้ที่ตัวมันแล้ว
+        if (killUserAfterSplit)
+        {
+            if (user.TryGetComponent(out EnemyHealth health))
+            {
+                health.isRespawnNow = true;
+                health.setHp(0);
+            }
+            else
+            {
+                user.SetActive(false);
+            }
+        }
+    }
+
+    // แก้ไข: ไม่ต้องรับ GameObject user แล้ว ให้รับแค่ Vector3 ตำแหน่งมาแทน 
+    // เพราะถ้าส่ง user มา แล้ว user ถูกปิดไป การอ้างอิงตำแหน่งจะพัง
+    private IEnumerator SpawnMinion(Vector3 centerPos, GameObject target)
+    {
+        yield return new WaitForSeconds(timeSpawnDelay);
+
         // 1. วนลูปสร้างมอนสเตอร์แต่ละตัว
         for (int i = 0; i < minionPrefabs.Count; i++)
         {
             if (minionPrefabs[i] == null) continue;
 
-            // คำนวณตำแหน่งเกิดให้กระจายเป็นวงกลม
-            // มุม = (360 / จำนวนตัว) * i
             float angle = i * (360f / minionPrefabs.Count);
             Vector3 offset = Quaternion.Euler(0, angle, 0) * Vector3.forward * spawnRadius;
             Vector3 spawnPos = centerPos + offset;
@@ -583,39 +622,20 @@ public class SplitSelfAction : SkillAction
             // Spawn มอนสเตอร์
             GameObject minion = ObjectPoolingManager.Instance.Spawn(minionPrefabs[i], spawnPos);
 
-            // หันหน้าหา Target ทันทีเพื่อให้พร้อมสู้
             if (target != null)
             {
                 minion.transform.LookAt(new Vector3(target.transform.position.x, minion.transform.position.y, target.transform.position.z));
             }
 
-            // ถ้ามอนสเตอร์ที่เกิดมา มี AI ให้สั่งมันเริ่มไล่ล่าทันที (Optional)
             if (minion.TryGetComponent(out BaseEnemyAI ai))
             {
-                // บังคับเปลี่ยน State เป็น Chase เลย ผู้เล่นจะได้ไม่ต้องรอมันคิด
                 ai.TriggerChangeState(BaseEnemyAI.EnemyState.Chase);
             }
-        }
 
-        // 2. เล่น Effect (ถ้ามี)
-        if (spawnVFX != null)
-        {
-            ObjectPoolingManager.Instance.Spawn(spawnVFX, centerPos);
-        }
-
-        // 3. จัดการตัวต้น (User)
-        if (killUserAfterSplit)
-        {
-            // ถ้ามี Health ให้สั่งตายแบบเนียนๆ หรือสั่ง Disable ไปเลย
-            if (user.TryGetComponent(out EnemyHealth health))
+            // ถ้ามี Effect ตอนลูกเกิด ก็เล่นที่นี่
+            if (spawnVFX != null)
             {
-                // สั่งให้ตาย (อาจจะปิดเสียงตาย หรือปิด Loot ถ้าไม่อยากให้ดรอปของ)
-                health.isRespawnNow = true; // กันมันเกิดใหม่ทันทีถ้าใช้ Pool
-                health.setHp(0);
-            }
-            else
-            {
-                user.SetActive(false); // ปิดดื้อๆ
+                ObjectPoolingManager.Instance.Spawn(spawnVFX, minion.transform.position);
             }
         }
     }
