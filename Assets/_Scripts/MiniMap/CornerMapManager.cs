@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -40,6 +41,8 @@ public class CornerMapManager : MonoBehaviour
     void Update()
     {
         if (playerTransform == null || mapImage == null) return;
+
+        SortMapIcons();
 
         //// ซูม
         //float scroll = Input.GetAxis("Mouse ScrollWheel");
@@ -92,5 +95,44 @@ public class CornerMapManager : MonoBehaviour
         }
 
         return newIcon.GetComponent<RectTransform>();
+    }
+
+    void SortMapIcons()
+    {
+        if (mapImage == null || mapImage.childCount <= 1) return;
+
+        List<RectTransform> icons = new List<RectTransform>();
+        for (int i = 0; i < mapImage.childCount; i++)
+        {
+            icons.Add(mapImage.GetChild(i) as RectTransform);
+        }
+
+        // อัปเกรดระบบ Sort ให้มี Tie-breaker ป้องกันการกระพริบ
+        icons.Sort((a, b) =>
+        {
+            // 1. เทียบแกน Y ก่อนเป็นหลัก (บน-ล่าง)
+            int result = b.anchoredPosition.y.CompareTo(a.anchoredPosition.y);
+
+            // 2. ถ้าแกน Y เสมอกันเป๊ะ (result == 0)
+            if (result == 0)
+            {
+                // ใช้แกน X เป็นตัวตัดสิน (ซ้าย-ขวา)
+                result = b.anchoredPosition.x.CompareTo(a.anchoredPosition.x);
+
+                // 3. (แถม) ถ้าบังเอิญตำแหน่ง X และ Y ซ้อนทับกันเป๊ะๆ อีก!
+                // ให้ใช้อันดับ ID ของตัวมันเองในการตัดสินไปเลย (การันตีผลลัพธ์ตายตัว)
+                if (result == 0)
+                {
+                    result = a.GetInstanceID().CompareTo(b.GetInstanceID());
+                }
+            }
+
+            return result;
+        });
+
+        for (int i = 0; i < icons.Count; i++)
+        {
+            icons[i].SetSiblingIndex(i);
+        }
     }
 }
