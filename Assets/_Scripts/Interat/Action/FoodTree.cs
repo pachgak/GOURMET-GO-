@@ -39,5 +39,11 @@ public class FoodTree : SpawnItemDropPoor
         this.enabled = false;
 
         OnPick?.Invoke();
+
+        if (TryGetComponent<MiniMapEntity>(out MiniMapEntity miniMapEntity))
+        {
+            miniMapEntity.Disable();
+        }
+
     }
 }

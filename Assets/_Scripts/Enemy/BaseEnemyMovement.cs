@@ -62,6 +62,8 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
             return;
         }
 
+        _rb.isKinematic = true;
+        //_rb.freezeRotation = true;
     }
 
     private void OnEnable()

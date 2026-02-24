@@ -48,10 +48,15 @@ public class MiniMapEntity : MonoBehaviour
 
     private void OnDisable()
     {
-        if (myIcon != null) Destroy(myIcon.gameObject);
+        Disable();
     }
 
     void OnDestroy()
+    {
+        Disable();
+    }
+
+    public void Disable()
     {
         if (myIcon != null) Destroy(myIcon.gameObject);
     }
