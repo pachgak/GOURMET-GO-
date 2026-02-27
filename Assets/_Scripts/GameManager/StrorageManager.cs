@@ -27,7 +27,6 @@ public class StrorageManager : MonoBehaviour
     }
     private void OnEnable()
     {
-        if (PlayerInputActionsManager.instance) Debug.LogWarning("WTF");
         PlayerInputActionsManager.instance.OnInteractInputDown += HandleInteractInputDown;
         PlayerInputActionsManager.instance.OnEscInput += HandleEscInput;
         //OpenUiManager.instance.OnOpenUiChange += HandleOpenUiChange;

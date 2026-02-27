@@ -69,6 +69,10 @@ public class PlayerCombatController : MonoBehaviour
     public float AttackBackwardDivide = 2;
     public bool setLimitAttack;
 
+    [Header("Latch State")]
+    public bool isLatched = false;
+    public Action OnShakeInput; // ส่งสัญญาณเวลาผู้เล่นพยายามสะบัด
+
     [System.Serializable]
     public class AttackComboSet
     {
@@ -174,6 +178,13 @@ public class PlayerCombatController : MonoBehaviour
     // ���ҧ Prefab �������
     public void HandleMeleeAttack()
     {
+        // *** เพิ่มบล็อกนี้เข้าไป ***
+        if (isLatched)
+        {
+            OnShakeInput?.Invoke(); // ส่งสัญญาณบอกไก่ว่า "ผู้เล่นกดดิ้นแล้ว!"
+            return; // ออกจากฟังก์ชัน ห้ามโจมตีเด็ดขาด
+        }
+
         if (_isUiOpening) return;
         if (_isSkilling) return;
 

@@ -310,7 +310,8 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         ////}
     }
 
-    public void SkillDash(Vector3 direction, float speed, float duration)
+    // แก้ไข Signature ของ SkillDash ให้รับค่า isInvincibleDash เพิ่มเติม (ค่าเริ่มต้นเป็น false)
+    public void SkillDash(Vector3 direction, float speed, float duration, bool isInvincibleDash = false)
     {
         // หยุด Coroutine เก่า (ถ้ามี)
         if (_dashCoroutine != null) StopCoroutine(_dashCoroutine);
@@ -319,16 +320,23 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         StopMovement();
 
         // เริ่ม Coroutine Dash
-        _dashCoroutine = StartCoroutine(ApplySkillDash(direction, speed, duration));
+        _dashCoroutine = StartCoroutine(ApplySkillDash(direction, speed, duration, isInvincibleDash));
     }
 
-    private IEnumerator ApplySkillDash(Vector3 direction, float speed, float duration)
+    // แก้ไข Coroutine ให้รับค่ามาด้วย
+    private IEnumerator ApplySkillDash(Vector3 direction, float speed, float duration, bool isInvincibleDash)
     {
         // 1. ปิด NavMeshAgent และเตรียม Rigidbody
         _agent.isStopped = true;
-        //_agent.enabled = false;
         _rb.isKinematic = false;
-        _rb.useGravity = false; // ปิด Gravity ชั่วคราวเพื่อให้พุ่งตรง
+        _rb.useGravity = false;
+
+        // *** เพิ่ม Logic: ป้องกัน Knockback ระหว่าง Dash ถ้า isInvincibleDash เป็น true ***
+        bool originalCanKnockback = canKnockback;
+        if (isInvincibleDash)
+        {
+            canKnockback = false;
+        }
 
         // 2. กำหนดความเร็วเริ่มต้น
         Vector3 dashVelocity = direction * speed;
@@ -339,28 +347,33 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         // 3. Loop การพุ่ง
         while (Time.time < startTime + duration && _rb.linearVelocity.magnitude > _dashStoppingThreshold)
         {
-            // รักษาความเร็วในการพุ่ง
             if (_rb.linearVelocity.magnitude > speed)
             {
                 _rb.linearVelocity = _rb.linearVelocity.normalized * speed;
             }
 
-            yield return null; // รอจนกว่าจะถึงเฟรมถัดไป
+            yield return null;
         }
 
         // 4. จบการพุ่ง
         _rb.linearVelocity = Vector3.zero;
         _rb.angularVelocity = Vector3.zero;
-        _rb.useGravity = true; // คืนค่า Gravity (ถ้าจำเป็น)
+        _rb.useGravity = true;
         _rb.isKinematic = true;
 
         // 5. เปิด NavMeshAgent คืน
-        //_agent.enabled = true;
-        _agent.Warp(transform.position); // Warp เพื่อปรับตำแหน่ง Agent ให้ตรงกับ Rigidbody
+        _agent.Warp(transform.position);
         _agent.isStopped = false;
+
+        // *** เพิ่ม Logic: คืนค่าการรับ Knockback หลังพุ่งจบ ***
+        if (isInvincibleDash)
+        {
+            canKnockback = originalCanKnockback;
+        }
 
         _dashCoroutine = null;
     }
+
     public void StopDashImmediately()
     {
         // 1. หยุด Coroutine Dash

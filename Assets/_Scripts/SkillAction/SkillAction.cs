@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Timeline.Actions;
@@ -638,6 +639,84 @@ public class SplitSelfAction : SkillAction
             {
                 ObjectPoolingManager.Instance.Spawn(spawnVFX, minion.transform.position);
             }
+        }
+    }
+}
+
+[System.Serializable]
+public class SpawnHitLatchAction : SkillAction
+{
+    [Header("Diration Set")]
+    public DirMethod dirType = DirMethod.LoockTarget;
+
+    [Header("Prefab & Settings")]
+    public GameObject prefab;
+    public SpawnMethod spawnType = SpawnMethod.ParentToOwner;
+    public Vector2 offset = Vector2.zero; // x = ระยะห่าง, y = ความสูง
+
+    [Header("Combat Stats")]
+    public float initialDamage = 5f;
+
+    public override void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f, LayerMask? layerTarget = null)
+    {
+        if (prefab == null) return;
+
+        // 1. หา Latch Controller เตรียมไว้ก่อน
+        var latchController = user.GetComponent<LatchController>();
+        if (latchController == null)
+        {
+            Debug.LogWarning($"{user.name} ไม่มี LatchController! เลยเกาะไม่ได้");
+            return;
+        }
+
+        // 2. คำนวณทิศทาง
+        Vector3 targetVector = CalculateTargetVector(user, target, directionSkill, dirType);
+
+        // 3. เรียก Helper: Spawn และหาตำแหน่ง
+        SpawnAndCalculatePosition(prefab, user, target, spawnType, offset, targetVector,
+                                  out GameObject attackInstance, out Vector3 spawnPos);
+
+        // Set Position & Rotation
+        attackInstance.transform.position = spawnPos + new Vector3(0, offset.y, 0);
+
+        targetVector.y = 0f;
+        if (targetVector != Vector3.zero)
+            attackInstance.transform.rotation = Quaternion.LookRotation(targetVector);
+
+        // --- 4. LOGIC INJECTION (ส่วนสำคัญ) ---
+        if (attackInstance.TryGetComponent(out IHitBox hitBox))
+        {
+            // Setup ค่าปกติให้ Hitbox
+            LayerMask finalLayer = (layerTarget.HasValue && layerTarget.Value.value != 0) ? layerTarget.Value : LayerMask.GetMask("Player");
+            hitBox._targetLayer = finalLayer;
+            hitBox._ownerHit = user;
+            hitBox._damage = initialDamage;
+            hitBox._knockbackDirection = directionSkill;
+            hitBox._knockbackForce = 0f; // เกาะหัว ไม่ต้องกระเด็น
+
+            // *** ฝัง Logic: เคลียร์ Event เก่า -> ใส่ Logic ใหม่ ***
+
+            // หมายเหตุ: ใช้ Action ตัวแปรเพื่อตั้งให้ถอน Event ตัวเองออกได้ ป้องกัน Object Pool บั๊ก
+            System.Action<Collider[]> onHitCallback = null;
+            onHitCallback = (colliders) =>
+            {
+                if (colliders != null && colliders.Length > 0)
+                {
+                    GameObject hitPlayer = colliders[0].gameObject;
+
+                    // สั่งไก่ให้เกาะเป้าหมาย
+                    latchController.StartLatch(hitPlayer);
+
+                    // ลบ Event ตัวเองออก และเก็บ Hitbox คืนลง Pool
+                    hitBox._OnAttackHit -= onHitCallback;
+                    ObjectPoolingManager.Instance.Respawn(attackInstance);
+                }
+            };
+
+            hitBox._OnAttackHit += onHitCallback;
+
+            // สั่งเริ่มทำงาน
+            hitBox.PerformAttack();
         }
     }
 }

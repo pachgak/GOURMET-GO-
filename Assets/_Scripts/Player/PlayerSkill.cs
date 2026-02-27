@@ -34,6 +34,9 @@ public class PlayerSkill : MonoBehaviour
 
     private bool _isDash;
 
+    [Header("Latch State")]
+    public bool isLatched = false;
+
 
     public Action<bool> OnCanSkillUseStateChange;
     public Action<bool, float> OnSkillingStateChange;
@@ -88,6 +91,9 @@ public class PlayerSkill : MonoBehaviour
 
     internal void HandleSkillSlotInput(int slot)
     {
+        // *** เพิ่มบล็อกนี้เข้าไป ***
+        if (isLatched) return; // ถ้าโดนเกาะ ห้ามใช้สกิลเด็ดขาด
+
         int indexSkillSlect = slot - 1;
 
         Debug.Log($"slot : {slot}");
