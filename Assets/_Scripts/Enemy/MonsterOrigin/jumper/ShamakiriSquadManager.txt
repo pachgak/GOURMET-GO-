@@ -1,0 +1,133 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ShamakiriSquadManager : MonoBehaviour
+{
+    [Header("Squad Settings")]
+    public List<BaseEnemyAI> activeClones = new List<BaseEnemyAI>();
+    
+    [Header("Combo Attack Setup")]
+    public float comboCooldown = 10f; // เวลาคูลดาวน์ท่าผสานกระโดด
+    private float _comboTimer;
+    private bool _isDoingCombo = false;
+
+    // ฟังก์ชันนี้ถูกเรียกจาก SplitSelfAction หลังจากเสกมอน 3 ตัวเสร็จ
+    public void InitializeSquad(List<GameObject> clones, GameObject target)
+    {
+        foreach (var cloneObj in clones)
+        {
+            if (cloneObj.TryGetComponent(out BaseEnemyAI ai))
+            {
+                activeClones.Add(ai);
+
+                // *** ดักจับ Event ตอนโคลนตาย ***
+                if (cloneObj.TryGetComponent(out EnemyHealth health))
+                {
+                    // พอตายปุ๊บ ให้เรียกฟังก์ชัน HandleCloneDeath
+                    health.OnDie += () => HandleCloneDeath(ai); 
+                }
+            }
+        }
+
+        // ซ่อนตัว Container (สมมติว่ากราฟิกอยู่ลูกชั้นแรก)
+        GetComponentInChildren<SpriteRenderer>().enabled = false;
+        if (TryGetComponent(out Collider col)) col.enabled = false;
+        
+        // เริ่มจับเวลาท่าผสาน
+        _comboTimer = comboCooldown;
+        Debug.Log("Shamakiri Puppet Master: เริ่มคุมเกม!");
+    }
+
+    private void Update()
+    {
+        // ถ้าเหลือ 3 ตัวครบ และคูลดาวน์เสร็จ ให้ใช้ท่าผสาน!
+        if (activeClones.Count == 3 && !_isDoingCombo)
+        {
+            _comboTimer -= Time.deltaTime;
+            if (_comboTimer <= 0)
+            {
+                StartCoroutine(UltimateComboAttack());
+                _comboTimer = comboCooldown;
+            }
+        }
+    }
+
+    // --- จัดการเวลาโคลนตาย (แก้ปัญหาข้อ 4) ---
+    private void HandleCloneDeath(BaseEnemyAI deadClone)
+    {
+        activeClones.Remove(deadClone);
+        Debug.Log($"โคลนตาย! เหลือ {activeClones.Count} ตัว");
+
+        if (activeClones.Count == 1)
+        {
+            // *** เหลือตัวสุดท้าย สั่งเข้าโหมด Enrage! ***
+            TriggerEnrageMode(activeClones[0]);
+        }
+        else if (activeClones.Count == 0)
+        {
+            // ตายหมดแล้ว! ตัว Container จบหน้าที่ ดรอปของ แล้วตายตาม
+            Debug.Log("Shamakiri Defeated!");
+            Destroy(gameObject); 
+        }
+    }
+
+    private void TriggerEnrageMode(BaseEnemyAI lastClone)
+    {
+        Debug.Log("ร่างสุดท้าย โกรธแล้ว! ปลดล็อคทุกสกิล!");
+        
+        if (lastClone.TryGetComponent(out BaseEnemyCombat combat))
+        {
+            // TODO: คุณอาจจะต้องไปเพิ่มฟังก์ชันใน ShamakiriCombat 
+            // ให้ปลดล็อคการใช้ enemySkills[1], [2], [3] และเพิ่ม SpeedMultiplier
+            // ตัวอย่าง:
+            // if (combat is ShamakiriCombat shamakiriCombat) shamakiriCombat.EnableEnrage();
+        }
+    }
+
+    // --- ท่าผสานกระโดด 3 ตัว (แก้ปัญหาข้อ 3) ---
+    private IEnumerator UltimateComboAttack()
+    {
+        _isDoingCombo = true;
+        Debug.Log("เริ่มท่าผสาน: กระโดด 3 กษัตริย์!");
+
+        // 1. สั่งให้ทุกคนหยุดเดินไล่ผู้เล่น (เปลี่ยนเป็น State ว่างๆ)
+        foreach (var clone in activeClones)
+        {
+            clone.TriggerStopMovement();
+            clone.TriggerChangeState(BaseEnemyAI.EnemyState.Wait); // สมมติว่ามี State รอ
+        }
+
+        yield return new WaitForSeconds(0.5f); // ยืนโพสท่าแป๊บนึง
+
+        // 2. สั่งทุกคนกระโดดขึ้นฟ้าพร้อมกัน
+        foreach (var clone in activeClones)
+        {
+            if (clone.TryGetComponent(out BaseEnemyMovement movement))
+            {
+                // โดดขึ้นที่เดิม แต่ลอยสูง 10 หน่วย นาน 2 วิ
+                movement.SkillJump(clone.transform.position, 10f, 2f); 
+            }
+        }
+
+        // 3. รอจังหวะที่มันลอยอยู่บนฟ้า (ประมาณ 1 วิ)
+        yield return new WaitForSeconds(1.0f);
+
+        // 4. สั่งปล่อยพลังเส้นตรงลงมา (ดรอป Hitbox ใส่ Player)
+        // (ตรงนี้คุณสามารถเอา ObjectPoolingManager มาเสก Hitbox เส้นตรงได้เลย)
+        Debug.Log("ปล่อยพลังจากฟ้าฟาดลงมา 3 เส้น!");
+
+        yield return new WaitForSeconds(1.0f); // รอจนมันตกถึงพื้น
+
+        // 5. สลับตำแหน่ง (เดี๋ยวเราค่อยมาเขียนฟังก์ชันสลับพิกัด X, Z ของ 3 ตัวนี้)
+        // ...
+
+        // 6. ปล่อยให้มันกลับไปไล่ตีผู้เล่นตามปกติ
+        foreach (var clone in activeClones)
+        {
+            clone.TriggerChangeState(BaseEnemyAI.EnemyState.Chase);
+        }
+
+        _isDoingCombo = false;
+    }
+}

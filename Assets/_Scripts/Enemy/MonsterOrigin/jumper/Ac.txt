@@ -1,0 +1,71 @@
+[System.Serializable]
+public class SplitSelfAction : SkillAction
+{
+    [Header("Split Settings")]
+    public List<GameObject> minionPrefabs; 
+    public float spawnRadius = 2.0f; 
+    public float timeSpawnDelay = 0.2f; 
+    public bool killUserAfterSplit = true; 
+    public GameObject spawnVFX; 
+    
+    // *** เพิ่ม Prefab ตัว Manager (GameObject ว่างๆ ที่ใส่ Script ShamakiriSquadManager) ***
+    public GameObject squadManagerPrefab; 
+
+    // ... (ส่วน Execute เหมือนเดิม) ...
+
+    private IEnumerator SpawnMinion(Vector3 centerPos, GameObject target)
+    {
+        yield return new WaitForSeconds(timeSpawnDelay);
+
+        List<GameObject> spawnedClones = new List<GameObject>(); // สร้างกล่องเปล่ามารอเก็บลูกๆ
+
+        // 1. วนลูปเสกมอนสเตอร์
+        for (int i = 0; i < minionPrefabs.Count; i++)
+        {
+            if (minionPrefabs[i] == null) continue;
+
+            float angle = i * (360f / minionPrefabs.Count);
+            Vector3 offset = Quaternion.Euler(0, angle, 0) * Vector3.forward * spawnRadius;
+            Vector3 spawnPos = centerPos + offset;
+
+            GameObject minion = ObjectPoolingManager.Instance.Spawn(minionPrefabs[i], spawnPos);
+            spawnedClones.Add(minion); // เก็บเข้ากล่อง
+
+            // ... (หันหน้า, เอฟเฟกต์) ...
+        }
+
+        // 2. เสก Manager ออกมา แล้วโยนกล่องลูกๆ ให้มันคุม!
+        if (squadManagerPrefab != null)
+        {
+            GameObject managerObj = ObjectPoolingManager.Instance.Spawn(squadManagerPrefab, centerPos);
+            if (managerObj.TryGetComponent(out ShamakiriSquadManager manager))
+            {
+                manager.InitializeSquad(spawnedClones, target);
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ใน SplitSelfAction.cs (จังหวะท้ายสุดของ IEnumerator SpawnMinion)
+
+// ... หลังจากลูป for เสกมอนครบ 3 ตัวแล้ว
+if (user != null && user.TryGetComponent(out ShamakiriSquadManager manager))
+{
+    // โยนลูกน้อง 3 ตัวเข้า Manager ของตัวแม่
+    manager.InitializeSquad(spawnedClones, target);
+}
