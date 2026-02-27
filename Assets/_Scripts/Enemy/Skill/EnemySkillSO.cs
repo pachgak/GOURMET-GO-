@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static AttacksSkill;
-using static BearCombat;
 
 [CreateAssetMenu(fileName = "New Enemys Skill", menuName = "Enemys/Enemys Skill")]
 public class EnemySkillSO : ScriptableObject

@@ -51605,19 +51605,19 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1011214395}
   - {fileID: 1156866951}
   - {fileID: 443250092}
   - {fileID: 388668939}
-  - {fileID: 1405138384}
   - {fileID: 876710759}
+  - {fileID: 1536567348}
+  - {fileID: 1405138384}
+  - {fileID: 1011214395}
   - {fileID: 1755992344}
   - {fileID: 916384485}
   - {fileID: 1387131405}
   - {fileID: 718990071}
   - {fileID: 28483056}
   - {fileID: 122412685}
-  - {fileID: 1536567348}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &722861880
@@ -134277,7 +134277,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1011214395
 Transform:
   m_ObjectHideFlags: 0
@@ -170829,12 +170829,12 @@ GameObject:
   - component: {fileID: 1536567350}
   - component: {fileID: 1536567360}
   m_Layer: 8
-  m_Name: Sky Chicken (MokeUp)
+  m_Name: Sky Chicken
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1536567348
 Transform:
   m_ObjectHideFlags: 0
@@ -171162,7 +171162,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a236d7bc98a11ca48ab2305f2168bb17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  requiredHitsToShake: 5
+  requiredHitsToShake: 8
   damagePerSecond: 5
   latchOffset: {x: 0, y: 1, z: 1}
   decayPerSecond: 1

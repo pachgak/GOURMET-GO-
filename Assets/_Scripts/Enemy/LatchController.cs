@@ -161,11 +161,13 @@ public class LatchController : MonoBehaviour
     {
         while (_isLatched)
         {
+            yield return new WaitForSeconds(1.0f);
+
             if (_targetPlayer.TryGetComponent(out ITakeDamage hp))
             {
                 hp.TakeDamage(damagePerSecond);
+                CameraShakeManager.instance.ShakePlayerTakeDamage();
             }
-            yield return new WaitForSeconds(1.0f);
         }
     }
 }

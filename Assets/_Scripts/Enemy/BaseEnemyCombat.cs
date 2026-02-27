@@ -17,6 +17,7 @@ public class BaseEnemyCombat : MonoBehaviour
     // Events ที่จะถูก Invoke กลับไปหา AI เมื่อโจมตีเสร็จ
     public event Action OnAttackFinished;
     public event Action<int, float> OnSkillUesd;
+    public event Action<Vector3> OnSkillActionExecuted;
     //public event Action OnSkillEnd;
 
     public EnemySkillSO[] enemySkills;
@@ -247,6 +248,8 @@ public class BaseEnemyCombat : MonoBehaviour
         {
             action.Execute(this.gameObject, target.gameObject, dir, speed , mask);
         }
+
+        OnSkillActionExecuted?.Invoke(currentDiractionSkill);
     }
 
     // ใส่ฟังก์ชันนี้ใน Animation Event: ที่เฟรมสุดท้ายของ Animation

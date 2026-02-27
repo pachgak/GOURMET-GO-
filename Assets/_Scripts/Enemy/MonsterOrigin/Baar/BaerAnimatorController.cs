@@ -21,7 +21,7 @@ public class BaerAnimatorController : MonoBehaviour
         _aiController = GetComponent<BaseEnemyAI>();
         _enemyCombat = GetComponent<BaseEnemyCombat>();
         _agent = GetComponent<NavMeshAgent>();
-        _enemyHealth = GetComponent<EnemyHealth>(); 
+        _enemyHealth = GetComponent<EnemyHealth>();
         // ...
     }
 
@@ -29,6 +29,9 @@ public class BaerAnimatorController : MonoBehaviour
     {
         _enemyCombat.OnSkillUesd += HandleSkillUesd;
         _enemyCombat.OnAttackFinished += HandleSkillEnd;
+
+        _enemyCombat.OnSkillActionExecuted += HandleSkillActionExecuted; 
+
         _enemyHealth.OnDie += HandleOnDie;
     }
 
@@ -36,14 +39,17 @@ public class BaerAnimatorController : MonoBehaviour
     {
         _enemyCombat.OnSkillUesd -= HandleSkillUesd;
         _enemyCombat.OnAttackFinished -= HandleSkillEnd;
+
+        _enemyCombat.OnSkillActionExecuted -= HandleSkillActionExecuted;
+
         _enemyHealth.OnDie -= HandleOnDie;
     }
-    
+
     private void HandleOnDie()
     {
         _animator.speed = 1f;
 
-        _animator.SetBool("isDead",true);
+        _animator.SetBool("isDead", true);
     }
 
     private void HandleSkillUesd(int skillNumber, float speedMultiplier)
@@ -52,13 +58,7 @@ public class BaerAnimatorController : MonoBehaviour
 
         _animator.speed = speedMultiplier;
 
-        //spriteRenderer.flipX = false;
-
-        Vector3 attackDirection = (_aiController.playerTarget.position - transform.position).normalized;
-        _animator.SetFloat("ActionX", attackDirection.x);
-        _animator.SetFloat("ActionZ", attackDirection.z);
-
-        spriteRenderer.flipX = (attackDirection.x >= 0) ? true : false; 
+        UpdateSpriteFlipAndAnimation(_enemyCombat.currentDiractionSkill);
 
         if (skillNumber == 0)
         {
@@ -78,9 +78,16 @@ public class BaerAnimatorController : MonoBehaviour
         }
     }
 
+    // *** ทำงานตอน Event ในคลิปแอนิเมชันทำงาน (เช่น จังหวะพุ่ง หรือ ปล่อยพลัง) ***
+    private void HandleSkillActionExecuted(Vector3 actionDirection)
+    {
+        // อัปเดตการหันหน้าอีกครั้ง เผื่อ Action นี้เป็นประเภทหันไปทางอื่น
+        UpdateSpriteFlipAndAnimation(actionDirection);
+    }
+
     private void HandleSkillEnd()
     {
-        isSkilling = false  ;
+        isSkilling = false;
 
         _animator.speed = 1f;
     }
@@ -88,7 +95,7 @@ public class BaerAnimatorController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -112,7 +119,7 @@ public class BaerAnimatorController : MonoBehaviour
 
         // 2. ดึงความเร็วในพิกัดโลก (World Space Velocity)
         Vector3 worldVelocity = _agent.velocity;
-        
+
         float totalSpeed = worldVelocity.magnitude;
 
         // 3. ตั้งค่า IsMoving
@@ -120,16 +127,18 @@ public class BaerAnimatorController : MonoBehaviour
         bool isMoving = totalSpeed > 0.01f;
         _animator.SetBool("IsMoveing", isMoving);
 
-        // 4. ถ้ากำลังเคลื่อนที่ ให้คำนวณทิศทาง
-        if (isSkilling)
-        {
-            Vector3 attackDirection = (_aiController.playerTarget.position - transform.position).normalized;
-            _animator.SetFloat("ActionX", attackDirection.x);
-            _animator.SetFloat("ActionZ", attackDirection.z);
+        //if (isSkilling)
+        //{
+        //    Vector3 attackDirection = (_aiController.playerTarget.position - transform.position).normalized;
+        //    _animator.SetFloat("ActionX", attackDirection.x);
+        //    _animator.SetFloat("ActionZ", attackDirection.z);
 
-            spriteRenderer.flipX = (attackDirection.x >= 0) ? true : false;
-        }
-        else if (isMoving)
+        //    spriteRenderer.flipX = (attackDirection.x >= 0) ? true : false;
+        //}
+        //else 
+
+        // 4. ถ้ากำลังเคลื่อนที่ ให้คำนวณทิศทาง
+        if (isMoving)
         {
             //spriteRenderer.flipX = false;
 
@@ -143,8 +152,6 @@ public class BaerAnimatorController : MonoBehaviour
 
             // 4c. ส่งค่าให้ Animator
             // ใช้ Mathf.Lerp เพื่อให้การเปลี่ยน Animation ดูนุ่มนวลขึ้น (Smooth)
-            float currentMoveX = _animator.GetFloat("MoveX");
-            float currentMoveZ = _animator.GetFloat("MoveZ");
             //float dampTime = 0.1f; // ค่าความหน่วง
 
             //_animator.SetFloat("MoveX", Mathf.Lerp(currentMoveX, moveX, dampTime));
@@ -160,5 +167,15 @@ public class BaerAnimatorController : MonoBehaviour
             _animator.SetFloat("MoveX", Mathf.Lerp(_animator.GetFloat("MoveX"), 0f, 0.1f));
             _animator.SetFloat("MoveZ", Mathf.Lerp(_animator.GetFloat("MoveZ"), 0f, 0.1f));
         }
+    }
+
+    private void UpdateSpriteFlipAndAnimation(Vector3 direction)
+    {
+        // ส่งค่าเข้า Blend Tree ถ้ามี
+        _animator.SetFloat("ActionX", direction.x);
+        _animator.SetFloat("ActionZ", direction.z);
+
+        // หันซ้ายขวาตามแกน X ของโลก
+        spriteRenderer.flipX = (direction.x >= 0);
     }
 }
