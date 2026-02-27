@@ -28,6 +28,13 @@ public abstract class SkillAction
                 targetVector = Vector3.zero;
                 break;
         }
+
+        // *** ฝัง Logic ใหม่ตรงนี้: อัปเดตทิศทางล่าสุดกลับไปที่ Combat เสมอ! ***
+        if (user.TryGetComponent(out BaseEnemyCombat combat))
+        {
+            combat.currentDiractionSkill = targetVector;
+        }
+
         return targetVector;
     }
 
@@ -361,7 +368,12 @@ public class SpawnWallHitStunAction : SkillAction
     public float damage = 10f;
     public float knockbackForce = 10f;
 
+    [Header("Wall Hit Settings")]
     public float stunDuration = 3.0f;
+
+    // *** เพิ่มตัวแปรตั้งค่าการเด้งถอยหลัง ***
+    public float bounceForce = 15f;
+    public float bounceTime = 0.2f;
     // ใช้ LayerMask? เพื่อรองรับค่า Default เป็น null
     public override void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f, LayerMask? layerTarget = null)
     {
@@ -402,7 +414,7 @@ public class SpawnWallHitStunAction : SkillAction
             // Subscribe Event ใหม่: เมื่อชนอะไรก็ตาม ให้เรียก CheckHitLogic
             hitBox._OnAttackHit += (colliders) =>
             {
-                CheckHitLogic(user, attackInstance, colliders ,stunDuration);
+                CheckHitLogic(user, attackInstance, colliders, stunDuration, bounceForce, bounceTime);
                 ObjectPoolingManager.Instance.Respawn(attackInstance);
             };
 
@@ -412,34 +424,22 @@ public class SpawnWallHitStunAction : SkillAction
     }
 
     // แยก Logic การเช็คชนออกมา
-    private void CheckHitLogic(GameObject user, GameObject hitboxObj, Collider[] hits, float stunDuration)
+    private void CheckHitLogic(GameObject user, GameObject hitboxObj, Collider[] hits, float stunDuration, float bounceForce, float bounceTime)
     {
         foreach (var col in hits)
         {
             if (((1 << col.gameObject.layer) & wallLayer) != 0)
             {
-                Debug.Log("SpawnWallHitStunAction: Hit Wall!");
-
-                // *** เพิ่มตรงนี้: ถ้าชนกำแพงเปราะบาง ให้สั่งมันแตก! ***
                 if (col.TryGetComponent(out FragileWall fragileWall))
                 {
                     fragileWall.BreakWall();
                 }
 
-                //if (user.TryGetComponent(out BaseEnemyCombat combat))
-                //{
-                //    // คุณอาจจะต้องแคสต์เป็น KumongaCombat หรือถ้า Base มี OnHitWall ก็เรียกได้เลย
-                //    if (combat is HogCombat hogCombat) hogCombat.OnHitWall();
-                //    if (combat is KumongaCombat kumongaCombat) kumongaCombat.OnHitWall();
-                //}
-
-                // 2. เช็คผ่าน Interface เลย! (ไม่ต้องดึง BaseEnemyCombat แล้ว)
                 if (user.TryGetComponent(out IWallCollidable wallCollidable))
                 {
-                    // ไม่ว่า user จะเป็นตัวอะไรก็ตาม ถ้ามันแปะ Interface นี้ไว้ มันจะทำงานทันที
-                    wallCollidable.OnHitWall(stunDuration);
+                    // *** ส่งค่าต่อไปให้ Combat ***
+                    wallCollidable.OnHitWall(stunDuration, bounceForce, bounceTime);
                 }
-
                 return;
             }
         }
@@ -478,8 +478,9 @@ public class JumpAction : SkillAction
     {
         if (user.TryGetComponent(out BaseEnemyMovement movement))
         {
-            // คำนวณทิศทาง (ใช้ Helper ที่เราทำไว้)
-            //Vector3 targetVector = CalculateTargetVector(user, target, directionSkill, dirType);
+            // Save currentDiractionSkill คำนวณทิศทาง (ใช้ Helper ที่เราทำไว้)
+            Vector3 targetVector = CalculateTargetVector(user, target, directionSkill, dirType);
+            
             Vector3 jumpCenter = Vector3.zero;  
             Vector3 jumpTargetPos = Vector3.zero;  
             // สมมติว่ากระโดดไปข้างหน้านิดนึง หรือกระโดดอยู่กับที่

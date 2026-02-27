@@ -25,7 +25,7 @@ public class BaseEnemyCombat : MonoBehaviour
     // ตัวแปรใหม่: เก็บ Skill ที่กำลังใช้อยู่ เพื่อให้รู้ว่าต้องดึง Action ตัวไหน
     protected EnemySkillSO currentActiveSkill;
     protected bool isSkillAnimating = false; // ตัวเช็คว่าจบหรือยัง
-    protected Vector3 currentDiractionSkill;
+    public Vector3 currentDiractionSkill;
     protected float currentSpeedMultiplier;
 
     protected int _currentSkillIndex = 0;

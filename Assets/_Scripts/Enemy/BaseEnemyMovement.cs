@@ -179,14 +179,21 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
 
     private void MoveToTarget(Vector3 targetPosition)
     {
-        _agent.isStopped = false;
-        _agent.SetDestination(targetPosition);
-        //Debug.LogWarning($"MoveToTarget {targetPosition}");
+        // *** เพิ่ม Safety Check: ทำงานเมื่อ Agent เปิดอยู่และอยู่บน NavMesh เท่านั้น ***
+        if (_agent != null && _agent.isActiveAndEnabled && _agent.isOnNavMesh)
+        {
+            _agent.isStopped = false;
+            _agent.SetDestination(targetPosition);
+        }
     }
 
     private void StopMovement()
     {
-        _agent.isStopped = true;
+        // *** เพิ่ม Safety Check: ป้องกันบั๊ก "Stop" can only be called on an active agent... ***
+        if (_agent != null && _agent.isActiveAndEnabled && _agent.isOnNavMesh)
+        {
+            _agent.isStopped = true;
+        }
     }
 
     // --- Roaming Logic ---
@@ -220,6 +227,8 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
 
     public void GetKnockedBack(Vector3 direction, float force, float time)
     {
+        Debug.Log($"CanKnockback : {canKnockback}");
+
         if (!canKnockback) return;
 
         if (!gameObject.activeSelf) return;
