@@ -15,38 +15,38 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
     public float waitRoamTime = 2;
     public float roamSpeed = 3.6f;
     public float chaseSpeed = 5f;
-    
 
-    private Vector3 _roamPoint;
-    private BaseEnemyAI.EnemyState _currentState;
-    private NavMeshAgent _agent;
-    private Rigidbody _rb;
-    private BaseEnemyAI _aiController;
-    private EnemyHealth _enemyHealth;
 
-    [SerializeField] private bool _isWaiting;
-    private float _timerWaiting;
+    protected Vector3 _roamPoint;
+    protected BaseEnemyAI.EnemyState _currentState;
+    protected NavMeshAgent _agent;
+    protected Rigidbody _rb;
+    protected BaseEnemyAI _aiController;
+    protected EnemyHealth _enemyHealth;
+
+    [SerializeField] protected bool _isWaiting;
+    protected float _timerWaiting;
 
     //public KnockbackableStat knockbackableStat;
     //KnockbackableStat
     [Header("Knockbackable")]
     public bool canKnockback = true;
     bool IKnockbackable._canKnockback { get => canKnockback; set => canKnockback = value; }
-    private Coroutine KnockbackCoroutine;
+    protected Coroutine KnockbackCoroutine;
     protected Coroutine _jumpCoroutine;
 
     //[Range(0.001f, 0.1f)][SerializeField] private float StillThreshold = 0.05f;
     //[SerializeField] private float MaxKnockbackTime = 0.5f;
 
-    [SerializeField] private float knockbackMultiplier = 1f;
+    [SerializeField] protected float knockbackMultiplier = 1f;
     float IKnockbackable._knockbackMultiplier { get => knockbackMultiplier; set => knockbackMultiplier = value; }
 
-    private Coroutine _dashCoroutine;
+    protected Coroutine _dashCoroutine;
     [Header("Dash Settings")]
-    [SerializeField] private float _dashStoppingThreshold = 0.5f; // ค่าความเร็วต่ำสุดก่อนหยุด Dash
+    [SerializeField] protected float _dashStoppingThreshold = 0.5f; // ค่าความเร็วต่ำสุดก่อนหยุด Dash
 
 
-    private void Awake()
+    protected virtual void Awake()
     {
         // *** จัดการตัวเอง: หา Reference ที่จำเป็นทั้งหมด ***
         _agent = GetComponent<NavMeshAgent>();
@@ -66,7 +66,7 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         //_rb.freezeRotation = true;
     }
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
         // *** สมัครรับ Events จาก BaseEnemyAI เพื่อรับคำสั่ง ***
         if (_aiController != null)
@@ -84,7 +84,7 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         }
     }
 
-    private void OnDisable()
+    protected virtual void OnDisable()
     {
         // ยกเลิกการสมัครรับ Event เมื่อ Object ถูกปิดการใช้งาน
         if (_aiController != null)
@@ -102,12 +102,12 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
 
     }
 
-    private void HandleOnDie()
+    protected void HandleOnDie()
     {
         _agent.SetDestination(transform.position);
     }
 
-    private void HandleStateChange(BaseEnemyAI.EnemyState state)
+    protected void HandleStateChange(BaseEnemyAI.EnemyState state)
     {
         _currentState = state;
         if (state == BaseEnemyAI.EnemyState.Roaming)
@@ -119,22 +119,22 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         if(state == BaseEnemyAI.EnemyState.Chase) _agent.speed = chaseSpeed;
     }
 
-    private void HandleStartChase(Vector3 targetPosition)
+    protected void HandleStartChase(Vector3 targetPosition)
     {
         MoveToTarget(targetPosition);
     }
 
-    private void HandleStopMovement()
+    protected void HandleStopMovement()
     {
         StopMovement();
     }
 
-    private void Start()
+    protected void Start()
     {
         _roamPoint = transform.position;
     }
 
-    void Update()
+    protected void Update()
     {
 
         if (_enemyHealth != null && _enemyHealth.isDead) return;
@@ -177,7 +177,7 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
 
     // --- Event Handlers (ถูกเรียกโดย BaseEnemyAI ผ่าน Events) ---
 
-    private void MoveToTarget(Vector3 targetPosition)
+    protected void MoveToTarget(Vector3 targetPosition)
     {
         // *** เพิ่ม Safety Check: ทำงานเมื่อ Agent เปิดอยู่และอยู่บน NavMesh เท่านั้น ***
         if (_agent != null && _agent.isActiveAndEnabled && _agent.isOnNavMesh)
@@ -187,7 +187,7 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         }
     }
 
-    private void StopMovement()
+    protected void StopMovement()
     {
         // *** เพิ่ม Safety Check: ป้องกันบั๊ก "Stop" can only be called on an active agent... ***
         if (_agent != null && _agent.isActiveAndEnabled && _agent.isOnNavMesh)
@@ -204,13 +204,13 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         SetNewRoamPoint(centerPosition);
     }
 
-    private bool IsAtDestination()
+    protected bool IsAtDestination()
     {
         // ตรวจสอบว่าถึงจุดหมายแล้วหรือไม่
         return _agent.remainingDistance <= _agent.stoppingDistance && !_agent.pathPending;
     }
 
-    private void SetNewRoamPoint(Vector3 centerPosition)
+    protected void SetNewRoamPoint(Vector3 centerPosition)
     {
 
 
@@ -227,7 +227,7 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
 
     public void GetKnockedBack(Vector3 direction, float force, float time)
     {
-        Debug.Log($"CanKnockback : {canKnockback}");
+        //Debug.Log($"CanKnockback : {canKnockback}");
 
         if (!canKnockback) return;
 
@@ -238,7 +238,7 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         KnockbackCoroutine = StartCoroutine(ApplyKnockback(direction, force, time));
     }
 
-    private IEnumerator ApplyKnockback(Vector3 direction, float force,float time)
+    protected IEnumerator ApplyKnockback(Vector3 direction, float force,float time)
     {
 
         float finalForce = force * knockbackMultiplier;
@@ -324,7 +324,7 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
     }
 
     // แก้ไข Coroutine ให้รับค่ามาด้วย
-    private IEnumerator ApplySkillDash(Vector3 direction, float speed, float duration, bool isInvincibleDash)
+    protected IEnumerator ApplySkillDash(Vector3 direction, float speed, float duration, bool isInvincibleDash)
     {
         // 1. ปิด NavMeshAgent และเตรียม Rigidbody
         _agent.isStopped = true;
@@ -405,7 +405,7 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         _jumpCoroutine = StartCoroutine(JumpRoutine(targetPosition, jumpHeight, duration));
     }
 
-    private System.Collections.IEnumerator JumpRoutine(Vector3 targetPosition, float jumpHeight, float duration)
+    protected System.Collections.IEnumerator JumpRoutine(Vector3 targetPosition, float jumpHeight, float duration)
     {
         // 1. ปิด Agent และเก็บค่าเริ่มต้น
         if (_agent != null) _agent.enabled = false;
@@ -443,7 +443,7 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
         }
     }
 
-    private void OnDrawGizmosSelected()
+    protected void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(_roamPoint, roamRadius);

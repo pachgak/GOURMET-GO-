@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 public class LatchController : MonoBehaviour
 {
@@ -26,6 +27,8 @@ public class LatchController : MonoBehaviour
 
     // *** เปลี่ยนเป็น float ***
     private float _currentHitCount = 0f;
+
+    public event Action<bool> OnLatchStateChanged;
 
     private void Awake()
     {
@@ -69,6 +72,8 @@ public class LatchController : MonoBehaviour
 
         _isLatched = true;
         _currentHitCount = 0f; // รีเซ็ตเป็น 0f
+
+        OnLatchStateChanged?.Invoke(true);
 
         // 1. ล็อคผู้เล่น
         _playerCombat.isLatched = true;
@@ -124,6 +129,8 @@ public class LatchController : MonoBehaviour
     {
         if (!_isLatched) return;
         _isLatched = false;
+
+        OnLatchStateChanged?.Invoke(false);
 
         if (_playerCombat != null)
         {

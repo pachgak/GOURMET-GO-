@@ -32,6 +32,8 @@ public class BaseEnemyAI : MonoBehaviour
     [field: SerializeField]
     public bool IsStunned { get; protected set; } = false; // ให้ลูกๆ อ่านค่าได้
     protected Coroutine _stunCoroutine;
+    // *** 1. เพิ่ม Event ใหม่ตรงนี้ ***
+    public event Action<bool> OnStunStateChanged;
 
     [SerializeField] protected bool _playerInSightRange;
     [SerializeField] protected bool _playerInAttackRange;
@@ -247,15 +249,21 @@ public class BaseEnemyAI : MonoBehaviour
     protected virtual System.Collections.IEnumerator StunRoutine(float duration)
     {
         IsStunned = true;
-        TriggerStopMovement(); // สั่งหยุดเดิน (จาก Event ที่คุณมีอยู่แล้ว)
+
+        // *** 2. แจ้งเตือนทุกคนว่า "ติดสตันแล้วนะ!" ***
+        OnStunStateChanged?.Invoke(true);
+
+        TriggerStopMovement(); // สั่งหยุดเดิน 
 
         Debug.Log($"<color=cyan>{gameObject.name} is STUNNED for {duration} secs!</color>");
-
-        // TODO: เล่น Animation หรือ Effect สตันตรงนี้ได้เลย (มีผลกับมอนทุกตัวทันที!)
 
         yield return new WaitForSeconds(duration);
 
         IsStunned = false;
+
+        // *** 3. แจ้งเตือนทุกคนว่า "ตื่นจากสตันแล้ว!" ***
+        OnStunStateChanged?.Invoke(false);
+
         Debug.Log($"<color=cyan>{gameObject.name} woke up!</color>");
 
         ChangeState(EnemyState.Chase); // กลับไปไล่ล่า

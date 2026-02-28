@@ -23,6 +23,6 @@ public class AnimationEventRelay : MonoBehaviour
     public void AE_FinishSkill()
     {
         if (combatScript != null) combatScript.FinishSkillAnimation();
-        Debug.Log($"0 AE_FinishSkill()");
+        //Debug.Log($"0 AE_FinishSkill()");
     }
 }
