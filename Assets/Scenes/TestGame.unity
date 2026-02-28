@@ -2187,7 +2187,6 @@ MonoBehaviour:
   - {fileID: 120330053}
   - {fileID: 1800081243}
   disabledOpenUi:
-  - {fileID: 1699368369}
   - {fileID: 576524319}
 --- !u!114 &75555156
 MonoBehaviour:
@@ -4979,6 +4978,8 @@ GameObject:
   m_Component:
   - component: {fileID: 193240401}
   - component: {fileID: 193240402}
+  - component: {fileID: 193240404}
+  - component: {fileID: 193240403}
   m_Layer: 0
   m_Name: GuideCookManager
   m_TagString: Untagged
@@ -5013,7 +5014,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76ab2ace11a65ac41905cb27ec86f317, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cookingPotInventory: {fileID: 11400000, guid: 0342d5362420fbb4883bb58b3dffd60c, type: 2}
   playerInventory: {fileID: 11400000, guid: 6e3a1dbd10692eb448028a9b63b5a082, type: 2}
   allRecipes:
   - {fileID: 11400000, guid: 64dd0f7811df6d2419dcb72a92b27ce6, type: 2}
@@ -5024,6 +5024,39 @@ MonoBehaviour:
   contentPanel: {fileID: 1418686218}
   recipeEntryPrefab: {fileID: 2523126789241639897, guid: 0caf15427c6716248a8a83845687c8aa, type: 3}
   detailPrompt: {fileID: 522825339}
+--- !u!114 &193240403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193240400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 484714a6e891bc8409c3f4f5071060d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isOpenCooking: 0
+  _canInteractExit: 0
+--- !u!114 &193240404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193240400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33fa0d30993f1c548aebca2fe12f7d4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isUiOpening: 0
+  enabledOpenUi:
+  - {fileID: 201634597}
+  - {fileID: 991184435}
+  - {fileID: 120330053}
+  - {fileID: 576524319}
+  disabledOpenUi: []
 --- !u!1 &197808047
 GameObject:
   m_ObjectHideFlags: 0
@@ -47110,7 +47143,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &578722421
 Transform:
   m_ObjectHideFlags: 0
@@ -53278,10 +53311,9 @@ MonoBehaviour:
   - {fileID: 201634597}
   - {fileID: 991184435}
   - {fileID: 120330053}
-  - {fileID: 576524319}
   disabledOpenUi:
-  - {fileID: 1699368369}
   - {fileID: 1800081243}
+  - {fileID: 576524319}
 --- !u!114 &792728399
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -134277,7 +134309,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1011214395
 Transform:
   m_ObjectHideFlags: 0
@@ -136276,7 +136308,7 @@ Transform:
   m_GameObject: {fileID: 1069011870}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -346.8, y: 0, z: 153.1}
+  m_LocalPosition: {x: 0.21, y: 0, z: 1.49}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -136509,6 +136541,12 @@ MonoBehaviour:
     item: {fileID: 11400000, guid: c65bb9e5a6d080943b5764011446d00a, type: 2}
   - quantity: 1
     item: {fileID: 11400000, guid: d237e35bc224d9c4fbf3313760226d43, type: 2}
+  - quantity: 20
+    item: {fileID: 11400000, guid: 40f03d5fb9d1a694ba259a7a64ad4c52, type: 2}
+  - quantity: 20
+    item: {fileID: 11400000, guid: be259cd5abb06764eb541ff5ce409390, type: 2}
+  - quantity: 20
+    item: {fileID: 11400000, guid: 24a742602629d074aa9e841e850d9e5b, type: 2}
   isNotDeletItem: 0
   itemDropPrefab: {fileID: 5090562170970945799, guid: 6b32a4f0d2203a24b81b26541645abbd, type: 3}
   dropClip: {fileID: 0}
@@ -136809,7 +136847,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1069347814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136817,7 +136855,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1069347813}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 33fa0d30993f1c548aebca2fe12f7d4e, type: 3}
   m_Name: 
@@ -136852,7 +136890,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1069347813}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 484714a6e891bc8409c3f4f5071060d2, type: 3}
   m_Name: 
@@ -136866,7 +136904,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1069347813}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d85ea23079a7f634db51797c843e8a1b, type: 3}
   m_Name: 
@@ -136885,7 +136923,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1069347813}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5ce1bd8af722b6f4fb7f77a937c51ade, type: 3}
   m_Name: 
@@ -136902,7 +136940,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1069347813}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5755f8f332528ac4384b2ccd036923fe, type: 3}
   m_Name: 
@@ -136928,7 +136966,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1069347813}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 78af31c40ec95784b8ca460fa8f24b85, type: 3}
   m_Name: 
@@ -177776,7 +177814,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1800081244
 RectTransform:
   m_ObjectHideFlags: 0
@@ -186841,6 +186879,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 901270556791296265, guid: 4df93e08f9dcc1f4a84285dadfb7e5c0, type: 3}
+      propertyPath: waitRoamTime
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 7394732908978849504, guid: 4df93e08f9dcc1f4a84285dadfb7e5c0, type: 3}
       propertyPath: m_Name
       value: Butter fly
@@ -187321,7 +187363,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &3928984011156903422
 GameObject:
   m_ObjectHideFlags: 0
@@ -188240,22 +188282,10 @@ MonoBehaviour:
   OnInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1069347816}
+      - m_Target: {fileID: 193240403}
         m_TargetAssemblyTypeName: CookingManager, Assembly-CSharp
         m_MethodName: ChangeStateUi
         m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 1069347816}
-        m_TargetAssemblyTypeName: CookingManager, Assembly-CSharp
-        m_MethodName: TestEvet
-        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

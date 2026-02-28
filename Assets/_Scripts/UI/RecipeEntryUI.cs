@@ -5,7 +5,6 @@ using TMPro;
 
 public class RecipeEntryUI : MonoBehaviour
 {
-    // ... (References ส่วน Header เหมือนเดิม) ...
     [Header("UI Images")]
     [SerializeField] private Image resultImage;
     [SerializeField] private Image[] ingredientSlots;
@@ -21,10 +20,18 @@ public class RecipeEntryUI : MonoBehaviour
     [SerializeField] private Color sufficientColor = Color.green;
     [SerializeField] private Color insufficientColor = Color.red;
 
-    // *** แก้ไข: เพิ่ม Parameter potInventory เข้ามารับ ***
-    public void Setup(CookingRecipeSO recipe, ItemDetailPromptController promptController, InventorySO playerInventory, InventorySO potInventory)
+    [Header("Action")]
+    [SerializeField] private Button cookButton; // **เพิ่มปุ่ม Cook เข้ามาตรงนี้**
+
+    private CookingRecipeSO currentRecipe;
+    private InventorySO currentPlayerInventory;
+
+    public void Setup(CookingRecipeSO recipe, ItemDetailPromptController promptController, InventorySO playerInventory)
     {
-        // 1. จัดการ Result Image (เหมือนเดิม)
+        currentRecipe = recipe;
+        currentPlayerInventory = playerInventory;
+
+        // 1. จัดการภาพผลลัพธ์
         resultImage.sprite = recipe.resultItem.ItemImage;
         if (resultTrigger != null)
         {
@@ -32,15 +39,16 @@ public class RecipeEntryUI : MonoBehaviour
             resultTrigger.SetPromptController(promptController);
         }
 
-        // 2. จัดการ Ingredient Slots
+        // 2. จัดการวัตถุดิบ
         foreach (var slot in ingredientSlots) slot.gameObject.SetActive(false);
         foreach (var txt in ingredientCountTexts) txt.gameObject.SetActive(false);
+
+        bool canCookThis = true; // ตัวแปรสำหรับเช็คว่าของครบไหม
 
         for (int i = 0; i < recipe.ingredients.Count; i++)
         {
             if (i < ingredientSlots.Length)
             {
-                // ... (ส่วน Image & Trigger เหมือนเดิม) ...
                 ingredientSlots[i].gameObject.SetActive(true);
                 ingredientSlots[i].sprite = recipe.ingredients[i].item.ItemImage;
 
@@ -50,7 +58,6 @@ public class RecipeEntryUI : MonoBehaviour
                     ingredientTriggers[i].SetPromptController(promptController);
                 }
 
-                // --- ส่วนจัดการ Text จำนวน (ที่แก้ไข) ---
                 if (i < ingredientCountTexts.Length && ingredientCountTexts[i] != null)
                 {
                     ingredientCountTexts[i].gameObject.SetActive(true);
@@ -58,28 +65,29 @@ public class RecipeEntryUI : MonoBehaviour
                     ItemSO itemNeeded = recipe.ingredients[i].item;
                     int needQuantity = recipe.ingredients[i].quantity;
 
-                    // 1. นับของในกระเป๋าตัว
+                    // นับของเฉพาะในกระเป๋าคนเล่น
                     int countInBag = GetItemCountInInventory(playerInventory, itemNeeded.ID);
-                    // 2. นับของในหม้อ
-                    int countInPot = GetItemCountInInventory(potInventory, itemNeeded.ID);
+                    ingredientCountTexts[i].text = $"{countInBag}/{needQuantity}";
 
-                    // 3. รวมกัน
-                    int totalHas = countInBag + countInPot;
-
-                    // แสดงผล
-                    ingredientCountTexts[i].text = $"{totalHas}/{needQuantity}";
-
-                    // เช็คเงื่อนไข (ใช้ยอดรวมในการเช็ค)
-                    if (totalHas >= needQuantity)
+                    if (countInBag >= needQuantity)
                     {
                         ingredientCountTexts[i].color = sufficientColor;
                     }
                     else
                     {
                         ingredientCountTexts[i].color = insufficientColor;
+                        canCookThis = false; // ถ้าของชิ้นนี้ไม่พอ ให้จำไว้ว่าคราฟไม่ได้
                     }
                 }
             }
+        }
+
+        // 3. จัดการปุ่ม Cook
+        if (cookButton != null)
+        {
+            cookButton.interactable = canCookThis; // ถ้าของครบ ปุ่มจะกดได้ (ไม่เป็นสีเทา)
+            cookButton.onClick.RemoveAllListeners();
+            cookButton.onClick.AddListener(PerformCook); // ผูกฟังก์ชันคราฟต์
         }
     }
 
@@ -88,7 +96,75 @@ public class RecipeEntryUI : MonoBehaviour
         gameObject.SetActive(isVisible);
     }
 
-    // Helper นับของ
+    private void PerformCook()
+    {
+        if (currentRecipe == null || currentPlayerInventory == null) return;
+
+        // *** เช็คพื้นที่ว่างก่อนเริ่มกระบวนการคราฟต์ ***
+        if (!HasSpaceForCrafting(currentPlayerInventory, currentRecipe))
+        {
+            Debug.LogWarning("กระเป๋าเต็ม! ไม่สามารถคราฟได้ ป้องกันการเสียวัตถุดิบฟรี");
+            // แจ้งเตือนผู้เล่น: ตรงนี้คุณสามารถเปลี่ยนเป็น Popup ของเกมคุณได้เลย
+            return; // หยุดการทำงานทันที ไม่หักของ
+        }
+
+        // 1. วนลูปหักของออกจากกระเป๋าผู้เล่น (ทำเมื่อมั่นใจแล้วว่ามีที่เก็บ)
+        foreach (var ingredient in currentRecipe.ingredients)
+        {
+            RemoveItemFromInventory(currentPlayerInventory, ingredient.item.ID, ingredient.quantity);
+        }
+
+        // 2. เพิ่มอาหารสำเร็จรูปเข้ากระเป๋า
+        currentPlayerInventory.AddItem(currentRecipe.resultItem, 1);
+
+        Debug.Log($"Cooked {currentRecipe.resultItem.ItemName} successfully!");
+    }
+
+    // --- Helper Methods ---
+
+    // ฟังก์ชันใหม่: เช็คว่ากระเป๋ามีที่ว่างรับผลลัพธ์หรือไม่
+    private bool HasSpaceForCrafting(InventorySO inventory, CookingRecipeSO recipe)
+    {
+        // 1. ตรวจสอบว่ามี "ช่องว่างเปล่าๆ" เหลืออยู่บ้างไหม (ง่ายที่สุด)
+        for (int i = 0; i < inventory.Size; i++)
+        {
+            if (inventory.GetItemAt(i).IsEmpty) return true;
+        }
+
+        // 2. กรณีที่กระเป๋าเต็มเปี๊ยะ (ไม่มีช่องว่างเลย)
+        // ต้องตรวจสอบว่าการหักวัตถุดิบครั้งนี้ จะทำให้ช่องไหนสักช่อง "ว่าง" ลงหรือไม่
+        foreach (var ingredient in recipe.ingredients)
+        {
+            int itemID = ingredient.item.ID;
+            int amountNeeded = ingredient.quantity;
+
+            for (int i = 0; i < inventory.Size; i++)
+            {
+                InventoryItem itemInSlot = inventory.GetItemAt(i);
+                if (!itemInSlot.IsEmpty && itemInSlot.item.ID == itemID)
+                {
+                    // ถ้าของในช่องนี้ มีจำนวนน้อยกว่าหรือเท่ากับที่จะถูกใช้
+                    // แปลว่าคราฟต์เสร็จ ช่องนี้จะกลายเป็นช่องว่าง! (มีที่ว่างให้อาหารใหม่ไปแทนที่)
+                    if (itemInSlot.quantity <= amountNeeded)
+                    {
+                        return true;
+                    }
+
+                    amountNeeded -= itemInSlot.quantity;
+                    if (amountNeeded <= 0) break; // หักครบตามจำนวนแล้ว ไม่ต้องเช็คช่องอื่นต่อ
+                }
+            }
+        }
+
+        // 3. (เสริม) ถ้าระบบของคุณอาหารสามารถดรอปซ้อน (Stack) กับที่มีอยู่แล้วได้
+        // คุณต้องเช็คด้วยว่าในกระเป๋ามีอาหารชนิดนี้อยู่ และยังไม่เต็ม Stack หรือไม่ 
+        // *ถ้าของเกมคุณอาหารซ้อนกันไม่ได้ (1 ช่อง 1 จาน) ก็ปล่อยผ่านให้คืนค่า false ได้เลยครับ
+
+        return false;
+    }
+
+    // --- Helper Methods ---
+
     private int GetItemCountInInventory(InventorySO inventory, int itemID)
     {
         int count = 0;
@@ -100,5 +176,28 @@ public class RecipeEntryUI : MonoBehaviour
             }
         }
         return count;
+    }
+
+    // ฟังก์ชันหักของ (ยกมาจากหม้อต้มของเก่าเลย)
+    private void RemoveItemFromInventory(InventorySO inventory, int itemID, int amountToRemove)
+    {
+        for (int i = 0; i < inventory.Size; i++)
+        {
+            InventoryItem itemInSlot = inventory.GetItemAt(i);
+            if (!itemInSlot.IsEmpty && itemInSlot.item.ID == itemID)
+            {
+                if (itemInSlot.quantity >= amountToRemove)
+                {
+                    inventory.RemoveItem(i, amountToRemove);
+                    return; // ลบครบแล้ว จบการทำงาน
+                }
+                else
+                {
+                    int amountInThisSlot = itemInSlot.quantity;
+                    inventory.RemoveItem(i, amountInThisSlot);
+                    amountToRemove -= amountInThisSlot; // ลบไม่พอ ไปหักกองถัดไป
+                }
+            }
+        }
     }
 }
