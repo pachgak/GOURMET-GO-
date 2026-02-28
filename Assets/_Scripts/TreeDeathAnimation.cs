@@ -11,6 +11,7 @@ public class TreeDeathAnimation : MonoBehaviour
     [Header("Animation Settings")]
     public float fallDuration = 1.0f; // เวลาที่ใช้ในการล้ม
     public float destroyDelay = 0.5f; // เวลาหน่วงหลังดรอปของเสร็จก่อนตัวหายไป
+    public float endAngle = -90f; // เวลาหน่วงหลังดรอปของเสร็จก่อนตัวหายไป
 
     private Quaternion initialRotation; // เก็บค่าการหมุนเดิมไว้
 
@@ -74,7 +75,7 @@ public class TreeDeathAnimation : MonoBehaviour
         // ใช้ DOTween หมุนแกน Z ไป -90 องศา (ล้มลง)
         // SetRelative(true) เพื่อให้หมุนเพิ่มจากเดิม หรือจะใช้แบบเจาะจงก็ได้
         // ตรงนี้ผมใช้แบบหมุนไปหาค่า -90 ตรงๆ 
-        Vector3 targetRotation = new Vector3(visualChild.localEulerAngles.x, visualChild.localEulerAngles.y, -90f);
+        Vector3 targetRotation = new Vector3(visualChild.localEulerAngles.x, visualChild.localEulerAngles.y, endAngle);
 
         visualChild.DOLocalRotate(targetRotation, fallDuration)
             .SetEase(Ease.InBack) // Ease.InBack จะทำให้มีการโยกนิดนึงก่อนล้ม ดูมีน้ำหนัก
@@ -91,7 +92,7 @@ public class TreeDeathAnimation : MonoBehaviour
                 {
                     if (_enemyHealth != null)
                     {
-                        _enemyHealth.RetrunToPoor();
+                        //_enemyHealth.RetrunToPoor();
                     }
                 });
             });

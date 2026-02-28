@@ -14,6 +14,32 @@ public class MiniMapEntity : MonoBehaviour
 
     private RectTransform myIcon;
 
+    private void OnEnable()
+    {
+        if (TryGetComponent<EnemyHealth>(out EnemyHealth enemyHealth))
+        {
+            enemyHealth.OnDie += Disable;
+        }
+        if (TryGetComponent<FoodTree>(out FoodTree foodTree))
+        {
+            foodTree.OnPick += Disable;
+        }
+    }
+
+    private void OnDisable()
+    {
+        Disable();
+
+        if (TryGetComponent<EnemyHealth>(out EnemyHealth enemyHealth))
+        {
+            enemyHealth.OnDie -= Disable;
+        }
+        if (TryGetComponent<FoodTree>(out FoodTree foodTree))
+        {
+            foodTree.OnPick -= Disable;
+        }
+    }
+
     void Start()
     {
         if (CornerMapManager.Instance == null) return;
@@ -44,11 +70,6 @@ public class MiniMapEntity : MonoBehaviour
     void UpdatePosition()
     {
         myIcon.anchoredPosition = CornerMapManager.Instance.GetMapPosition(transform.position);
-    }
-
-    private void OnDisable()
-    {
-        Disable();
     }
 
     void OnDestroy()
