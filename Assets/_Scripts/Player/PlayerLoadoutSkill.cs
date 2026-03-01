@@ -1,15 +1,9 @@
-using com.cyborgAssets.inspectorButtonPro;
-using Inventory.Model;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Text;
 using UnityEngine;
-using static PlayerLoadoutSkill;
 using static PlayerLoadoutSkill.LoadoutData;
-using static PlayerSkill;
-using static UnityEditor.Progress;
-using static UnityEditor.Timeline.Actions.MenuPriority;
+
 
 public class PlayerLoadoutSkill : MonoBehaviour
 {

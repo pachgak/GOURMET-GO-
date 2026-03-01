@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using System.Drawing;
-using static UnityEditor.Progress;
 
 public class UILoadoutSkillPage : MonoBehaviour
 {
