@@ -34,9 +34,9 @@ MonoBehaviour:
     skillPrefabs: {fileID: 4911351558283754124, guid: d46754abc4d74ad4fa971580a5914b0d, type: 3}
     skillFar: 0
     skillHight: 0
-    damage: 1
+    damage: 5
     knockbackForce: 10
-    knockbackTime: 0
+    knockbackTime: 0.5
     speed: 0
     haveDash: 0
     dashSpeed: 0
@@ -56,7 +56,7 @@ MonoBehaviour:
     skillPrefabs: {fileID: 4911351558283754124, guid: d46754abc4d74ad4fa971580a5914b0d, type: 3}
     skillFar: 0
     skillHight: 0
-    damage: 2
+    damage: 5
     knockbackForce: 10
     knockbackTime: 0
     speed: 0
@@ -78,7 +78,7 @@ MonoBehaviour:
     skillPrefabs: {fileID: 4911351558283754124, guid: d46754abc4d74ad4fa971580a5914b0d, type: 3}
     skillFar: 0
     skillHight: 0
-    damage: 3
+    damage: 5
     knockbackForce: 10
     knockbackTime: 0
     speed: 0
