@@ -112,34 +112,44 @@ public class PersonHitbox : BaseHitBox
 
     private void OnDrawGizmos()
     {
-        // พยายามดึง BoxCollider มาใช้งาน
-        BoxCollider boxCol = GetComponent<BoxCollider>();
-
-        if (boxCol != null)
+        // 1. เช็คและดึง BoxCollider มาวาด
+        if (TryGetComponent(out BoxCollider boxCol))
         {
-            // ตั้งค่าสี (แดงโปร่งแสง)
             Gizmos.color = new Color(1f, 0f, 0f, 0.5f);
 
-            // คำนวณ Matrix เพื่อให้ Gizmo หมุนและขยับตาม Object
-            // boxCol.center คือตำแหน่ง Offset ภายใน Collider
             Matrix4x4 rotationMatrix = Matrix4x4.TRS(
                 transform.TransformPoint(boxCol.center),
                 transform.rotation,
-                transform.lossyScale // ใช้ lossyScale เพื่อให้ขนาด Gizmo ตรงกับ Scale ของ Object จริงๆ
+                transform.lossyScale
             );
 
             Gizmos.matrix = rotationMatrix;
-
-            // วาดกล่องตามขนาดของ BoxCollider
-            // วาดที่ Vector3.zero เพราะเราเซตตำแหน่งไว้ที่ Matrix แล้ว
             Gizmos.DrawCube(Vector3.zero, boxCol.size);
 
-            // วาดเส้นขอบให้ดูคมชัดขึ้น
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(Vector3.zero, boxCol.size);
 
-            // คืนค่า Matrix กลับเป็นค่าเริ่มต้น
             Gizmos.matrix = Matrix4x4.identity;
+        }
+
+        // 2. เช็คและดึง SphereCollider มาวาด
+        if (TryGetComponent(out SphereCollider sphereCol))
+        {
+            Gizmos.color = new Color(1f, 0f, 0f, 0.5f);
+
+            // หาจุดศูนย์กลางของ Sphere ในพิกัดโลก (World Space)
+            Vector3 worldCenter = transform.TransformPoint(sphereCol.center);
+
+            // คำนวณรัศมีที่แท้จริง
+            float maxScale = Mathf.Max(Mathf.Abs(transform.lossyScale.x), Mathf.Max(Mathf.Abs(transform.lossyScale.y), Mathf.Abs(transform.lossyScale.z)));
+            float actualRadius = sphereCol.radius * maxScale;
+
+            // วาดทรงกลม
+            Gizmos.DrawSphere(worldCenter, actualRadius);
+
+            // วาดเส้นขอบ
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(worldCenter, actualRadius);
         }
     }
 }

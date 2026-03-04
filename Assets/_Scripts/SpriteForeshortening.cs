@@ -6,7 +6,8 @@ public class SpriteForeshortening : MonoBehaviour
     public Camera targetCamera;
     public Vector3 originalScale = Vector3.one;
 
-    private Transform foreshorteningParent;
+    [Header("Check ForeshorteningParent")]
+    [SerializeField] private Transform foreshorteningParent;
 
     void Start()
     {
@@ -31,20 +32,27 @@ public class SpriteForeshortening : MonoBehaviour
     {
         if (targetCamera == null) targetCamera = Camera.main;
 
-        // --- 1. เก็บตำแหน่ง Index (ลำดับ Child) เดิมของตัว Graphics เอาไว้ก่อน ---
-        int originalSiblingIndex = this.transform.GetSiblingIndex();
-
-        GameObject parentObj = new GameObject(gameObject.name + "_ForeshorteningParent");
+        // 1. สร้าง GameObject เปล่าขึ้นมาใหม่
+        GameObject parentObj = new GameObject("_ForeshorteningParent");
         foreshorteningParent = parentObj.transform;
 
-        foreshorteningParent.SetParent(this.transform.parent, false);
-        foreshorteningParent.localPosition = this.transform.localPosition;
+        // 2. เก็บรายชื่อ Child เดิมทั้งหมดของ GraphicsScal เอาไว้ก่อนทำการย้าย
+        int childCount = this.transform.childCount;
+        Transform[] originalChildren = new Transform[childCount];
+        for (int i = 0; i < childCount; i++)
+        {
+            originalChildren[i] = this.transform.GetChild(i);
+        }
 
-        // --- 2. สั่งให้ Parent ใหม่ ไปแทรกอยู่ใน Index เดิมที่เราเก็บไว้ ---
-        foreshorteningParent.SetSiblingIndex(originalSiblingIndex);
+        // 3. เอา Parent ใหม่ ไปเสียบเป็นลูกของ GraphicsScal (this.transform)
+        foreshorteningParent.SetParent(this.transform, false);
+        foreshorteningParent.localPosition = Vector3.zero;
 
-        this.transform.SetParent(foreshorteningParent, false);
-        this.transform.localPosition = Vector3.zero;
+        // 4. ย้าย Child เดิมทั้งหมด (พวก Sprite1, Sprite2) ไปอยู่ใต้กล่อง Parent ใหม่
+        foreach (Transform child in originalChildren)
+        {
+            child.SetParent(foreshorteningParent, false);
+        }
     }
 
     public void ApplyForeshortening()
@@ -52,6 +60,7 @@ public class SpriteForeshortening : MonoBehaviour
         if (targetCamera == null || foreshorteningParent == null) return;
 
         float cameraAngleX = targetCamera.transform.eulerAngles.x;
+        //Debug.Log($"cameraAngleX : {cameraAngleX}");
 
         if (cameraAngleX >= 89f && cameraAngleX <= 91f) cameraAngleX = 89f;
 
