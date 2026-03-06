@@ -44,4 +44,10 @@ public class Debug_ObjectTeleporter : MonoBehaviour
             Debug.LogWarning("กรุณาใส่ Target Object ก่อนคลิกใช้งานคำสั่งนี้นะครับ");
         }
     }
+
+    private void Start()
+    {
+        this.gameObject.SetActive(false);
+    }
+
 }
