@@ -18,7 +18,7 @@ public class SnapToGrid : MonoBehaviour
         // 1. ตรวจสอบว่ามี Grid หรือยัง ถ้าไม่มีให้หาใน Scene
         if (targetGrid == null)
         {
-            targetGrid = FindAnyObjectByType<Grid>();
+            //targetGrid = FindAnyObjectByType<Grid>();
 
             if (targetGrid == null)
             {
