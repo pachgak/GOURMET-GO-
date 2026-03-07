@@ -446,7 +446,7 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
     protected void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(_roamPoint, roamRadius);
+        if(_roamPoint != Vector3.zero) Gizmos.DrawWireSphere(_roamPoint, roamRadius);
     }
 
     [ProButton] 
