@@ -1,42 +1,48 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UI_Ingredient : MonoBehaviour
 {
     [Header("Physics Settings")]
-    public float gravity = 2500f; // แรงโน้มถ่วงจำลอง ดึงแกน Y ลง (ยิ่งเยอะยิ่งตกเร็ว)
-    public float bottomYLimit = -800f; // ตำแหน่งขอบจอด้านล่าง (ถ้าต่ำกว่านี้คือตกจอ)
+    public float bottomYLimit = -800f;
 
-    private RectTransform rectTransform;
-    private Vector2 currentVelocity;
+    private float _gravity = 2500f;
+    private RectTransform _rectTransform;
+    private Vector2 _currentVelocity;
+    private Image _image;
 
-    // Property ให้ Manager เรียกดู RectTransform ได้ง่ายๆ
-    public RectTransform Rect => rectTransform;
+    // Property ให้ Manager หรือ Script อื่นๆ เข้าถึงได้
+    public RectTransform Rect => _rectTransform;
+    public Image IngredientImage => _image; // เปิดให้ดึง Image ไปใช้ได้
 
-    // ประกาศ Action ที่ส่งค่า UI_Ingredient ออกไปด้วย
     public Action<UI_Ingredient> OnMissTarget;
+
+    // Action ใหม่สำหรับตอนโดนฟัน
+    public Action<UI_Ingredient> OnHitDestroySelf;
 
     void Awake()
     {
-        rectTransform = GetComponent<RectTransform>();
+        _rectTransform = GetComponent<RectTransform>();
+        _image = GetComponent<Image>();
     }
 
-    // ฟังก์ชันรับค่าความเร็วต้น จาก Manager ตอนโดนเสก
+    public void SetGravity(float setGravity)
+    {
+        _gravity = setGravity;
+    }
+
     public void SetVelocity(Vector2 startVelocity)
     {
-        currentVelocity = startVelocity;
+        _currentVelocity = startVelocity;
     }
 
     void Update()
     {
-        // 1. จำลองแรงโน้มถ่วง (หักลบความเร็วแกน Y ลงเรื่อยๆ ตามเวลา)
-        currentVelocity.y -= gravity * Time.deltaTime;
+        _currentVelocity.y -= _gravity * Time.deltaTime;
+        _rectTransform.anchoredPosition += _currentVelocity * Time.deltaTime;
 
-        // 2. เคลื่อนที่แบบโปรเจกไทล์ (อัปเดตตำแหน่งจากความเร็ว)
-        rectTransform.anchoredPosition += currentVelocity * Time.deltaTime;
-
-        // 3. เช็คว่าหลุดออกนอก Canvas ด้านล่างหรือยัง
-        if (rectTransform.anchoredPosition.y < bottomYLimit)
+        if (_rectTransform.anchoredPosition.y < bottomYLimit)
         {
             MissTarget();
         }
@@ -45,14 +51,15 @@ public class UI_Ingredient : MonoBehaviour
     void MissTarget()
     {
         OnMissTarget?.Invoke(this);
-
-        // ลบตัวเองทิ้ง
         Destroy(gameObject);
     }
 
-    public void DestroySelf()
+    public void HitDestroySelf()
     {
-        // ตรงนี้คุณสามารถใส่โค้ดเล่น Effect ระเบิด หรือ Animation แตกกระจายได้ก่อนลบตัวเอง
+        // ตะโกนบอกสคริปต์อื่น (เช่นตัว Splitter) ให้เสก Effect ซีกซ้ายขวา
+        OnHitDestroySelf?.Invoke(this);
+
+        // ทำลายตัวเอง
         Destroy(gameObject);
     }
 }
