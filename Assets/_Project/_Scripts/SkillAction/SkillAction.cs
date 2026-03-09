@@ -562,7 +562,9 @@ public class SplitSelfAction : SkillAction
     [Header("Split Settings")]
     public List<GameObject> minionPrefabs;
     public float spawnRadius = 2.0f;
-    public float timeSpawnDelay = 0.2f; // เปลี่ยนชื่อตัวสะกดนิดนึงให้ถูกหลัก
+    public float timeSpawnDelay = 0.2f;
+
+    [Tooltip("ปิดเป็น False สำหรับบอสที่มี SquadManager (แม่ต้องไม่ตาย)")]
     public bool killUserAfterSplit = true;
     public GameObject spawnVFX;
 
@@ -572,23 +574,19 @@ public class SplitSelfAction : SkillAction
 
         Vector3 centerPos = user.transform.position;
 
-        // 1. เล่น Effect (ถ้ามี)
+        // 1. เล่น Effect ตอนเริ่มแยกร่าง
         if (spawnVFX != null)
         {
             ObjectPoolingManager.Instance.Spawn(spawnVFX, centerPos);
         }
 
-        // 2. สั่งยืมตัว ObjectPoolingManager (ซึ่งไม่ถูก Destroy แน่นอน) ในการรัน Coroutine เสกมอน
+        // 2. ฝาก Manager รัน Coroutine (ส่ง user ไปด้วยเพื่อเอาไปหา SquadManager)
         if (ObjectPoolingManager.Instance != null)
         {
-            ObjectPoolingManager.Instance.StartCoroutine(SpawnMinion(centerPos, target));
-        }
-        else
-        {
-            Debug.LogError("หา ObjectPoolingManager.Instance ไม่เจอ สั่งแยกร่างไม่ได้!");
+            ObjectPoolingManager.Instance.StartCoroutine(SpawnMinion(centerPos, target, user));
         }
 
-        // 3. จัดการฆ่าตัวต้น (User) ได้อย่างสบายใจ! เพราะ Coroutine ไม่ได้ฝากไว้ที่ตัวมันแล้ว
+        // 3. ฆ่าร่างต้น (ถ้าเป็นโคลนธรรมดา)
         if (killUserAfterSplit)
         {
             if (user.TryGetComponent(out EnemyHealth health))
@@ -603,13 +601,13 @@ public class SplitSelfAction : SkillAction
         }
     }
 
-    // แก้ไข: ไม่ต้องรับ GameObject user แล้ว ให้รับแค่ Vector3 ตำแหน่งมาแทน 
-    // เพราะถ้าส่ง user มา แล้ว user ถูกปิดไป การอ้างอิงตำแหน่งจะพัง
-    private IEnumerator SpawnMinion(Vector3 centerPos, GameObject target)
+    private IEnumerator SpawnMinion(Vector3 centerPos, GameObject target, GameObject user)
     {
         yield return new WaitForSeconds(timeSpawnDelay);
 
-        // 1. วนลูปสร้างมอนสเตอร์แต่ละตัว
+        List<GameObject> spawnedClones = new List<GameObject>();
+
+        // 1. วนลูปเสกมอนสเตอร์ทั้ง 3 ตัว
         for (int i = 0; i < minionPrefabs.Count; i++)
         {
             if (minionPrefabs[i] == null) continue;
@@ -618,8 +616,8 @@ public class SplitSelfAction : SkillAction
             Vector3 offset = Quaternion.Euler(0, angle, 0) * Vector3.forward * spawnRadius;
             Vector3 spawnPos = centerPos + offset;
 
-            // Spawn มอนสเตอร์
             GameObject minion = ObjectPoolingManager.Instance.Spawn(minionPrefabs[i], spawnPos);
+            spawnedClones.Add(minion);
 
             if (target != null)
             {
@@ -631,11 +629,17 @@ public class SplitSelfAction : SkillAction
                 ai.TriggerChangeState(BaseEnemyAI.EnemyState.Chase);
             }
 
-            // ถ้ามี Effect ตอนลูกเกิด ก็เล่นที่นี่
             if (spawnVFX != null)
             {
                 ObjectPoolingManager.Instance.Spawn(spawnVFX, minion.transform.position);
             }
+        }
+
+        // 2. *** ส่งมอบโคลนให้ Manager ดูแล ***
+        // เช็คว่าตัวแม่ (Container) มีสคริปต์ ShamakiriSquadManager แปะอยู่ไหม
+        if (user != null && user.TryGetComponent(out ShamakiriSquadController manager))
+        {
+            manager.InitializeSquad(spawnedClones, target);
         }
     }
 }
