@@ -22,6 +22,9 @@ public class MiniGameFManager : MonoBehaviour
     public float minSpawnRotationOffset = 90f;  // หมุนเบี้ยวตอนเกิดน้อยสุด (เช่น 90 องศา)
     public float maxSpawnRotationOffset = 180f; // หมุนเบี้ยวตอนเกิดมากสุด (เช่น 180 องศา)
 
+    [Header("Rhythm System")]
+    public float responseDelay = 2.0f; // เวลาพักก่อนเริ่มเทิร์นของผู้เล่น
+
     [Header("UI References")]
     public RectTransform hitCenter;
     public UI_Ingredient ingredientPrefab;
@@ -38,12 +41,40 @@ public class MiniGameFManager : MonoBehaviour
     public Action<HitQuality, int> OnHitEvaluated;
     public Action<int> OnIngredientDropped;
     public Action<int> OnScoreUpdated;
+    public Action OnPlaySoundRhythm;
+    public Action OnPlaySoundHit;
+    public Action OnPlaySoundSlat;
 
+
+    public List<RhythmPattern> gamePatterns = new List<RhythmPattern>(); // จัด Pattern ผ่าน Inspector
+
+    private Coroutine currentPatternCoroutine;
+    private Coroutine currentAudioSequenceCoroutine;
+    private Coroutine currentSpawnSequenceCoroutine;
+
+    private int _currentPatternIndex;
     public enum HitQuality
     {
         Perfect,
         Good,
         Bad // ขอใช้คำว่า Bad แทน Miss เพื่อไม่ให้สับสนกับตอนที่ปล่อยของตกจอโดยไม่ได้ฟันครับ
+    }
+
+    [System.Serializable]
+    public class RhythmPattern
+    {
+        [Tooltip("เวลาต่อ 1 ตัวอักษร (เช่น 0.5 วินาที)")]
+        public float stepDuration = 0.5f;
+
+        [Tooltip("แพทเทิร์นจังหวะ เช่น 101011 (1=ฟัน, 0=เว้น)")]
+        public string notes;
+
+        // เพิ่ม Constructor เข้าไป
+        public RhythmPattern(float s, string n)
+        {
+            stepDuration = s;
+            notes = n;
+        }
     }
 
     void Awake()
@@ -58,6 +89,12 @@ public class MiniGameFManager : MonoBehaviour
 
     void Update()
     {
+        // กดปุ่ม P เพื่อเริ่มเล่น Pattern ที่ 0
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            PlayPattern(_currentPatternIndex);
+        }
+
         if (isAutoHit) AutoHit();
 
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
@@ -73,7 +110,7 @@ public class MiniGameFManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.S))
         {
-            AddIngredient();
+            PlayPattern();
         }
     }
 
@@ -161,6 +198,8 @@ public class MiniGameFManager : MonoBehaviour
 
     void CheckHit()
     {
+        OnPlaySoundSlat?.Invoke();
+
         for (int i = activeIngredients.Count - 1; i >= 0; i--)
         {
             UI_Ingredient ingredient = activeIngredients[i];
@@ -206,6 +245,8 @@ public class MiniGameFManager : MonoBehaviour
 
                 // ส่งค่าสัดส่วนซีกซ้ายไปให้ฟังก์ชัน
                 ingredient.HitDestroySelf(leftFill);
+
+                OnPlaySoundHit?.Invoke();
 
                 return;
             }
@@ -271,6 +312,101 @@ public class MiniGameFManager : MonoBehaviour
         currentScore += score;
         OnScoreUpdated?.Invoke(currentScore);
     }
+
+
+
+    // --- ฟังก์ชันสำหรับเริ่มเล่น Pattern ---
+    public void PlayPattern(int patternIndex)
+    {
+        if (patternIndex >= 0 && patternIndex < gamePatterns.Count)
+        {
+            // ถ้ามี Pattern อื่นเล่นอยู่ให้หยุดก่อน
+            if (currentPatternCoroutine != null) StopCoroutine(currentPatternCoroutine);
+            if (currentAudioSequenceCoroutine != null) StopCoroutine(currentAudioSequenceCoroutine);
+            if (currentSpawnSequenceCoroutine != null) StopCoroutine(currentSpawnSequenceCoroutine);
+
+            // เริ่มเล่น Pattern ใหม่
+            currentPatternCoroutine = StartCoroutine(PlayPatternRoutine(gamePatterns[patternIndex]));
+
+            _currentPatternIndex = (_currentPatternIndex + 1) % gamePatterns.Count;
+        }
+    }
+
+    public void PlayPattern()
+    {
+
+        // ถ้ามี Pattern อื่นเล่นอยู่ให้หยุดก่อน
+        if (currentPatternCoroutine != null) StopCoroutine(currentPatternCoroutine);
+        if (currentAudioSequenceCoroutine != null) StopCoroutine(currentAudioSequenceCoroutine);
+        if (currentSpawnSequenceCoroutine != null) StopCoroutine(currentSpawnSequenceCoroutine);
+
+        RhythmPattern pattern = new RhythmPattern(0.2f, "1");
+
+        // เริ่มเล่น Pattern ใหม่
+        currentPatternCoroutine = StartCoroutine(PlayPatternRoutine(pattern));
+    }
+
+
+    // --- ฟังก์ชันหลักที่กดแล้วเรียกทำงาน ---
+    private System.Collections.IEnumerator PlayPatternRoutine(RhythmPattern pattern)
+    {
+        // 1. คำนวณความยาวของเสียงทั้งหมด (เวลาฟัง)
+        float listenDuration = pattern.notes.Length * pattern.stepDuration;
+
+        // 2. คำนวณเวลาเป้าหมายที่ชิ้นแรกต้องถึงกลางจอ
+        float firstHitTime = listenDuration + responseDelay;
+
+        // 3. คำนวณเวลาที่ต้องเริ่ม "เสก" ชิ้นแรก
+        float firstSpawnTime = firstHitTime - timeToReachTarget;
+
+        // เช็คเงื่อนไขตามที่คุณบอกเป๊ะๆ
+        if (firstSpawnTime < 0)
+        {
+            // กรณีเวลาติดลบ: แปลว่าต้องเสกก่อนที่เสียงจะเริ่ม
+            currentAudioSequenceCoroutine = StartCoroutine(AudioSequence(pattern)); // ค่อยเริ่มเล่นเสียง
+            currentSpawnSequenceCoroutine = StartCoroutine(SpawnSequence(pattern)); // เริ่มเสกเลย
+            //yield return new WaitForSeconds(Mathf.Abs(firstSpawnTime)); // รอให้เวลาติดลบผ่านไป
+        }
+        else
+        {
+            // กรณีปกติ: เสียงเริ่มก่อน
+            currentAudioSequenceCoroutine = StartCoroutine(AudioSequence(pattern)); // เริ่มเสียงเลย
+            yield return new WaitForSeconds(firstSpawnTime); // รอจังหวะ Timing
+            currentAudioSequenceCoroutine = StartCoroutine(SpawnSequence(pattern)); // ค่อยเริ่มเสก
+        }
+    }
+
+    // --- Coroutine สำหรับเล่นเสียงอย่างเดียว ---
+    private System.Collections.IEnumerator AudioSequence(RhythmPattern pattern)
+    {
+        for (int i = 0; i < pattern.notes.Length; i++)
+        {
+            if (pattern.notes[i] == '1')
+            {
+                // ตะโกนบอกให้ SoundController เล่นเสียง!
+                OnPlaySoundRhythm?.Invoke();
+            }
+
+            // รอจนกว่าจะถึงคิวตัวอักษรต่อไป
+            yield return new WaitForSeconds(pattern.stepDuration);
+        }
+    }
+
+    // --- Coroutine สำหรับโยนของอย่างเดียว ---
+    private System.Collections.IEnumerator SpawnSequence(RhythmPattern pattern)
+    {
+        for (int i = 0; i < pattern.notes.Length; i++)
+        {
+            if (pattern.notes[i] == '1')
+            {
+                AddIngredient(); // โยนวัตถุดิบ
+            }
+
+            // รอจนกว่าจะถึงคิวตัวอักษรต่อไป (ระยะห่างเท่ากับเสียงเป๊ะๆ)
+            yield return new WaitForSeconds(pattern.stepDuration);
+        }
+    }
+
     private void OnDrawGizmos()
     {
         // 1. วาดวงกลมแสดงระยะฟัน (Hit Radius) ที่ตรงกลางเป้าหมาย
