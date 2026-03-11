@@ -39,48 +39,43 @@ public class UI_IngredientSplitter : MonoBehaviour
         }
     }
 
-    private void SpawnHalves(UI_Ingredient targetIngredient)
+    private void SpawnHalves(UI_Ingredient targetIngredient, float rightFillAmount)
     {
-        // ดึงข้อมูลภาพและตำแหน่งมาจากตัวที่ส่งมา
         Sprite currentSprite = targetIngredient.IngredientImage.sprite;
         RectTransform targetRect = targetIngredient.Rect;
-
-        // ดึงลำดับ (Sibling Index) ของวัตถุดิบตัวเต็มใน Parent
         int targetIndex = targetRect.GetSiblingIndex();
+
+        // คำนวณสัดส่วนของซีกขวา (ส่วนที่เหลือจาก 100% หรือ 1.0f)
+        float leftFillAmount = 1f - rightFillAmount;
 
         // --- 1. สร้างซีกซ้าย ---
         GameObject leftHalf = Instantiate(halfPrefab.gameObject, targetRect.parent);
         RectTransform leftRect = leftHalf.GetComponent<RectTransform>();
         leftRect.anchoredPosition = targetRect.anchoredPosition;
-
-        // บังคับแทรกให้อยู่ในลำดับเดียวกับวัตถุดิบตัวแม่
         leftRect.SetSiblingIndex(targetIndex);
 
-        // สุ่มค่าจากตัวแปรที่เราตั้งไว้ใน Inspector
         Vector2 leftVelocity = new Vector2(
             UnityEngine.Random.Range(leftVelocityMin.x, leftVelocityMax.x),
             UnityEngine.Random.Range(leftVelocityMin.y, leftVelocityMax.y)
         );
         float leftRotation = UnityEngine.Random.Range(leftRotationMin, leftRotationMax);
 
-        leftHalf.GetComponent<UI_HalfIngredient>().Setup(currentSprite, 0, leftVelocity, leftRotation);
+        // ส่ง leftFillAmount เข้าไปตอน Setup
+        leftHalf.GetComponent<UI_HalfIngredient>().Setup(currentSprite, 0, leftVelocity, leftRotation, leftFillAmount);
 
         // --- 2. สร้างซีกขวา ---
         GameObject rightHalf = Instantiate(halfPrefab.gameObject, targetRect.parent);
         RectTransform rightRect = rightHalf.GetComponent<RectTransform>();
         rightRect.anchoredPosition = targetRect.anchoredPosition;
-
-        // บังคับแทรกให้อยู่ในลำดับเดียวกับวัตถุดิบตัวแม่เช่นกัน
-        // (แทรกทับกันไปเลย เพราะเดี๋ยวตัวแม่ก็จะถูก Destroy ทิ้งในเสี้ยววินาทีต่อมาแล้ว)
         rightRect.SetSiblingIndex(targetIndex);
 
-        // สุ่มค่าจากตัวแปรที่เราตั้งไว้ใน Inspector
         Vector2 rightVelocity = new Vector2(
             UnityEngine.Random.Range(rightVelocityMin.x, rightVelocityMax.x),
             UnityEngine.Random.Range(rightVelocityMin.y, rightVelocityMax.y)
         );
         float rightRotation = UnityEngine.Random.Range(rightRotationMin, rightRotationMax);
 
-        rightHalf.GetComponent<UI_HalfIngredient>().Setup(currentSprite, 1, rightVelocity, rightRotation);
+        // ส่ง rightFillAmount เข้าไปตอน Setup
+        rightHalf.GetComponent<UI_HalfIngredient>().Setup(currentSprite, 1, rightVelocity, rightRotation, rightFillAmount);
     }
 }

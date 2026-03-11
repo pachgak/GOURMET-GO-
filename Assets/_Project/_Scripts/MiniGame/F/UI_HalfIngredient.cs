@@ -15,15 +15,16 @@ public class UI_HalfIngredient : MonoBehaviour
     }
 
     // ฟังก์ชันนี้ให้ UI_Ingredient ตัวแม่ เป็นคนเรียกเพื่อตั้งค่า
-    public void Setup(Sprite sprite, int fillOrigin, Vector2 startVelocity, float rotSpeed)
+    public void Setup(Sprite sprite, int fillOrigin, Vector2 startVelocity, float rotSpeed, float targetFillAmount)
     {
-        // ดึงคอมโพเนนต์ Image มาตั้งค่าให้กลายเป็นครึ่งซีก
         Image img = GetComponent<Image>();
         img.sprite = sprite;
         img.type = Image.Type.Filled;
         img.fillMethod = Image.FillMethod.Horizontal;
-        img.fillOrigin = fillOrigin; // 0 = Left (ซีกซ้าย), 1 = Right (ซีกขวา)
-        img.fillAmount = 0.5f;
+        img.fillOrigin = fillOrigin;
+
+        // ให้มันตัดภาพตามสัดส่วนที่ส่งมาเป๊ะๆ!
+        img.fillAmount = targetFillAmount;
 
         velocity = startVelocity;
         rotateSpeed = rotSpeed;
