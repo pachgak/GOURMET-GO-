@@ -2,8 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 using Random = UnityEngine.Random;
+using UnityEngine.UI;
 
-[RequireComponent(typeof(SlashEffectController))]
 public class MiniGameFManager : MonoBehaviour
 {
     public static MiniGameFManager Instance;
@@ -17,13 +17,18 @@ public class MiniGameFManager : MonoBehaviour
     public int maxScore = 100;
     public List<Sprite> ingredientSprites = new List<Sprite>();
 
+    [Header("Game Loop Settings")]
+    public bool isPlaying = false; // สถานะว่าเกมรันอยู่ไหม
+    public float delayBetweenPatterns = 2.0f; // เวลาพักก่อนเริ่มสุ่ม Pattern ถัดไป
+
+    [Header("Rhythm System")]
+    public float responseDelay = 2.0f; // เวลาพักก่อนเริ่มเทิร์นของผู้เล่น
+    public List<RhythmPattern> gamePatterns = new List<RhythmPattern>(); // จัด Pattern ผ่าน Inspector
+
     // --- เพิ่มการตั้งค่าองศาการโยน ---
     [Header("Throw Rotation Settings")]
     public float minSpawnRotationOffset = 90f;  // หมุนเบี้ยวตอนเกิดน้อยสุด (เช่น 90 องศา)
     public float maxSpawnRotationOffset = 180f; // หมุนเบี้ยวตอนเกิดมากสุด (เช่น 180 องศา)
-
-    [Header("Rhythm System")]
-    public float responseDelay = 2.0f; // เวลาพักก่อนเริ่มเทิร์นของผู้เล่น
 
     [Header("UI References")]
     public RectTransform hitCenter;
@@ -35,22 +40,24 @@ public class MiniGameFManager : MonoBehaviour
     [Header("Debug")]
     public bool isAutoHit = false;
 
+    [Header("System")]
     private List<UI_Ingredient> activeIngredients = new List<UI_Ingredient>();
-    private SlashEffectController _slashEffect;
 
+    [Header("Action Event")]
     public Action<HitQuality, int> OnHitEvaluated;
     public Action<int> OnIngredientDropped;
     public Action<int> OnScoreUpdated;
     public Action OnPlaySoundRhythm;
     public Action OnPlaySoundHit;
     public Action OnPlaySoundSlat;
+    public Action OnGameFinished; // ตะโกนบอก UI เมื่อคะแนนถึง Max Score
+    public Action OnSlashTriggered; // 3. เพิ่ม Action สำหรับบอกว่ามีการกดฟัน (หรือ AutoHit ฟัน)
 
-
-    public List<RhythmPattern> gamePatterns = new List<RhythmPattern>(); // จัด Pattern ผ่าน Inspector
-
+    [Header("Coroutine")]
     private Coroutine currentPatternCoroutine;
     private Coroutine currentAudioSequenceCoroutine;
     private Coroutine currentSpawnSequenceCoroutine;
+    private Coroutine gameLoopCoroutine; // เก็บตัวลูปเกมไว้ เพื่อสั่งหยุดได้
 
     private int _currentPatternIndex;
     public enum HitQuality
@@ -81,9 +88,6 @@ public class MiniGameFManager : MonoBehaviour
     {
         Instance = this;
 
-        // ดึงคอมโพเนนต์ที่อยู่บน GameObject เดียวกันมาเก็บไว้ใช้งาน
-        _slashEffect = GetComponent<SlashEffectController>();
-
         AddScore(0);
     }
 
@@ -99,18 +103,22 @@ public class MiniGameFManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
         {
+            if (!isPlaying) return;
             // สั่งให้สคริปต์เอฟเฟคทำงาน
-            if (_slashEffect != null)
-            {
-                _slashEffect.PlaySlashEffect();
-            }
+            // 5. เปลี่ยนจากการเรียกสคริปต์ตรงๆ เป็นการตะโกนเรียก Event
+            OnSlashTriggered?.Invoke();
 
             CheckHit();
         }
 
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.E))
         {
             PlayPattern();
+        }
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            StartGame();
         }
     }
 
@@ -157,6 +165,23 @@ public class MiniGameFManager : MonoBehaviour
 
         ingredient.OnMissTarget += HeadleIngredientMiss;
         activeIngredients.Add(ingredient);
+    }
+
+    // ฟังก์ชันให้วัตถุดิบเรียกใช้ เวลาตัวมันตกออกนอกจอ
+    public void HeadleIngredientMiss(UI_Ingredient ingredient)
+    {
+        if (activeIngredients.Contains(ingredient))
+        {
+            activeIngredients.Remove(ingredient);
+
+            // หักคะแนนตอนตกจอ (ถ้าต้องการ)
+            int missScore = -1; // ฟันโดน แต่โดนขอบๆ เลยติดลบ
+
+            AddScore(missScore);
+
+            // ตะโกนบอกให้ UI รู้ว่ามีของตกจอแล้ว!
+            OnIngredientDropped?.Invoke(missScore);
+        }
     }
 
     //void CheckHit()
@@ -253,23 +278,6 @@ public class MiniGameFManager : MonoBehaviour
         }
     }
 
-    // ฟังก์ชันให้วัตถุดิบเรียกใช้ เวลาตัวมันตกออกนอกจอ
-    public void HeadleIngredientMiss(UI_Ingredient ingredient)
-    {
-        if (activeIngredients.Contains(ingredient))
-        {
-            activeIngredients.Remove(ingredient);
-
-            // หักคะแนนตอนตกจอ (ถ้าต้องการ)
-            int missScore = -1; // ฟันโดน แต่โดนขอบๆ เลยติดลบ
-
-            AddScore(missScore);
-
-            // ตะโกนบอกให้ UI รู้ว่ามีของตกจอแล้ว!
-            OnIngredientDropped?.Invoke(missScore);
-        }
-    }
-
     void AutoHit()
     {
         for (int i = activeIngredients.Count - 1; i >= 0; i--)
@@ -281,26 +289,7 @@ public class MiniGameFManager : MonoBehaviour
 
             if (distance <= hitRadius)
             {
-                currentScore += 1;
-
-                // --- เพิ่มการคำนวณระยะห่างเฉพาะแกน X ---
-                float distanceX = ingredient.Rect.anchoredPosition.x - hitCenter.anchoredPosition.x;
-
-                // แปลงค่าระยะห่างให้อยู่ในช่วง -1 ถึง 1 (Clamp ไว้กันเหนียวเผื่อบั๊กทะลุขอบ)
-                float normalizedDistX = Mathf.Clamp(distanceX / hitRadius, -1f, 1f);
-
-                // สูตรคำนวณ: ค่าเริ่มต้น 0.5 + (ค่าที่แปลงแล้ว * 0.5)
-                // ถ้า distanceX = 0 -> 0.5 + 0 = 0.5
-                // ถ้า distanceX ติดลบ (ฟันเร็วไป/อยู่ฝั่งซ้าย) ซีกซ้ายจะน้อยกว่า 0.5
-                // ถ้า distanceX เป็นบวก (ฟันช้าไป/อยู่ฝั่งขวา) ซีกซ้ายจะมากกว่า 0.5
-                float rightFill = 0.5f + (normalizedDistX * 0.5f);
-
-                activeIngredients.RemoveAt(i);
-
-                // ส่งค่าสัดส่วนซีกซ้ายไปให้ฟังก์ชัน
-                ingredient.HitDestroySelf(rightFill);
-
-                if (_slashEffect != null) _slashEffect.PlaySlashEffect();
+                CheckHit();
 
                 return;
             }
@@ -310,9 +299,22 @@ public class MiniGameFManager : MonoBehaviour
     private void AddScore(int score)
     {
         currentScore += score;
+        if (currentScore < 0) currentScore = 0;
+
         OnScoreUpdated?.Invoke(currentScore);
+
+        //// เช็คว่าถ้าคะแนนถึงเป้า และเกมยังรันอยู่ ให้สั่งจบเกม
+        //if (isPlaying && currentScore >= maxScore)
+        //{
+        //    EndGame();
+        //}
     }
 
+    public void SetUp(int Max,List<Sprite> sprites)
+    {
+        maxScore = Max;
+        ingredientSprites = sprites;
+    }
 
 
     // --- ฟังก์ชันสำหรับเริ่มเล่น Pattern ---
@@ -334,7 +336,6 @@ public class MiniGameFManager : MonoBehaviour
 
     public void PlayPattern()
     {
-
         // ถ้ามี Pattern อื่นเล่นอยู่ให้หยุดก่อน
         if (currentPatternCoroutine != null) StopCoroutine(currentPatternCoroutine);
         if (currentAudioSequenceCoroutine != null) StopCoroutine(currentAudioSequenceCoroutine);
@@ -404,6 +405,81 @@ public class MiniGameFManager : MonoBehaviour
 
             // รอจนกว่าจะถึงคิวตัวอักษรต่อไป (ระยะห่างเท่ากับเสียงเป๊ะๆ)
             yield return new WaitForSeconds(pattern.stepDuration);
+        }
+    }
+
+    // --- ระบบ Game Loop ---
+
+    public void StartGame()
+    {
+        if (isPlaying) return; // ถ้าเล่นอยู่แล้วไม่ต้องกดซ้ำ
+
+        isPlaying = true;
+        currentScore = 0;
+        AddScore(0); // รีเซ็ตคะแนนและบอก UI
+
+        // เริ่มลูปเกม
+        gameLoopCoroutine = StartCoroutine(GameLoopRoutine());
+    }
+
+    public void EndGame()
+    {
+        isPlaying = false;
+
+        // หยุด Coroutine ทั้งหมดที่กำลังรันอยู่
+        if (gameLoopCoroutine != null) StopCoroutine(gameLoopCoroutine);
+        if (currentPatternCoroutine != null) StopCoroutine(currentPatternCoroutine);
+        if (currentAudioSequenceCoroutine != null) StopCoroutine(currentAudioSequenceCoroutine);
+        if (currentSpawnSequenceCoroutine != null) StopCoroutine(currentSpawnSequenceCoroutine);
+
+        // ตะโกนบอกระบบอื่นๆ (เช่น UI สรุปผล) ว่าเกมจบแล้ว!
+        OnGameFinished?.Invoke();
+        Debug.Log(" Game Finished! Max Score Reached!");
+    }
+
+    private System.Collections.IEnumerator GameLoopRoutine()
+    {
+        // ลูปจะทำงานไปเรื่อยๆ ตราบใดที่ isPlaying เป็น true และคะแนนยังไม่ถึง
+        while (isPlaying && currentScore < maxScore)
+        {
+            if (gamePatterns.Count == 0)
+            {
+                Debug.LogWarning("ไม่มี Pattern ให้เล่น! กรุณาเพิ่มใน Inspector");
+                break;
+            }
+
+            // 1. สุ่ม Pattern จาก List
+            int randomIndex = Random.Range(0, gamePatterns.Count);
+            RhythmPattern currentPattern = gamePatterns[randomIndex];
+
+            // 2. สั่งเล่น Pattern
+            PlayPattern(randomIndex);
+
+            // 3. คำนวณว่า Pattern นี้ต้องใช้เวลาเล่น "ทั้งหมด" นานเท่าไหร่
+            // เวลาฟัง (Listen) + เวลาพัก (Response) + เวลาที่ใช้ฟันทั้งหมด (Action)
+            float listenDuration = currentPattern.notes.Length * currentPattern.stepDuration;
+            float actionDuration = currentPattern.notes.Length * currentPattern.stepDuration;
+
+            // เผื่อเวลาให้วัตถุดิบชิ้นสุดท้ายลอยมาถึง และตกลงไปพ้นจอ (กันบั๊กเวลาเหลื่อม)
+            float bufferTime = timeToReachTarget + 0.5f;
+
+            float totalPatternTime = listenDuration + responseDelay + actionDuration ;
+
+            // 4. รอให้ Pattern นี้เล่นจบสมบูรณ์
+            yield return new WaitForSeconds(totalPatternTime);
+
+            // เช็คว่าถ้าคะแนนถึงเป้า และเกมยังรันอยู่ ให้สั่งจบเกม
+            if (isPlaying && currentScore >= maxScore)
+            {
+                //yield return new WaitForSeconds(1f);
+                EndGame();
+            }
+
+            // 5. รอจังหวะพัก (Delay) ก่อนเริ่มสุ่ม Pattern ต่อไป
+            if (isPlaying)
+            {
+                yield return new WaitForSeconds(delayBetweenPatterns);
+            }
         }
     }
 
