@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using Random = UnityEngine.Random;
 using UnityEngine.UI;
+using Inventory.Model;
 
 public class MiniGameFManager : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class MiniGameFManager : MonoBehaviour
     public float timeToReachTarget = 1.0f;
     public int maxScore = 100;
     public List<Sprite> ingredientSprites = new List<Sprite>();
-
+    private int _rewardCount; // <--- 1. เพิ่มตัวแปรจำจำนวน
     [Header("Game Loop Settings")]
     public bool isPlaying = false; // สถานะว่าเกมรันอยู่ไหม
     public float delayBetweenPatterns = 2.0f; // เวลาพักก่อนเริ่มสุ่ม Pattern ถัดไป
@@ -42,6 +43,7 @@ public class MiniGameFManager : MonoBehaviour
 
     [Header("System")]
     private List<UI_Ingredient> activeIngredients = new List<UI_Ingredient>();
+    private Sprite _rewardSprite;
 
     [Header("Action Event")]
     public Action<HitQuality, int> OnHitEvaluated;
@@ -50,7 +52,7 @@ public class MiniGameFManager : MonoBehaviour
     public Action OnPlaySoundRhythm;
     public Action OnPlaySoundHit;
     public Action OnPlaySoundSlat;
-    public Action OnGameFinished; // ตะโกนบอก UI เมื่อคะแนนถึง Max Score
+    public Action<Sprite, int> OnGameFinished;
     public Action OnSlashTriggered; // 3. เพิ่ม Action สำหรับบอกว่ามีการกดฟัน (หรือ AutoHit ฟัน)
 
     [Header("Coroutine")]
@@ -310,12 +312,30 @@ public class MiniGameFManager : MonoBehaviour
         //}
     }
 
-    public void SetUp(int Max,List<Sprite> sprites)
+    public void SetupFromRecipe(CookingRecipeSO recipe, int targetMaxScore, int cookCount)
     {
-        maxScore = Max;
-        ingredientSprites = sprites;
-    }
+        if (recipe == null) return;
 
+        maxScore = targetMaxScore;
+        _rewardCount = cookCount; // จำค่าไว้ใช้ตอนจบ
+
+        ingredientSprites.Clear();
+
+        foreach (var ingredientData in recipe.ingredients)
+        {
+            if (ingredientData.item != null && ingredientData.item.ItemImage != null)
+            {
+                ingredientSprites.Add(ingredientData.item.ItemImage);
+            }
+        }
+
+        if (recipe.resultItem != null)
+        {
+            _rewardSprite = recipe.resultItem.ItemImage;
+        }
+
+        AddScore(0);
+    }
 
     // --- ฟังก์ชันสำหรับเริ่มเล่น Pattern ---
     public void PlayPattern(int patternIndex)
@@ -426,14 +446,13 @@ public class MiniGameFManager : MonoBehaviour
     {
         isPlaying = false;
 
-        // หยุด Coroutine ทั้งหมดที่กำลังรันอยู่
         if (gameLoopCoroutine != null) StopCoroutine(gameLoopCoroutine);
         if (currentPatternCoroutine != null) StopCoroutine(currentPatternCoroutine);
         if (currentAudioSequenceCoroutine != null) StopCoroutine(currentAudioSequenceCoroutine);
         if (currentSpawnSequenceCoroutine != null) StopCoroutine(currentSpawnSequenceCoroutine);
 
-        // ตะโกนบอกระบบอื่นๆ (เช่น UI สรุปผล) ว่าเกมจบแล้ว!
-        OnGameFinished?.Invoke();
+        // 4. ส่งค่า Count ออกไปพร้อมรูปภาพ!
+        OnGameFinished?.Invoke(_rewardSprite, _rewardCount);
         Debug.Log(" Game Finished! Max Score Reached!");
     }
 
