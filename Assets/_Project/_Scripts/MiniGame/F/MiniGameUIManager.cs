@@ -4,16 +4,19 @@ using TMPro;
 using System.Collections;
 using DG.Tweening;
 
-public class MiniGameUIControler : MonoBehaviour
+public class MiniGameUIManager : MonoBehaviour
 {
+    public static MiniGameUIManager Instance { get; private set; }
+
     [Header("UI Panels")]
-    public GameObject miniGamePanel; // <--- เพิ่มตัวนี้ เอาไว้คุม Canvas หรือ Panel หลักของมินิเกม
+    public GameObject readyPanel;
     public CanvasGroup blackOverlay; // พื้นหลังดำโปร่งแสง
     public GameObject startPanel;    // หน้าจอเริ่มเกม
     public GameObject endPanel;      // หน้าจอจบเกม
 
     [Header("UI Elements")]
     public TMP_Text countdownText; // ข้อความ 3 2 1
+    public TMP_Text finishedText;  // <--- เพิ่มตัวแปรนี้สำหรับข้อความ "Finished!" หรือ "Done!"
     public Button startButton;            // ปุ่มเริ่ม
     public Button closeButton;            // ปุ่มปิด
 
@@ -24,36 +27,30 @@ public class MiniGameUIControler : MonoBehaviour
     public Image rewardCookImage;
     public TMP_Text rewardCookCountText;
 
+    [Header("System")]
+    private MiniGameBase _activeGame; // จำไว้ว่ากำลังเล่นเกมไหนอยู่
+
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject); // ถ้ามีอยู่แล้วให้ทำลายตัวใหม่ทิ้ง
+            return;
+        }
+        Instance = this;
+
         // 1. ผูกปุ่มเข้ากับฟังก์ชัน
         if (startButton != null) startButton.onClick.AddListener(StartGameSequence);
-        if (closeButton != null) closeButton.onClick.AddListener(CloseMiniGame); // แก้เป็น closeButton นะครับ
+        if (closeButton != null) closeButton.onClick.AddListener(CloseMiniGame);
 
         // 3. ตั้งค่าเริ่มต้น (โชว์หน้า Start ซ่อนหน้าอื่นๆ)
         ResetUI();
-        miniGamePanel.SetActive(false);
+        readyPanel.SetActive(false);
     }
 
-    private void OnEnable()
+    private void HandleGameFinished(Sprite rewardSprite, int cookCount)
     {
-        // 2. ดักฟัง Event ตอนจบเกมจาก Manager
-        if (MiniGameFManager.Instance != null)
-        {
-            MiniGameFManager.Instance.OnGameFinished += HeadleGameFinished;
-        }
-    }
-
-    private void OnDestroy()
-    {
-        if (MiniGameFManager.Instance != null)
-        {
-            MiniGameFManager.Instance.OnGameFinished -= HeadleGameFinished;
-        }
-    }
-
-    private void HeadleGameFinished(Sprite rewardSprite, int cookCount)
-    {
+        _activeGame.OnGameFinished -= HandleGameFinished; // ยกเลิกดักฟัง
         ShowEndScreen(rewardSprite, cookCount);
     }
 
@@ -69,6 +66,15 @@ public class MiniGameUIControler : MonoBehaviour
         Color c = countdownText.color;
         c.a = 1f;
         countdownText.color = c;
+
+        // รีเซ็ต finishedText ด้วย
+        if (finishedText != null)
+        {
+            finishedText.gameObject.SetActive(false);
+            Color fc = finishedText.color;
+            fc.a = 1f;
+            finishedText.color = fc;
+        }
     }
 
     [ContextMenu("StartGameSequence")]
@@ -108,42 +114,50 @@ public class MiniGameUIControler : MonoBehaviour
         // 1. เฟดตัวอักษรหายไป
         countdownText.DOFade(0f, 0.5f);
 
-        Debug.Log($"blackOverlay {Time.time}");
-
         // 2. เฟดพื้นหลังดำหายไป และบังคับให้ Coroutine "หยุดรอจนกว่าจะเฟดเสร็จ"
         yield return blackOverlay.DOFade(0f, 0.5f).WaitForCompletion();
 
-        // บรรทัดข้างล่างนี้จะทำงานก็ต่อเมื่อผ่านไปแล้ว 0.5 วินาที (รอเฟดเสร็จ)
         // ปิด Object เมื่อเฟดเสร็จ เพื่อไม่ให้มันบังการกดฟันของเกม
         blackOverlay.gameObject.SetActive(false);
         countdownText.gameObject.SetActive(false);
 
-        Debug.Log($"Complaet blackOverlay {Time.time}");
-
-        yield return new WaitForSeconds(1f);
-
-        Debug.Log($"StartGame {Time.time}");
-
         // ! สั่งเริ่มเกมของจริง !
-        MiniGameFManager.Instance.StartGame();
+        _activeGame.StartGame();
     }
 
     // --- ลำดับตอนจบเกม ---
     private void ShowEndScreen(Sprite rewardSprite, int cookCount)
     {
-        StartCoroutine(CountdownEndScreen(rewardSprite,cookCount)); // เริ่มนับถอยหลัง
+        StartCoroutine(CountdownEndScreen(rewardSprite, cookCount));
     }
 
     private IEnumerator CountdownEndScreen(Sprite rewardSprite, int cookCount)
     {
-        yield return new WaitForSeconds(1.5f);
+        // 1. เด้งข้อความ Finished! ทันทีโดยไม่ต้องรอ
+        if (finishedText != null)
+        {
+            finishedText.gameObject.SetActive(true);
+            finishedText.transform.localScale = Vector3.zero;
 
+            // Pop ข้อความขึ้นมา
+            finishedText.transform.DOScale(Vector3.one, popDuration).SetEase(Ease.OutBack);
+
+            // รอให้ผู้เล่นอ่านสัก 1 วินาที (ปรับเวลาได้ตามชอบ)
+            yield return new WaitForSeconds(2f);
+
+            // เฟดข้อความ Finished ทิ้งให้สวยงาม
+            finishedText.DOFade(0f, 0.3f);
+        }
+        else
+        {
+            // ถ้าลืมใส่ Text ไว้ ก็ให้รอเฉยๆ แบบเดิมกัน Error
+            yield return new WaitForSeconds(1.0f);
+        }
+
+        // เตรียมข้อมูลของรางวัล
         if (rewardCookImage != null && rewardSprite != null)
         {
             rewardCookImage.sprite = rewardSprite;
-
-            // สั่งให้ขนาดภาพพอดีกับต้นฉบับ (จะได้ไม่เบี้ยว)
-            //rewardCookImage.SetNativeSize();
         }
 
         if (rewardCookCountText != null)
@@ -151,31 +165,36 @@ public class MiniGameUIControler : MonoBehaviour
             rewardCookCountText.text = (cookCount > 1) ? $"x{cookCount}" : "";
         }
 
-        // โชว์พื้นหลังดำและเฟดความมืดกลับมา
+        // 2. โชว์พื้นหลังดำและเฟดความมืดกลับมา
         blackOverlay.gameObject.SetActive(true);
         blackOverlay.DOFade(1f, 0.5f);
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.75f);
 
-        // โชว์หน้าจอ End Panel และทำให้มันเด้งขึ้นมา
+        // 3. โชว์หน้าจอ End Panel และทำให้มันเด้งขึ้นมา
         endPanel.SetActive(true);
         endPanel.transform.localScale = Vector3.zero;
         endPanel.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutBack).SetDelay(0.3f);
     }
 
-    // --- ฟังก์ชันใหม่: เอาไว้ให้คนอื่นเรียกเพื่อ "เปิด" มินิเกม ---
-    public void OpenMiniGame()
+    public void OpenMiniGame(MiniGameBase gameToPlay)
     {
-        // 1. เปิดเฉพาะตัว UI Panel (ตัวสคริปต์จะได้ไม่ต้องโดนปิดๆ เปิดๆ)
-        if (miniGamePanel != null)
+        _activeGame = gameToPlay; // จำเกมที่จะเล่น
+
+        // ดักฟัง Event จบเกมจากเกมนั้น
+        _activeGame.OnGameFinished += HandleGameFinished;
+
+        // 1. สั่งให้เกมเป้าหมาย "เปิดหน้าต่าง UI ของตัวเอง"
+        if (_activeGame != null)
         {
-            miniGamePanel.SetActive(true);
+            _activeGame.ShowGameUI();
         }
 
         // 2. จัดระเบียบหน้าจอให้สะอาด
         ResetUI();
 
-        // 3. สั่งเริ่มนับถอยหลัง 3 2 1 ทันที
+        readyPanel.SetActive(true);
+
         StartGameSequence();
     }
 
@@ -187,10 +206,13 @@ public class MiniGameUIControler : MonoBehaviour
 
         ResetUI(); // เคลียร์ค่าเผื่อเปิดรอบหน้า
 
-        // ปิดการแสดงผลของ UI Panel ทั้งหมด
-        if (miniGamePanel != null)
+        // 1. สั่งให้เกมที่เพิ่งเล่นจบ "ปิดหน้าต่าง UI ของตัวเอง" ลงไป
+        if (_activeGame != null)
         {
-            miniGamePanel.SetActive(false);
+            _activeGame.HideGameUI();
+            _activeGame = null; // ล้างความจำว่าไม่ได้เล่นเกมไหนอยู่
         }
+
+        readyPanel.SetActive(false);
     }
 }

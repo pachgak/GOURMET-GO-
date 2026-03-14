@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro; // อย่าลืมใส่บรรทัดนี้เพื่อเรียกใช้ TextMeshPro
 
-public class ScorePromptController : ScorePromptSpawnerBase
+public class ScorePromptFController : ScorePromptSpawnerBase
 {
     //public ScorePromptUI prefabScorePrompt; // Prefab ข้อความที่จะเสก
     [Header("Hit Prompt")]

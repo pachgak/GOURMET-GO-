@@ -1,39 +1,33 @@
-using UnityEngine;
 using Inventory.Model;
+using UnityEngine;
 
 public class MiniGameRecipeTester : MonoBehaviour
 {
     [Header("Testing Data")]
     public CookingRecipeSO recipeToTest;
     public int targetScore = 50;
-    public int cookCount = 1; // <--- 1. เพิ่มตัวแปรจำนวนที่ทำ
+    public int cookCount = 1;
 
     [Header("References")]
-    private MiniGameUIControler _uiManager;
+    // ลาก Manager ของเกมไหนก็ได้มาใส่ตรงนี้ (ลากเกมฟันก็ได้ ต้มก็ได้)
+    public MiniGameBase targetMiniGame;
 
-    private void Start()
+    [ContextMenu("LetCook")]
+    public void LetCook()
     {
-        _uiManager = MiniGameFManager.Instance.GetComponent<MiniGameUIControler>();
-    }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.T))
+        if (targetMiniGame != null && recipeToTest != null)
         {
-            if (MiniGameFManager.Instance != null && recipeToTest != null)
-            {
-                // 2. ส่ง cookCount เข้าไปใน SetupFromRecipe ด้วย
-                MiniGameFManager.Instance.SetupFromRecipe(recipeToTest, targetScore, cookCount);
+            // ส่งค่าให้ Base Class จัดการ
+            targetMiniGame.SetupFromRecipe(recipeToTest, targetScore, cookCount);
 
-                if (_uiManager != null)
-                {
-                    _uiManager.OpenMiniGame();
-                    Debug.Log($"[Tester] โหลดสูตร {recipeToTest.name} จำนวน {cookCount} ชิ้น!");
-                }
-                else
-                {
-                    Debug.LogWarning("[Tester] อย่าลืมลาก MiniGameUIManager มาใส่ในช่องด้วยนะครับ!");
-                }
+            // ให้ UI เตรียมตัว และโยน targetMiniGame ไปให้ UI รับช่วงต่อ
+            if (MiniGameUIManager.Instance != null)
+            {
+                MiniGameUIManager.Instance.OpenMiniGame(targetMiniGame);
+            }
+            else
+            {
+                Debug.LogError("หา MiniGameUIManager ในฉากไม่เจอ! อย่าลืมเอาไปแปะไว้ในฉากนะ");
             }
         }
     }

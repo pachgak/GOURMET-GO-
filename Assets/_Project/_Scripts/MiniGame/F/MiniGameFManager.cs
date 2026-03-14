@@ -5,21 +5,15 @@ using Random = UnityEngine.Random;
 using UnityEngine.UI;
 using Inventory.Model;
 
-public class MiniGameFManager : MonoBehaviour
+public class MiniGameFManager : MiniGameBase
 {
-    public static MiniGameFManager Instance;
-
     [Header("Game Settings")]
-    public int currentScore = 0;
     public float hitRadius = 150f;
     public float hitPerfectRadius = 75f;
     public float hitGoodRadius = 125f;
     public float timeToReachTarget = 1.0f;
-    public int maxScore = 100;
     public List<Sprite> ingredientSprites = new List<Sprite>();
-    private int _rewardCount; // <--- 1. เพิ่มตัวแปรจำจำนวน
     [Header("Game Loop Settings")]
-    public bool isPlaying = false; // สถานะว่าเกมรันอยู่ไหม
     public float delayBetweenPatterns = 2.0f; // เวลาพักก่อนเริ่มสุ่ม Pattern ถัดไป
 
     [Header("Rhythm System")]
@@ -37,22 +31,18 @@ public class MiniGameFManager : MonoBehaviour
     public RectTransform spawnPoint;
     public RectTransform spawnParent;
 
-
     [Header("Debug")]
     public bool isAutoHit = false;
 
     [Header("System")]
     private List<UI_Ingredient> activeIngredients = new List<UI_Ingredient>();
-    private Sprite _rewardSprite;
 
     [Header("Action Event")]
     public Action<HitQuality, int> OnHitEvaluated;
     public Action<int> OnIngredientDropped;
-    public Action<int> OnScoreUpdated;
     public Action OnPlaySoundRhythm;
     public Action OnPlaySoundHit;
     public Action OnPlaySoundSlat;
-    public Action<Sprite, int> OnGameFinished;
     public Action OnSlashTriggered; // 3. เพิ่ม Action สำหรับบอกว่ามีการกดฟัน (หรือ AutoHit ฟัน)
 
     [Header("Coroutine")]
@@ -88,24 +78,25 @@ public class MiniGameFManager : MonoBehaviour
 
     void Awake()
     {
-        Instance = this;
-
+        gameplayPanel.SetActive(false);
         AddScore(0);
     }
 
     void Update()
     {
-        // กดปุ่ม P เพื่อเริ่มเล่น Pattern ที่ 0
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            PlayPattern(_currentPatternIndex);
-        }
+        //// กดปุ่ม P เพื่อเริ่มเล่น Pattern ที่ 0
+        //if (Input.GetKeyDown(KeyCode.P))
+        //{
+        //    PlayPattern(_currentPatternIndex);
+
+        //}
 
         if (isAutoHit) AutoHit();
 
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
         {
-            if (!isPlaying) return;
+            if (!isReady) return;
+
             // สั่งให้สคริปต์เอฟเฟคทำงาน
             // 5. เปลี่ยนจากการเรียกสคริปต์ตรงๆ เป็นการตะโกนเรียก Event
             OnSlashTriggered?.Invoke();
@@ -113,15 +104,15 @@ public class MiniGameFManager : MonoBehaviour
             CheckHit();
         }
 
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            PlayPattern();
-        }
+        //if (Input.GetKeyDown(KeyCode.E))
+        //{
+        //    PlayPattern();
+        //}
 
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            StartGame();
-        }
+        //if (Input.GetKeyDown(KeyCode.S))
+        //{
+        //    StartGame();
+        //}
     }
 
     public void AddIngredient()
@@ -227,6 +218,8 @@ public class MiniGameFManager : MonoBehaviour
     {
         OnPlaySoundSlat?.Invoke();
 
+        if (activeIngredients == null) return;
+
         for (int i = activeIngredients.Count - 1; i >= 0; i--)
         {
             UI_Ingredient ingredient = activeIngredients[i];
@@ -305,36 +298,23 @@ public class MiniGameFManager : MonoBehaviour
 
         OnScoreUpdated?.Invoke(currentScore);
 
-        //// เช็คว่าถ้าคะแนนถึงเป้า และเกมยังรันอยู่ ให้สั่งจบเกม
-        //if (isPlaying && currentScore >= maxScore)
-        //{
-        //    EndGame();
-        //}
+        // เช็คว่าถ้าคะแนนถึงเป้า และเกมยังรันอยู่ ให้สั่งจบเกม
+        if (isPlaying && currentScore >= maxScore)
+        {
+            EndGame();
+        }
     }
 
-    public void SetupFromRecipe(CookingRecipeSO recipe, int targetMaxScore, int cookCount)
+    public override void SetupFromRecipe(CookingRecipeSO recipe, int targetMaxScore, int cookCount)
     {
-        if (recipe == null) return;
+        base.SetupFromRecipe(recipe, targetMaxScore, cookCount); // รันโค้ดแม่ก่อน
 
-        maxScore = targetMaxScore;
-        _rewardCount = cookCount; // จำค่าไว้ใช้ตอนจบ
-
+        // ลอจิกดึงรูปวัตถุดิบเฉพาะของเกมฟัน
         ingredientSprites.Clear();
-
-        foreach (var ingredientData in recipe.ingredients)
+        foreach (var data in recipe.ingredients)
         {
-            if (ingredientData.item != null && ingredientData.item.ItemImage != null)
-            {
-                ingredientSprites.Add(ingredientData.item.ItemImage);
-            }
+            if (data.item?.ItemImage != null) ingredientSprites.Add(data.item.ItemImage);
         }
-
-        if (recipe.resultItem != null)
-        {
-            _rewardSprite = recipe.resultItem.ItemImage;
-        }
-
-        AddScore(0);
     }
 
     // --- ฟังก์ชันสำหรับเริ่มเล่น Pattern ---
@@ -430,7 +410,7 @@ public class MiniGameFManager : MonoBehaviour
 
     // --- ระบบ Game Loop ---
 
-    public void StartGame()
+    public override void StartGame()
     {
         if (isPlaying) return; // ถ้าเล่นอยู่แล้วไม่ต้องกดซ้ำ
 
@@ -442,9 +422,15 @@ public class MiniGameFManager : MonoBehaviour
         gameLoopCoroutine = StartCoroutine(GameLoopRoutine());
     }
 
-    public void EndGame()
+    public override void EndGame()
     {
         isPlaying = false;
+        isReady = false;
+
+        foreach (var ingredient in activeIngredients)
+        {
+            ingredient.OnMissTarget -= HeadleIngredientMiss;
+        }
 
         if (gameLoopCoroutine != null) StopCoroutine(gameLoopCoroutine);
         if (currentPatternCoroutine != null) StopCoroutine(currentPatternCoroutine);
@@ -452,7 +438,7 @@ public class MiniGameFManager : MonoBehaviour
         if (currentSpawnSequenceCoroutine != null) StopCoroutine(currentSpawnSequenceCoroutine);
 
         // 4. ส่งค่า Count ออกไปพร้อมรูปภาพ!
-        OnGameFinished?.Invoke(_rewardSprite, _rewardCount);
+        OnGameFinished?.Invoke(rewardSprite, rewardCount);
         Debug.Log(" Game Finished! Max Score Reached!");
     }
 
@@ -487,12 +473,12 @@ public class MiniGameFManager : MonoBehaviour
             // 4. รอให้ Pattern นี้เล่นจบสมบูรณ์
             yield return new WaitForSeconds(totalPatternTime);
 
-            // เช็คว่าถ้าคะแนนถึงเป้า และเกมยังรันอยู่ ให้สั่งจบเกม
-            if (isPlaying && currentScore >= maxScore)
-            {
-                //yield return new WaitForSeconds(1f);
-                EndGame();
-            }
+            //// เช็คว่าถ้าคะแนนถึงเป้า และเกมยังรันอยู่ ให้สั่งจบเกม
+            //if (isPlaying && currentScore >= maxScore)
+            //{
+            //    //yield return new WaitForSeconds(1f);
+            //    EndGame();
+            //}
 
             // 5. รอจังหวะพัก (Delay) ก่อนเริ่มสุ่ม Pattern ต่อไป
             if (isPlaying)
@@ -502,7 +488,7 @@ public class MiniGameFManager : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         // 1. วาดวงกลมแสดงระยะฟัน (Hit Radius) ที่ตรงกลางเป้าหมาย
         if (hitCenter != null)

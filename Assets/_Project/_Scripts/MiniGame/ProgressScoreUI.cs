@@ -1,7 +1,6 @@
 using UnityEngine;
 using TMPro; // จำเป็นสำหรับการใช้ UI ของ TextMeshPro
 
-[RequireComponent(typeof(MiniGameFManager))] // ป้องกันลืมแปะ Manager
 public class ProgressScoreUI : MonoBehaviour
 {
     [Header("UI Elements")]
@@ -9,35 +8,35 @@ public class ProgressScoreUI : MonoBehaviour
     public TMP_Text percentText; // ขออนุญาตแก้ตัวสะกดเป็น percentText นะครับ
 
     [Header("Ref")]
-    private MiniGameFManager _miniGameFManager;
+    private MiniGameBase _miniGameBase;
 
     private void Awake()
     {
-        _miniGameFManager = GetComponent<MiniGameFManager>();
+        _miniGameBase = GetComponent<MiniGameBase>();
     }
 
     private void OnEnable()
     {
         // สมมติว่าใน Manager คุณมี Action<int> OnScoreUpdated อยู่แล้ว
-        if (_miniGameFManager != null)
+        if (_miniGameBase != null)
         {
-            _miniGameFManager.OnScoreUpdated += HandleCurrentScoreChange;
+            _miniGameBase.OnScoreUpdated += HandleCurrentScoreChange;
         }
     }
 
     private void OnDisable()
     {
         // อย่าลืม Unsubscribe เสมอ
-        if (_miniGameFManager != null)
+        if (_miniGameBase != null)
         {
-            _miniGameFManager.OnScoreUpdated -= HandleCurrentScoreChange;
+            _miniGameBase.OnScoreUpdated -= HandleCurrentScoreChange;
         }
     }
 
     // ฟังก์ชันนี้จะถูกเรียกอัตโนมัติเมื่อคะแนนเปลี่ยน
     private void HandleCurrentScoreChange(int currentScore)
     {
-        int maxScore = _miniGameFManager.maxScore;
+        int maxScore = _miniGameBase.maxScore;
 
         // 1. อัปเดต Progress (เช่น Progress : 5/10)
         if (progressText != null)
