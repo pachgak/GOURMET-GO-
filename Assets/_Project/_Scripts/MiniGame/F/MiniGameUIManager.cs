@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using DG.Tweening;
+using System;
 
 public class MiniGameUIManager : MonoBehaviour
 {
@@ -30,6 +31,8 @@ public class MiniGameUIManager : MonoBehaviour
     [Header("System")]
     private MiniGameBase _activeGame; // จำไว้ว่ากำลังเล่นเกมไหนอยู่
 
+    public Action OnCloseMiniGame;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -47,6 +50,8 @@ public class MiniGameUIManager : MonoBehaviour
         ResetUI();
         readyPanel.SetActive(false);
     }
+
+
 
     private void HandleGameFinished(Sprite rewardSprite, int cookCount)
     {
@@ -214,5 +219,7 @@ public class MiniGameUIManager : MonoBehaviour
         }
 
         readyPanel.SetActive(false);
+
+        OnCloseMiniGame?.Invoke();
     }
 }

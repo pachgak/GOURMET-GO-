@@ -1,16 +1,14 @@
 using System;
 using UnityEngine;
 
-[RequireComponent(typeof(UIActivator))]
-public class InventoryManager : MonoBehaviour
+public class miniGameActveUI : MonoBehaviour
 {
-    public static InventoryManager instance;
+    public static miniGameActveUI instance;
 
-    [SerializeField] private bool _isOpenInventory;
+    [SerializeField] private bool _isOpenMinigame;
 
     private UIActivator _uiActivator;
-
-    public Action<bool> OnOpenInventoryStateChange;
+    private MiniGameUIManager _miniGameUIManager;
 
     //public UIActivatorCompack uIActivatorCompack;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -25,39 +23,38 @@ public class InventoryManager : MonoBehaviour
         instance = this;
 
         _uiActivator = GetComponent<UIActivator>();
+        _miniGameUIManager = GetComponent<MiniGameUIManager>();
     }
 
 
     private void OnEnable()
     {
-        PlayerInputActionsManager.instance.OnOpenInventoryInput += HandleOpenInventoryInput;
         PlayerInputActionsManager.instance.OnEscInput += HandleEscInput;
         //OpenUiManager.instance.OnOpenUiChange += HandleOpenUiChange;
+
+        _miniGameUIManager.OnCloseMiniGame += HandleEscInput;
     }
 
     private void OnDisable()
     {
-        PlayerInputActionsManager.instance.OnOpenInventoryInput -= HandleOpenInventoryInput;
         PlayerInputActionsManager.instance.OnEscInput -= HandleEscInput;
         // OpenUiManager.instance.OnOpenUiChange -= HandleOpenUiChange;
+
+        _miniGameUIManager.OnCloseMiniGame -= HandleEscInput;
     }
 
+    //UI Active
     private void HandleEscInput()
     {
-        if(_isOpenInventory) ChangeStateUi(!_isOpenInventory);
-    }
-
-    private void HandleOpenInventoryInput()
-    {
-        ChangeStateUi(!_isOpenInventory);
+        if (_isOpenMinigame) ChangeStateUi(!_isOpenMinigame);
     }
 
     public void ChangeStateUi(bool isState)
     {
-        if (_uiActivator.CheckChangeStateUi(_isOpenInventory, isState))
+        if (_uiActivator.CheckChangeStateUi(_isOpenMinigame, isState))
         {
-            _isOpenInventory = isState;
-            OnOpenInventoryStateChange?.Invoke(isState);
+            _isOpenMinigame = isState;
         }
     }
 }
+
