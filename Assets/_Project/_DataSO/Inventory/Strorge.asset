@@ -12,5 +12,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ecf499ce883ffe41b588f37092666ef, type: 3}
   m_Name: Strorge
   m_EditorClassIdentifier: 
-  inventoryItems: []
-  <Size>k__BackingField: 24
+  inventoryItems:
+  - quantity: 99
+    item: {fileID: 11400000, guid: a0d74405a10897440be02dd6f232af80, type: 2}
+  - quantity: 99
+    item: {fileID: 11400000, guid: 47066abea46edf74da886326f675b72e, type: 2}
+  - quantity: 99
+    item: {fileID: 11400000, guid: 2657be93f35717244952fe4e0297116b, type: 2}
+  - quantity: 0
+    item: {fileID: 0}
+  - quantity: 99
+    item: {fileID: 11400000, guid: 3652bac0472539c4cb1ca68e16c9ace5, type: 2}
+  - quantity: 99
+    item: {fileID: 11400000, guid: 40b13408548e6b94c881a996b00aa804, type: 2}
+  - quantity: 99
+    item: {fileID: 11400000, guid: febf18f2d284ad54abf193f035b63944, type: 2}
+  - quantity: 99
+    item: {fileID: 11400000, guid: 9bcbac1a867b1ce42b3995734234b9b6, type: 2}
+  - quantity: 99
+    item: {fileID: 11400000, guid: 2f55b5d34ee90e24abc3099d08e1c71f, type: 2}
+  - quantity: 99
+    item: {fileID: 11400000, guid: c5d39120f1a2d6941bbc2319cf52cb52, type: 2}
+  - quantity: 99
+    item: {fileID: 11400000, guid: d176dcff0aeef0f498c75d0dbfa1e2e1, type: 2}
+  - quantity: 99
+    item: {fileID: 11400000, guid: 500e34e85894d9a40b1c42fc46173c75, type: 2}
+  - quantity: 99
+    item: {fileID: 11400000, guid: 41a4532f72b40f041aa78b99f5e38a35, type: 2}
+  - quantity: 99
+    item: {fileID: 11400000, guid: 41a4532f72b40f041aa78b99f5e38a35, type: 2}
+  - quantity: 99
+    item: {fileID: 11400000, guid: befabb5078b35864bba46de0662cc900, type: 2}
+  - quantity: 99
+    item: {fileID: 11400000, guid: 62c04f91f5842cc4bbfa47c4f028fb07, type: 2}
+  - quantity: 0
+    item: {fileID: 0}
+  - quantity: 0
+    item: {fileID: 0}
+  - quantity: 0
+    item: {fileID: 0}
+  - quantity: 0
+    item: {fileID: 0}
+  - quantity: 0
+    item: {fileID: 0}
+  - quantity: 0
+    item: {fileID: 0}
+  - quantity: 0
+    item: {fileID: 0}
+  - quantity: 0
+    item: {fileID: 0}
+  <Size>k__BackingField: 16

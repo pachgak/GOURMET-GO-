@@ -44,6 +44,8 @@ public class PickUpPromptUI : MonoBehaviour
             StopCoroutine(fadeCoroutine);
         }
         fadeCoroutine = StartCoroutine(FadeOutRoutine());
+
+        transform.GetComponent<RectTransform>().localScale = new Vector3(1f, 1f, 1f);
     }
 
     private IEnumerator FadeOutRoutine()

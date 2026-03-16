@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -95,7 +95,95 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Enemy_EnemyBar_UI_0
+      rect:
+        serializedVersion: 2
+        x: 837
+        y: 834
+        width: 214
+        height: 187
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a3a705d644e97b340adbdb17aa7c3331
+      internalID: -267725652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy_EnemyBar_UI_1
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 562
+        width: 1537
+        height: 129
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5ef13ec0488b08b40a1b6679cba128d4
+      internalID: -1131134351
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy_EnemyBar_UI_2
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 370
+        width: 1538
+        height: 129
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3879dc3cb1c9a2c4c83e841ab575eb7d
+      internalID: 287450587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy_EnemyBar_UI_3
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 243
+        width: 1474
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8a498aee2f0ea9f449167d9997471dc2
+      internalID: 510157079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -109,7 +197,11 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Enemy_EnemyBar_UI_0: -267725652
+      Enemy_EnemyBar_UI_1: -1131134351
+      Enemy_EnemyBar_UI_2: 287450587
+      Enemy_EnemyBar_UI_3: 510157079
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
