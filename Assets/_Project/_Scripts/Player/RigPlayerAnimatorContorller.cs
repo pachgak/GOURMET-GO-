@@ -15,7 +15,7 @@ public class RigPlayerAnimatorContorller : MonoBehaviour
 
     [SerializeField] private bool _isDashing = false;
     private bool _isSprinte = false;
-    private bool _isSonic = false;
+    //private bool _isSonic = false;
     private bool _isCombo = false;
     private bool _isSliding = false;
 

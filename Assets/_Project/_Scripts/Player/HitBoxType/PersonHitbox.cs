@@ -12,7 +12,7 @@ public class PersonHitbox : BaseHitBox
 
     Collider _colider;
 
-    public event Action OnHit;
+    //public event Action OnHit;
 
     protected virtual void Awake()
     {

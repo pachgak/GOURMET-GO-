@@ -10,7 +10,7 @@ public class PlayerInputActionsManager : MonoBehaviour
     //private InputAction _inventoryOpenAction;
     //public bool IsInventoryOpen;
 
-    private PlayerControls _playerControls; // อ้างอิงถึงคลาสที่ถูกสร้างขึ้น
+    public PlayerControls playerControls; // อ้างอิงถึงคลาสที่ถูกสร้างขึ้น
 
     [SerializeField] private LayerMask _groundLayerMask; // เพิ่ม LayerMask สำหรับพื้น
 
@@ -37,10 +37,14 @@ public class PlayerInputActionsManager : MonoBehaviour
 
     public Action OnOpenMenuInput;
 
+    public Action OnOpenMapInput;
+
     public Action OnEscInput;
 
     public Action OnInteractInputDown;
     public Action OnInteractInputUp;
+
+    public Action OnCloseInteractUIInput;
 
     public Action<int> OnSkillInput;
 
@@ -57,7 +61,7 @@ public class PlayerInputActionsManager : MonoBehaviour
 
         //_playerInput = GetComponent<PlayerInput>();
 
-        _playerControls = new PlayerControls();
+        playerControls = new PlayerControls();
 
         LoadBindingToPlayerContrlorsCS();
 
@@ -69,12 +73,12 @@ public class PlayerInputActionsManager : MonoBehaviour
 
     private void OnEnable()
     {
-        _playerControls.Enable(); // เปิดใช้งาน Action Map หลัก (Player)
+        playerControls.Enable(); // เปิดใช้งาน Action Map หลัก (Player)
     }
 
     private void OnDisable()
     {
-        if (_playerControls != null) _playerControls.Disable(); // ปิดใช้งานเมื่อ GameObject ถูกปิด
+        if (playerControls != null) playerControls.Disable(); // ปิดใช้งานเมื่อ GameObject ถูกปิด
     }
 
 
@@ -168,31 +172,36 @@ public class PlayerInputActionsManager : MonoBehaviour
     {
         // ** การเคลื่อนที่ (Value) **
         // ใช้ .performed เพื่อรับค่าทุกเฟรมเมื่อมีการเปลี่ยนทิศทาง
-        _playerControls.Player.Move.performed += OnMovePerformed;
-        _playerControls.Player.Move.canceled += OnMoveCanceled; // เมื่อปล่อยปุ่ม
+        playerControls.Player.Move.performed += OnMovePerformed;
+        playerControls.Player.Move.canceled += OnMoveCanceled; // เมื่อปล่อยปุ่ม
 
         // ** การกด/ปล่อย (Button) **
         // ใช้ .started สำหรับการกดลง (Down), .performed สำหรับการกดค้าง (Hold/Down), .canceled สำหรับการปล่อย (Up)
-        _playerControls.Player.Sprint.started += OnSprintStarted;
-        _playerControls.Player.Sprint.canceled += OnSprintCanceled;
+        playerControls.Player.Sprint.started += OnSprintStarted;
+        playerControls.Player.Sprint.canceled += OnSprintCanceled;
 
-        _playerControls.Player.Dash.performed += OnDashPerformed;
-        _playerControls.Player.MeleeAttack.performed += OnMeleeAttackPerformed;
+        playerControls.Player.Dash.performed += OnDashPerformed;
+        playerControls.Player.MeleeAttack.performed += OnMeleeAttackPerformed;
 
         // ** แทนที่ Input.GetKeyDown(KeyCode.E) **
-        _playerControls.Player.Interact.started += OnInteractStarted; // เหมือน GetKeyDown
-        _playerControls.Player.Interact.canceled += OnInteractCanceled; // เหมือน GetKeyUp
+        playerControls.Player.Interact.started += OnInteractStarted; // เหมือน GetKeyDown
+        playerControls.Player.Interact.canceled += OnInteractCanceled; // เหมือน GetKeyUp
 
-        _playerControls.Player.OpenInventory.performed += OnOpenInventoryPerformed;
-        _playerControls.Player.OpenLoadoutSkill.performed += OnOpenLoadoutSkillPerformed;
+        playerControls.Player.Skill1.performed += OnSkill1Performed;
+        playerControls.Player.Skill2.performed += OnSkill2Performed;
+        playerControls.Player.Skill3.performed += OnSkill3Performed;
+        playerControls.Player.Skill4.performed += OnSkill4Performed;
+        playerControls.Player.Skill5.performed += OnSkill5Performed;
 
-        _playerControls.Player.OpenMenu.performed += OnOpenMenuPerformed;
+        playerControls.UI.OpenInventory.performed += OnOpenInventoryPerformed;
+        playerControls.UI.OpenLoadoutSkill.performed += OnOpenLoadoutSkillPerformed;
 
-        _playerControls.Player.Skill1.performed += OnSkill1Performed;
-        _playerControls.Player.Skill2.performed += OnSkill2Performed;
-        _playerControls.Player.Skill3.performed += OnSkill3Performed;
-        _playerControls.Player.Skill4.performed += OnSkill4Performed;
-        _playerControls.Player.Skill5.performed += OnSkill5Performed;
+        playerControls.UI.OpenMenu.performed += OnOpenMenuPerformed;
+
+        playerControls.UI.OpenMap.performed += OnOpenMapPerformed;
+
+        playerControls.UI.CloseInteractUI.started += OnCloseInteractUI;
+
     }
 
     // --- Implement Methods ที่ถูกผูกไว้ ---
@@ -243,22 +252,13 @@ public class PlayerInputActionsManager : MonoBehaviour
         // แทนที่ Input.GetKeyUp(KeyCode.E)
         OnInteractInputUp?.Invoke();
     }
-     
-    private void OnOpenInventoryPerformed(InputAction.CallbackContext context)
-    {
-        OnOpenInventoryInput?.Invoke();
-    }
-    private void OnOpenLoadoutSkillPerformed(InputAction.CallbackContext context)
-    {
-        Debug.Log("K OnOpenLoadoutSkillPerformed");
-        OnOpenLoadoutSkillInput?.Invoke();
-    }
-    private void OnOpenMenuPerformed(InputAction.CallbackContext context)
-    {
-        OnOpenMenuInput?.Invoke();
-        OnEscInput?.Invoke();
-    }
 
+     private void OnCloseInteractUI(InputAction.CallbackContext context)
+    {
+        // แทนที่ Input.GetKeyUp(KeyCode.E)
+        OnCloseInteractUIInput?.Invoke();
+    }
+     
     private void OnSkill1Performed(InputAction.CallbackContext context)
     {
         OnSkillInput?.Invoke(1);
@@ -278,6 +278,25 @@ public class PlayerInputActionsManager : MonoBehaviour
     private void OnSkill5Performed(InputAction.CallbackContext context)
     {
         OnSkillInput?.Invoke(5);
+    }
+    private void OnOpenInventoryPerformed(InputAction.CallbackContext context)
+    {
+        OnOpenInventoryInput?.Invoke();
+    }
+    private void OnOpenLoadoutSkillPerformed(InputAction.CallbackContext context)
+    {
+        Debug.Log("K OnOpenLoadoutSkillPerformed");
+        OnOpenLoadoutSkillInput?.Invoke();
+    }
+    private void OnOpenMenuPerformed(InputAction.CallbackContext context)
+    {
+        OnOpenMenuInput?.Invoke();
+        OnEscInput?.Invoke();
+    }
+
+    private void OnOpenMapPerformed(InputAction.CallbackContext context)
+    {
+        OnOpenMapInput?.Invoke();
     }
 
     //public void RefreshActionBindingMap()
@@ -310,7 +329,7 @@ public class PlayerInputActionsManager : MonoBehaviour
         string rebinds = PlayerPrefs.GetString("rebinds");
         if (!string.IsNullOrEmpty(rebinds))
         {
-            _playerControls.LoadBindingOverridesFromJson(rebinds);
+            playerControls.LoadBindingOverridesFromJson(rebinds);
             //Debug.Log($"LoadBindingToPlayerContrlorsCS");
         }
     }

@@ -14,7 +14,7 @@ public class BaerAnimatorController : MonoBehaviour
     private BaseEnemyAI _aiController;
     private EnemyHealth _enemyHealth;
 
-    [SerializeField] private bool isSkilling;
+    //[SerializeField] private bool isSkilling;
     private void Awake()
     {
         // ...
@@ -54,7 +54,7 @@ public class BaerAnimatorController : MonoBehaviour
 
     private void HandleSkillUesd(int skillNumber, float speedMultiplier)
     {
-        isSkilling = true;
+        //isSkilling = true;
 
         _animator.speed = speedMultiplier;
 
@@ -87,7 +87,7 @@ public class BaerAnimatorController : MonoBehaviour
 
     private void HandleSkillEnd()
     {
-        isSkilling = false;
+        //isSkilling = false;
 
         _animator.speed = 1f;
     }

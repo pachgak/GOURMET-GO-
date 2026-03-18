@@ -43,24 +43,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "OpenInventory",
-                    "type": "Button",
-                    "id": "662a9b66-8711-4f94-9966-597b521985bb",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "OpenMenu",
-                    "type": "Button",
-                    "id": "4a9032ea-819f-40f4-bb91-950bbfaa8adc",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Skill1",
                     "type": "Button",
                     "id": "2e721293-e352-4686-8435-a0c6dac6dee3",
@@ -109,15 +91,6 @@
                     "name": "Dash",
                     "type": "Button",
                     "id": "cfe67833-ba20-44be-911f-9ce82960c777",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "OpenLoadoutSkill",
-                    "type": "Button",
-                    "id": "d4ea5d8b-e660-4d00-9fb8-5d91ec4f3a39",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -303,39 +276,6 @@
                 },
                 {
                     "name": "",
-                    "id": "4f21fe6f-c504-43ca-a70a-0639d8614a4a",
-                    "path": "<Keyboard>/tab",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "OpenInventory",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "e0583c13-1b0c-4f8b-a446-a4860e842fe7",
-                    "path": "<Touchscreen>/touch9/tap",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "OpenInventory",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "dbda542c-75b5-4f15-ae6a-736a137b3112",
-                    "path": "<Keyboard>/escape",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "OpenMenu",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "b8c7aa5a-1732-41f3-aeac-851873542ee5",
                     "path": "<Keyboard>/1",
                     "interactions": "",
@@ -465,10 +405,118 @@
                     "action": "Dash",
                     "isComposite": false,
                     "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "UI",
+            "id": "cf933964-a9f1-4a18-a1df-3a124bb009d0",
+            "actions": [
+                {
+                    "name": "OpenInventory",
+                    "type": "Button",
+                    "id": "599db382-fb3e-41ce-b7d3-2fa0a223a9fb",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CloseInteractUI",
+                    "type": "Button",
+                    "id": "7c9fc26d-927d-4844-bbcd-d17056fa6d1c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "OpenMenu",
+                    "type": "Button",
+                    "id": "98297920-6bc4-4f2b-8e82-8b8e95935318",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "OpenLoadoutSkill",
+                    "type": "Button",
+                    "id": "716d8c7a-15a0-4f3b-8773-cb05f84094d2",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "OpenMap",
+                    "type": "Button",
+                    "id": "fac51d4f-1c29-46d4-bac1-4d332ea57c93",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "2e5c7e8a-cc5a-4b97-b943-593cc4e0a97a",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenInventory",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "f8532bec-3d1f-443a-9fa2-6e48c8eadc35",
+                    "id": "63e462e5-292f-4e9e-9c73-eac929da2597",
+                    "path": "<Touchscreen>/touch9/tap",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenInventory",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "052636b9-60bc-433f-9adf-aba5a6e98383",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CloseInteractUI",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6478fa7c-570a-41df-bd46-cfac8e0f7d10",
+                    "path": "<Touchscreen>/touch9/tap",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CloseInteractUI",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ef8cb922-fa44-4521-b650-8fb550923659",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3dcec070-6568-4e81-a795-fa91867a9bdc",
                     "path": "<Keyboard>/k",
                     "interactions": "",
                     "processors": "",
@@ -479,12 +527,34 @@
                 },
                 {
                     "name": "",
-                    "id": "4dc67cc8-63b2-4800-b683-48bc3d374b3f",
+                    "id": "172e9fdc-faf4-433d-b232-25f44cb55d27",
                     "path": "<Touchscreen>/touch9/tap",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "OpenLoadoutSkill",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "99df2651-1e5d-42ed-8028-1788f35619f0",
+                    "path": "<Keyboard>/m",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenMap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e0577d66-ee88-43ae-b221-765742e46347",
+                    "path": "<Touchscreen>/touch9/tap",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenMap",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

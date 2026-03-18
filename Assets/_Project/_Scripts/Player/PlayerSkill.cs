@@ -219,7 +219,6 @@ public class PlayerSkill : MonoBehaviour
 
     public bool SetAtSkill(PlayerSkillSO skill, int usedCount, int index)
     {
-        bool isHave = false;
         SkillData haveskill = new SkillData();
 
         for (int i = 0; i < skillDatas.Length; i++)
@@ -227,7 +226,6 @@ public class PlayerSkill : MonoBehaviour
             if (skillDatas[i].assignedSkills == skill)
             {
                 haveskill = skillDatas[i];
-                isHave = true;
 
                 ResetSkill(i);
             }

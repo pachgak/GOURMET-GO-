@@ -55,64 +55,64 @@ public class TrapHitBox : BaseHitBox
         }
     }
 
-    protected virtual void OnTriggerEnter(Collider other)
-    {
-        return;
+    //protected virtual void OnTriggerEnter(Collider other)
+    //{
+    //    return;
 
-        Debug.Log($"Hit PersonHitbox by : {gameObject.name}");
-        Debug.Log($"other layer :{other.gameObject.name} / {other.gameObject.layer}");
+    //    Debug.Log($"Hit PersonHitbox by : {gameObject.name}");
+    //    Debug.Log($"other layer :{other.gameObject.name} / {other.gameObject.layer}");
 
-        if (other.gameObject.layer == Mathf.Log(targetLayer.value, 2))
-        {
-            Collider hitCollider = other;
+    //    if (other.gameObject.layer == Mathf.Log(targetLayer.value, 2))
+    //    {
+    //        Collider hitCollider = other;
 
-            if (hitCollider.TryGetComponent(out ITakeDamage canTakeDamage))
-            {
-                /*switch (damageType)
-                {
-                    case DamageType.NoneOwner:
-                        if (hitCollider.gameObject != ownerHit) canTakeDamage.TakeDamage(damage);
-                        break;
+    //        if (hitCollider.TryGetComponent(out ITakeDamage canTakeDamage))
+    //        {
+    //            /*switch (damageType)
+    //            {
+    //                case DamageType.NoneOwner:
+    //                    if (hitCollider.gameObject != ownerHit) canTakeDamage.TakeDamage(damage);
+    //                    break;
 
-                    case DamageType.NoneTeam:
-                        TeamBaner hitTeamBaner = hitCollider.GetComponent<TeamBaner>();
-                        TeamBaner ownerTeamBaner = ownerHit.GetComponent<TeamBaner>();
-                        if (ownerTeamBaner == null) return;
-                        if (hitTeamBaner == null)
-                        {
-                            canTakeDamage.TakeDamage(damage);
-                        }
-                        else if (hitTeamBaner.banner != ownerTeamBaner)
-                        {
-                            canTakeDamage.TakeDamage(damage);
-                        }
-                        break;
+    //                case DamageType.NoneTeam:
+    //                    TeamBaner hitTeamBaner = hitCollider.GetComponent<TeamBaner>();
+    //                    TeamBaner ownerTeamBaner = ownerHit.GetComponent<TeamBaner>();
+    //                    if (ownerTeamBaner == null) return;
+    //                    if (hitTeamBaner == null)
+    //                    {
+    //                        canTakeDamage.TakeDamage(damage);
+    //                    }
+    //                    else if (hitTeamBaner.banner != ownerTeamBaner)
+    //                    {
+    //                        canTakeDamage.TakeDamage(damage);
+    //                    }
+    //                    break;
 
-                    case DamageType.AllEntity:
-                        canTakeDamage.TakeDamage(damage);
-                        break;
-                }*/
-                canTakeDamage.TakeDamage(damage);
-            }
+    //                case DamageType.AllEntity:
+    //                    canTakeDamage.TakeDamage(damage);
+    //                    break;
+    //            }*/
+    //            canTakeDamage.TakeDamage(damage);
+    //        }
 
-            if (hitCollider.TryGetComponent(out IKnockbackable knockbackable))
-            {
-                knockbackable.GetKnockedBack(transform.position - other.transform.position, knockbackForce,knockbackTime);
-            }
+    //        if (hitCollider.TryGetComponent(out IKnockbackable knockbackable))
+    //        {
+    //            knockbackable.GetKnockedBack(transform.position - other.transform.position, knockbackForce,knockbackTime);
+    //        }
 
-            //playerSound and CameraShack
-            if (ownerHit == CameraShakeManager.instance.playerGameObject)
-            {
-                CameraShakeManager.instance.ShakePlayerAttack();
-            }
+    //        //playerSound and CameraShack
+    //        if (ownerHit == CameraShakeManager.instance.playerGameObject)
+    //        {
+    //            CameraShakeManager.instance.ShakePlayerAttack();
+    //        }
 
-            ReturnObjectToPool();
-        }
-        //if (other.gameObject.layer == Mathf.Log(wallLayer.value, 2))
-        //{
-        //    ReturnObjectToPool();
-        //}
-    }
+    //        ReturnObjectToPool();
+    //    }
+    //    //if (other.gameObject.layer == Mathf.Log(wallLayer.value, 2))
+    //    //{
+    //    //    ReturnObjectToPool();
+    //    //}
+    //}
 
     public override void PerformAttack()
     {
