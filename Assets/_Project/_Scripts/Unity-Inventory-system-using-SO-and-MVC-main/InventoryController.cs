@@ -28,25 +28,30 @@ namespace Inventory
         [SerializeField]
         private AudioSource audioSource;
 
-        private InventoryManager _inventoryManager;
-
         // 1. เปิด Property ให้ Controller อื่นเข้าถึง Data ได้
         public InventorySO InventoryData => inventoryData;
 
-        private void Awake()
-        {
-            _inventoryManager = InventoryManager.instance;
-        }
+        [Header("UI Controller Reference")]
+        [SerializeField] private newOpenUIController uiController;
 
         private void OnEnable()
         {
-            _inventoryManager.OnOpenInventoryStateChange += HandleOpenInventoryStateChange;
+            if (uiController != null)
+            {
+                uiController.OnPanelOpened.AddListener(HandleInventoryOpened);
+                uiController.OnPanelClosed.AddListener(HandleInventoryClosed);
+            }
         }
 
 
         private void OnDisable()
         {
-            _inventoryManager.OnOpenInventoryStateChange -= HandleOpenInventoryStateChange;
+            // ยกเลิกการรับข่าวสาร
+            if (uiController != null)
+            {
+                uiController.OnPanelOpened.RemoveListener(HandleInventoryOpened);
+                uiController.OnPanelClosed.RemoveListener(HandleInventoryClosed);
+            }
 
             inventoryData.OnInventoryUpdated -= UpdateInventoryUI;
         }
@@ -67,6 +72,24 @@ namespace Inventory
             {
                 inventoryUI.Hide();
             }
+        }
+
+        public void HandleInventoryOpened()
+        {
+            inventoryUI.Show();
+
+            // อัปเดตข้อมูลไอเทมตอนเปิดกระเป๋า
+            foreach (var item in inventoryData.GetCurrentInventoryState())
+            {
+                inventoryUI.UpdateData(item.Key,
+                    item.Value.item.ItemImage,
+                    item.Value.quantity);
+            }
+        }
+
+        public void HandleInventoryClosed()
+        {
+            inventoryUI.Hide();
         }
 
         private void Start()

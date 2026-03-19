@@ -5952,6 +5952,7 @@ MonoBehaviour:
   itemDropPrefab: {fileID: 5090562170970945799, guid: 6b32a4f0d2203a24b81b26541645abbd, type: 3}
   dropClip: {fileID: 0}
   audioSource: {fileID: 0}
+  uiController: {fileID: 0}
 --- !u!114 &75555157
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197948,6 +197949,7 @@ MonoBehaviour:
   itemDropPrefab: {fileID: 5090562170970945799, guid: 6b32a4f0d2203a24b81b26541645abbd, type: 3}
   dropClip: {fileID: 0}
   audioSource: {fileID: 0}
+  uiController: {fileID: 0}
 --- !u!114 &1069347818
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -617869,6 +617871,10 @@ PrefabInstance:
       propertyPath: inventoryUI
       value: 
       objectReference: {fileID: 792728399}
+    - target: {fileID: 4310143537088639991, guid: 0ff8e50c0be48fa4db8c78156dfb0408, type: 3}
+      propertyPath: uiController
+      value: 
+      objectReference: {fileID: 2010307442}
     - target: {fileID: 4310143537088639991, guid: 0ff8e50c0be48fa4db8c78156dfb0408, type: 3}
       propertyPath: initialItems.Array.size
       value: 16
