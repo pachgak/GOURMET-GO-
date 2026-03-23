@@ -58,7 +58,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3002ce17a183d040b48a0504e5cf9a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetCamera: {fileID: 0}
   originalScale: {x: 1, y: 1, z: 1}
   foreshorteningParent: {fileID: 7361474493214142497}
 --- !u!1 &1799075033984776102
@@ -373,7 +372,7 @@ Transform:
   m_GameObject: {fileID: 4645498519941289105}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -336.62, y: 0, z: 153.86}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

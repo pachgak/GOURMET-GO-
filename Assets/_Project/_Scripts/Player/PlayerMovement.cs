@@ -36,7 +36,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
 
     [Header("_Manager References")]
     private PlayerInputActionsManager _inputManager;
-    private OpenUiManager _uiManager;
+    //private OpenUiManager _uiManager;
     private SettingPlayerControllerManager _settingControllerManager;
 
     [Header("Knockbackable")]
@@ -121,7 +121,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
     {
         //Ref
         _inputManager = PlayerInputActionsManager.instance;
-        _uiManager = OpenUiManager.instance;
+        //_uiManager = OpenUiManager.instance;
         _settingControllerManager = SettingPlayerControllerManager.instance;
         _playerCombat = GetComponent<PlayerCombatController>();
         _playerSkill = GetComponent<PlayerSkill>();
@@ -145,7 +145,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
         _inputManager.OnDashInput += HandleDashInput;
         _inputManager.OnMountPosition += HandleGetMountPos;
 
-        _uiManager.OnUiOpeningStateChange += HandleUiOpeningStateChange;
+        //_uiManager.OnUiOpeningStateChange += HandleUiOpeningStateChange;
 
         _playerCombat.OnAttackStateChange += HandleAttackStateChange;
         _playerCombat.OnAttackForward += HandleAttackForward;
@@ -161,7 +161,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
         _inputManager.OnDashInput -= HandleDashInput;
         _inputManager.OnMountPosition -= HandleGetMountPos;
 
-        _uiManager.OnUiOpeningStateChange -= HandleUiOpeningStateChange;
+        //_uiManager.OnUiOpeningStateChange -= HandleUiOpeningStateChange;
 
         _playerCombat.OnAttackStateChange -= HandleAttackStateChange;
         _playerCombat.OnAttackForward -= HandleAttackForward;

@@ -109,7 +109,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3002ce17a183d040b48a0504e5cf9a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetCamera: {fileID: 0}
   originalScale: {x: 1, y: 1, z: 1}
   foreshorteningParent: {fileID: 6140006825388603658}
 --- !u!1 &4468386374685865033
@@ -148,7 +147,7 @@ Transform:
   m_GameObject: {fileID: 4468386374685865033}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -335.02997, y: 0, z: 155.6}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -290,7 +289,7 @@ MonoBehaviour:
   currentState: 0
   playerTarget: {fileID: 0}
   sightRange: 15
-  attackRange: 5
+  attackRange: 0
   <IsStunned>k__BackingField: 0
   _playerInSightRange: 0
   _playerInAttackRange: 0

@@ -41,29 +41,48 @@ public class UISkilPage : MonoBehaviour
     private OpenUiManager _uiManager;
     private bool _isUiOpening;
 
+    [Header("UI Controller Reference")]
+    [SerializeField] private newOpenUIController uiController; // ลากออบเจกต์หน้าต่าง Skill ที่มี newOpenUIController มาใส่ช่องนี้
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
     {
         Hide();
         mouseFollower.Toggle(false);
         //itemDescription.ResetDescription();
-
-        _uiManager = OpenUiManager.instance;
     }
 
     private void OnEnable()
     {
-        _uiManager.OnUiOpeningStateChange += HandleUiOpeningStateChange;
+        if (newOpenUIManager.instance != null)
+        {
+            newOpenUIManager.instance.OnUiOpeningStateChange += HandleUiOpeningStateChange;
+        }
     }
     private void OnDisable()
     {
-        _uiManager.OnUiOpeningStateChange -= HandleUiOpeningStateChange;
+        if (newOpenUIManager.instance != null)
+        {
+            newOpenUIManager.instance.OnUiOpeningStateChange -= HandleUiOpeningStateChange;
+        }
     }
 
     internal void HandleUiOpeningStateChange(bool isUiOpeningState)
     {
         _isUiOpening = isUiOpeningState;
+
+        // ถ้ามี UI เปิดอยู่ ให้ Slot สกิลคลิก/ลากได้ (ถ้า UI ที่เปิดอยู่คือหน้าอื่น มันก็ถูกบังด้วย Graphic Raycaster อยู่ดี)
         _canActiveSlotLoadSkill = isUiOpeningState;
+
+        if (isUiOpeningState)
+        {
+            Show(); // รีเซ็ตสถานะตอนเปิด
+            Hide();
+        }
+        else
+        {
+            Hide(); // ปิดและเคลียร์การลากทิ้ง
+        }
 
         ResetDraggedItem();
         CloseItemDetail();

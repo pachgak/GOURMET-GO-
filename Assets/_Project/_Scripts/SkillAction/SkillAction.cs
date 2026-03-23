@@ -596,7 +596,7 @@ public class SplitSelfAction : SkillAction
             }
             else
             {
-                user.SetActive(false);
+                //user.SetActive(false);
             }
         }
     }
@@ -619,10 +619,10 @@ public class SplitSelfAction : SkillAction
             GameObject minion = ObjectPoolingManager.Instance.Spawn(minionPrefabs[i], spawnPos);
             spawnedClones.Add(minion);
 
-            if (target != null)
-            {
-                minion.transform.LookAt(new Vector3(target.transform.position.x, minion.transform.position.y, target.transform.position.z));
-            }
+            //if (target != null)
+            //{
+            //    minion.transform.LookAt(new Vector3(target.transform.position.x, minion.transform.position.y, target.transform.position.z));
+            //}
 
             if (minion.TryGetComponent(out BaseEnemyAI ai))
             {

@@ -1,9 +1,13 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class newOpenUIManager : MonoBehaviour
 {
     public static newOpenUIManager instance;
+
+    public Action<bool> OnUiOpeningStateChange;
+    private bool _isUiCurrentlyOpen = false; // ตัวแปรคอยเช็คว่าเปลี่ยนสถานะหรือยัง
 
     // ไม่ต้องมี Array registeredPanels ให้รก Inspector แล้ว!
 
@@ -98,23 +102,30 @@ public class newOpenUIManager : MonoBehaviour
     // --- พระเอกของเรา: ควบคุมการเดิน/ตี อัตโนมัติ ---
     private void UpdatePlayerInputState()
     {
-        if (activeUIStack.Count > 0)
+        bool hasUI = activeUIStack.Count > 0;
+
+        // ถ้ามีหน้าต่างเปิดอยู่ และก่อนหน้านี้มันเคย "ปิด" อยู่ (สถานะเปลี่ยนจาก 0 -> 1)
+        if (hasUI && !_isUiCurrentlyOpen)
         {
-            // มี UI เปิดอยู่ -> ปิด Action Map "Player" (ตัวละครจะเดิน/ตีไม่ได้อัตโนมัติ)
-            // เปิด Action Map "UI" เพื่อให้คลิกเมาส์/ลูกศรได้
+            _isUiCurrentlyOpen = true;
 
-            // *สมมติว่าคุณมีฟังก์ชันเข้าถึง PlayerControls นะครับ*
+            // ตะโกนบอกทุกคนในเกมว่า "ตอนนี้มี UI เปิดอยู่นะ!"
+            OnUiOpeningStateChange?.Invoke(true);
+
             PlayerInputActionsManager.instance.playerControls.Player.Disable();
-            // playerControls.UI.Enable(); 
-
+            //PlayerInputActionsManager.instance.playerControls.UI.Enable();
             Debug.Log("UI เปิดอยู่ -> สลับเข้าโหมด UI");
         }
-        else
+        // ถ้าไม่มีหน้าต่างเปิดเลย และก่อนหน้านี้มันเคย "เปิด" อยู่ (สถานะเปลี่ยนจาก 1 -> 0)
+        else if (!hasUI && _isUiCurrentlyOpen)
         {
-            // ไม่มี UI เปิดอยู่เลย -> กลับไปเล่นเกมปกติ
-            // playerControls.UI.Disable();
-            PlayerInputActionsManager.instance.playerControls.Player.Enable();
+            _isUiCurrentlyOpen = false;
 
+            // ตะโกนบอกทุกคนในเกมว่า "ตอนนี้หน้าจอเคลียร์แล้วนะ!"
+            OnUiOpeningStateChange?.Invoke(false);
+
+            PlayerInputActionsManager.instance.playerControls.Player.Enable();
+            //PlayerInputActionsManager.instance.playerControls.UI.Disable();
             Debug.Log("หน้าจอเคลียร์ -> สลับเข้าโหมด Player");
         }
     }

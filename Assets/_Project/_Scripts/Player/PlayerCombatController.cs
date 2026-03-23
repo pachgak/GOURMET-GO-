@@ -33,7 +33,7 @@ public class PlayerCombatController : MonoBehaviour
     private PlayerSkill _playerSkill;
     private PlayerInputActionsManager _inputManager;
     private SettingPlayerControllerManager _settingControllerManager;
-    private OpenUiManager _uiManager;
+    //private OpenUiManager _uiManager;
 
     [Header("_System")]
     [SerializeField] private int _attackIndex = 0;
@@ -92,7 +92,7 @@ public class PlayerCombatController : MonoBehaviour
     {
         //Ref
         _inputManager = PlayerInputActionsManager.instance;
-        _uiManager = OpenUiManager.instance;
+        //_uiManager = OpenUiManager.instance;
         _settingControllerManager = SettingPlayerControllerManager.instance;
         _playerSkill = GetComponent<PlayerSkill>();
         _playerMovement = GetComponent<PlayerMovement>();
@@ -104,7 +104,7 @@ public class PlayerCombatController : MonoBehaviour
         _inputManager.OnMeleeAttack += HandleMeleeAttack;
         _inputManager.OnMountPosition += HandleGetMountPos;
 
-        _uiManager.OnUiOpeningStateChange += HandleUiOpeningStateChange;
+        //_uiManager.OnUiOpeningStateChange += HandleUiOpeningStateChange;
         
         _playerMovement.OnDashStateChange += HandleDashStateChange;
         _playerMovement.OnSprinteStateChange += HandleSprinteStateChange;
@@ -118,7 +118,7 @@ public class PlayerCombatController : MonoBehaviour
         _inputManager.OnMeleeAttack -= HandleMeleeAttack;
         _inputManager.OnMountPosition -= HandleGetMountPos;
 
-        _uiManager.OnUiOpeningStateChange -= HandleUiOpeningStateChange;
+        //_uiManager.OnUiOpeningStateChange -= HandleUiOpeningStateChange;
 
         _playerMovement.OnDashStateChange -= HandleDashStateChange;
         _playerMovement.OnSprinteStateChange -= HandleSprinteStateChange;

@@ -48,6 +48,8 @@ public class EnemyDisguise : MonoBehaviour
 
         // 2. เสกโคลนออกมาตรงตำแหน่งเดียวกับร่างจริง
         _currentClone = ObjectPoolingManager.Instance.Spawn(prefabToClone, transform.position);
+        //_currentClone = Instantiate(prefabToClone);
+        //_currentClone.transform.position = transform.position;
 
         // 3. ปิดการดรอปไอเทมของโคลน (พอมัน disable มันจะถอด Event OnDie ให้เอง)
         if (_currentClone.TryGetComponent(out SpawnItemDropPoor dropSystem))
@@ -72,7 +74,7 @@ public class EnemyDisguise : MonoBehaviour
         if (_currentClone.TryGetComponent(out EnemyHealth cloneHealth))
         {
             // ใช้ Lambda ส่งดาเมจกลับมาให้ร่างจริงด้วย
-            cloneHealth.OnTakeDamage += (damage) => RevealTrueForm(damage);
+            cloneHealth.OnTakeDamage += RevealTrueForm;
         }
 
 
@@ -123,7 +125,7 @@ public class EnemyDisguise : MonoBehaviour
         // 2. เอาร่างโคลนกลับเข้า Pool (สำคัญ! อย่าลืมเอา Event ออกด้วย)
         if (_currentClone.TryGetComponent(out EnemyHealth cloneHealth))
         {
-            cloneHealth.OnTakeDamage -= (damage) => RevealTrueForm(damage); // ป้องกัน Memory Leak
+            cloneHealth.OnTakeDamage -= RevealTrueForm; // ป้องกัน Memory Leak
         }
         ObjectPoolingManager.Instance.Respawn(_currentClone);
 
@@ -140,6 +142,11 @@ public class EnemyDisguise : MonoBehaviour
         if (damageTaken > 0 && _myHealth != null)
         {
             _myHealth.TakeDamage(damageTaken);
+        }
+
+        if (_myAI != null)
+        {
+            _myAI.TriggerChangeState(BaseEnemyAI.EnemyState.Attack);
         }
 
         Debug.Log($"{gameObject.name} เผยร่างจริงแล้ว!");

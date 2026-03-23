@@ -26,7 +26,7 @@ public class InteractByPoint : MonoBehaviour
 
     [Header("_Manager References")]
     [SerializeField] private PlayerInputActionsManager _inputManager;
-    [SerializeField] private OpenUiManager _uiManager;
+    //[SerializeField] private OpenUiManager _uiManager;
     private SettingPlayerControllerManager _settingControllerManager;
     private PlayerMovement _playerMovement;
 
@@ -45,7 +45,7 @@ public class InteractByPoint : MonoBehaviour
     private void Awake()
     {
         _inputManager = PlayerInputActionsManager.instance;
-        _uiManager = OpenUiManager.instance;
+        //_uiManager = OpenUiManager.instance;
         _settingControllerManager = SettingPlayerControllerManager.instance;
         _playerMovement = GetComponent<PlayerMovement>();
     }
@@ -56,7 +56,7 @@ public class InteractByPoint : MonoBehaviour
         _inputManager.OnInteractInputUp += HandleInteractInputUp;
         _inputManager.OnMountPosition += HandleGetMountPos;
 
-        _uiManager.OnUiOpeningStateChange += HandleUiOpeningStateChange;
+        //_uiManager.OnUiOpeningStateChange += HandleUiOpeningStateChange;
 
         if (_nearInteractable != null) interactUI.SetActive(true);
     }
@@ -67,7 +67,7 @@ public class InteractByPoint : MonoBehaviour
         _inputManager.OnInteractInputUp -= HandleInteractInputUp;
         _inputManager.OnMountPosition -= HandleGetMountPos;
 
-        _uiManager.OnUiOpeningStateChange -= HandleUiOpeningStateChange;
+        //_uiManager.OnUiOpeningStateChange -= HandleUiOpeningStateChange;
 
         if (interactUI != null) interactUI.SetActive(false);
     }

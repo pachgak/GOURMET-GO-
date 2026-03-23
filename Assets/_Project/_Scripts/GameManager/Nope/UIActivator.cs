@@ -9,12 +9,12 @@ public class UIActivator : MonoBehaviour
 
     private void OnEnable()
     {
-        OpenUiManager.instance.OnUiOpeningStateChange += HandleUiOpeningStateChange;
+        //OpenUiManager.instance.OnUiOpeningStateChange += HandleUiOpeningStateChange;
     }
 
     private void OnDisable()
     {
-        OpenUiManager.instance.OnUiOpeningStateChange -= HandleUiOpeningStateChange;
+        //OpenUiManager.instance.OnUiOpeningStateChange -= HandleUiOpeningStateChange;
     }
 
     private void HandleUiOpeningStateChange(bool isUiOpeningState)
