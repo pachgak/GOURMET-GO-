@@ -8,7 +8,7 @@ using static UnityEngine.CullingGroup;
 [RequireComponent(typeof(NavMeshAgent))]
 public class BaseEnemyAI : MonoBehaviour 
 {
-    public enum EnemyState { Roaming, Chase, Attack }
+    public enum EnemyState { Roaming, Chase, Attack, Standby }
 
     [Header("Base AI State")]
     public EnemyState currentState;
@@ -95,10 +95,11 @@ public class BaseEnemyAI : MonoBehaviour
                 ChaseChangeStateLogic();
                 break;
             case EnemyState.Attack:
-                //if (enemyCombat == null) AttackChangeStateLogic();
-                // ไม่มี Logic ใน Update() แล้ว
-                // AI จะติดค้างที่นี่จนกว่า HandleAttackFinished() จะถูกเรียก
-
+                // รอจนกว่าจะตีเสร็จ
+                break;
+            case EnemyState.Standby:
+                // *** 2. เรียกใช้ Logic ของ Standby ตรงนี้ ***
+                StandbyChangeStateLogic();
                 break;
         }
     }
@@ -213,25 +214,41 @@ public class BaseEnemyAI : MonoBehaviour
         }
     }
 
+    protected virtual void StandbyChangeStateLogic()
+    {
+        // พฤติกรรมมาตรฐานของ Base (เช่น หมี BearAI ก็ให้ใช้พฤติกรรมนี้เลย ไม่ต้องเขียนทับ)
+        // คือ "หยุดเดินแล้วยืนจ้องหน้า" จนกว่าจะพร้อมโจมตีอีกรอบ
+        TriggerStopMovement();
+
+        // ตัวอย่างการออกจาก Standby: ถ้า Attack Cooldown ใน Combat หมดแล้ว ก็ให้กลับไป Chase/Attack
+        if (_enemyCombat != null && _enemyCombat.attackTimer <= 0)
+        {
+            ChangeState(EnemyState.Chase);
+        }
+    }
+
+
     // --- Event Handlers (Subscriber) ---
 
     protected virtual void HandleAttackFinished()
     {
-        // 1. ถ้ายังอยู่ในระยะโจมตี -> โจมตีซ้ำ
-        if (_playerInAttackRange)
-        {
-            ChangeState(EnemyState.Attack);
-        }
-        // 2. ถ้าหลุดระยะโจมตี แต่ยังเห็นอยู่ -> ไล่ล่า
-        else if (_playerInSightRange)
-        {
-            ChangeState(EnemyState.Chase);
-        }
-        // 3. ถ้ามองไม่เห็น -> Roam
-        else
-        {
-            ChangeState(EnemyState.Roaming);
-        }
+        //// 1. ถ้ายังอยู่ในระยะโจมตี -> โจมตีซ้ำ
+        //if (_playerInAttackRange)
+        //{
+        //    ChangeState(EnemyState.Attack);
+        //}
+        //// 2. ถ้าหลุดระยะโจมตี แต่ยังเห็นอยู่ -> ไล่ล่า
+        //else if (_playerInSightRange)
+        //{
+        //    ChangeState(EnemyState.Chase);
+        //}
+        //// 3. ถ้ามองไม่เห็น -> Roam
+        //else
+        //{
+        //    ChangeState(EnemyState.Roaming);
+        //}
+
+        ChangeState(EnemyState.Standby);
     }
 
     protected void TriggerStopMovement()

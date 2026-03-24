@@ -215,8 +215,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.47, y: 0.47, z: 0.47}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6137143341093201775}
   m_Father: {fileID: 7592503051415435734}
@@ -365,7 +365,7 @@ GameObject:
   - component: {fileID: 7592503051415435734}
   - component: {fileID: 6360407347011150826}
   - component: {fileID: 563892336315605298}
-  - component: {fileID: 6969079338022495860}
+  - component: {fileID: 2553571952618688191}
   - component: {fileID: 8024995386678808481}
   - component: {fileID: 7667632914807543677}
   - component: {fileID: 4639215697653665586}
@@ -389,7 +389,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8248806429086153625}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -517,7 +517,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &6969079338022495860
+--- !u!114 &2553571952618688191
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -526,13 +526,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 8248806429086153625}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50f1615ac2073f84c8c1960c00609fca, type: 3}
+  m_Script: {fileID: 11500000, guid: 00cee1e3a6a789a42b7c522e6af3b1e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   currentState: 0
   playerTarget: {fileID: 0}
   sightRange: 15
-  attackRange: 0
+  attackRange: 10
   <IsStunned>k__BackingField: 0
   _playerInSightRange: 0
   _playerInAttackRange: 0

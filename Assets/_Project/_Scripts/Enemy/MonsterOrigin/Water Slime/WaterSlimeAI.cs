@@ -91,6 +91,14 @@ public class WaterSlimeAI : BaseEnemyAI
         //}
     }
 
+    // เขียนทับ Logic ตอน Standby
+    protected override void StandbyChangeStateLogic()
+    {
+        // สไลม์ใจร้อน พอเข้าโหมด Standby ปุ๊บ สั่งให้เด้งกลับไป Chase ทันที!
+        // ทำให้มันไม่มีจังหวะยืนพักเลย
+        ChangeState(EnemyState.Chase);
+    }
+
     // Debug ดูสถานะ
     protected override void OnDrawGizmosSelected()
     {

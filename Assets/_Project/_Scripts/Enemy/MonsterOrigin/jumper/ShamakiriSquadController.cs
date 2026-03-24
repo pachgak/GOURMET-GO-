@@ -1,135 +1,154 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class ShamakiriSquadController : MonoBehaviour
 {
-    public enum SquadTurn { Melee, Range, AoE, Combo }
-
     public List<GameObject> graphicesParent;
 
     [Header("Squad Status")]
-    public SquadTurn currentTurn = SquadTurn.Melee; // คิวปัจจุบัน
     public List<BaseEnemyAI> activeClones = new List<BaseEnemyAI>();
 
-    [Header("Specific Clones")]
-    private BaseEnemyAI _meleeClone;
-    private BaseEnemyAI _rangeClone;
-    private BaseEnemyAI _aoeClone;
-
     [Header("Turn Sequence Settings")]
-    public float turnCooldown = 4f; // เวลาพักระหว่างการสั่งแต่ละตัว
+    public float turnCooldown = 4f;
     private float _turnTimer;
     private bool _isDoingCombo = false;
 
-    // ฟังก์ชันนี้ถูกเรียกจาก SplitSelfAction หลังจากเสกมอน 3 ตัวเสร็จ
+    // ตัวแปรใหม่สำหรับระบบคิว (Index)
+    private int _currentAttackerIndex = 0;
+    private BaseEnemyAI _currentAttackingClone = null; // เก็บตัวที่กำลังวิ่งไปตี
+    private bool _isAttacking = false;
+
+    [Header("Formation Settings")]
+    public float formationRadius = 6f;
+    public float formationRotateSpeed = 20f;
+    private float _formationAngle = 0f;
+    private Transform _playerTarget;
+
     public void InitializeSquad(List<GameObject> clones, GameObject target)
     {
         activeClones.Clear();
+        _playerTarget = target.transform;
 
-        // *** สำคัญ: ใน List ของ SplitSelfAction ต้องใส่ Prefab เรียงตามนี้เสมอ:
-        // Index 0 = Melee, Index 1 = Range, Index 2 = AoE
         if (clones.Count >= 3)
         {
-            _meleeClone = clones[0].GetComponent<BaseEnemyAI>();
-            _rangeClone = clones[1].GetComponent<BaseEnemyAI>();
-            _aoeClone = clones[2].GetComponent<BaseEnemyAI>();
-
-            activeClones.Add(_meleeClone);
-            activeClones.Add(_rangeClone);
-            activeClones.Add(_aoeClone);
-
-            // สมัครรับ Event ตอนตาย
-            foreach (var clone in activeClones)
+            foreach (var cloneObj in clones)
             {
-                if (clone.TryGetComponent(out EnemyHealth health))
+                if (cloneObj.TryGetComponent(out BaseEnemyAI cloneAI))
                 {
-                    health.OnDie += () => HandleCloneDeath(clone);
+                    activeClones.Add(cloneAI);
+
+                    if (cloneObj.TryGetComponent(out EnemyHealth health))
+                    {
+                        health.OnDie += () => HandleCloneDeath(cloneAI);
+                    }
+
+                    // เกิดมาปุ๊บ เข้าโหมด Standby เพื่อจัด 3 เหลี่ยม
+                    cloneAI.TriggerChangeState(BaseEnemyAI.EnemyState.Standby);
                 }
             }
         }
 
-        foreach (var graphice in graphicesParent)
-        {
-            graphice.SetActive(false);
-        }
-
-        // ซ่อนตัว Container (ตัวแม่ล่องหน)
-
+        // ปิดการแสดงผลและการทำงานของตัวแม่
+        foreach (var graphice in graphicesParent) graphice.SetActive(false);
         if (TryGetComponent(out Collider col)) col.enabled = false;
-        if (TryGetComponent(out UnityEngine.AI.NavMeshAgent agent)) agent.enabled = false;
-
-        // 3. *** เพิ่มตรงนี้: ปิดสคริปต์ AI และ Combat ตัวแม่จะได้ไม่ไปแย่งลูกน้องตี ***
+        if (TryGetComponent(out NavMeshAgent agent)) agent.enabled = false;
         if (TryGetComponent(out BaseEnemyAI ai)) ai.enabled = false;
         if (TryGetComponent(out BaseEnemyMovement move)) move.enabled = false;
         if (TryGetComponent(out BaseEnemyCombat combat)) combat.enabled = false;
+        if (TryGetComponent(out EnemyHealth healthUser)) healthUser.enabled = false;
 
-        // 4. *** เพิ่มตรงนี้: ทำให้ตัวแม่เป็นอมตะ (กันโดนผู้เล่นสาดสกิลหมู่มาโดน) ***
-        // หรือถ้าใน EnemyHealth มีคำสั่งปิด ก็ปิดได้เลย
-        if (TryGetComponent(out EnemyHealth healthUser))
-        {
-            healthUser.enabled = false;
-        }
-
-        // เริ่มจับเวลาคิวแรก
         _turnTimer = turnCooldown;
-        currentTurn = SquadTurn.Melee; // เซ็ตให้เริ่มที่ Melee เสมอ
-        Debug.Log("Shamakiri Puppet Master: เริ่มคุมเกม! ลำดับแรก: Melee");
+        _currentAttackerIndex = 0; // เริ่มที่คิวแรก
+        Debug.Log("Shamakiri Puppet Master: เริ่มค่ายกล 3 เหลี่ยม!");
     }
 
     private void Update()
     {
-        // ถ้าร่างโคลนตายไม่ครบ 3 ตัว ลูปคอมโบจะพัง ให้หยุดระบบคิว แล้วไปพึ่งโหมด Enrage แทน
-        if (activeClones.Count < 3 || _isDoingCombo) return;
+        if (activeClones.Count == 0 || _isDoingCombo) return;
 
+        // 1. จัดค่ายกล 3 เหลี่ยมตลอดเวลา (ขยับเฉพาะตัวที่ Standby)
+        MaintainTriangleFormation();
+
+        // 2. เช็คว่าตัวที่ส่งไปตี กลับมาหรือยัง
+        if (_isAttacking)
+        {
+            // ถ้าตัวที่ตีอยู่ ตายไปแล้ว หรือ กลับมา Standby เรียบร้อยแล้ว (ตีเสร็จ)
+            if (_currentAttackingClone == null || _currentAttackingClone.currentState == BaseEnemyAI.EnemyState.Standby)
+            {
+                _isAttacking = false;
+                _currentAttackingClone = null;
+
+                _currentAttackerIndex++; // เลื่อนบัตรคิวไปคนถัดไป
+                _turnTimer = turnCooldown; // รีเซ็ตเวลาพัก
+            }
+            return; // ยังตีไม่เสร็จ ให้รอไปก่อน ไม่ต้องนับเวลา
+        }
+
+        // 3. ระบบนับเวลาเพื่อส่งคิวถัดไปออกไปตี
         _turnTimer -= Time.deltaTime;
         if (_turnTimer <= 0)
         {
             ExecuteNextTurn();
-            _turnTimer = turnCooldown; // รีเซ็ตเวลาสำหรับตาถัดไป
         }
     }
 
-    // --- ระบบรันคิว ---
+    // --- ระบบค่ายกล 3 เหลี่ยม ---
+    private void MaintainTriangleFormation()
+    {
+        if (_playerTarget == null) return;
+
+        _formationAngle += formationRotateSpeed * Time.deltaTime;
+
+        // คำนวณองศาแบ่งตามจำนวนโคลนที่เหลืออยู่ (ถ้าเหลือ 3 ก็ 120 องศา, ถ้าเหลือ 2 ก็ 180 องศา)
+        float angleStep = 360f / activeClones.Count;
+
+        for (int i = 0; i < activeClones.Count; i++)
+        {
+            BaseEnemyAI clone = activeClones[i];
+
+            if (clone == null || clone.currentState != BaseEnemyAI.EnemyState.Standby) continue;
+
+            float angle = _formationAngle + (i * angleStep);
+            Vector3 offset = Quaternion.Euler(0, angle, 0) * Vector3.forward * formationRadius;
+            Vector3 targetPos = _playerTarget.position + offset;
+
+            if (clone.TryGetComponent(out NavMeshAgent agent) && agent.isActiveAndEnabled)
+            {
+                agent.isStopped = false;
+                agent.SetDestination(targetPos);
+            }
+        }
+    }
+
+    // --- ระบบรันคิวแบบใหม่ (ใช้ Index) ---
     private void ExecuteNextTurn()
     {
-        switch (currentTurn)
+        // 1. ถ้าทุกคนตีครบ 1 รอบแล้ว (Index ทะลุจำนวนคน)
+        if (_currentAttackerIndex >= activeClones.Count)
         {
-            case SquadTurn.Melee:
-                CommandAttack(_meleeClone, "Melee");
-                currentTurn = SquadTurn.Range; // เปลี่ยนคิวถัดไปเป็น Range
-                break;
+            _currentAttackerIndex = 0; // รีเซ็ตคิวกลับมาเริ่มที่คนแรก
 
-            case SquadTurn.Range:
-                CommandAttack(_rangeClone, "Range");
-                currentTurn = SquadTurn.AoE;   // เปลี่ยนคิวถัดไปเป็น AoE
-                break;
-
-            case SquadTurn.AoE:
-                CommandAttack(_aoeClone, "AoE");
-                currentTurn = SquadTurn.Combo; // เปลี่ยนคิวถัดไปเป็น Combo
-                break;
-
-            case SquadTurn.Combo:
+            // ถ้ามีครบ 3 ตัว ให้ใช้ท่าคอมโบผสานก่อนเริ่มลูปใหม่
+            if (activeClones.Count == 3)
+            {
                 StartCoroutine(UltimateComboAttack());
-                currentTurn = SquadTurn.Melee; // จบคอมโบ วนลูปกลับไปเริ่มที่ Melee ใหม่
-                break;
+                return;
+            }
         }
-    }
 
-    // --- ฟังก์ชันสั่งลูกน้องโจมตี ---
-    private void CommandAttack(BaseEnemyAI clone, string roleName)
-    {
-        if (clone == null) return;
+        // 2. สั่งตัวคิวปัจจุบันให้ไปตี
+        if (_currentAttackerIndex < activeClones.Count)
+        {
+            _currentAttackingClone = activeClones[_currentAttackerIndex];
+            _isAttacking = true;
 
-        Debug.Log($"[Shamakiri] ผู้กำกับสั่งลูกน้อง {roleName} โจมตี!");
+            Debug.Log($"[Shamakiri] ส่งลูกน้องคิวที่ {_currentAttackerIndex} ลุย!");
 
-        // บังคับให้ AI เข้า State Attack เพื่อเริ่มการโจมตี
-        // (ถึงแม้ Attack Range จะเป็น 0 การสั่ง Trigger ตรงๆ ก็จะทำให้มันร่ายสกิลได้ครับ)
-        clone.TriggerChangeState(BaseEnemyAI.EnemyState.Attack);
-
-        // ถ้าคุณมีระบบ Command อื่นๆ ใน BaseEnemyCombat สามารถนำมาเรียกตรงนี้ได้เลย
-        // เช่น clone.GetComponent<BaseEnemyCombat>().ExecuteSkillAction(0);
+            // สั่งให้มันเปลี่ยนเป็น Chase แล้วปล่อยให้ AI มันจัดการที่เหลือเอง!
+            _currentAttackingClone.TriggerChangeState(BaseEnemyAI.EnemyState.Chase);
+        }
     }
 
     // --- จัดการเวลาโคลนตาย ---
@@ -138,7 +157,13 @@ public class ShamakiriSquadController : MonoBehaviour
         if (activeClones.Contains(deadClone))
         {
             activeClones.Remove(deadClone);
-            Debug.Log($"โคลนตาย! เหลือ {activeClones.Count} ตัว ระบบคิว(Sequence) ถูกยกเลิก!");
+            Debug.Log($"โคลนตาย! เหลือ {activeClones.Count} ตัว (หมดสิทธิ์ใช้ท่าคอมโบ)");
+
+            // ป้องกันบั๊ก Index เกินจำนวนใน List เมื่อมีตัวตาย
+            if (_currentAttackerIndex >= activeClones.Count)
+            {
+                _currentAttackerIndex = 0;
+            }
 
             if (activeClones.Count == 1)
             {
@@ -146,7 +171,6 @@ public class ShamakiriSquadController : MonoBehaviour
             }
             else if (activeClones.Count == 0)
             {
-                Debug.Log("Shamakiri Defeated!");
                 Destroy(gameObject);
             }
         }
@@ -154,14 +178,15 @@ public class ShamakiriSquadController : MonoBehaviour
 
     private void TriggerEnrageMode(BaseEnemyAI lastClone)
     {
-        Debug.Log("ร่างสุดท้าย โกรธแล้ว! ปลดล็อคความสามารถตีเอง!");
+        Debug.Log("ร่างสุดท้าย โกรธแล้ว! คืนค่าการไล่ล่าอิสระ");
+        // สั่งให้ตัวสุดท้ายบ้าคลั่ง ไล่ตีเองตลอดเวลา ไม่ต้องกลับมา 3 เหลี่ยมแล้ว
+        lastClone.TriggerChangeState(BaseEnemyAI.EnemyState.Chase);
 
-        // พอเหลือตัวสุดท้าย เราต้องคืนค่า Attack Range ให้มันกลับมาตีเองได้
-        // สมมติว่าระยะตีคือ 2f
-        lastClone.attackRange = 2f;
+        // เราสามารถล้าง ShamakiriCloneAI ออก แล้วใส่ลูกเล่นเพิ่มได้
+        // หรือปล่อยให้มัน Chase ไปเรื่อยๆ ก็ได้เพราะมันจะไม่กลับมา Standby แล้ว (ถ้าเราไม่สั่ง)
     }
 
-    // --- ท่าผสานกระโดด 3 ตัว ---
+    // --- ท่าผสานกระโดด 3 ตัว (ยังใช้เหมือนเดิม) ---
     private IEnumerator UltimateComboAttack()
     {
         _isDoingCombo = true;
@@ -170,8 +195,8 @@ public class ShamakiriSquadController : MonoBehaviour
         foreach (var clone in activeClones)
         {
             if (clone == null) continue;
-            clone.TriggerChangeState(BaseEnemyAI.EnemyState.Roaming);
-            clone.GetComponent<UnityEngine.AI.NavMeshAgent>().isStopped = true;
+            clone.TriggerChangeState(BaseEnemyAI.EnemyState.Standby);
+            if (clone.TryGetComponent(out NavMeshAgent agent)) agent.isStopped = true;
         }
 
         yield return new WaitForSeconds(0.5f);
@@ -184,19 +209,21 @@ public class ShamakiriSquadController : MonoBehaviour
             }
         }
 
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(1.5f);
         Debug.Log("ปล่อยพลังจากฟ้าฟาดลงมา 3 เส้น!");
         yield return new WaitForSeconds(0.75f);
 
+        // กลับสู่ค่ายกล 3 เหลี่ยม
         foreach (var clone in activeClones)
         {
             if (clone != null)
             {
-                clone.GetComponent<UnityEngine.AI.NavMeshAgent>().isStopped = false;
-                clone.TriggerChangeState(BaseEnemyAI.EnemyState.Chase);
+                clone.TriggerChangeState(BaseEnemyAI.EnemyState.Standby);
             }
         }
 
         _isDoingCombo = false;
+        // รีเซ็ตเวลาเพื่อเริ่มคิวของคนแรกในรอบใหม่
+        _turnTimer = turnCooldown;
     }
 }

@@ -40,13 +40,13 @@ public class BossBarController : MonoBehaviour
         {
             timerShowing -= Time.deltaTime;
 
-            if(timerShowing <= 0) bossBarUI.DisableBossBar();
+            if (bossBarUI != null) if (timerShowing <= 0) bossBarUI.DisableBossBar();
         }
     }
 
     public void HeadleTakeDamage(float damage)
     {
-        if(!isShowing) bossBarUI.SetData(this, enemyHealth, enemy.enemy);
+        if(bossBarUI != null) if(!isShowing) bossBarUI.SetData(this, enemyHealth, enemy.enemy);
         timerShowing = showTime;
     }
 }
