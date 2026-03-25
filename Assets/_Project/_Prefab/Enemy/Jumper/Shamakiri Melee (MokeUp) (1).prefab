@@ -126,7 +126,6 @@ GameObject:
   - component: {fileID: 1095642634259912188}
   - component: {fileID: 3474320889666980877}
   - component: {fileID: 3154535099860283972}
-  - component: {fileID: 3509075607148117523}
   - component: {fileID: 3179323253348384818}
   - component: {fileID: 5801424652830547289}
   - component: {fileID: 5958066709467327917}
@@ -351,24 +350,6 @@ MonoBehaviour:
   isDead: 0
   isRespawnNow: 1
   dieClip: {fileID: 0}
---- !u!114 &3509075607148117523
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4468386374685865033}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b930e373d302644e9a2e98f7782a532, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemDropPrefab: {fileID: 2141094486571183500, guid: 6b32a4f0d2203a24b81b26541645abbd, type: 3}
-  Items:
-  - item: {fileID: 11400000, guid: af54a0a13cd0d4f4aa14f72da9884c1e, type: 2}
-    countMin: 1
-    countMax: 0
-  offSet: {x: 0, y: 1, z: 0}
 --- !u!54 &3179323253348384818
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -471,9 +452,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   showTime: 30
-  enemyBarUIPrefab: {fileID: 2781920912640263108, guid: 7b2c961cfd19290449203635ec34dc05, type: 3}
-  canvasWorldParant: {fileID: 0}
-  offset: {x: 0, y: 0, z: 0}
+  offset: {x: 0, y: 3, z: 0}
 --- !u!1 &4745023242300530086
 GameObject:
   m_ObjectHideFlags: 0

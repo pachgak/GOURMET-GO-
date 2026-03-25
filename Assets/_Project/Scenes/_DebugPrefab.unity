@@ -9642,7 +9642,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0bce8023bdec4841839a314ea8f8354, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 405074441}
+  spriteRenderers: []
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   totalFlashDuration: 0.5
   flashCount: 3
@@ -18795,10 +18795,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2430754594332559009, guid: 4eb5608e84ad88143afdd75e519c653a, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
+    - target: {fileID: 2623641826623712424, guid: 4eb5608e84ad88143afdd75e519c653a, type: 3}
+      propertyPath: bossBarUI
       value: 
-      objectReference: {fileID: 2100000, guid: 7ecdfd796d54de84bb375caccb28c213, type: 2}
+      objectReference: {fileID: 621573432}
     - target: {fileID: 4547645183778580356, guid: 4eb5608e84ad88143afdd75e519c653a, type: 3}
       propertyPath: playerTarget
       value: 
@@ -18807,10 +18807,6 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 1920205507}
-    - target: {fileID: 4876265923951584113, guid: 4eb5608e84ad88143afdd75e519c653a, type: 3}
-      propertyPath: trueFormVFX
-      value: 
-      objectReference: {fileID: 7998149100164185464, guid: 47cfe74de68698a43883857a7523102a, type: 3}
     - target: {fileID: 5565202312802687924, guid: 4eb5608e84ad88143afdd75e519c653a, type: 3}
       propertyPath: m_Name
       value: Shamakiri Container (MokeUp)
@@ -18818,10 +18814,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5565202312802687924, guid: 4eb5608e84ad88143afdd75e519c653a, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1054496108}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4eb5608e84ad88143afdd75e519c653a, type: 3}
 --- !u!4 &746255831 stripped
 Transform:
@@ -36853,25 +36846,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1049155841}
   m_CullTransparentMesh: 1
---- !u!1 &1054496093 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5565202312802687924, guid: 4eb5608e84ad88143afdd75e519c653a, type: 3}
-  m_PrefabInstance: {fileID: 746255830}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1054496108
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1054496093}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d51c3c008b961e140b22ee30a446287d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  showTime: 30
-  bossBarUI: {fileID: 621573432}
 --- !u!1 &1059852410
 GameObject:
   m_ObjectHideFlags: 0
@@ -44779,14 +44753,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1440394834}
     m_Modifications:
-    - target: {fileID: 6510583847648980046, guid: 7a209f007bb130142a4c2ed98f5bfd04, type: 3}
-      propertyPath: offset.y
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6510583847648980046, guid: 7a209f007bb130142a4c2ed98f5bfd04, type: 3}
-      propertyPath: canvasWorldParant
-      value: 
-      objectReference: {fileID: 1871279682}
     - target: {fileID: 7592503051415435734, guid: 7a209f007bb130142a4c2ed98f5bfd04, type: 3}
       propertyPath: m_LocalPosition.x
       value: 22.179993
@@ -46765,7 +46731,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0bce8023bdec4841839a314ea8f8354, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 1391074940}
+  spriteRenderers: []
   flashColor: {r: 1, g: 1, b: 1, a: 0.70980394}
   totalFlashDuration: 1
   flashCount: 1
@@ -50925,7 +50891,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0bce8023bdec4841839a314ea8f8354, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 1594199662}
+  spriteRenderers: []
   flashColor: {r: 1, g: 0, b: 0, a: 0.44705883}
   totalFlashDuration: 0.5
   flashCount: 3
@@ -62559,14 +62525,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5970599805986381330, guid: b247e385f25575241bcd7ece85665b1c, type: 3}
-      propertyPath: offset.y
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5970599805986381330, guid: b247e385f25575241bcd7ece85665b1c, type: 3}
-      propertyPath: canvasWorldParant
-      value: 
-      objectReference: {fileID: 1871279682}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -62652,14 +62610,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8864879237809177400, guid: a3139a8a68774dd4c8f7cc7c35279b9e, type: 3}
-      propertyPath: offset.y
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8864879237809177400, guid: a3139a8a68774dd4c8f7cc7c35279b9e, type: 3}
-      propertyPath: canvasWorldParant
-      value: 
-      objectReference: {fileID: 1871279682}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -62701,9 +62651,9 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1474335987}
-  - {fileID: 413519270}
   - {fileID: 1463746470}
   - {fileID: 1877959928}
+  - {fileID: 413519270}
   - {fileID: 1391074941}
   - {fileID: 1594199663}
   - {fileID: 405074442}

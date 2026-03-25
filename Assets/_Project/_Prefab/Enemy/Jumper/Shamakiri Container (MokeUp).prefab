@@ -281,6 +281,8 @@ GameObject:
   - component: {fileID: 7404593533369674589}
   - component: {fileID: 4858094101008093505}
   - component: {fileID: 4876265923951584113}
+  - component: {fileID: 2623641826623712424}
+  - component: {fileID: 987617965263502211}
   m_Layer: 8
   m_Name: Shamakiri Container (MokeUp)
   m_TagString: Untagged
@@ -700,7 +702,42 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 8192
-  trueFormVFX: {fileID: 0}
+  trueFormVFX: {fileID: 7998149100164185464, guid: 47cfe74de68698a43883857a7523102a, type: 3}
+  delayBeforeVanish: 1
+  emptyScreenDuration: 1.5
+  delayBeforeAttack: 1.5
+--- !u!114 &2623641826623712424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5565202312802687924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d51c3c008b961e140b22ee30a446287d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showTime: 30
+  bossBarUI: {fileID: 0}
+--- !u!114 &987617965263502211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5565202312802687924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b930e373d302644e9a2e98f7782a532, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemDropPrefab: {fileID: 2141094486571183500, guid: 6b32a4f0d2203a24b81b26541645abbd, type: 3}
+  Items:
+  - item: {fileID: 11400000, guid: af54a0a13cd0d4f4aa14f72da9884c1e, type: 2}
+    countMin: 1
+    countMax: 0
+  offSet: {x: 0, y: 1, z: 0}
 --- !u!1 &6183076836183093455
 GameObject:
   m_ObjectHideFlags: 0
