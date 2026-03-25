@@ -374,13 +374,14 @@ GameObject:
   - component: {fileID: 2709925871368309998}
   - component: {fileID: 1405463037827252906}
   - component: {fileID: 4898192984284393468}
+  - component: {fileID: 6510583847648980046}
   m_Layer: 8
   m_Name: Shamakiri Range (MokeUp) (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7592503051415435734
 Transform:
   m_ObjectHideFlags: 0
@@ -695,3 +696,19 @@ MonoBehaviour:
   bobAmount: 0.2
   tiltAngle: 5
   stopSmoothing: 5
+--- !u!114 &6510583847648980046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8248806429086153625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ad8c213dca3bca4c9faea8a8b35a1a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showTime: 30
+  enemyBarUIPrefab: {fileID: 2781920912640263108, guid: 7b2c961cfd19290449203635ec34dc05, type: 3}
+  canvasWorldParant: {fileID: 0}
+  offset: {x: 0, y: 0, z: 0}
