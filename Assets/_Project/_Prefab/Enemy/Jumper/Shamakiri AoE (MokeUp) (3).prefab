@@ -26,7 +26,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6774652096535924040
 Transform:
   m_ObjectHideFlags: 0
@@ -217,7 +217,7 @@ MonoBehaviour:
   roamRadius: 20
   waitRoamTime: 1
   roamSpeed: 3
-  chaseSpeed: 3
+  chaseSpeed: 6
   _isWaiting: 0
   canKnockback: 1
   knockbackMultiplier: 1

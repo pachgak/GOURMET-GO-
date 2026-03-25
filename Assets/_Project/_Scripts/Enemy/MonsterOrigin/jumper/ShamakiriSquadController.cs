@@ -15,21 +15,56 @@ public class ShamakiriSquadController : MonoBehaviour
     private float _turnTimer;
     private bool _isDoingCombo = false;
 
-    // ตัวแปรใหม่สำหรับระบบคิว (Index)
     private int _currentAttackerIndex = 0;
-    private BaseEnemyAI _currentAttackingClone = null; // เก็บตัวที่กำลังวิ่งไปตี
+    private BaseEnemyAI _currentAttackingClone = null;
     private bool _isAttacking = false;
 
     [Header("Formation Settings")]
     public float formationRadius = 6f;
     public float formationRotateSpeed = 20f;
     private float _formationAngle = 0f;
-    private Transform _playerTarget;
+
+    [Header("Stalker & Reset Settings")]
+    public float stalkerSpeed = 5f;
+    public float loseSightDistance = 25f;
+    public float loseSightTime = 5f;
+    private float _loseSightTimer = 0f;
+
+    [Header("Jump Back Settings")]
+    public float jumpBackHeight = 4f;    // ความสูงตอนกระโดดกลับ
+    public float jumpBackDuration = 0.8f;// ความเร็วในการกระโดดกลับ (ค่ายิ่งน้อย ยิ่งพุ่งไว)
+
+    // ตัวแปรสำหรับจำว่า ใครแอบวิ่งหลุดวงไปบ้าง (เพื่อที่พอกลับเข้าวงจะได้สั่งให้กระโดด)
+    private Dictionary<BaseEnemyAI, bool> _wasOutsideRadius = new Dictionary<BaseEnemyAI, bool>();
+
+    [Header("True Form Spawn Settings")]
+    public float spawnMinRadius = 3f;     // ห้ามเกิดใกล้กว่านี้ (กันซ้อนผู้เล่น)
+    public float spawnMaxRadius = 8f;     // ห้ามเกิดไกลกว่านี้
+    public LayerMask obstacleMask;        // เลเยอร์กำแพง/ฉาก (เพื่อใช้ Raycast เช็คว่ามีอะไรบังไหม)
+    public GameObject trueFormVFX;        // เอฟเฟกต์ตอนร่างจริงปรากฏตัว
+
+    [Header("Cinematic Timing")]
+    public float delayBeforeVanish = 1.0f;    // ร่างแยกตัวสุดท้ายยืนนิ่งกี่วิ ก่อนระเบิดควัน
+    public float emptyScreenDuration = 1.5f;  // จอดำ (ไม่มีบอส) นานกี่วิให้ผู้เล่นระแวง
+    public float delayBeforeAttack = 1.5f;    // ร่างแม่โผล่มาแล้ว ยืนขู่กี่วิก่อนเข้าโจมตี
+
+    // --- Refs ของตัวแม่ (ดึงมาเก็บไว้ใน Awake) ---
+    private BaseEnemyAI _myAI;
+    private NavMeshAgent _myAgent;
+    private bool _isActiveSquad = false;
+
+    private void Awake()
+    {
+        _myAI = GetComponent<BaseEnemyAI>();
+        _myAgent = GetComponent<NavMeshAgent>();
+    }
 
     public void InitializeSquad(List<GameObject> clones, GameObject target)
     {
         activeClones.Clear();
-        _playerTarget = target.transform;
+        _wasOutsideRadius.Clear(); // *** เพิ่มบรรทัดนี้ ***
+        _isActiveSquad = true;
+        _loseSightTimer = 0f;
 
         if (clones.Count >= 3)
         {
@@ -38,55 +73,68 @@ public class ShamakiriSquadController : MonoBehaviour
                 if (cloneObj.TryGetComponent(out BaseEnemyAI cloneAI))
                 {
                     activeClones.Add(cloneAI);
+                    _wasOutsideRadius[cloneAI] = false;
 
                     if (cloneObj.TryGetComponent(out EnemyHealth health))
                     {
                         health.OnDie += () => HandleCloneDeath(cloneAI);
                     }
-
-                    // เกิดมาปุ๊บ เข้าโหมด Standby เพื่อจัด 3 เหลี่ยม
                     cloneAI.TriggerChangeState(BaseEnemyAI.EnemyState.Standby);
                 }
             }
         }
 
-        // ปิดการแสดงผลและการทำงานของตัวแม่
+        // ปิดการทำงานตัวแม่ ยกเว้นการเดินสะกดรอย
         foreach (var graphice in graphicesParent) graphice.SetActive(false);
         if (TryGetComponent(out Collider col)) col.enabled = false;
-        if (TryGetComponent(out NavMeshAgent agent)) agent.enabled = false;
-        if (TryGetComponent(out BaseEnemyAI ai)) ai.enabled = false;
+        if (_myAI != null) _myAI.enabled = false;
         if (TryGetComponent(out BaseEnemyMovement move)) move.enabled = false;
         if (TryGetComponent(out BaseEnemyCombat combat)) combat.enabled = false;
         if (TryGetComponent(out EnemyHealth healthUser)) healthUser.enabled = false;
 
+        // เปิด Agent ให้เดินตามผู้เล่น
+        if (_myAgent != null)
+        {
+            _myAgent.enabled = true;
+            _myAgent.isStopped = false;
+            _myAgent.speed = stalkerSpeed;
+        }
+
         _turnTimer = turnCooldown;
-        _currentAttackerIndex = 0; // เริ่มที่คิวแรก
-        Debug.Log("Shamakiri Puppet Master: เริ่มค่ายกล 3 เหลี่ยม!");
+        _currentAttackerIndex = 0;
+        Debug.Log("Shamakiri Puppet Master: เริ่มสะกดรอย และกางค่ายกล 3 เหลี่ยม!");
     }
 
     private void Update()
     {
-        if (activeClones.Count == 0 || _isDoingCombo) return;
+        if (!_isActiveSquad || activeClones.Count == 0 || _isDoingCombo) return;
 
-        // 1. จัดค่ายกล 3 เหลี่ยมตลอดเวลา (ขยับเฉพาะตัวที่ Standby)
+        // 1. จัดการสะกดรอยและเช็คระยะหนี (ครอบเป็น Method ให้แล้ว!)
+        HandleStalkerMode();
+
+        // 2. จัดค่ายกล 3 เหลี่ยม
         MaintainTriangleFormation();
 
-        // 2. เช็คว่าตัวที่ส่งไปตี กลับมาหรือยัง
+        // 3. เช็คสถานะตัวที่กำลังเข้าไปตี
         if (_isAttacking)
         {
-            // ถ้าตัวที่ตีอยู่ ตายไปแล้ว หรือ กลับมา Standby เรียบร้อยแล้ว (ตีเสร็จ)
             if (_currentAttackingClone == null || _currentAttackingClone.currentState == BaseEnemyAI.EnemyState.Standby)
             {
+                // *** เพิ่มตรงนี้: ตีเสร็จแล้ว! สั่งให้กระโดดกลับค่ายกลเลย ***
+                if (_currentAttackingClone != null && activeClones.Contains(_currentAttackingClone))
+                {
+                    JumpToFormationPoint(_currentAttackingClone);
+                }
+
                 _isAttacking = false;
                 _currentAttackingClone = null;
-
-                _currentAttackerIndex++; // เลื่อนบัตรคิวไปคนถัดไป
-                _turnTimer = turnCooldown; // รีเซ็ตเวลาพัก
+                _currentAttackerIndex++;
+                _turnTimer = turnCooldown;
             }
-            return; // ยังตีไม่เสร็จ ให้รอไปก่อน ไม่ต้องนับเวลา
+            return;
         }
 
-        // 3. ระบบนับเวลาเพื่อส่งคิวถัดไปออกไปตี
+        // 4. รันคิว
         _turnTimer -= Time.deltaTime;
         if (_turnTimer <= 0)
         {
@@ -94,43 +142,151 @@ public class ShamakiriSquadController : MonoBehaviour
         }
     }
 
-    // --- ระบบค่ายกล 3 เหลี่ยม ---
+    // ==========================================
+    // แยก Method: การเดินตามและเช็คระยะ
+    // ==========================================
+    private void HandleStalkerMode()
+    {
+        // ดึง playerTarget จาก _myAI ตรงๆ ไม่ต้องรับค่าซ้ำซ้อน
+        if (_myAI != null && _myAI.playerTarget != null && _myAgent != null && _myAgent.isOnNavMesh)
+        {
+            _myAgent.SetDestination(_myAI.playerTarget.position);
+
+            float distToPlayer = Vector3.Distance(transform.position, _myAI.playerTarget.position);
+            if (distToPlayer > loseSightDistance)
+            {
+                _loseSightTimer += Time.deltaTime;
+                if (_loseSightTimer >= loseSightTime)
+                {
+                    ResetBoss();
+                }
+            }
+            else
+            {
+                _loseSightTimer = 0f;
+            }
+        }
+    }
+
+    // ==========================================
+    // รีเซ็ตบอสกลับไปเป็นปกติ
+    // ==========================================
+    private void ResetBoss()
+    {
+        Debug.Log("[Shamakiri] ผู้เล่นหนีพ้น! ลบค่ายกลทิ้ง แล้วกลับสู่สภาพเดิม");
+
+        _isActiveSquad = false;
+        _isAttacking = false;
+        _currentAttackingClone = null;
+
+        // ส่งร่างแยกกลับ Pool ตามระบบของคุณ
+        foreach (var clone in activeClones)
+        {
+            if (clone != null)
+            {
+                ObjectPoolingManager.Instance.Respawn(clone.gameObject);
+            }
+        }
+        activeClones.Clear();
+        _wasOutsideRadius.Clear();
+
+        // คืนร่างให้ Container
+        foreach (var graphice in graphicesParent) graphice.SetActive(true);
+        if (TryGetComponent(out Collider col)) col.enabled = true;
+
+        if (_myAI != null)
+        {
+            _myAI.enabled = true;
+            _myAI.TriggerChangeState(BaseEnemyAI.EnemyState.Roaming);
+        }
+
+        if (TryGetComponent(out BaseEnemyMovement move)) move.enabled = true;
+        if (TryGetComponent(out BaseEnemyCombat combat)) combat.enabled = true;
+        if (TryGetComponent(out EnemyHealth healthUser)) healthUser.enabled = true;
+
+        if (_myAgent != null && move != null)
+        {
+            _myAgent.speed = move.roamSpeed;
+            // ล้างความจำเส้นทางที่เคยวางไว้เดินตาม Player (แก้บั๊ก Agent ค้าง)
+            _myAgent.ResetPath();
+        }
+    }
+
     private void MaintainTriangleFormation()
     {
-        if (_playerTarget == null) return;
+        if (_myAI == null || _myAI.playerTarget == null) return;
 
         _formationAngle += formationRotateSpeed * Time.deltaTime;
-
-        // คำนวณองศาแบ่งตามจำนวนโคลนที่เหลืออยู่ (ถ้าเหลือ 3 ก็ 120 องศา, ถ้าเหลือ 2 ก็ 180 องศา)
         float angleStep = 360f / activeClones.Count;
 
         for (int i = 0; i < activeClones.Count; i++)
         {
             BaseEnemyAI clone = activeClones[i];
-
             if (clone == null || clone.currentState != BaseEnemyAI.EnemyState.Standby) continue;
+
+            // *** สำคัญ: ถ้ากำลังกระโดดอยู่ (Agent ปิด) ห้ามกวนใจมัน ข้ามไปเลย ***
+            if (!clone.TryGetComponent(out NavMeshAgent agent) || !agent.isActiveAndEnabled) continue;
 
             float angle = _formationAngle + (i * angleStep);
             Vector3 offset = Quaternion.Euler(0, angle, 0) * Vector3.forward * formationRadius;
-            Vector3 targetPos = _playerTarget.position + offset;
+            Vector3 formationPos = _myAI.playerTarget.position + offset;
 
-            if (clone.TryGetComponent(out NavMeshAgent agent) && agent.isActiveAndEnabled)
+            float distToPlayer = Vector3.Distance(clone.transform.position, _myAI.playerTarget.position);
+
+            if (distToPlayer > formationRadius + 1f)
             {
+                // ถ้าหลุดขอบวง: ให้วิ่งตรงเข้าหาผู้เล่น และจดจำไว้ว่า "ฉันแอบอยู่ข้างนอกนะ"
+                _wasOutsideRadius[clone] = true;
                 agent.isStopped = false;
-                agent.SetDestination(targetPos);
+                agent.SetDestination(_myAI.playerTarget.position);
+            }
+            else
+            {
+                // ถ้า "ก่อนหน้านี้อยู่ข้างนอก" แล้วตอนนี้ "เพิ่งกลับเข้ามาในระยะได้" -> กระโดดเลย!
+                if (_wasOutsideRadius.ContainsKey(clone) && _wasOutsideRadius[clone])
+                {
+                    JumpToFormationPoint(clone);
+                    continue; // ข้ามบรรทัดเดินด้านล่างไป เพราะมันกำลังจะกระโดด
+                }
+
+                // ถ้าอยู่ในวงปกติ ก็เดินหมุนค่ายกลตามจุดสีแดงต่อไป
+                agent.isStopped = false;
+                agent.SetDestination(formationPos);
             }
         }
     }
 
-    // --- ระบบรันคิวแบบใหม่ (ใช้ Index) ---
+    private void JumpToFormationPoint(BaseEnemyAI clone)
+    {
+        if (clone == null || _myAI.playerTarget == null) return;
+
+        int index = activeClones.IndexOf(clone);
+        if (index == -1) return;
+
+        // 1. คำนวณจุดปัจจุบันที่มันต้องไปยืน
+        float angleStep = 360f / activeClones.Count;
+        float angle = _formationAngle + (index * angleStep);
+        Vector3 offset = Quaternion.Euler(0, angle, 0) * Vector3.forward * formationRadius;
+        Vector3 targetPos = _myAI.playerTarget.position + offset;
+
+        // 2. สั่งกระโดด!
+        if (clone.TryGetComponent(out BaseEnemyMovement move))
+        {
+            move.SkillJump(targetPos, jumpBackHeight, jumpBackDuration);
+        }
+
+        // 3. รีเซ็ตค่าว่ามันอยู่ในวงแล้วนะ จะได้ไม่โดนสั่งกระโดดซ้ำซ้อน
+        if (_wasOutsideRadius.ContainsKey(clone))
+        {
+            _wasOutsideRadius[clone] = false;
+        }
+    }
+
     private void ExecuteNextTurn()
     {
-        // 1. ถ้าทุกคนตีครบ 1 รอบแล้ว (Index ทะลุจำนวนคน)
         if (_currentAttackerIndex >= activeClones.Count)
         {
-            _currentAttackerIndex = 0; // รีเซ็ตคิวกลับมาเริ่มที่คนแรก
-
-            // ถ้ามีครบ 3 ตัว ให้ใช้ท่าคอมโบผสานก่อนเริ่มลูปใหม่
+            _currentAttackerIndex = 0;
             if (activeClones.Count == 3)
             {
                 StartCoroutine(UltimateComboAttack());
@@ -138,59 +294,261 @@ public class ShamakiriSquadController : MonoBehaviour
             }
         }
 
-        // 2. สั่งตัวคิวปัจจุบันให้ไปตี
         if (_currentAttackerIndex < activeClones.Count)
         {
             _currentAttackingClone = activeClones[_currentAttackerIndex];
             _isAttacking = true;
-
-            Debug.Log($"[Shamakiri] ส่งลูกน้องคิวที่ {_currentAttackerIndex} ลุย!");
-
-            // สั่งให้มันเปลี่ยนเป็น Chase แล้วปล่อยให้ AI มันจัดการที่เหลือเอง!
             _currentAttackingClone.TriggerChangeState(BaseEnemyAI.EnemyState.Chase);
         }
     }
 
-    // --- จัดการเวลาโคลนตาย ---
     private void HandleCloneDeath(BaseEnemyAI deadClone)
     {
+        // ถ้ากำลังรันคัทซีนเปิดตัวร่างจริงอยู่ ห้ามทำงานซ้ำซ้อน
+        if (!_isActiveSquad) return;
+
         if (activeClones.Contains(deadClone))
         {
-            activeClones.Remove(deadClone);
-            Debug.Log($"โคลนตาย! เหลือ {activeClones.Count} ตัว (หมดสิทธิ์ใช้ท่าคอมโบ)");
-
-            // ป้องกันบั๊ก Index เกินจำนวนใน List เมื่อมีตัวตาย
-            if (_currentAttackerIndex >= activeClones.Count)
+            // เสกควันตอนร่างแยกตาย (ตัวที่ 1 และ 2)
+            if (trueFormVFX != null && deadClone != null)
             {
-                _currentAttackerIndex = 0;
+                ObjectPoolingManager.Instance.Spawn(trueFormVFX, deadClone.transform.position);
             }
 
+            activeClones.Remove(deadClone);
+            if (_wasOutsideRadius.ContainsKey(deadClone)) _wasOutsideRadius.Remove(deadClone);
+            if (_currentAttackerIndex >= activeClones.Count) _currentAttackerIndex = 0;
+
+            // เหลือตัวสุดท้าย (ตายไป 2 ตัว) -> เริ่มคัทซีนเปิดตัวร่างจริง
             if (activeClones.Count == 1)
             {
-                TriggerEnrageMode(activeClones[0]);
-            }
-            else if (activeClones.Count == 0)
-            {
-                Destroy(gameObject);
+                StartCoroutine(RevealTrueFormRoutine()); // เปลี่ยนมาเรียก Coroutine แทน
             }
         }
     }
 
-    private void TriggerEnrageMode(BaseEnemyAI lastClone)
+    private void RevealTrueFormPhase()
     {
-        Debug.Log("ร่างสุดท้าย โกรธแล้ว! คืนค่าการไล่ล่าอิสระ");
-        // สั่งให้ตัวสุดท้ายบ้าคลั่ง ไล่ตีเองตลอดเวลา ไม่ต้องกลับมา 3 เหลี่ยมแล้ว
-        lastClone.TriggerChangeState(BaseEnemyAI.EnemyState.Chase);
+        Debug.Log("[Shamakiri] ร่างแยกถูกทำลาย 2 ตัว! ร่างจริงกำลังจะปรากฏตัว!");
 
-        // เราสามารถล้าง ShamakiriCloneAI ออก แล้วใส่ลูกเล่นเพิ่มได้
-        // หรือปล่อยให้มัน Chase ไปเรื่อยๆ ก็ได้เพราะมันจะไม่กลับมา Standby แล้ว (ถ้าเราไม่สั่ง)
+        // 1. ปิดระบบ Controller ค่ายกล
+        _isActiveSquad = false;
+        _isAttacking = false;
+        _currentAttackingClone = null;
+
+        // 2. ลบร่างแยกตัวสุดท้ายทิ้ง
+        if (activeClones.Count > 0 && activeClones[0] != null)
+        {
+            // สามารถใส่ VFX ระเบิดร่างแยกตรงนี้ได้ก่อนลบ
+            ObjectPoolingManager.Instance.Respawn(activeClones[0].gameObject);
+        }
+        activeClones.Clear();
+        _wasOutsideRadius.Clear();
+
+        // 3. หาจุดเกิดที่ปลอดภัย (Safe Spawn)
+        Vector3 safeSpawnPos = GetSafeSpawnPosition();
+
+        // 4. วาร์ปตัวแม่ที่ล่องหนอยู่ ไปที่จุดปลอดภัย
+        if (_myAgent != null)
+        {
+            _myAgent.Warp(safeSpawnPos);
+            _myAgent.isStopped = true;
+            _myAgent.ResetPath();
+        }
+        else
+        {
+            transform.position = safeSpawnPos;
+        }
+
+        // 5. เล่นเอฟเฟกต์ปรากฏตัว
+        if (trueFormVFX != null)
+        {
+            ObjectPoolingManager.Instance.Spawn(trueFormVFX, safeSpawnPos);
+        }
+
+        // 6. คืนร่างให้ตัวแม่ และเปิดระบบต่อสู้ของมัน!
+        foreach (var graphice in graphicesParent) graphice.SetActive(true);
+        if (TryGetComponent(out Collider col)) col.enabled = true;
+
+        if (_myAI != null)
+        {
+            _myAI.enabled = true;
+            _myAI.TriggerChangeState(BaseEnemyAI.EnemyState.Chase); // ออกมาปุ๊บ สั่งไล่ล่าเลย!
+        }
+
+        if (TryGetComponent(out BaseEnemyMovement move)) move.enabled = true;
+        if (TryGetComponent(out EnemyHealth healthUser)) healthUser.enabled = true;
+
+        if (TryGetComponent(out BaseEnemyCombat combat))
+        {
+            combat.enabled = true;
+
+            // *** เพิ่มบรรทัดนี้: ถ้าคอมแบทเป็นร่างแม่ ให้เปิดโหมดโกรธ! ***
+            if (combat is ShamakiriContainerCombat shamakiriCombat)
+            {
+                shamakiriCombat.SetEnragePhase(true);
+            }
+        }
+
+
     }
 
-    // --- ท่าผสานกระโดด 3 ตัว (ยังใช้เหมือนเดิม) ---
+    private IEnumerator RevealTrueFormRoutine()
+    {
+        Debug.Log("[Shamakiri] ร่างแยกถูกทำลาย 2 ตัว! เริ่ม Sequence ร่างจริง...");
+
+        // 1. ปิดระบบ Controller ค่ายกล
+        _isActiveSquad = false;
+        _isAttacking = false;
+        _currentAttackingClone = null;
+
+        // 2. สั่งร่างแยกตัวสุดท้ายให้ "หยุดนิ่ง"
+        BaseEnemyAI lastClone = null;
+        if (activeClones.Count > 0)
+        {
+            lastClone = activeClones[0];
+            if (lastClone != null)
+            {
+                lastClone.TriggerChangeState(BaseEnemyAI.EnemyState.Standby);
+                if (lastClone.TryGetComponent(out NavMeshAgent agent)) agent.isStopped = true;
+            }
+        }
+
+        // --- หน่วงเวลาที่ 1: ให้ร่างแยกยืนนิ่งๆ ให้ผู้เล่นงง ---
+        yield return new WaitForSeconds(delayBeforeVanish);
+
+        // 3. ระเบิดร่างแยกตัวสุดท้ายทิ้ง พร้อม VFX ควัน
+        if (lastClone != null)
+        {
+            if (trueFormVFX != null)
+            {
+                ObjectPoolingManager.Instance.Spawn(trueFormVFX, lastClone.transform.position);
+            }
+            ObjectPoolingManager.Instance.Respawn(lastClone.gameObject);
+        }
+        activeClones.Clear();
+        _wasOutsideRadius.Clear();
+
+        // --- หน่วงเวลาที่ 2: ปล่อยฉากให้ว่างเปล่า สร้างความระแวง ---
+        yield return new WaitForSeconds(emptyScreenDuration);
+
+        // 4. หาจุดเกิดที่ปลอดภัย และวาร์ปร่างแม่ไปรอ
+        Vector3 safeSpawnPos = GetSafeSpawnPosition();
+
+        if (_myAgent != null)
+        {
+            _myAgent.Warp(safeSpawnPos);
+            _myAgent.isStopped = true;
+            _myAgent.ResetPath();
+        }
+        else
+        {
+            transform.position = safeSpawnPos;
+        }
+
+        // 5. ร่างแม่ปรากฏตัวพร้อมควัน!
+        if (trueFormVFX != null)
+        {
+            ObjectPoolingManager.Instance.Spawn(trueFormVFX, safeSpawnPos);
+        }
+
+        // เปิดโชว์กราฟิกของร่างแม่
+        foreach (var graphice in graphicesParent) graphice.SetActive(true);
+        if (TryGetComponent(out Collider col)) col.enabled = true;
+
+        // คืนสมองให้แม่ แต่สั่งให้ "รอดูเชิง (Standby)" ไปก่อน
+        if (_myAI != null)
+        {
+            _myAI.enabled = true;
+            _myAI.TriggerChangeState(BaseEnemyAI.EnemyState.Standby);
+        }
+
+        if (TryGetComponent(out BaseEnemyMovement move)) move.enabled = true;
+        if (TryGetComponent(out EnemyHealth healthUser)) healthUser.enabled = true;
+
+        // --- หน่วงเวลาที่ 3: ยืนขู่ผู้เล่นก่อนเข้าโจมตี ---
+        yield return new WaitForSeconds(delayBeforeAttack);
+
+        // 6. เปิดโหมดโกรธ แล้ววิ่งเข้าใส่ผู้เล่นเลย!
+        if (TryGetComponent(out BaseEnemyCombat combat))
+        {
+            combat.enabled = true;
+            if (combat is ShamakiriContainerCombat shamakiriCombat)
+            {
+                shamakiriCombat.SetEnragePhase(true); // เปลี่ยนสกิลเป็นโหมดโกรธ
+            }
+        }
+
+        if (_myAI != null)
+        {
+            _myAI.TriggerChangeState(BaseEnemyAI.EnemyState.Chase); // สั่งไล่ล่า!
+        }
+    }
+
+    // ==========================================
+    // ฟังก์ชัน: หาจุดเกิดที่ไม่ติดกำแพง และไม่ซ้อนผู้เล่น (Safe Spawn)
+    // ==========================================
+    private Vector3 GetSafeSpawnPosition()
+    {
+        if (_myAI == null || _myAI.playerTarget == null) return transform.position;
+
+        Transform player = _myAI.playerTarget;
+        Vector3 bestPos = transform.position;
+        bool foundSafeSpot = false;
+
+        // ลองสุ่มหา 10 ครั้ง เพื่อหาจุดที่ดีที่สุด (ป้องกันเกมค้างถ้าหาทางออกไม่ได้)
+        for (int i = 0; i < 10; i++)
+        {
+            // 1. สุ่มระยะห่างและมุม
+            float randomDist = Random.Range(spawnMinRadius, spawnMaxRadius);
+            float randomAngle = Random.Range(0f, 360f);
+
+            Vector3 offset = Quaternion.Euler(0, randomAngle, 0) * Vector3.forward * randomDist;
+            Vector3 potentialPos = player.position + offset;
+
+            NavMeshHit hit;
+            // 2. เช็คว่าจุดสมมตินั้น อยู่บน NavMesh ไหม
+            if (NavMesh.SamplePosition(potentialPos, out hit, 2f, NavMesh.AllAreas))
+            {
+                // 3. เช็คว่ามี "กำแพง" บังระหว่างจุดเกิดกับผู้เล่นไหม
+                Vector3 dirToPlayer = player.position - hit.position;
+
+                // ยกจุดยิง Raycast ขึ้นมานิดนึง (เช่น 1 หน่วย หรือระดับอก) จะได้ไม่ยิงชนพื้น
+                Vector3 rayStart = hit.position + Vector3.up * 1f;
+
+                // ถ้ายิง Raycast ไปหาผู้เล่น แล้วไม่โดน Layer สิ่งกีดขวางเลย แปลว่าจุดนั้นโล่ง!
+                if (!Physics.Raycast(rayStart, dirToPlayer.normalized, dirToPlayer.magnitude, obstacleMask))
+                {
+                    bestPos = hit.position;
+                    foundSafeSpot = true;
+                    break; // เจอจุดที่ปลอดภัย 100% แล้ว หยุดหาทันที
+                }
+            }
+        }
+
+        // ถ้าดวงซวยจริงๆ โดนต้อนเข้ามุมแคบ หาจุดโล่งๆ 10 ครั้งไม่เจอเลย 
+        if (!foundSafeSpot)
+        {
+            Debug.LogWarning("[Shamakiri] หาจุดเกิดที่ปลอดภัยไม่เจอ! สุ่มเกิดขอบนอกสุดเลยละกัน");
+            // สุ่มเกิดวงนอกสุดไปเลย จะได้ไม่ซ้อนผู้เล่น
+            Vector3 fallbackPos = player.position + (Random.insideUnitSphere.normalized * spawnMaxRadius);
+            if (NavMesh.SamplePosition(fallbackPos, out NavMeshHit fallbackHit, spawnMaxRadius, NavMesh.AllAreas))
+            {
+                bestPos = fallbackHit.position;
+            }
+        }
+
+        return bestPos;
+    }
+
+    //private void TriggerEnrageMode(BaseEnemyAI lastClone)
+    //{
+    //    lastClone.TriggerChangeState(BaseEnemyAI.EnemyState.Chase);
+    //}
+
     private IEnumerator UltimateComboAttack()
     {
         _isDoingCombo = true;
-        Debug.Log("เริ่มท่าผสาน: Shamakiri Triple Strike!");
 
         foreach (var clone in activeClones)
         {
@@ -210,10 +568,8 @@ public class ShamakiriSquadController : MonoBehaviour
         }
 
         yield return new WaitForSeconds(1.5f);
-        Debug.Log("ปล่อยพลังจากฟ้าฟาดลงมา 3 เส้น!");
         yield return new WaitForSeconds(0.75f);
 
-        // กลับสู่ค่ายกล 3 เหลี่ยม
         foreach (var clone in activeClones)
         {
             if (clone != null)
@@ -223,7 +579,49 @@ public class ShamakiriSquadController : MonoBehaviour
         }
 
         _isDoingCombo = false;
-        // รีเซ็ตเวลาเพื่อเริ่มคิวของคนแรกในรอบใหม่
         _turnTimer = turnCooldown;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        // 1. หาจุดศูนย์กลาง (อิงตามผู้เล่นถ้ากด Play อยู่ หรืออิงตามตัวแม่ถ้ายังไม่ได้กด Play)
+        Vector3 centerPos = transform.position;
+        if (Application.isPlaying && _myAI != null && _myAI.playerTarget != null)
+        {
+            centerPos = _myAI.playerTarget.position;
+        }
+
+        // 2. วาดวงกลมรัศมีค่ายกล (สีฟ้า)
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(centerPos, formationRadius);
+
+        // ป้องกันการหาร 0 (ถ้ายังไม่กด Play ให้จำลองว่ามี 3 ตัวไปก่อน)
+        int currentCloneCount = Application.isPlaying ? activeClones.Count : 3;
+        if (currentCloneCount == 0) return;
+
+        float angleStep = 360f / currentCloneCount;
+
+        // 3. จำลองการคำนวณและวาดจุดเป้าหมายทั้ง 3 จุด
+        for (int i = 0; i < currentCloneCount; i++)
+        {
+            float angle = _formationAngle + (i * angleStep);
+            Vector3 offset = Quaternion.Euler(0, angle, 0) * Vector3.forward * formationRadius;
+            Vector3 targetPos = centerPos + offset;
+
+            // วาดเส้นโยงจากศูนย์กลางไปหาเป้าหมาย (สีเหลือง)
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawLine(centerPos, targetPos);
+
+            // วาดลูกบอลตรงจุดที่ Agent ต้องเดินไปให้ถึง (สีแดง)
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(targetPos, 0.5f);
+
+            // (ออปชันเสริม) ถ้ากด Play อยู่ ให้วาดเส้นโยงจากตัวโคลนไปหาจุดเป้าหมายด้วย
+            if (Application.isPlaying && i < activeClones.Count && activeClones[i] != null)
+            {
+                Gizmos.color = Color.green;
+                Gizmos.DrawLine(activeClones[i].transform.position, targetPos);
+            }
+        }
     }
 }

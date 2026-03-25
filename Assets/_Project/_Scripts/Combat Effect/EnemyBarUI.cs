@@ -50,23 +50,37 @@ public class EnemyBarUI : MonoBehaviour
         }
     }
 
-    public void SetData(EnemyBarController enemyBarController, EnemyHealth healthTarget, EnemySO enemy)
+    // เปลี่ยนพารามิเตอร์ตัวสุดท้ายเป็น string enemyName = "" (กำหนดค่าเริ่มต้นเป็นค่าว่างเผื่อไม่ส่งมา)
+    public void SetData(EnemyBarController bossBarController, EnemyHealth healthTarget, string enemyName = "")
     {
         if (_healthTarget != null) ResingTarget();
         if (!gameObject.activeSelf) gameObject.SetActive(true);
 
         _healthTarget = healthTarget;
-        _enemyBarController = enemyBarController;
+        _enemyBarController = bossBarController; // สำหรับ EnemyBarUI จะเป็น _enemyBarController
 
         _healthTarget.OnCurrentChang += HeadledTakeDamaget;
         _healthTarget.OnDie += HeadleDie;
 
-        //_EnemyBarController.isShowing = true;
+        _enemyBarController.isShowing = true;
 
         hpBar.maxValue = _healthTarget.maxHealth;
-        nameText.text = enemy.name;
 
-
+        // --- ส่วนที่ปรับปรุงใหม่ ---
+        if (nameText != null)
+        {
+            if (!string.IsNullOrEmpty(enemyName))
+            {
+                nameText.text = enemyName;
+                nameText.gameObject.SetActive(true);
+            }
+            else
+            {
+                nameText.text = "";
+                nameText.gameObject.SetActive(false); // ซ่อนชื่อถ้าไม่มีการส่งมา
+            }
+        }
+        // -------------------------
 
         ShowHp(_healthTarget.currentHealth);
     }

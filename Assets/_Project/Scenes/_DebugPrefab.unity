@@ -15085,11 +15085,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 630821629}
   m_CullTransparentMesh: 1
---- !u!1 &631850103 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 937098375388025215, guid: 4eb5608e84ad88143afdd75e519c653a, type: 3}
-  m_PrefabInstance: {fileID: 746255830}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &639569460
 GameObject:
   m_ObjectHideFlags: 0
@@ -18649,49 +18644,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4318696240691764284, guid: 4eb5608e84ad88143afdd75e519c653a, type: 3}
-      propertyPath: foreshorteningParent
+    - target: {fileID: 4547645183778580356, guid: 4eb5608e84ad88143afdd75e519c653a, type: 3}
+      propertyPath: playerTarget
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1920205507}
     - target: {fileID: 4858094101008093505, guid: 4eb5608e84ad88143afdd75e519c653a, type: 3}
       propertyPath: target
       value: 
       objectReference: {fileID: 1920205507}
-    - target: {fileID: 4858094101008093505, guid: 4eb5608e84ad88143afdd75e519c653a, type: 3}
-      propertyPath: 'enemyCloneList.Array.data[0]'
+    - target: {fileID: 4876265923951584113, guid: 4eb5608e84ad88143afdd75e519c653a, type: 3}
+      propertyPath: trueFormVFX
       value: 
-      objectReference: {fileID: 7394732908978849504, guid: 4df93e08f9dcc1f4a84285dadfb7e5c0, type: 3}
-    - target: {fileID: 4876265923951584113, guid: 4eb5608e84ad88143afdd75e519c653a, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4876265923951584113, guid: 4eb5608e84ad88143afdd75e519c653a, type: 3}
-      propertyPath: formationRadius
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 4876265923951584113, guid: 4eb5608e84ad88143afdd75e519c653a, type: 3}
-      propertyPath: graphicesParent
-      value: 
-      objectReference: {fileID: 631850103}
-    - target: {fileID: 4876265923951584113, guid: 4eb5608e84ad88143afdd75e519c653a, type: 3}
-      propertyPath: graphicesParent.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4876265923951584113, guid: 4eb5608e84ad88143afdd75e519c653a, type: 3}
-      propertyPath: 'graphicesParent.Array.data[0]'
-      value: 
-      objectReference: {fileID: 631850103}
-    - target: {fileID: 4876265923951584113, guid: 4eb5608e84ad88143afdd75e519c653a, type: 3}
-      propertyPath: 'graphicesParent.Array.data[1]'
-      value: 
-      objectReference: {fileID: 1103956907}
+      objectReference: {fileID: 7998149100164185464, guid: 47cfe74de68698a43883857a7523102a, type: 3}
     - target: {fileID: 5565202312802687924, guid: 4eb5608e84ad88143afdd75e519c653a, type: 3}
       propertyPath: m_Name
       value: Shamakiri Container (MokeUp)
-      objectReference: {fileID: 0}
-    - target: {fileID: 5565202312802687924, guid: 4eb5608e84ad88143afdd75e519c653a, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -37943,11 +37910,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isOpenInventory: 0
---- !u!1 &1103956907 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6183076836183093455, guid: 4eb5608e84ad88143afdd75e519c653a, type: 3}
-  m_PrefabInstance: {fileID: 746255830}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1104353562
 GameObject:
   m_ObjectHideFlags: 0
@@ -44674,10 +44636,6 @@ PrefabInstance:
     - target: {fileID: 8248806429086153625, guid: 7a209f007bb130142a4c2ed98f5bfd04, type: 3}
       propertyPath: m_Name
       value: Shamakiri Range (MokeUp) (2)
-      objectReference: {fileID: 0}
-    - target: {fileID: 8248806429086153625, guid: 7a209f007bb130142a4c2ed98f5bfd04, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -62191,10 +62149,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shamakiri Melee (MokeUp) (1)
       objectReference: {fileID: 0}
-    - target: {fileID: 4468386374685865033, guid: b247e385f25575241bcd7ece85665b1c, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -62235,10 +62189,6 @@ PrefabInstance:
     - target: {fileID: 709896967342680748, guid: a3139a8a68774dd4c8f7cc7c35279b9e, type: 3}
       propertyPath: m_Name
       value: Shamakiri AoE (MokeUp) (3)
-      objectReference: {fileID: 0}
-    - target: {fileID: 709896967342680748, guid: a3139a8a68774dd4c8f7cc7c35279b9e, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6774652096535924040, guid: a3139a8a68774dd4c8f7cc7c35279b9e, type: 3}
       propertyPath: m_LocalPosition.x

@@ -270,6 +270,7 @@ GameObject:
   - component: {fileID: 453679898395419888}
   - component: {fileID: 9132547005129956564}
   - component: {fileID: 4547645183778580356}
+  - component: {fileID: 4378031190412810596}
   - component: {fileID: 3139852089281738188}
   - component: {fileID: 3530486207396253788}
   - component: {fileID: 2926557233993478406}
@@ -442,6 +443,31 @@ MonoBehaviour:
   <IsStunned>k__BackingField: 0
   _playerInSightRange: 0
   _playerInAttackRange: 0
+--- !u!114 &4378031190412810596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5565202312802687924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd882d343f6f088429c44a991b4f4b5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackMask:
+    serializedVersion: 2
+    m_Bits: 0
+  attackCooldown: 2
+  attackTimer: 0
+  enemySkills:
+  - {fileID: 11400000, guid: 9b1a3c4243a30f847adfce1988a1a5bd, type: 2}
+  - {fileID: 11400000, guid: ef8f26ccfd81a6c408ce4e757655dbda, type: 2}
+  - {fileID: 11400000, guid: ccddfc8ab40c8da42bc2553ba8b2bb99, type: 2}
+  - {fileID: 11400000, guid: 9e29815580db1834a8d9cbd4f61c2a37, type: 2}
+  currentDiractionSkill: {x: 0, y: 0, z: 0}
+  isEnraged: 0
+  enragedAttackSpeed: 1.5
 --- !u!114 &3139852089281738188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -461,6 +487,9 @@ MonoBehaviour:
   attackTimer: 0
   enemySkills:
   - {fileID: 11400000, guid: 9b1a3c4243a30f847adfce1988a1a5bd, type: 2}
+  - {fileID: 11400000, guid: ef8f26ccfd81a6c408ce4e757655dbda, type: 2}
+  - {fileID: 11400000, guid: ccddfc8ab40c8da42bc2553ba8b2bb99, type: 2}
+  - {fileID: 11400000, guid: 9e29815580db1834a8d9cbd4f61c2a37, type: 2}
   currentDiractionSkill: {x: 0, y: 0, z: 0}
 --- !u!114 &3530486207396253788
 MonoBehaviour:
@@ -566,6 +595,25 @@ MonoBehaviour:
     simulatedDurationSkill: 1
     runAtTimeSkill:
     - 0
+  - description: 
+    simulatedDurationSkill: 2
+    runAtTimeSkill:
+    - 0
+    - 0
+    - 0.5
+    - 0.5
+    - 1
+    - 1
+  - description: 
+    simulatedDurationSkill: 1
+    runAtTimeSkill:
+    - 0
+  - description: 
+    simulatedDurationSkill: 3
+    runAtTimeSkill:
+    - 0
+    - 1
+    - 1
 --- !u!114 &6127440907724167493
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -618,7 +666,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyCloneList:
-  - {fileID: 3801016203709125662, guid: 51ba6fca056187841a9f1df3e22f4de7, type: 3}
+  - {fileID: 7394732908978849504, guid: 4df93e08f9dcc1f4a84285dadfb7e5c0, type: 3}
   revealRange: 10
   revealVFX: {fileID: 7998149100164185464, guid: 47cfe74de68698a43883857a7523102a, type: 3}
   target: {fileID: 0}
@@ -635,9 +683,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56595f8efc35c394c9ad910f63130b5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentTurn: 0
+  graphicesParent:
+  - {fileID: 937098375388025215}
+  - {fileID: 6183076836183093455}
   activeClones: []
   turnCooldown: 4
+  formationRadius: 12
+  formationRotateSpeed: 20
+  stalkerSpeed: 5
+  loseSightDistance: 25
+  loseSightTime: 5
+  jumpBackHeight: 4
+  jumpBackDuration: 0.8
+  spawnMinRadius: 3
+  spawnMaxRadius: 8
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 8192
+  trueFormVFX: {fileID: 0}
 --- !u!1 &6183076836183093455
 GameObject:
   m_ObjectHideFlags: 0
