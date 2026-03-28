@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 453518145940684889}
-  - component: {fileID: 3787499037745850635}
   - component: {fileID: 1490631953503485145}
   - component: {fileID: 7250182887837441669}
   - component: {fileID: 621868643224709829}
   - component: {fileID: 8276593091548556280}
+  - component: {fileID: 8987418284151116543}
   m_Layer: 0
   m_Name: HitBox_VFX_Jamper_Range_Attack
   m_TagString: Untagged
@@ -40,19 +40,6 @@ Transform:
   - {fileID: 2188055237978307771}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3787499037745850635
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 908989359750471700}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9e3dec078e7dfd4f884e84de65aa0d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 20
 --- !u!114 &1490631953503485145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,7 +73,7 @@ MonoBehaviour:
   knockbackDirection: {x: 0, y: 0, z: 0}
   knockbackForce: 0
   knockbackTime: 0
-  disableAfterHit: 1
+  disableAfterHit: 0
   wallLayer:
     serializedVersion: 2
     m_Bits: 0
@@ -138,6 +125,23 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &8987418284151116543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 908989359750471700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d43d748ad974484cb6687c299d440cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseSpeed: 20
+  linearDuration: 0.3
+  homingSpeed: 25
+  turnSpeed: 360
+  target: {fileID: 0}
 --- !u!1 &4129358913459329139
 GameObject:
   m_ObjectHideFlags: 0
@@ -406,21 +410,101 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 453518145940684889}
     m_Modifications:
+    - target: {fileID: 2174054089352441573, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 2174054089352441573, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 2174054089352441573, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 2174054089352441573, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2277231479254651414, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 2277231479254651414, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 2277231479254651414, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 2277231479254651414, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3067499418385968294, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 3067499418385968294, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 3067499418385968294, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 3067499418385968294, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3126389669403116014, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 3126389669403116014, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 3126389669403116014, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 3126389669403116014, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3509072333172838840, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
       propertyPath: m_Name
       value: VFX_Jumper_Range_Attack
       objectReference: {fileID: 0}
+    - target: {fileID: 4229542539327687892, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 4229542539327687892, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 4229542539327687892, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 4229542539327687892, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8271472714497800433, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 338.31036
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8271472714497800433, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.00001335144
+      value: 0.07
       objectReference: {fileID: 0}
     - target: {fileID: 8271472714497800433, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -154.96115
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8271472714497800433, guid: b2985d752e7df004fb8396cbbedc1e1f, type: 3}
       propertyPath: m_LocalRotation.w

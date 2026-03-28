@@ -1,83 +1,101 @@
 using UnityEngine;
 
-
 [System.Serializable]
 public abstract class SpawnModifier
 {
-    // ฟังก์ชันนี้จะถูกเรียกหลังจาก Spawn เสร็จแล้ว
-    // user = คนยิง, spawnedObject = ของที่เสกออกมา, speedMultiplier = ตัวคูณความเร็วจาก Combat
-    public abstract void Apply(GameObject user, GameObject spawnedObject, float speedMultiplier);
+    // *** แก้ตรงนี้: เพิ่ม GameObject target เข้ามาใน Parameter ด้วย ***
+    public abstract void Apply(GameObject user, GameObject target, GameObject spawnedObject, float speedMultiplier);
 }
 
 [System.Serializable]
 public class SpeedModifier : SpawnModifier
 {
     public float baseSpeed = 10f;
-    public bool applySpeedMultiplier = false; // อยากให้คูณความเร็วจาก Combat ไหม?
+    public bool applySpeedMultiplier = false;
 
-    public override void Apply(GameObject user, GameObject spawnedObject, float speedMultiplier)
+    // *** อัปเดต Parameter ***
+    public override void Apply(GameObject user, GameObject target, GameObject spawnedObject, float speedMultiplier)
     {
         if (spawnedObject.TryGetComponent(out ISpeed iSpeed))
         {
             float finalSpeed = baseSpeed;
-            if (applySpeedMultiplier)
-            {
-                finalSpeed *= speedMultiplier;
-            }
+            if (applySpeedMultiplier) finalSpeed *= speedMultiplier;
             iSpeed._speed = finalSpeed;
         }
     }
 }
 
-
 [System.Serializable]
 public class LifeTimeModifier : SpawnModifier
 {
-    [Tooltip("เวลาที่จะอยู่บนฉากก่อนหายไป")]
     public float duration = 5f;
-    [Tooltip("ถ้าความเร็วโจมตี (Speed Multiplier) มากขึ้น อยากให้หายไปไวขึ้นด้วยไหม?")]
-    public bool applySpeedMultiplier = false; 
+    public bool applySpeedMultiplier = false;
 
-    public override void Apply(GameObject user, GameObject spawnedObject, float speedMultiplier)
+    // *** อัปเดต Parameter ***
+    public override void Apply(GameObject user, GameObject target, GameObject spawnedObject, float speedMultiplier)
     {
         if (spawnedObject.TryGetComponent(out ITimeDestroy timeDestroy))
         {
             float finalDuration = duration;
-            if (applySpeedMultiplier && speedMultiplier > 0)
-            {
-                // ถ้าตีไวขึ้น เวลาที่อยู่บนพื้นก็จะลดลง (เหมือน DashAction)
-                finalDuration /= speedMultiplier; 
-            }
+            if (applySpeedMultiplier && speedMultiplier > 0) finalDuration /= speedMultiplier;
 
             timeDestroy._lifeTime = finalDuration;
-            timeDestroy.StartLifeTime(); // สั่งให้นับเวลาใหม่ด้วยค่าล่าสุด
+            timeDestroy.StartLifeTime();
+        }
+    }
+}
+
+[System.Serializable]
+public class DelayTimeModifier : SpawnModifier
+{
+    public float delayTime = 1.0f;
+    public bool applySpeedMultiplier = true;
+
+    // *** อัปเดต Parameter ***
+    public override void Apply(GameObject user, GameObject target, GameObject spawnedObject, float speedMultiplier)
+    {
+        if (spawnedObject.TryGetComponent(out DelayedHitBox delayedHitBox))
+        {
+            float finalDelay = delayTime;
+            if (applySpeedMultiplier && speedMultiplier > 0) finalDelay /= speedMultiplier;
+
+            delayedHitBox.SetDelayTime(finalDelay);
         }
     }
 }
 
 // ----------------------------------------------------
-// 2. DelayTimeModifier: สำหรับตั้งเวลาชาร์จของ DelayedHitBox
+// *** สร้างใหม่: HomingTargetModifier ***
 // ----------------------------------------------------
 [System.Serializable]
-public class DelayTimeModifier : SpawnModifier
+public class HomingTargetModifier : SpawnModifier
 {
-    [Tooltip("เวลาหน่วงก่อนที่ Hitbox ตัวจริงจะทำงาน")]
-    public float delayTime = 1.0f;
-    [Tooltip("ถ้าความเร็วโจมตี (Speed Multiplier) มากขึ้น อยากให้หน่วงเวลาน้อยลงไหม?")]
-    public bool applySpeedMultiplier = true;
+    [Tooltip("ถ้าตอนเสกออกมา ศัตรูมองไม่เห็น Target (ค่าเป็น null) ให้บังคับหา Player อัตโนมัติเลยไหม?")]
+    public bool fallbackToPlayer = true;
 
-    public override void Apply(GameObject user, GameObject spawnedObject, float speedMultiplier)
+    public override void Apply(GameObject user, GameObject target, GameObject spawnedObject, float speedMultiplier)
     {
-        if (spawnedObject.TryGetComponent(out DelayedHitBox delayedHitBox))
+        // เช็คว่าของที่เสกออกมา รองรับการล็อกเป้าหมายไหม
+        if (spawnedObject.TryGetComponent(out ITargetable targetable))
         {
-            float finalDelay = delayTime;
-            if (applySpeedMultiplier && speedMultiplier > 0)
+            Transform finalTarget = null;
+
+            if (target != null)
             {
-                // ถ้าบัฟตีไวขึ้น ท่าชาร์จก็ควรจะชาร์จเร็วขึ้น (ลด delay)
-                finalDelay /= speedMultiplier;
+                finalTarget = target.transform;
+            }
+            else if (fallbackToPlayer)
+            {
+                // ถ้าสกิลถูกยิงออกไปตอนที่ AI หลุด Aggro ให้พยายามดึงตัว Player มาล็อกเป้าแทน
+                GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+                if (playerObj != null)
+                {
+                    finalTarget = playerObj.transform;
+                }
             }
 
-            delayedHitBox.SetDelayTime(finalDelay);
+            // ส่งเป้าหมายไปให้กระสุน
+            targetable.SetTarget(finalTarget);
         }
     }
 }

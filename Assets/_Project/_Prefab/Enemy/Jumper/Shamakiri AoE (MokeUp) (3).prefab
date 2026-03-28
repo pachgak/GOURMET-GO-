@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: 9191671767303737059}
   - component: {fileID: 4591846083103612000}
   - component: {fileID: 8864879237809177400}
+  - component: {fileID: 5101199943409236109}
   m_Layer: 8
   m_Name: Shamakiri AoE (MokeUp) (3)
   m_TagString: Untagged
@@ -238,7 +239,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c84ebf10b65ecd54cb497f840413eb83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 6
+  maxHealth: 100
   currentHealth: 0
   isDead: 0
   isRespawnNow: 1
@@ -343,6 +344,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   showTime: 30
   offset: {x: 0, y: 3, z: 0}
+--- !u!114 &5101199943409236109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 709896967342680748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8aa30154d1169043b0a6860aa7e833a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damagePromptPrefab: {fileID: 4903145366339052106, guid: 85022804ff52dc14da631fed9d071121, type: 3}
+  offSet: {x: 0, y: 2, z: 0}
 --- !u!1 &1598346380892819212
 GameObject:
   m_ObjectHideFlags: 0

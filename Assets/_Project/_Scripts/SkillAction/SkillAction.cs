@@ -115,6 +115,59 @@ public class DashAction : SkillAction
     }
 }
 
+[System.Serializable]
+public class SurpriseDashAction : SkillAction
+{
+    [Header("Diration Set")]
+    private DirMethod dirType = DirMethod.LoockTarget; // ส่วนใหญ่ควรใช้ LoockTarget เพื่อให้พุ่งเข้าหาเป้าหมาย
+
+    [Header("Surprise Dash Settings")]
+    [Tooltip("เวลาที่ใช้ในการพุ่งให้ถึงเป้าหมาย (ยิ่งน้อย ยิ่งพุ่งไวมาก)")]
+    public float dashDuration = 0.2f;
+
+    [Tooltip("ระยะห่างที่จะให้หยุดก่อนถึงตัว Player (เช่น 1.5 คือหยุดตรงหน้าพอดีตี)")]
+    public float nearDistance = 1.5f;
+
+    [Tooltip("ถ้าระบบหา Target ไม่เจอ จะให้พุ่งไปข้างหน้ากี่หน่วยเป็นค่า Default")]
+    public float defaultDashDistance = 5f;
+
+    public override void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f, LayerMask? layerTarget = null)
+    {
+        if (user.TryGetComponent(out BaseEnemyMovement enemyMovement))
+        {
+            // 1. หาความห่างของทิศทาง
+            Vector3 targetVector = CalculateTargetVector(user, target, directionSkill, dirType);
+
+            float dashDistance = defaultDashDistance;
+
+            // 2. ถ้าระบุเป้าหมายได้ ให้คำนวณระยะทาง
+            if (target != null)
+            {
+                // หาระยะทางจาก User ไปหา Target
+                float distToTarget = Vector3.Distance(user.transform.position, target.transform.position);
+
+                // หักลบด้วย nearDistance เพื่อไม่ให้พุ่งทะลุตัว และป้องกันค่าติดลบด้วย Mathf.Max
+                dashDistance = Mathf.Max(0f, distToTarget - nearDistance);
+            }
+
+            // 3. คำนวณความเร็ว (Speed = Distance / Time)
+            // เช็คว่า dashDuration ต้องมากกว่า 0 ป้องกัน Error หาร 0
+            float baseSpeed = dashDuration > 0f ? (dashDistance / dashDuration) : 0f;
+
+            // 4. นำ SpeedMultiplier จาก Animation มาคำนวณให้เข้าจังหวะ
+            float adjustedSpeed = baseSpeed * speedMultiplier;
+            float adjustedTime = dashDuration / speedMultiplier;
+
+            // 5. สั่ง Dash!
+            enemyMovement.SkillDash(targetVector, adjustedSpeed, adjustedTime);
+        }
+        else
+        {
+            Debug.LogWarning($"{user.name} ไม่มี BaseEnemyMovement Component เลย Dash ไม่ได้!");
+        }
+    }
+}
+
 public enum SpawnMethod
 {
     ParentToOwner,  // เกิดแล้วเป็นลูกของคนยิง (เช่น ดาบที่ถือในมือ)
@@ -182,7 +235,7 @@ public class SpawnHitAction_M : SkillAction
         // 5. *** รัน Modifiers ทั้งหมด ***
         foreach (var modifier in modifiers)
         {
-            modifier.Apply(user, attackInstance, speedMultiplier);
+            modifier.Apply(user, target, attackInstance, speedMultiplier);
         }
     }
 }

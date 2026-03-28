@@ -374,6 +374,7 @@ GameObject:
   - component: {fileID: 1405463037827252906}
   - component: {fileID: 4898192984284393468}
   - component: {fileID: 6510583847648980046}
+  - component: {fileID: 1965619874349280768}
   m_Layer: 8
   m_Name: Shamakiri Range (MokeUp) (2)
   m_TagString: Untagged
@@ -592,7 +593,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c84ebf10b65ecd54cb497f840413eb83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 6
+  maxHealth: 100
   currentHealth: 0
   isDead: 0
   isRespawnNow: 1
@@ -660,10 +661,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   setMockSkill:
-  - description: 
-    simulatedDurationSkill: 1
+  - description: rang
+    simulatedDurationSkill: 1.5
     runAtTimeSkill:
     - 0
+    - 0.5
 --- !u!114 &4898192984284393468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -695,3 +697,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   showTime: 30
   offset: {x: 0, y: 3, z: 0}
+--- !u!114 &1965619874349280768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8248806429086153625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8aa30154d1169043b0a6860aa7e833a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damagePromptPrefab: {fileID: 4903145366339052106, guid: 85022804ff52dc14da631fed9d071121, type: 3}
+  offSet: {x: 0, y: 2, z: 0}

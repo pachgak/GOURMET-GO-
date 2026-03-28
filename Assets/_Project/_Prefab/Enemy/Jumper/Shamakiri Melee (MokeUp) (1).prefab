@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 5958066709467327917}
   - component: {fileID: 2540796282629471141}
   - component: {fileID: 5970599805986381330}
+  - component: {fileID: 636662329084666814}
   m_Layer: 8
   m_Name: Shamakiri Melee (MokeUp) (1)
   m_TagString: Untagged
@@ -289,7 +290,7 @@ MonoBehaviour:
   currentState: 0
   playerTarget: {fileID: 0}
   sightRange: 15
-  attackRange: 5
+  attackRange: 10
   <IsStunned>k__BackingField: 0
   _playerInSightRange: 0
   _playerInAttackRange: 0
@@ -349,7 +350,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c84ebf10b65ecd54cb497f840413eb83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 6
+  maxHealth: 100
   currentHealth: 0
   isDead: 0
   isRespawnNow: 1
@@ -417,15 +418,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   setMockSkill:
-  - description: 
-    simulatedDurationSkill: 2
+  - description: melee
+    simulatedDurationSkill: 3
     runAtTimeSkill:
     - 0
     - 0
     - 0.5
-    - 0.5
     - 1
     - 1
+    - 1.5
+    - 2
+    - 2
+    - 2.5
 --- !u!114 &2540796282629471141
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -457,6 +461,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   showTime: 30
   offset: {x: 0, y: 3, z: 0}
+--- !u!114 &636662329084666814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4468386374685865033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8aa30154d1169043b0a6860aa7e833a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damagePromptPrefab: {fileID: 4903145366339052106, guid: 85022804ff52dc14da631fed9d071121, type: 3}
+  offSet: {x: 0, y: 2, z: 0}
 --- !u!1 &4745023242300530086
 GameObject:
   m_ObjectHideFlags: 0

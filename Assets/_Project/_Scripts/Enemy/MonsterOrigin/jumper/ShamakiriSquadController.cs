@@ -324,9 +324,6 @@ public class ShamakiriSquadController : MonoBehaviour
 
     private void ExecuteNextTurn()
     {
-        StartCoroutine(UltimateComboAttack());
-
-        return;
 
         if (_currentAttackerIndex >= activeClones.Count)
         {

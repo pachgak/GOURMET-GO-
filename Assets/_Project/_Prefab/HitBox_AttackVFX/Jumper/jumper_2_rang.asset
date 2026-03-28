@@ -16,6 +16,7 @@ MonoBehaviour:
   spawnSkillPrefabsType: 0
   _skillSetp: []
   actions:
+  - rid: 4651565951043240036
   - rid: 3016931747640377455
   references:
     version: 2
@@ -27,12 +28,24 @@ MonoBehaviour:
         prefab: {fileID: 908989359750471700, guid: 0b3f6d9f9bd9584428c0164ea458902f, type: 3}
         spawnType: 1
         offset: {x: 0, y: 0}
-        damage: 1
-        knockbackForce: 5
+        damage: 5
+        knockbackForce: 0
         modifiers:
         - rid: 3016931747640377456
+        - rid: 4651565951043240061
     - rid: 3016931747640377456
       type: {class: SpeedModifier, ns: , asm: Assembly-CSharp}
       data:
-        baseSpeed: 10
+        baseSpeed: 20
         applySpeedMultiplier: 0
+    - rid: 4651565951043240036
+      type: {class: SpawnVFXAction, ns: , asm: Assembly-CSharp}
+      data:
+        dirType: 0
+        prefab: {fileID: 6240861784641511352, guid: 30e10ca05370893449f17ae419de15e2, type: 3}
+        spawnType: 0
+        offset: {x: 0, y: 0}
+    - rid: 4651565951043240061
+      type: {class: HomingTargetModifier, ns: , asm: Assembly-CSharp}
+      data:
+        fallbackToPlayer: 1

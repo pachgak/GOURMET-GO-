@@ -5,13 +5,13 @@ public class BossBarController : BaseHpBarController
     protected override void Awake()
     {
         base.Awake();
-
     }
 
     protected virtual void Start()
     {
         if (HpBarManager.Instance != null) bossBarUI = HpBarManager.Instance.bossBarUI;
     }
+
     protected override void ShowUI(string enemyName)
     {
         if (bossBarUI != null)
@@ -24,7 +24,11 @@ public class BossBarController : BaseHpBarController
     {
         if (bossBarUI != null)
         {
-            bossBarUI.DisableBar();
+            // เช็คว่าเป้าหมายที่ UI กำลังแสดงอยู่ คือตัวเราเองใช่หรือไม่
+            if (bossBarUI.CurrentHealthTarget == this.enemyHealth)
+            {
+                bossBarUI.DisableBar();
+            }
         }
     }
 }

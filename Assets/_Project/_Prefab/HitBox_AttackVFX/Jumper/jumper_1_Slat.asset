@@ -16,60 +16,69 @@ MonoBehaviour:
   spawnSkillPrefabsType: 0
   _skillSetp: []
   actions:
-  - rid: 3016931747640377446
+  - rid: 4651565951043240034
   - rid: 3016931747640377447
-  - rid: 3016931747640377448
+  - rid: 4651565951043240049
+  - rid: 4651565951043240039
   - rid: 3016931747640377449
-  - rid: 3016931747640377450
+  - rid: 4651565951043240049
+  - rid: 4651565951043240040
   - rid: 3016931747640377451
+  - rid: 4651565951043240049
   references:
     version: 2
     RefIds:
-    - rid: 3016931747640377446
-      type: {class: DashAction, ns: , asm: Assembly-CSharp}
-      data:
-        dirType: 0
-        dashSpeed: 30
-        dashDuration: 0.2
     - rid: 3016931747640377447
       type: {class: SpawnHitAction_M, ns: , asm: Assembly-CSharp}
       data:
         dirType: 0
-        prefab: {fileID: 1400826202177114413, guid: b0a03a7b92fd9a9469d408c029b64152, type: 3}
+        prefab: {fileID: 6464847249207507378, guid: 80140f091fb9c5744a0166a39207e6fb, type: 3}
         spawnType: 0
         offset: {x: 0, y: 0}
-        damage: 1
-        knockbackForce: 5
+        damage: 5
+        knockbackForce: 10
         modifiers: []
-    - rid: 3016931747640377448
-      type: {class: DashAction, ns: , asm: Assembly-CSharp}
-      data:
-        dirType: 0
-        dashSpeed: 30
-        dashDuration: 0.2
     - rid: 3016931747640377449
       type: {class: SpawnHitAction_M, ns: , asm: Assembly-CSharp}
       data:
         dirType: 0
-        prefab: {fileID: 1400826202177114413, guid: b0a03a7b92fd9a9469d408c029b64152, type: 3}
+        prefab: {fileID: 6464847249207507378, guid: 80140f091fb9c5744a0166a39207e6fb, type: 3}
         spawnType: 0
         offset: {x: 0, y: 0}
-        damage: 1
-        knockbackForce: 5
+        damage: 5
+        knockbackForce: 10
         modifiers: []
-    - rid: 3016931747640377450
-      type: {class: DashAction, ns: , asm: Assembly-CSharp}
-      data:
-        dirType: 0
-        dashSpeed: 30
-        dashDuration: 0.2
     - rid: 3016931747640377451
       type: {class: SpawnHitAction_M, ns: , asm: Assembly-CSharp}
       data:
         dirType: 0
-        prefab: {fileID: 1400826202177114413, guid: b0a03a7b92fd9a9469d408c029b64152, type: 3}
+        prefab: {fileID: 6464847249207507378, guid: 80140f091fb9c5744a0166a39207e6fb, type: 3}
         spawnType: 0
         offset: {x: 0, y: 0}
-        damage: 1
-        knockbackForce: 5
+        damage: 5
+        knockbackForce: 10
         modifiers: []
+    - rid: 4651565951043240034
+      type: {class: SurpriseDashAction, ns: , asm: Assembly-CSharp}
+      data:
+        dashDuration: 0.2
+        nearDistance: 1.5
+        defaultDashDistance: 5
+    - rid: 4651565951043240039
+      type: {class: SurpriseDashAction, ns: , asm: Assembly-CSharp}
+      data:
+        dashDuration: 0.2
+        nearDistance: 1.5
+        defaultDashDistance: 5
+    - rid: 4651565951043240040
+      type: {class: SurpriseDashAction, ns: , asm: Assembly-CSharp}
+      data:
+        dashDuration: 0.2
+        nearDistance: 1.5
+        defaultDashDistance: 5
+    - rid: 4651565951043240049
+      type: {class: DashAction, ns: , asm: Assembly-CSharp}
+      data:
+        dirType: 0
+        dashSpeed: 20
+        dashDuration: 0.2

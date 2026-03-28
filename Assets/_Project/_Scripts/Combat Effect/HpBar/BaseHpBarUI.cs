@@ -10,6 +10,9 @@ public class BaseHpBarUI : MonoBehaviour
 
     protected EnemyHealth _healthTarget;
 
+    // เพิ่มบรรทัดนี้เข้าไป เพื่อให้ภายนอกดึงค่าไปเช็คได้ว่ากำลังโชว์เลือดใครอยู่
+    public EnemyHealth CurrentHealthTarget => _healthTarget;
+
     // รับค่า Health และ ชื่อ (ถ้ามี)
     public virtual void SetData(EnemyHealth healthTarget, string enemyName = "")
     {

@@ -156,7 +156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2602100b566eb84d9c55da83bc22758, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  combatScript: {fileID: 3139852089281738188}
+  combatScript: {fileID: 0}
 --- !u!114 &4318696240691764284
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -269,9 +269,9 @@ GameObject:
   - component: {fileID: 465891299320516670}
   - component: {fileID: 453679898395419888}
   - component: {fileID: 9132547005129956564}
+  - component: {fileID: 4876265923951584113}
   - component: {fileID: 4547645183778580356}
   - component: {fileID: 4378031190412810596}
-  - component: {fileID: 3139852089281738188}
   - component: {fileID: 3530486207396253788}
   - component: {fileID: 2926557233993478406}
   - component: {fileID: 4416828542704196141}
@@ -282,7 +282,7 @@ GameObject:
   - component: {fileID: 4858094101008093505}
   - component: {fileID: 2623641826623712424}
   - component: {fileID: 987617965263502211}
-  - component: {fileID: 4876265923951584113}
+  - component: {fileID: 6119019353871790548}
   m_Layer: 8
   m_Name: Shamakiri Container (MokeUp)
   m_TagString: Untagged
@@ -426,6 +426,63 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &4876265923951584113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5565202312802687924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56595f8efc35c394c9ad910f63130b5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  graphicesParent:
+  - {fileID: 937098375388025215}
+  - {fileID: 6183076836183093455}
+  activeClones: []
+  turnCooldown: 4
+  formationRadius: 12
+  formationRotateSpeed: 20
+  stalkerSpeed: 5
+  loseSightDistance: 25
+  loseSightTime: 5
+  jumpBackHeight: 4
+  jumpBackDuration: 0.8
+  spawnMinRadius: 3
+  spawnMaxRadius: 8
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 8192
+  trueFormVFX: {fileID: 7998149100164185464, guid: 47cfe74de68698a43883857a7523102a, type: 3}
+  delayBeforeVanish: 1
+  emptyScreenDuration: 1.5
+  delayBeforeAttack: 1.5
+  smokeVFX: {fileID: 3899353070283019018, guid: 3c4341e967e454041b67f24e4a82f208, type: 3}
+  attackTime: 1
+  warningVFX: {fileID: 5213366745670659844, guid: 649119e88ca745c43948452381bb0672, type: 3}
+  telegraphTime: 1
+  slashVFXPrefab: {fileID: 7374061568141512661, guid: 34ec45e65c3d97f4bad4ae96e2604a1c, type: 3}
+  slashLeft:
+    hitPrefab: {fileID: 3789050155905998535, guid: 5656f0e7ebcff4d45b0a5e6f2d7f573a, type: 3}
+    delay: 0
+    moveDuration: 0.3
+    distance: 4.5
+    damage: 10
+    knockbackForce: 10
+  slashRight:
+    hitPrefab: {fileID: 3789050155905998535, guid: 5656f0e7ebcff4d45b0a5e6f2d7f573a, type: 3}
+    delay: 0.3
+    moveDuration: 0.3
+    distance: 4.5
+    damage: 10
+    knockbackForce: 10
+  crossSlash:
+    hitPrefab: {fileID: 7550673282829035762, guid: 168eaa75270a9fa43930b109daf8579a, type: 3}
+    delay: 0.4
+    damage: 15
+    knockbackForce: 0
 --- !u!114 &4547645183778580356
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -441,7 +498,7 @@ MonoBehaviour:
   currentState: 0
   playerTarget: {fileID: 0}
   sightRange: 15
-  attackRange: 5
+  attackRange: 10
   <IsStunned>k__BackingField: 0
   _playerInSightRange: 0
   _playerInAttackRange: 0
@@ -460,7 +517,7 @@ MonoBehaviour:
   attackMask:
     serializedVersion: 2
     m_Bits: 0
-  attackCooldown: 2
+  attackCooldown: 5
   attackTimer: 0
   enemySkills:
   - {fileID: 11400000, guid: 9b1a3c4243a30f847adfce1988a1a5bd, type: 2}
@@ -470,29 +527,6 @@ MonoBehaviour:
   currentDiractionSkill: {x: 0, y: 0, z: 0}
   isEnraged: 0
   enragedAttackSpeed: 1.5
---- !u!114 &3139852089281738188
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5565202312802687924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a8ec4a77c32c944494b777aa815f099, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attackMask:
-    serializedVersion: 2
-    m_Bits: 0
-  attackCooldown: 2
-  attackTimer: 0
-  enemySkills:
-  - {fileID: 11400000, guid: 9b1a3c4243a30f847adfce1988a1a5bd, type: 2}
-  - {fileID: 11400000, guid: ef8f26ccfd81a6c408ce4e757655dbda, type: 2}
-  - {fileID: 11400000, guid: ccddfc8ab40c8da42bc2553ba8b2bb99, type: 2}
-  - {fileID: 11400000, guid: 9e29815580db1834a8d9cbd4f61c2a37, type: 2}
-  currentDiractionSkill: {x: 0, y: 0, z: 0}
 --- !u!114 &3530486207396253788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -525,7 +559,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c84ebf10b65ecd54cb497f840413eb83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 6
+  maxHealth: 250
   currentHealth: 0
   isDead: 0
   isRespawnNow: 1
@@ -596,21 +630,25 @@ MonoBehaviour:
   - description: 
     simulatedDurationSkill: 1
     runAtTimeSkill:
-    - 0
-  - description: 
-    simulatedDurationSkill: 2
+    - 0.75
+  - description: melee
+    simulatedDurationSkill: 3
     runAtTimeSkill:
     - 0
     - 0
     - 0.5
-    - 0.5
     - 1
     - 1
-  - description: 
-    simulatedDurationSkill: 1
+    - 1.5
+    - 2
+    - 2
+    - 2.5
+  - description: rang
+    simulatedDurationSkill: 1.5
     runAtTimeSkill:
     - 0
-  - description: 
+    - 0.5
+  - description: aoe
     simulatedDurationSkill: 3
     runAtTimeSkill:
     - 0
@@ -705,7 +743,7 @@ MonoBehaviour:
     countMin: 1
     countMax: 0
   offSet: {x: 0, y: 1, z: 0}
---- !u!114 &4876265923951584113
+--- !u!114 &6119019353871790548
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -714,54 +752,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 5565202312802687924}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56595f8efc35c394c9ad910f63130b5c, type: 3}
+  m_Script: {fileID: 11500000, guid: b8aa30154d1169043b0a6860aa7e833a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  graphicesParent:
-  - {fileID: 937098375388025215}
-  - {fileID: 6183076836183093455}
-  activeClones: []
-  turnCooldown: 4
-  formationRadius: 12
-  formationRotateSpeed: 20
-  stalkerSpeed: 5
-  loseSightDistance: 25
-  loseSightTime: 5
-  jumpBackHeight: 4
-  jumpBackDuration: 0.8
-  spawnMinRadius: 3
-  spawnMaxRadius: 8
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 8192
-  trueFormVFX: {fileID: 7998149100164185464, guid: 47cfe74de68698a43883857a7523102a, type: 3}
-  delayBeforeVanish: 1
-  emptyScreenDuration: 1.5
-  delayBeforeAttack: 1.5
-  smokeVFX: {fileID: 0}
-  attackTime: 1
-  warningVFX: {fileID: 0}
-  telegraphTime: 1
-  slashVFXPrefab: {fileID: 0}
-  slashLeft:
-    hitPrefab: {fileID: 0}
-    delay: 0.4
-    moveDuration: 0.15
-    distance: 8
-    damage: 10
-    knockbackForce: 5
-  slashRight:
-    hitPrefab: {fileID: 0}
-    delay: 0
-    moveDuration: 0.15
-    distance: 8
-    damage: 10
-    knockbackForce: 5
-  crossSlash:
-    hitPrefab: {fileID: 0}
-    delay: 0.4
-    damage: 15
-    knockbackForce: 0
+  damagePromptPrefab: {fileID: 4903145366339052106, guid: 85022804ff52dc14da631fed9d071121, type: 3}
+  offSet: {x: 0, y: 2, z: 0}
 --- !u!1 &6183076836183093455
 GameObject:
   m_ObjectHideFlags: 0

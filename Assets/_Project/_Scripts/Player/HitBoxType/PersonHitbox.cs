@@ -81,7 +81,7 @@ public class PersonHitbox : BaseHitBox
             Collider[] colliders = new Collider[1] { hitCollider };
             OnAttackHit?.Invoke(colliders);
 
-            DisableAttack();
+            if(disableAfterHit) DisableAttack();
             //ReturnObjectToPool();
         }
         if (other.gameObject.layer == Mathf.Log(wallLayer.value, 2))
@@ -91,7 +91,7 @@ public class PersonHitbox : BaseHitBox
             colliders[0] = other;
             OnAttackHit?.Invoke(colliders);
 
-            DisableAttack();
+            if (disableAfterHit) DisableAttack();
             //ReturnObjectToPool();
         }
     }
