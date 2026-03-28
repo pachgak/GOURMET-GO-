@@ -5,6 +5,30 @@ using UnityEngine.AI;
 
 public class ShamakiriSquadController : MonoBehaviour
 {
+    [System.Serializable]
+    public class MovingSlashConfig
+    {
+        public GameObject hitPrefab;
+        public float delay = 0.4f;
+        public float moveDuration = 0.15f;
+        public float distance = 8f;
+
+        [Header("Combat Stats")]
+        public float damage = 10f;
+        public float knockbackForce = 5f;
+    }
+
+    [System.Serializable]
+    public class StaticSlashConfig
+    {
+        public GameObject hitPrefab;
+        public float delay = 0.4f;
+
+        [Header("Combat Stats")]
+        public float damage = 15f;
+        public float knockbackForce = 0;
+    }
+
     public List<GameObject> graphicesParent;
 
     [Header("Squad Status")]
@@ -47,6 +71,22 @@ public class ShamakiriSquadController : MonoBehaviour
     public float delayBeforeVanish = 1.0f;    // ร่างแยกตัวสุดท้ายยืนนิ่งกี่วิ ก่อนระเบิดควัน
     public float emptyScreenDuration = 1.5f;  // จอดำ (ไม่มีบอส) นานกี่วิให้ผู้เล่นระแวง
     public float delayBeforeAttack = 1.5f;    // ร่างแม่โผล่มาแล้ว ยืนขู่กี่วิก่อนเข้าโจมตี
+
+    [Header("Ultimate Combo Settings")]
+    public GameObject smokeVFX;             // ควันตอนกระโดดหายไป และตอนวาร์ปกลับมา
+    public float attackTime = 1.0f;         // เวลาก่อนเริ่มคอมโบ
+    public GameObject warningVFX;           // วงแดงเตือนเป้าหมายที่พื้น
+    public float telegraphTime = 1.0f;      // เวลาโชว์วงแดงก่อนเริ่มปาด
+    public GameObject slashVFXPrefab;       // เสก VFX แสงดาบ
+
+    [Header("--- Slash Left (ปาดซ้าย) ---")]
+    public MovingSlashConfig slashLeft = new MovingSlashConfig { delay = 0f };
+
+    [Header("--- Slash Right (ปาดขวา) ---")]
+    public MovingSlashConfig slashRight = new MovingSlashConfig { delay = 0.4f };
+
+    [Header("--- Cross Slash (กากบาท) ---")]
+    public StaticSlashConfig crossSlash = new StaticSlashConfig { delay = 0.4f };
 
     // --- Refs ของตัวแม่ (ดึงมาเก็บไว้ใน Awake) ---
     private BaseEnemyAI _myAI;
@@ -284,6 +324,10 @@ public class ShamakiriSquadController : MonoBehaviour
 
     private void ExecuteNextTurn()
     {
+        StartCoroutine(UltimateComboAttack());
+
+        return;
+
         if (_currentAttackerIndex >= activeClones.Count)
         {
             _currentAttackerIndex = 0;
@@ -549,37 +593,223 @@ public class ShamakiriSquadController : MonoBehaviour
     private IEnumerator UltimateComboAttack()
     {
         _isDoingCombo = true;
+        Debug.Log("[Shamakiri] เริ่มท่าไม้ตาย: กระโดดขึ้นฟ้า!");
 
+        float jumpHeight = 10f;
+        float jumpDur = 1.5f;
+
+        // 1. สั่งให้ทั้ง 3 ตัวกระโดด
         foreach (var clone in activeClones)
         {
             if (clone == null) continue;
             clone.TriggerChangeState(BaseEnemyAI.EnemyState.Standby);
             if (clone.TryGetComponent(out NavMeshAgent agent)) agent.isStopped = true;
-        }
 
-        yield return new WaitForSeconds(0.5f);
-
-        foreach (var clone in activeClones)
-        {
-            if (clone != null && clone.TryGetComponent(out BaseEnemyMovement movement))
+            if (clone.TryGetComponent(out BaseEnemyMovement movement))
             {
-                movement.SkillJump(clone.transform.position, 10f, 1.5f);
+                movement.SkillJump(clone.transform.position, jumpHeight, jumpDur);
             }
         }
 
-        yield return new WaitForSeconds(1.5f);
-        yield return new WaitForSeconds(0.75f);
-
+        // 2. รอถึงจุดสูงสุด แล้วเสกควัน+ซ่อนตัว
+        yield return new WaitForSeconds(jumpDur / 2f);
         foreach (var clone in activeClones)
         {
             if (clone != null)
             {
-                clone.TriggerChangeState(BaseEnemyAI.EnemyState.Standby);
+                if (smokeVFX != null) ObjectPoolingManager.Instance.Spawn(smokeVFX, clone.transform.position);
+                if (clone.TryGetComponent(out NavMeshAgent agent)) agent.enabled = false;
+
+                // *** เพิ่มตรงนี้: สั่งให้ร่างแยกล่องหน (ปิดกราฟิกและกล่องชน) ***
+                if (clone.TryGetComponent(out ShamakiriCloneAI cloneAI)) cloneAI.SetVisibility(false);
+
+                // เอาลงใต้ดินด้วย (ที่คุณทำไว้ดีแล้วครับ ช่วยกันบั๊กได้อีกชั้น)
+                clone.transform.position = new Vector3(clone.transform.position.x, -50f, clone.transform.position.z);
             }
+        }
+
+        // รอจนหมดเวลาการกระโดด
+        yield return new WaitForSeconds(jumpDur / 2f);
+
+        // ล็อคเป้าผู้เล่น
+
+        // 3. หน่วงเวลารอ (attackTime) และโชว์วงแดง (telegraphTime)
+        yield return new WaitForSeconds(attackTime);
+        Vector3 attackTargetPos = _myAI.playerTarget.position;
+        if (warningVFX != null) ObjectPoolingManager.Instance.Spawn(warningVFX, attackTargetPos);
+
+        yield return new WaitForSeconds(telegraphTime);
+        if (slashVFXPrefab != null) ObjectPoolingManager.Instance.Spawn(slashVFXPrefab, attackTargetPos);
+
+        // ==========================================
+        // Sequence การโจมตี
+        // ==========================================
+
+        // Hit 1: ปาดซ้าย (Left มาก่อนตาม VFX)
+        yield return new WaitForSeconds(slashLeft.delay);
+        if (slashLeft.hitPrefab != null)
+        {
+            Vector3 startPos = attackTargetPos + new Vector3(-slashLeft.distance, 0, slashLeft.distance);
+            Vector3 endPos = attackTargetPos + new Vector3(slashLeft.distance, 0, -slashLeft.distance);
+            SpawnMovingSlash(slashLeft, startPos, endPos);
+        }
+
+        // Hit 2: ปาดขวา (Right ตามหลัง)
+        yield return new WaitForSeconds(slashRight.delay);
+        if (slashRight.hitPrefab != null)
+        {
+            Vector3 startPos = attackTargetPos + new Vector3(slashRight.distance, 0, slashRight.distance);
+            Vector3 endPos = attackTargetPos + new Vector3(-slashRight.distance, 0, -slashRight.distance);
+            SpawnMovingSlash(slashRight, startPos, endPos);
+        }
+
+        // Hit 3: สับกากบาท
+        yield return new WaitForSeconds(crossSlash.delay);
+        if (crossSlash.hitPrefab != null)
+        {
+            SpawnStaticSlash(crossSlash, attackTargetPos);
+        }
+
+        // หน่วงเวลาหลังจบคอมโบก่อนวาร์ปกลับมาโชว์ตัว
+        yield return new WaitForSeconds(1.0f);
+
+        // ==========================================
+        // กลับค่ายกล สลับ HP และ สลับตำแหน่ง!
+        // ==========================================
+        SwapClonesHP();          // สลับเลือดให้งง
+        ShuffleClonesPositions(); // *** เพิ่มตรงนี้: สลับตำแหน่งตัวมอนสเตอร์ให้สับสน ***
+
+        float angleStep = 360f / activeClones.Count;
+        for (int i = 0; i < activeClones.Count; i++)
+        {
+            BaseEnemyAI clone = activeClones[i];
+            if (clone == null) continue;
+
+            // เนื่องจาก activeClones ถูกสับเปลี่ยนแล้ว ตำแหน่ง angle ของแต่ละตัวก็จะเปลี่ยนไปจากเดิม
+            float angle = _formationAngle + (i * angleStep);
+            Vector3 offset = Quaternion.Euler(0, angle, 0) * Vector3.forward * formationRadius;
+            Vector3 formPos = _myAI.playerTarget.position + offset;
+
+            clone.transform.position = formPos;
+            if (clone.TryGetComponent(out NavMeshAgent agent))
+            {
+                agent.enabled = true;
+                agent.Warp(formPos);
+            }
+
+            if (smokeVFX != null) ObjectPoolingManager.Instance.Spawn(smokeVFX, formPos);
+
+            // สั่งให้ร่างแยกปรากฏตัวกลับมา!
+            if (clone.TryGetComponent(out ShamakiriCloneAI cloneAI)) cloneAI.SetVisibility(true);
+
+            clone.TriggerChangeState(BaseEnemyAI.EnemyState.Standby);
         }
 
         _isDoingCombo = false;
         _turnTimer = turnCooldown;
+    }
+
+    // ฟังก์ชันผู้ช่วยสำหรับเสกและสั่งวิ่ง Hitbox แบบเส้นตรง
+    // ฟังก์ชันผู้ช่วยสำหรับเสกและสั่งวิ่ง Hitbox แบบเส้นตรง (ปาด)
+    // ฟังก์ชันผู้ช่วยสำหรับเสกและสั่งวิ่ง Hitbox แบบเส้นตรง (ปาด)
+    private void SpawnMovingSlash(MovingSlashConfig config, Vector3 startPos, Vector3 endPos)
+    {
+        GameObject slashObj = ObjectPoolingManager.Instance.Spawn(config.hitPrefab, startPos);
+
+        // 1. สั่งให้เคลื่อนที่
+        if (slashObj.TryGetComponent(out MovingSlashHitbox mover))
+        {
+            mover.Setup(startPos, endPos, config.moveDuration);
+        }
+        else
+        {
+            Debug.LogWarning("Prefab การปาด ไม่มีสคริปต์ MovingSlashHitbox ติดอยู่!");
+        }
+
+        // 2.1 เพิ่มใหม่: อัปเดตเวลาเคลียร์ตัวเองลง Pool (ITimeDestroy) ***
+        if (slashObj.TryGetComponent(out ITimeDestroy timeDestroy))
+        {
+            timeDestroy._lifeTime = config.moveDuration;
+            // ต้องเรียก StartLifeTime() ซ้ำ เพื่อล้างคำสั่ง Invoke เก่าของ OnEnable แล้วเริ่มนับเวลาใหม่
+            timeDestroy.StartLifeTime();
+        }
+
+        // 2.2 ป้อนค่า ดาเมจ และ น็อคแบ็ค
+        if (slashObj.TryGetComponent(out IHitBox hitBox))
+        {
+            hitBox._ownerHit = gameObject; // ให้รู้ว่า Shamakiri เป็นคนตี
+            hitBox._damage = config.damage;
+            hitBox._knockbackDirection = (endPos - startPos).normalized; // กระเด็นไปตามทิศที่ปาด!
+            hitBox._knockbackForce = config.knockbackForce;
+            hitBox._targetLayer = LayerMask.GetMask("Player");
+
+            hitBox.PerformAttack();
+        }
+    }
+
+    // ฟังก์ชันผู้ช่วยสำหรับเสก Hitbox อยู่กับที่ (กากบาท)
+    private void SpawnStaticSlash(StaticSlashConfig config, Vector3 spawnPos)
+    {
+        GameObject slashObj = ObjectPoolingManager.Instance.Spawn(config.hitPrefab, spawnPos);
+
+        if (slashObj.TryGetComponent(out IHitBox hitBox))
+        {
+            hitBox._ownerHit = gameObject;
+            hitBox._damage = config.damage;
+            hitBox._knockbackDirection = Vector3.zero; // อาจจะไม่มีทิศกระเด็น หรือปรับแต่งเองได้
+            hitBox._knockbackForce = config.knockbackForce;
+            hitBox._targetLayer = LayerMask.GetMask("Player");
+
+            hitBox.PerformAttack();
+        }
+    }
+
+    // ฟังก์ชันผู้ช่วย: สลับค่า HP ของร่างแยกแบบสุ่ม
+    private void SwapClonesHP()
+    {
+        List<EnemyHealth> healthList = new List<EnemyHealth>();
+        List<float> hpValues = new List<float>();
+
+        // 1. ดึงเลือดของทุกคนมาเก็บไว้
+        foreach (var clone in activeClones)
+        {
+            if (clone != null && clone.TryGetComponent(out EnemyHealth hp))
+            {
+                healthList.Add(hp);
+                //hpValues.Add(hp.getHp()); // เก็บค่าเลือดปัจจุบัน
+                hpValues.Add(hp.currentHealth); // เก็บค่าเลือดปัจจุบัน
+            }
+        }
+
+        // 2. สับไพ่ (Shuffle) ค่าเลือดใน List
+        for (int i = 0; i < hpValues.Count; i++)
+        {
+            float temp = hpValues[i];
+            int randomIndex = Random.Range(i, hpValues.Count);
+            hpValues[i] = hpValues[randomIndex];
+            hpValues[randomIndex] = temp;
+        }
+
+        // 3. จ่ายเลือดที่สลับแล้ว คืนให้แต่ละตัว
+        for (int i = 0; i < healthList.Count; i++)
+        {
+            healthList[i].setHp(hpValues[i]);
+        }
+
+        Debug.Log("<color=magenta>[Shamakiri] เล่นมายากล สลับเลือดร่างแยกเรียบร้อย!</color>");
+    }
+
+    // ฟังก์ชันผู้ช่วย: สลับตำแหน่งของร่างแยกใน List (ทำให้ยืนสลับที่ และคิว/สกิลโจมตีเปลี่ยน)
+    private void ShuffleClonesPositions()
+    {
+        for (int i = 0; i < activeClones.Count; i++)
+        {
+            BaseEnemyAI temp = activeClones[i];
+            int randomIndex = Random.Range(i, activeClones.Count);
+            activeClones[i] = activeClones[randomIndex];
+            activeClones[randomIndex] = temp;
+        }
+        Debug.Log("<color=yellow>[Shamakiri] เล่นมายากล สลับตำแหน่งและคิวการโจมตี!</color>");
     }
 
     private void OnDrawGizmosSelected()

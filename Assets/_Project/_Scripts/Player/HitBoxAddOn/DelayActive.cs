@@ -3,14 +3,14 @@ using UnityEngine;
 public class DelayActive : MonoBehaviour
 {
     public float timeDely;
-    public float timer;
+    private float timer;
     public GameObject activeObj;
     
     private void OnEnable()
     {
         timer = timeDely;
         activeObj.SetActive(false);
-        GetComponent<ControllerVFX>().enabled = false;
+        GetComponent<DestroyEndVFX>().enabled = false;
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -28,7 +28,7 @@ public class DelayActive : MonoBehaviour
             {
 
                 activeObj.SetActive(true);
-                GetComponent<ControllerVFX>().enabled = true;
+                GetComponent<DestroyEndVFX>().enabled = true;
             }
         }
     }

@@ -7,8 +7,8 @@ public abstract class BaseHitBox : MonoBehaviour , IHitBox
     [HideInInspector] public LayerMask targetLayer; // ตั้งค่า Layer ของศัตรูใน Inspector
     [HideInInspector] public float damage = 0f; // ค่าดาเมจของการโจมตี
     [HideInInspector] public Vector3 knockbackDirection; // ทิศทางการผลัก
-    protected float knockbackForce = 0f; // แรงผลัก
-    protected float knockbackTime = 0f; // แรงผลัก
+    [HideInInspector] public float knockbackForce = 0f; // แรงผลัก
+    [HideInInspector] public float knockbackTime = 0f; // แรงผลัก
 
     public Action<Collider[]> OnAttackHit;
     public Action OnNoHit;

@@ -16,6 +16,9 @@ public class DamageFlash : MonoBehaviour
     [Tooltip("จำนวนครั้งที่ต้องการให้กระพริบภายในระยะเวลาด้านบน")]
     [SerializeField] private int flashCount = 3;
 
+    [Tooltip("ทำให้มันค่อยจางหายไป")]
+    [SerializeField] bool isLerp = true;
+
     private MaterialPropertyBlock propertyBlock;
     private int flashAmountProperty;
     private int flashColorProperty;
@@ -67,10 +70,10 @@ public class DamageFlash : MonoBehaviour
             StopCoroutine(flashCoroutine);
         }
 
-        flashCoroutine = StartCoroutine(FlashRoutine());
+        flashCoroutine = (isLerp) ? StartCoroutine(FlashRoutineLerp()) : StartCoroutine(FlashRoutineNormal());
     }
 
-    private IEnumerator FlashRoutine()
+    private IEnumerator FlashRoutineNormal()
     {
         float flashInterval = totalFlashDuration / (flashCount * 2f);
 
@@ -86,6 +89,33 @@ public class DamageFlash : MonoBehaviour
         }
 
         // เพื่อความชัวร์ตอนจบ สั่งให้ทุกชิ้นส่วนกลับเป็นสีปกติ
+        ApplyFlashState(0f, flashColor);
+        flashCoroutine = null;
+    }
+
+    private IEnumerator FlashRoutineLerp()
+    {
+        // เริ่มต้นด้วยการจับเวลา
+        float elapsedTime = 0f;
+
+        // วนลูปทำงานทุกเฟรม จนกว่าเวลาที่ผ่านไป จะมากกว่าเวลาที่เราตั้งไว้
+        while (elapsedTime < totalFlashDuration)
+        {
+            // elapsedTime / totalFlashDuration จะได้ค่า 0.0 ถึง 1.0 (คิดเป็น % ของเวลาที่ผ่านไป)
+            // Mathf.Lerp(1f, 0f, %) จะค่อยๆ เปลี่ยนค่าจาก 1 ลดลงไปหา 0 อย่างนุ่มนวล
+            float currentFlashAmount = Mathf.Lerp(1f, 0f, (elapsedTime / totalFlashDuration));
+
+            // นำค่าที่ค่อยๆ ลดลง ไปอัปเดตให้ Material
+            ApplyFlashState(currentFlashAmount, flashColor);
+
+            // บวกเวลาที่ผ่านไปในเฟรมนี้
+            elapsedTime += Time.deltaTime;
+
+            // yield return null หมายถึง "หยุดพักตรงนี้ก่อน แล้วเดี๋ยวค่อยมารันต่อในเฟรมถัดไป"
+            yield return null;
+        }
+
+        // เพื่อความชัวร์ตอนจบ สั่งให้ทุกชิ้นส่วนกลับเป็นสีปกติ (Amount = 0)
         ApplyFlashState(0f, flashColor);
         flashCoroutine = null;
     }

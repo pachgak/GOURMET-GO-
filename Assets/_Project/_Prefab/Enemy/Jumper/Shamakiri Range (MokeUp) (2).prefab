@@ -536,6 +536,10 @@ MonoBehaviour:
   <IsStunned>k__BackingField: 0
   _playerInSightRange: 0
   _playerInAttackRange: 0
+  graphicsParents:
+  - {fileID: 2415160369538654921}
+  - {fileID: 184469355181071728}
+  mainCollider: {fileID: 2709925871368309998}
 --- !u!114 &8024995386678808481
 MonoBehaviour:
   m_ObjectHideFlags: 0

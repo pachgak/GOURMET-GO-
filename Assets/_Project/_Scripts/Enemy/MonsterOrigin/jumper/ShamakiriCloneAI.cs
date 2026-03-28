@@ -1,46 +1,52 @@
+using System.Collections.Generic; // อย่าลืม using System.Collections.Generic;
 using UnityEngine;
 
 public class ShamakiriCloneAI : BaseEnemyAI
 {
+    [Header("Graphics Reference")]
+    public List<GameObject> graphicsParents; // เปลี่ยนเป็น List สำหรับซ่อนหลายๆ ชิ้น (โมเดล, เงา)
+    public Collider mainCollider;
+
+    // =========================================================
+    // เอาไว้เปิด/ปิด การมองเห็นและการชน
+    // =========================================================
+    public void SetVisibility(bool isVisible)
+    {
+        if (graphicsParents != null && graphicsParents.Count > 0)
+        {
+            foreach (var gfx in graphicsParents)
+            {
+                if (gfx != null) gfx.SetActive(isVisible);
+            }
+        }
+        if (mainCollider != null) mainCollider.enabled = isVisible;
+    }
+
     // =========================================================
     // 1. ล้างสมองตอนเกิด
     // =========================================================
     protected override void Start()
     {
         ChangeState(EnemyState.Standby);
+        SetVisibility(true); // ป้องกันบั๊กดึงมาจาก Pool แล้วล่องหนอยู่
     }
 
-    // =========================================================
-    // 2. ล้างสมองตอนรอดูเชิง (Standby)
-    // =========================================================
-    protected override void StandbyChangeStateLogic()
-    {
-        // ปล่อยว่างไว้ ให้ ShamakiriSquadController คุมการเดินค่ายกล 100%
-    }
+    protected override void StandbyChangeStateLogic() { }
 
-    // =========================================================
-    // 3. คืนสมองตอนกำลังวิ่งไล่ (Chase) *** แก้ไขตรงนี้ครับ ***
-    // =========================================================
     protected override void ChaseChangeStateLogic()
     {
-        // ถ้าวิ่งเข้ามาระยะถึงแล้ว (เช็คจาก Attack Range ใน Inspector) ให้สับเลย!
         if (_playerInAttackRange)
         {
             ChangeState(EnemyState.Attack);
         }
-        // ถ้ายังไม่ถึงระยะ ก็วิ่งหน้าตั้งเข้าหาผู้เล่นต่อไป
         else if (playerTarget != null)
         {
             TriggerStartChase(playerTarget.position);
         }
     }
 
-    // =========================================================
-    // 4. ล้างสมองตอนตีเสร็จ
-    // =========================================================
     protected override void HandleAttackFinished()
     {
-        // ตีเสร็จปุ๊บ บังคับให้กลับมารอคำสั่ง (ค่ายกล 3 เหลี่ยม) เสมอ
         ChangeState(EnemyState.Standby);
     }
 }

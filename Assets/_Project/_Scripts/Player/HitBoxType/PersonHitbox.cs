@@ -7,16 +7,20 @@ public class PersonHitbox : BaseHitBox
     // กำหนดขนาดและค่า Offset ของ Hitbox ได้ใน Inspector
     //public Vector3 attackOffset = new Vector3(0, 0, 1f);
     //public Vector3 attackSize = new Vector3(1.5f, 1.5f, 1.5f);
+    [Header("Hitbox Settings")]
+    [Tooltip("หากติ๊กถูก Hitbox จะปิดการทำงานทันทีหลังจากชนเป้าหมายหรือกำแพงไปแล้ว 1 ครั้ง")]
+    public bool disableAfterHit = true;
 
     public LayerMask wallLayer; // ตั้งค่า Layer ของศัตรูใน Inspector
 
-    Collider _colider;
+    Collider[] _colliders; // เติม s และใส่ [] เพื่อเก็บเป็นกลุ่ม
 
     //public event Action OnHit;
 
     protected virtual void Awake()
     {
-        _colider = GetComponent<Collider>();
+        // ใช้ GetComponents (เติม s) เพื่อดึง Collider ทุกประเภท (Box, Sphere, Capsule) ทุกอันใน Object นี้
+        _colliders = GetComponents<Collider>();
     }
 
     private void Start()
@@ -94,26 +98,40 @@ public class PersonHitbox : BaseHitBox
 
     public override void PerformAttack()
     {
-        _colider.enabled = true;
+        // วนลูปเปิด Collider ทุกอัน
+        foreach (var col in _colliders)
+        {
+            col.enabled = true;
+        }
     }
 
     public void DisableAttack()
     {
-        _colider.enabled = false;
+        // วนลูปปิด Collider ทุกอัน
+        foreach (var col in _colliders)
+        {
+            col.enabled = false;
+        }
     }
 
 
 
     private void ReturnObjectToPool()
     {
-        _colider.enabled = false;
+        // วนลูปปิด Collider ทุกอัน
+        foreach (var col in _colliders)
+        {
+            col.enabled = false;
+        }
+
         ObjectPoolingManager.Instance.Respawn(gameObject);
     }
 
     private void OnDrawGizmos()
     {
-        // 1. เช็คและดึง BoxCollider มาวาด
-        if (TryGetComponent(out BoxCollider boxCol))
+        // 1. ดึง BoxCollider ทั้งหมดที่มีใน GameObject นี้มาวาด
+        BoxCollider[] boxColliders = GetComponents<BoxCollider>();
+        foreach (var boxCol in boxColliders)
         {
             Gizmos.color = new Color(1f, 0f, 0f, 0.5f);
 
@@ -132,8 +150,9 @@ public class PersonHitbox : BaseHitBox
             Gizmos.matrix = Matrix4x4.identity;
         }
 
-        // 2. เช็คและดึง SphereCollider มาวาด
-        if (TryGetComponent(out SphereCollider sphereCol))
+        // 2. ดึง SphereCollider ทั้งหมดมาวาด (เผื่อกรณีที่คุณเอาไปทำ Hitbox ทรงกลมหลายอันซ้อนกัน)
+        SphereCollider[] sphereColliders = GetComponents<SphereCollider>();
+        foreach (var sphereCol in sphereColliders)
         {
             Gizmos.color = new Color(1f, 0f, 0f, 0.5f);
 

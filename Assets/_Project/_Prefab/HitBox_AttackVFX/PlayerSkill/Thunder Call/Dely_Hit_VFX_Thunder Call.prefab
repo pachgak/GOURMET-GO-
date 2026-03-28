@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6217702133544873570
 Transform:
   m_ObjectHideFlags: 0
@@ -73,6 +73,8 @@ MonoBehaviour:
     m_Bits: 256
   damage: 5
   knockbackDirection: {x: 0, y: 0, z: 0}
+  knockbackForce: 0
+  knockbackTime: 0
   attackOffset: {x: 0, y: 0, z: 0}
   attackRadius: 3.5
 --- !u!1 &2022474478325579851
@@ -85,7 +87,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4261632794786888519}
   - component: {fileID: 3946425742056028742}
-  - component: {fileID: 4533687827314382551}
+  - component: {fileID: 3259491450943532909}
   m_Layer: 0
   m_Name: Dely_Hit_VFX_Thunder Call
   m_TagString: Untagged
@@ -122,7 +124,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _particleSystem: {fileID: 8927036869432045814}
---- !u!114 &4533687827314382551
+--- !u!114 &3259491450943532909
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -131,12 +133,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 2022474478325579851}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bef641c4762ef1844a19de19365f6865, type: 3}
+  m_Script: {fileID: 11500000, guid: 012431d3e2ebbaf47895f9da661b55c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeDely: 0.1
-  timer: 0
-  activeObj: {fileID: 1064322380493178440}
+  ownerHit: {fileID: 0}
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  damage: 0
+  knockbackDirection: {x: 0, y: 0, z: 0}
+  knockbackForce: 0
+  knockbackTime: 0
+  delayTime: 0.1
+  actualHitBox: {fileID: 6846402919838021435}
 --- !u!1001 &7705841585724714250
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -185,9 +194,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1699111858902810516, guid: 5a04fe18c1ea84d4096d0c1232b59f41, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6676399811115997810, guid: 5a04fe18c1ea84d4096d0c1232b59f41, type: 3}
       propertyPath: m_Name
       value: VFX_PlayerSkill_Lightning strike
+      objectReference: {fileID: 0}
+    - target: {fileID: 6676399811115997810, guid: 5a04fe18c1ea84d4096d0c1232b59f41, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
