@@ -8,6 +8,11 @@ public class EnemyBarController : BaseHpBarController
 
     private EnemyBarUI currentEnemyBarUI; // เก็บ UI ตัวปัจจุบันที่ดึงมาจาก Pool
 
+    protected EnemyHealth _healthTarget;
+
+    // เพิ่มบรรทัดนี้เข้าไป เพื่อให้ภายนอกดึงค่าไปเช็คได้ว่ากำลังโชว์เลือดใครอยู่
+    public EnemyHealth CurrentHealthTarget => _healthTarget;
+
     protected override void Awake()
     {
         base.Awake();

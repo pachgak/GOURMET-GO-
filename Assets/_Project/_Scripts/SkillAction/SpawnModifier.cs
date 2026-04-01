@@ -54,12 +54,35 @@ public class DelayTimeModifier : SpawnModifier
     // *** อัปเดต Parameter ***
     public override void Apply(GameObject user, GameObject target, GameObject spawnedObject, float speedMultiplier)
     {
-        if (spawnedObject.TryGetComponent(out DelayedHitBox delayedHitBox))
+        // *** แก้ตรงนี้: เปลี่ยนจากการหา DelayedHitBox เป็นหา IDelayable แทน ***
+        if (spawnedObject.TryGetComponent(out IDelayable delayable))
         {
             float finalDelay = delayTime;
             if (applySpeedMultiplier && speedMultiplier > 0) finalDelay /= speedMultiplier;
 
-            delayedHitBox.SetDelayTime(finalDelay);
+            // ส่งค่าไปให้ Interface ทำงาน
+            delayable.SetDelayTime(finalDelay);
+        }
+    }
+}
+
+[System.Serializable]
+public class DurationModifier : SpawnModifier
+{
+    public float delayTime = 1.0f;
+    public bool applySpeedMultiplier = true;
+
+    // *** อัปเดต Parameter ***
+    public override void Apply(GameObject user, GameObject target, GameObject spawnedObject, float speedMultiplier)
+    {
+        // *** แก้ตรงนี้: เปลี่ยนจากการหา DelayedHitBox เป็นหา IDelayable แทน ***
+        if (spawnedObject.TryGetComponent(out IDurationable delayable))
+        {
+            float finalDelay = delayTime;
+            if (applySpeedMultiplier && speedMultiplier > 0) finalDelay /= speedMultiplier;
+
+            // ส่งค่าไปให้ Interface ทำงาน
+            delayable.SetDurationTime(finalDelay);
         }
     }
 }
@@ -68,7 +91,7 @@ public class DelayTimeModifier : SpawnModifier
 // *** สร้างใหม่: HomingTargetModifier ***
 // ----------------------------------------------------
 [System.Serializable]
-public class HomingTargetModifier : SpawnModifier
+public class TargetHomingModifier : SpawnModifier
 {
     [Tooltip("ถ้าตอนเสกออกมา ศัตรูมองไม่เห็น Target (ค่าเป็น null) ให้บังคับหา Player อัตโนมัติเลยไหม?")]
     public bool fallbackToPlayer = true;

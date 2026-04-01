@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1690510048142354574}
   - component: {fileID: 5084844119555781440}
-  - component: {fileID: 340579980707034929}
   - component: {fileID: 6809764495991627033}
   - component: {fileID: 8109528991611595769}
+  - component: {fileID: 170952343369185103}
   m_Layer: 0
   m_Name: HitBox_VFX_Jamper Aoe
   m_TagString: Untagged
@@ -133,29 +133,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!136 &340579980707034929
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9112066071117175999}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 5.54
-  m_Height: 1
-  m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &6809764495991627033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -190,6 +167,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeDestory: 16
+--- !u!135 &170952343369185103
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9112066071117175999}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 5.54
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &996586362160601013
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -324,7 +324,6 @@ public class ShamakiriSquadController : MonoBehaviour
 
     private void ExecuteNextTurn()
     {
-
         if (_currentAttackerIndex >= activeClones.Count)
         {
             _currentAttackerIndex = 0;
@@ -632,10 +631,33 @@ public class ShamakiriSquadController : MonoBehaviour
 
         // 3. หน่วงเวลารอ (attackTime) และโชว์วงแดง (telegraphTime)
         yield return new WaitForSeconds(attackTime);
-        Vector3 attackTargetPos = _myAI.playerTarget.position;
-        if (warningVFX != null) ObjectPoolingManager.Instance.Spawn(warningVFX, attackTargetPos);
+
+        GameObject warningInstance = null;
+
+        if (warningVFX != null)
+        {
+            warningInstance = ObjectPoolingManager.Instance.Spawn(warningVFX, _myAI.playerTarget.position);
+
+            if (warningInstance.TryGetComponent(out IDurationable trackable))
+            {
+                // ถ้าสคริปต์นั้นรองรับเรื่องเวลา ก็ส่งเวลาไปให้ด้วย
+                trackable.SetDurationTime(telegraphTime * 0.5f);
+            }
+            
+            if (warningInstance.TryGetComponent(out ITargetable targetable))
+            {
+                Debug.Log($"ITargetable : Do");
+                // ถ้าสคริปต์เป็นพวกกระสุนหรืออะไรที่ตามตลอดกาล (ไม่มีตัวแปรเวลา) ก็ทำแค่เซ็ตเป้าหมาย
+                Debug.Log($"playerTarget : {_myAI.playerTarget.gameObject.name}");
+
+                targetable.SetTarget(_myAI.playerTarget);
+            }
+        }
 
         yield return new WaitForSeconds(telegraphTime);
+
+        Vector3 attackTargetPos = warningInstance.transform.position;
+
         if (slashVFXPrefab != null) ObjectPoolingManager.Instance.Spawn(slashVFXPrefab, attackTargetPos);
 
         // ==========================================

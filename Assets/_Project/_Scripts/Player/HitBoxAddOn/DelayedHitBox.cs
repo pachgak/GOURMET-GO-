@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DelayedHitBox : BaseHitBox
+public class DelayedHitBox : BaseHitBox , IDelayable
 {
     [Header("Telegraph Settings (ตั้งเวลา)")]
     public float delayTime = 1.0f; // เวลาชาร์จก่อนเปิด Hitbox
