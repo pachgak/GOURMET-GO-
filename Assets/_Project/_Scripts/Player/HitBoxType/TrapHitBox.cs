@@ -22,12 +22,17 @@ public class TrapHitBox : BaseHitBox
          
     }
 
+    public override Collider[] GetCollidersInArea(LayerMask mask)
+    {
+        return Physics.OverlapSphere(transform.position, attackRadius, mask);
+    }
+
     private void Update()
     {
         if (!isTriger) return;
 
         // ใช้ Physics.OverlapBox เพื่อหา Collider ทั้งหมดที่อยู่ใน Hitbox
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, attackRadius, targetLayer);
+        Collider[] hitColliders = GetCollidersInArea(targetLayer);
 
         if (hitColliders.Length > 0)
         {

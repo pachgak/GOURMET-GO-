@@ -13,16 +13,18 @@ public class AttackHitbox : BaseHitBox
         //PerformAttack();
     }
 
+    public override Collider[] GetCollidersInArea(LayerMask mask)
+    {
+        Vector3 frontOffset = new Vector3(0, attackSize.y / 2, attackSize.z / 2) + attackOffset;
+        Vector3 position = transform.position + transform.rotation * frontOffset;
+        return Physics.OverlapBox(position, attackSize / 2, transform.rotation, mask);
+    }
+
     // ฟังก์ชันนี้จะถูกเรียกจาก Player เมื่อทำการโจมตี
     public override void PerformAttack()
     {
-        // คำนวณตำแหน่งและทิศทางของ Hitbox
-        //Vector3 position = transform.position + transform.rotation * attackOffset;
-        Vector3 frontOffset = new Vector3(0, attackSize.y / 2, attackSize.z / 2) + attackOffset;
-        Vector3 position = transform.position + transform.rotation * frontOffset;
-
-        // ใช้ Physics.OverlapBox เพื่อหา Collider ทั้งหมดที่อยู่ใน Hitbox
-        Collider[] hitColliders = Physics.OverlapBox(position, attackSize / 2, transform.rotation, targetLayer);
+        // โค้ดสั้นลง! ดึงเป้าหมายจากฟังก์ชันใหม่
+        Collider[] hitColliders = GetCollidersInArea(targetLayer);
 
         foreach (var hitCollider in hitColliders)
         {

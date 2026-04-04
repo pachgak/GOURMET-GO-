@@ -18,14 +18,21 @@ public class AttactHitRadius : BaseHitBox
         //PerformAttack();
     }
 
-    // ฟังก์ชันนี้จะถูกเรียกจาก Player เมื่อทำการโจมตี
-    public override void PerformAttack()
+    public override Collider[] GetCollidersInArea(LayerMask mask)
     {
         // คำนวณตำแหน่งและทิศทางของ Hitbox
         Vector3 position = transform.position + transform.rotation * attackOffset;
 
+        return Physics.OverlapSphere(position, attackRadius, mask);
+    }
+
+    // ฟังก์ชันนี้จะถูกเรียกจาก Player เมื่อทำการโจมตี
+    public override void PerformAttack()
+    {
+
+
         // ใช้ Physics.OverlapBox เพื่อหา Collider ทั้งหมดที่อยู่ใน Hitbox
-        Collider[] hitColliders = Physics.OverlapSphere(position, attackRadius, targetLayer);
+        Collider[] hitColliders = GetCollidersInArea(targetLayer);
 
         foreach (var hitCollider in hitColliders)
         {

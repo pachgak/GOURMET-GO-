@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class AoeHitBox : PersonHitbox
 {
-    protected override void Awake()
+    protected override void Awake() 
     {
         base.Awake();
     }

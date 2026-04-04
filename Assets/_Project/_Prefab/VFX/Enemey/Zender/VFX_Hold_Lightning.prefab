@@ -1,0 +1,159 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &474697826307574400
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3271750882786244793}
+  m_Layer: 8
+  m_Name: VFX_Hold_Lightning
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3271750882786244793
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 474697826307574400}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3684811425954061062}
+  - {fileID: 5889728801319285185}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &3629300939198702583
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3271750882786244793}
+    m_Modifications:
+    - target: {fileID: 1161828099975259825, guid: 1f4b5919235fc4a48905a0648ccdbe85, type: 3}
+      propertyPath: m_Name
+      value: Lightning strike Boss Hold
+      objectReference: {fileID: 0}
+    - target: {fileID: 7197131374685049398, guid: 1f4b5919235fc4a48905a0648ccdbe85, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7197131374685049398, guid: 1f4b5919235fc4a48905a0648ccdbe85, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7197131374685049398, guid: 1f4b5919235fc4a48905a0648ccdbe85, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7197131374685049398, guid: 1f4b5919235fc4a48905a0648ccdbe85, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 7197131374685049398, guid: 1f4b5919235fc4a48905a0648ccdbe85, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 7197131374685049398, guid: 1f4b5919235fc4a48905a0648ccdbe85, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7197131374685049398, guid: 1f4b5919235fc4a48905a0648ccdbe85, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7197131374685049398, guid: 1f4b5919235fc4a48905a0648ccdbe85, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 7197131374685049398, guid: 1f4b5919235fc4a48905a0648ccdbe85, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7197131374685049398, guid: 1f4b5919235fc4a48905a0648ccdbe85, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 1f4b5919235fc4a48905a0648ccdbe85, type: 3}
+--- !u!4 &5889728801319285185 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7197131374685049398, guid: 1f4b5919235fc4a48905a0648ccdbe85, type: 3}
+  m_PrefabInstance: {fileID: 3629300939198702583}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &5797842534084994750
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3271750882786244793}
+    m_Modifications:
+    - target: {fileID: 4111792112102522561, guid: eb301231cbc25514ba9af04094167502, type: 3}
+      propertyPath: m_Name
+      value: Lightning bolt Boss
+      objectReference: {fileID: 0}
+    - target: {fileID: 7157635330588523960, guid: eb301231cbc25514ba9af04094167502, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7157635330588523960, guid: eb301231cbc25514ba9af04094167502, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 10.34
+      objectReference: {fileID: 0}
+    - target: {fileID: 7157635330588523960, guid: eb301231cbc25514ba9af04094167502, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7157635330588523960, guid: eb301231cbc25514ba9af04094167502, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 7157635330588523960, guid: eb301231cbc25514ba9af04094167502, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 7157635330588523960, guid: eb301231cbc25514ba9af04094167502, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7157635330588523960, guid: eb301231cbc25514ba9af04094167502, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7157635330588523960, guid: eb301231cbc25514ba9af04094167502, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 7157635330588523960, guid: eb301231cbc25514ba9af04094167502, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7157635330588523960, guid: eb301231cbc25514ba9af04094167502, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: eb301231cbc25514ba9af04094167502, type: 3}
+--- !u!4 &3684811425954061062 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7157635330588523960, guid: eb301231cbc25514ba9af04094167502, type: 3}
+  m_PrefabInstance: {fileID: 5797842534084994750}
+  m_PrefabAsset: {fileID: 0}

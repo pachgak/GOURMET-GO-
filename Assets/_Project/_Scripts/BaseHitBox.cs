@@ -37,5 +37,35 @@ public abstract class BaseHitBox : MonoBehaviour , IHitBox
         throw new System.NotImplementedException();
     }
 
-    
+    // ==========================================
+    // ระบบดึง Collider ในพื้นที่ (รองรับทุกรูปทรง)
+    // ==========================================
+    public virtual Collider[] GetCollidersInArea(LayerMask mask)
+    {
+        // 1. ถ้าเป็น Box Collider -> ใช้ OverlapBox
+        if (TryGetComponent(out BoxCollider box))
+        {
+            Vector3 center = transform.TransformPoint(box.center);
+            Vector3 extents = Vector3.Scale(box.size, transform.lossyScale) / 2f;
+            return Physics.OverlapBox(center, extents, transform.rotation, mask);
+        }
+
+        // 2. ถ้าเป็น Sphere Collider -> ใช้ OverlapSphere
+        else if (TryGetComponent(out SphereCollider sphere))
+        {
+            Vector3 center = transform.TransformPoint(sphere.center);
+            float maxScale = Mathf.Max(Mathf.Abs(transform.lossyScale.x), Mathf.Max(Mathf.Abs(transform.lossyScale.y), Mathf.Abs(transform.lossyScale.z)));
+            float radius = sphere.radius * maxScale;
+            return Physics.OverlapSphere(center, radius, mask);
+        }
+
+        // 3. ถ้าเป็น Collider ชนิดอื่นๆ ให้ใช้ Bounding Box (กล่องครอบ) เป็นท่าไม้ตายสำรอง
+        else if (TryGetComponent(out Collider col))
+        {
+            return Physics.OverlapBox(col.bounds.center, col.bounds.extents, transform.rotation, mask);
+        }
+
+        // ถ้าไม่มี Collider แปะอยู่เลย
+        return new Collider[0];
+    }
 }
