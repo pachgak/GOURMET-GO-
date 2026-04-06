@@ -8,13 +8,13 @@ public class DamageFlash : MonoBehaviour
     [SerializeField] private SpriteRenderer[] spriteRenderers;
 
     [Header("Flash Settings")]
-    [SerializeField] private Color flashColor = Color.red;
+    [SerializeField] private Color flashColor = Color.white;
 
     [Tooltip("ระยะเวลาทั้งหมดที่ตัวละครจะกระพริบ (วินาที)")]
-    [SerializeField] private float totalFlashDuration = 0.5f;
+    [SerializeField] private float totalFlashDuration = 0.6f;
 
     [Tooltip("จำนวนครั้งที่ต้องการให้กระพริบภายในระยะเวลาด้านบน")]
-    [SerializeField] private int flashCount = 3;
+    [SerializeField] private int flashCount = 1;
 
     [Tooltip("ทำให้มันค่อยจางหายไป")]
     [SerializeField] bool isLerp = true;

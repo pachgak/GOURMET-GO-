@@ -62,6 +62,9 @@ public class EnemyBarController : BaseHpBarController
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position + offset, 0.1f);
+
+        // วาดกล่องเส้นขอบ (WireCube) ที่ตำแหน่ง + offset 
+        // ขนาด (Width, Height, Depth) = (1.5f, 0.25f, 0.1f) ทำให้เป็นสี่เหลี่ยมผืนผ้าแนวนอนคล้ายหลอดเลือด
+        Gizmos.DrawWireCube(transform.position + offset, new Vector3(2.5f, 0.25f, 0.1f));
     }
 }

@@ -12,13 +12,14 @@ GameObject:
   - component: {fileID: 2150838812364893946}
   - component: {fileID: 8066715233782695006}
   - component: {fileID: 1577676126937621399}
+  - component: {fileID: -8030555174062570462}
   m_Layer: 8
-  m_Name: Dely_Hit_Dely_VFX_Zender_LightningStrike
+  m_Name: Dely_Hit_Dely_VFX_Zender_LightningStrike_Lock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3268168866170767902
 Transform:
   m_ObjectHideFlags: 0
@@ -86,6 +87,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _particleSystem: {fileID: 4850030071948520915}
+--- !u!114 &-8030555174062570462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1627133038340418700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a900986cc9ae848449b643ff40a797c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trackingDuration: 3.25
+  followSpeed: 10
+  target: {fileID: 0}
+  timer: 0
+  isTracking: 1
 --- !u!1 &6508686884906922930
 GameObject:
   m_ObjectHideFlags: 0

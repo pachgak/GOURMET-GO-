@@ -31,4 +31,9 @@ MonoBehaviour:
         offset: {x: 0, y: 0}
         damage: 1
         knockbackForce: 5
-        modifiers: []
+        modifiers:
+        - rid: 6721757801496182865
+    - rid: 6721757801496182865
+      type: {class: TargetHomingModifier, ns: , asm: Assembly-CSharp}
+      data:
+        fallbackToPlayer: 1

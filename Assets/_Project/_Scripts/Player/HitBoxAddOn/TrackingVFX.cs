@@ -48,4 +48,25 @@ public class TrackingVFX : MonoBehaviour, ITargetable , IDurationable
 
         this.trackingDuration = duration;
     }
+
+    private void OnDrawGizmos()
+    {
+        // 1. ถ้ายังไม่มีเป้าหมาย หรือไม่ได้อยู่ในโหมด Tracking ก็ไม่ต้องวาด
+        if (target == null) return;
+
+        // 2. คำนวณตำแหน่งเป้าหมายแบบเดียวกับที่เราทำใน Update
+        Vector3 targetPos = new Vector3(target.position.x, transform.position.y, target.position.z);
+
+        // 3. วาดเส้นโยงจากตำแหน่งปัจจุบัน ไปหาเป้าหมาย (สีเหลือง)
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(transform.position, targetPos);
+
+        // 4. วาดลูกบอลโปร่งแสงตรงจุดปลายทาง เพื่อให้เห็นเป้าชัดๆ (สีแดง)
+        Gizmos.color = new Color(1f, 0f, 0f, 0.5f); // แดงโปร่งแสง
+        Gizmos.DrawSphere(targetPos, 0.5f);
+
+        // วาดขอบลูกบอลให้ดูมีมิติ
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(targetPos, 0.5f);
+    }
 }

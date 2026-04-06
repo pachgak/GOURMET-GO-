@@ -37,4 +37,13 @@ public class DamagePromptController : MonoBehaviour
 
 
     }
+
+    private void OnDrawGizmosSelected()
+    {
+        // กำหนดสีของ Gizmos (เปลี่ยนสีได้ตามต้องการ)
+        Gizmos.color = Color.red;
+
+        // วาดจุด (Sphere) ขนาดเล็กที่ตำแหน่งของ Object + offSet
+        Gizmos.DrawSphere(transform.position + offSet, 0.15f);
+    }
 }

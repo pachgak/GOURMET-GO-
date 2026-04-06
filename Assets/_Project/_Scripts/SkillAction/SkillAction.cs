@@ -623,6 +623,8 @@ public class SplitSelfAction : SkillAction
 
     public override void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f, LayerMask? layerTarget = null)
     {
+        Debug.Log($"SplitSelfAction One");
+
         if (minionPrefabs == null || minionPrefabs.Count == 0) return;
 
         Vector3 centerPos = user.transform.position;

@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8510c3ed0d6daa44eac4aa4063200dfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _particleSystem: {fileID: 7182694394856567198}
+  _particleSystem: {fileID: 8258450021859166514}
 --- !u!82 &4743419490724770733
 AudioSource:
   m_ObjectHideFlags: 0
@@ -163,6 +163,8 @@ MonoBehaviour:
     m_Bits: 256
   damage: 10
   knockbackDirection: {x: 0, y: 0, z: 0}
+  knockbackForce: 0
+  knockbackTime: 0
   attackOffset: {x: 0, y: 1, z: 0}
   attackSize: {x: 7.44, y: 1.5, z: 4.85}
 --- !u!1001 &1397810060831430051
@@ -251,8 +253,8 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4977985497743347214, guid: 2b7b9dea55d74e34286ff1d45d53434b, type: 3}
   m_PrefabInstance: {fileID: 1397810060831430051}
   m_PrefabAsset: {fileID: 0}
---- !u!198 &7182694394856567198 stripped
+--- !u!198 &8258450021859166514 stripped
 ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 8126757240851817533, guid: 2b7b9dea55d74e34286ff1d45d53434b, type: 3}
+  m_CorrespondingSourceObject: {fileID: 7061059627842575505, guid: 2b7b9dea55d74e34286ff1d45d53434b, type: 3}
   m_PrefabInstance: {fileID: 1397810060831430051}
   m_PrefabAsset: {fileID: 0}

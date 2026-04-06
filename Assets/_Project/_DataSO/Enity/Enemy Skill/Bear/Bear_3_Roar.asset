@@ -38,16 +38,14 @@ MonoBehaviour:
     dashSpeed: 0
     dashTime: 0
   actions:
-  - rid: 3016931430327910480
+  - rid: 6721757835990663246
   references:
     version: 2
     RefIds:
-    - rid: 3016931430327910480
-      type: {class: SpawnHitboxAction, ns: , asm: Assembly-CSharp}
+    - rid: 6721757835990663246
+      type: {class: SpawnVFXAction, ns: , asm: Assembly-CSharp}
       data:
         dirType: 0
-        prefab: {fileID: 5113490911434173907, guid: 14402d2d2a281184795c1274a9993374, type: 3}
-        spawnType: 1
+        prefab: {fileID: 3672660656196086385, guid: b388e760744af2d4fb5085002848d5da, type: 3}
+        spawnType: 0
         offset: {x: 0, y: 0}
-        damage: 1
-        knockbackForce: 5

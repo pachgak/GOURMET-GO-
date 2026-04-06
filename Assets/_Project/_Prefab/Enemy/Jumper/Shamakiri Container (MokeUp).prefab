@@ -55,7 +55,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7ecdfd796d54de84bb375caccb28c213, type: 2}
+  - {fileID: 2100000, guid: 589a990cfd4b9cc4e8e33b19a9aaf043, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -239,13 +239,14 @@ GameObject:
   - component: {fileID: 2926557233993478406}
   - component: {fileID: 4416828542704196141}
   - component: {fileID: 4660817762160335837}
-  - component: {fileID: 7214673708835353823}
-  - component: {fileID: 6127440907724167493}
   - component: {fileID: 7404593533369674589}
   - component: {fileID: 4858094101008093505}
   - component: {fileID: 2623641826623712424}
   - component: {fileID: 987617965263502211}
-  - component: {fileID: 6119019353871790548}
+  - component: {fileID: 5281317237895160898}
+  - component: {fileID: 4663626042059540349}
+  - component: {fileID: 1863463509986252470}
+  - component: {fileID: 4937958007103244475}
   m_Layer: 8
   m_Name: Shamakiri Container (MokeUp)
   m_TagString: Untagged
@@ -423,7 +424,7 @@ MonoBehaviour:
   emptyScreenDuration: 1.5
   delayBeforeAttack: 1.5
   smokeVFX: {fileID: 3899353070283019018, guid: 3c4341e967e454041b67f24e4a82f208, type: 3}
-  attackTime: 1
+  attackTime: 0.25
   warningVFX: {fileID: 5213366745670659844, guid: 649119e88ca745c43948452381bb0672, type: 3}
   telegraphTime: 1
   slashVFXPrefab: {fileID: 7374061568141512661, guid: 34ec45e65c3d97f4bad4ae96e2604a1c, type: 3}
@@ -577,63 +578,6 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &7214673708835353823
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5565202312802687924}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b9196720874da447b38fbf2150eb8e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  setMockSkill:
-  - description: 
-    simulatedDurationSkill: 1
-    runAtTimeSkill:
-    - 0.75
-  - description: melee
-    simulatedDurationSkill: 3
-    runAtTimeSkill:
-    - 0
-    - 0
-    - 0.5
-    - 1
-    - 1
-    - 1.5
-    - 2
-    - 2
-    - 2.5
-  - description: rang
-    simulatedDurationSkill: 1.5
-    runAtTimeSkill:
-    - 0
-    - 0.5
-  - description: aoe
-    simulatedDurationSkill: 3
-    runAtTimeSkill:
-    - 0
-    - 1
-    - 1
---- !u!114 &6127440907724167493
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5565202312802687924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a097fcf5a15caf4da79268370277a3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 2430754594332559009}
-  walkRhythmSpeed: 10
-  bobAmount: 0.2
-  tiltAngle: 5
-  stopSmoothing: 5
 --- !u!114 &7404593533369674589
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -706,7 +650,39 @@ MonoBehaviour:
     countMin: 1
     countMax: 0
   offSet: {x: 0, y: 1, z: 0}
---- !u!114 &6119019353871790548
+--- !u!114 &5281317237895160898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5565202312802687924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f1f914efeafe304dbf23f1a28c71e5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 429902740019634938}
+  flipXRoot: {fileID: 4630751887537598685}
+--- !u!114 &4663626042059540349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5565202312802687924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0bce8023bdec4841839a314ea8f8354, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderers:
+  - {fileID: 2430754594332559009}
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
+  totalFlashDuration: 0.6
+  flashCount: 1
+  isLerp: 1
+--- !u!114 &1863463509986252470
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -720,6 +696,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damagePromptPrefab: {fileID: 4903145366339052106, guid: 85022804ff52dc14da631fed9d071121, type: 3}
   offSet: {x: 0, y: 2, z: 0}
+--- !u!114 &4937958007103244475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5565202312802687924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12e754b737a526d4aa3e94accd370019, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  iconSprite: {fileID: -1396527067, guid: 0b0348e69f11e824eba3c1db1651d231, type: 3}
+  iconColor: {r: 1, g: 1, b: 1, a: 1}
+  isStatic: 0
 --- !u!1 &6183076836183093455
 GameObject:
   m_ObjectHideFlags: 0

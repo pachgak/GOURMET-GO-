@@ -169,13 +169,14 @@ GameObject:
   - component: {fileID: 2202393656997821199}
   - component: {fileID: 6732504064721202897}
   - component: {fileID: 6328529745486518384}
-  - component: {fileID: 3366204226622126537}
   - component: {fileID: 938953158334949668}
   - component: {fileID: 2355021197412726304}
   - component: {fileID: 3341716836705908699}
   - component: {fileID: 417778132287791924}
   - component: {fileID: 2281806175151253966}
   - component: {fileID: 7909354666878284926}
+  - component: {fileID: 5119696298318002127}
+  - component: {fileID: 5384182262069114788}
   m_Layer: 8
   m_Name: Zander
   m_TagString: Untagged
@@ -304,7 +305,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: edda2acda61edcc4c9d14fcb30eee821, type: 2}
   currentDiractionSkill: {x: 0, y: 0, z: 0}
   isOvercharge: 0
-  lightningHitCount: 0
+  lightningHitCount: 1
   hitsToOvercharge: 2
   overchargeDuration: 60
   overchargeAuraVFX: {fileID: 1627133038340418700, guid: d9fce8c17e6fd024cad80d3df76393a0, type: 3}
@@ -395,20 +396,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   effecfHitPrefab: {fileID: 3118930817162359685, guid: 55ff5674cd0ef04498dcb2b625a38e23, type: 3}
   offSet: {x: 0, y: 1, z: -0.5}
---- !u!114 &3366204226622126537
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5501947848412054241}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8aa30154d1169043b0a6860aa7e833a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damagePromptPrefab: {fileID: 4903145366339052106, guid: 85022804ff52dc14da631fed9d071121, type: 3}
-  offSet: {x: 0, y: 2, z: 0}
 --- !u!114 &938953158334949668
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -611,8 +598,40 @@ MonoBehaviour:
   _animator: {fileID: 4466691593671984212}
   flipXRoot: {fileID: 5476313763532669329}
   spriteRenderer: {fileID: 2724180519577060765}
-  normalSprite: {fileID: 0}
-  overchargeSprite: {fileID: 0}
+  normalSprite: {fileID: 2129150753, guid: 05010fcfcb8fe54419cccbb97d2bffb1, type: 3}
+  overchargeSprite: {fileID: -1629526885, guid: 05010fcfcb8fe54419cccbb97d2bffb1, type: 3}
+--- !u!114 &5119696298318002127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5501947848412054241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0bce8023bdec4841839a314ea8f8354, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderers:
+  - {fileID: 2724180519577060765}
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
+  totalFlashDuration: 0.6
+  flashCount: 1
+  isLerp: 1
+--- !u!114 &5384182262069114788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5501947848412054241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8aa30154d1169043b0a6860aa7e833a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damagePromptPrefab: {fileID: 4903145366339052106, guid: 85022804ff52dc14da631fed9d071121, type: 3}
+  offSet: {x: 0, y: 2, z: 0}
 --- !u!1 &7128823762627146551
 GameObject:
   m_ObjectHideFlags: 0
@@ -769,7 +788,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7ecdfd796d54de84bb375caccb28c213, type: 2}
+  - {fileID: 2100000, guid: 589a990cfd4b9cc4e8e33b19a9aaf043, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -790,7 +809,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1981348428, guid: aaa20221360cea34bb1c89eabe2dc0b3, type: 3}
+  m_Sprite: {fileID: 2129150753, guid: 05010fcfcb8fe54419cccbb97d2bffb1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

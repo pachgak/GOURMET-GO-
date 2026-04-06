@@ -33,19 +33,24 @@ public class ShamakiriContainerCombat : BaseEnemyCombat
     // ==========================================
     protected override IEnumerator AttackLogic()
     {
+        Debug.Log("AttackLogic");
         if (enemySkills == null || enemySkills.Length == 0) yield break;
 
         if (!isEnraged)
         {
+            Debug.Log("Co");
             // --- Phase 1: ร่างปกติ ---
             // บังคับใช้แค่สกิล 0 (SplitSelfAction) ด้วยความเร็วปกติ
             if (enemySkills[0] != null)
             {
                 yield return UseSkill(0, 1.0f);
+
+                Debug.Log("Sk0");
             }
         }
         else
         {
+            Debug.Log("Ag");
             // --- Phase 2: ร่างโกรธ ---
             // ดักจับเผื่อ Index ไปตกอยู่ที่ 0 (ห้ามใช้สกิลแยกร่างแล้ว)
             if (_currentSkillIndex == 0) _currentSkillIndex = 1;

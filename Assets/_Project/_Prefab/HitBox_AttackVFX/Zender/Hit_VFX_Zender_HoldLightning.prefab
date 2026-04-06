@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1057214549886541907}
   - component: {fileID: 8990842129595172800}
   - component: {fileID: 3826413556410515469}
-  - component: {fileID: 8886880996101895346}
+  - component: {fileID: 1909260164023394113}
   m_Layer: 8
   m_Name: Hit_VFX_Zender_HoldLightning
   m_TagString: Untagged
@@ -71,7 +71,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _particleSystem: {fileID: 397718786965074651}
---- !u!114 &8886880996101895346
+--- !u!114 &1909260164023394113
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -80,11 +80,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 3690167272111190290}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9e3dec078e7dfd4f884e84de65aa0d2, type: 3}
+  m_Script: {fileID: 11500000, guid: 28c9c8b28c5d83c4fa25ecd13be08981, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 20
-  moveDelay: 1
+  speed: 5
+  turnSpeed: 5
+  flatMovement: 1
+  stopDistance: 0.1
+  target: {fileID: 0}
 --- !u!1 &7681729006489173056
 GameObject:
   m_ObjectHideFlags: 0
@@ -137,7 +140,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
+  m_Radius: 2.22
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &197057348569213143
 MonoBehaviour:
