@@ -206,6 +206,10 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
 
     protected bool IsAtDestination()
     {
+        // เพิ่มการเช็ค isOnNavMesh เพื่อป้องกัน Error GetRemainingDistance
+        if (_agent == null || !_agent.isActiveAndEnabled || !_agent.isOnNavMesh)
+            return false;
+
         // ตรวจสอบว่าถึงจุดหมายแล้วหรือไม่
         return _agent.remainingDistance <= _agent.stoppingDistance && !_agent.pathPending;
     }
