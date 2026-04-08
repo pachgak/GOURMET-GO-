@@ -20,11 +20,11 @@ public class PlayerHealth : MonoBehaviour ,ITakeDamage
     public float slowMotionTimeScale = 0.1f;  // ค่า Time.timeScale ขณะสโลว์โมชั่น (1.0 = ปกติ)
     private float _normalTimeScale = 1.0f; // ค่า Time.timeScale ปกติ
 
-    public Action<float> OnTakeDamage;
+    public Action<float, GameObject> OnTakeDamage;
     public Action<float> OnCurrentChang;
 
     public GameObject gameObjectOwner { get => gameObject; }
-    Action<float> ITakeDamage.OnTakeDamage { get => OnTakeDamage; set => OnTakeDamage = value; }
+    Action<float,GameObject> ITakeDamage.OnTakeDamage { get => OnTakeDamage; set => OnTakeDamage = value; }
 
     private void Awake()
     {
@@ -43,7 +43,7 @@ public class PlayerHealth : MonoBehaviour ,ITakeDamage
         
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, GameObject customHitVFX = null)
     {
         if (_playerMovement != null && _playerMovement.isDashing)
         {
@@ -57,7 +57,7 @@ public class PlayerHealth : MonoBehaviour ,ITakeDamage
             return; // ไม่รับดาเมจตามโค้ดเดิม
         }
 
-        OnTakeDamage?.Invoke(damage);
+        OnTakeDamage?.Invoke(damage, customHitVFX);
         //กล้อสั่นโนนตี
         CameraShakeManager.instance.ShakePlayerTakeDamage();
 

@@ -14,7 +14,7 @@ public class KumongaHealth : EnemyHealth // สมมติว่าคลาสเลือดเดิมชื่อนี้
     }
 
     // สมมติว่าคลาสแม่มีฟังก์ชัน TakeDamage ให้ override
-    public override void TakeDamage(float damage)
+    public override void TakeDamage(float damage, GameObject customHitVFX = null)
     {
         float finalDamage = damage;
 

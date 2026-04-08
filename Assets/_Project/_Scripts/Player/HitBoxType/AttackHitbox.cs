@@ -30,7 +30,7 @@ public class AttackHitbox : BaseHitBox
         {
             if (hitCollider.TryGetComponent(out ITakeDamage canTakeDamage))
             {
-                canTakeDamage.TakeDamage(damage);
+                canTakeDamage.TakeDamage(damage, customHitVFX);
             }
 
             if (hitCollider.TryGetComponent(out IKnockbackable knockbackable))

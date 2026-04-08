@@ -6,6 +6,11 @@ public abstract class BaseHitBox : MonoBehaviour , IHitBox
     [HideInInspector] public GameObject ownerHit;
     [HideInInspector] public LayerMask targetLayer; // ตั้งค่า Layer ของศัตรูใน Inspector
     [HideInInspector] public float damage = 0f; // ค่าดาเมจของการโจมตี
+
+    // *** เพิ่มบรรทัดนี้: ให้แต่ละ Hitbox ใส่ VFX เฉพาะตัวได้ ***
+    [Header("Hit VFX (Optional)")]
+    public GameObject customHitVFX; 
+
     [HideInInspector] public Vector3 knockbackDirection; // ทิศทางการผลัก
     [HideInInspector] public float knockbackForce = 0f; // แรงผลัก
     [HideInInspector] public float knockbackTime = 0f; // แรงผลัก

@@ -81,7 +81,7 @@ public class DamageShakeDOTween : MonoBehaviour
         visualChild.localRotation = initialRotation;
     }
 
-    private void PerformDotweenShake(float damage)
+    private void PerformDotweenShake(float damage, GameObject customHitVFX = null)
     {
         // ถ้ามีการสั่นค้างอยู่ ให้หยุดและ Reset กลับท่าเดิมก่อน เพื่อเริ่มสั่นใหม่ (Re-trigger)
         // การใช้ DOKill(true) จะบังคับให้ tween ที่ค้างอยู่ข้ามไป state จบเลยทันที

@@ -67,7 +67,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   damage: 10
+  customHitVFX: {fileID: 17477971950898933, guid: 72dabe1880d836847a55baeff6740cff, type: 3}
   knockbackDirection: {x: 0, y: 0, z: 0}
+  knockbackForce: 0
+  knockbackTime: 0
   attackOffset: {x: 0, y: 1, z: 0}
   attackSize: {x: 4, y: 1.5, z: 4}
 --- !u!82 &-3766985886784969246

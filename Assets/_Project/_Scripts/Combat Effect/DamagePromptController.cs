@@ -20,7 +20,7 @@ public class DamagePromptController : MonoBehaviour
         takeDamage.OnTakeDamage -= HandleInstantiateEffect;
     }
 
-    public void HandleInstantiateEffect(float damage)
+    public void HandleInstantiateEffect(float damage, GameObject customHitVFX = null)
     {
         Vector3 effectPos = transform.position + offSet;
 

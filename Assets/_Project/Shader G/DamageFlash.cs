@@ -57,7 +57,7 @@ public class DamageFlash : MonoBehaviour
         }
     }
 
-    private void HandleTakeDamage(float damageAmount)
+    private void HandleTakeDamage(float damageAmount, GameObject customHitVFX = null)
     {
         PlayHitFlash();
     }

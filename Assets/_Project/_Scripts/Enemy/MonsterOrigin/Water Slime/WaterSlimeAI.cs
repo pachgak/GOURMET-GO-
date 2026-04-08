@@ -34,7 +34,7 @@ public class WaterSlimeAI : BaseEnemyAI
     // ----------------------------------------------------------------------
     // 2. Logic เมื่อโดนตี (Handler)
     // ----------------------------------------------------------------------
-    private void HandleTakeDamage(float damage)
+    private void HandleTakeDamage(float damage, GameObject customHitVFX = null)
     {
         // ถ้าโกรธอยู่แล้ว ก็ไม่ต้องทำอะไรเพิ่ม (หรืออาจจะรีเซ็ตเวลานับถอยหลังหายโกรธก็ได้)
         if (_isProvoked) return;

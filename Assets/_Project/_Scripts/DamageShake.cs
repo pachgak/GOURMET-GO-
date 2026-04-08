@@ -43,7 +43,7 @@ public class DamageShake : MonoBehaviour
     }
 
     // ฟังก์ชันนี้จะถูกเรียกเมื่อ OnTakeDamage ทำงาน
-    private void StartShake(float damage)
+    private void StartShake(float damage, GameObject customHitVFX = null)
     {
         // ถ้ากำลังสั่นอยู่ ให้หยุดอันเก่าก่อน แล้วเริ่มใหม่ (Re-trigger)
         if (shakeCoroutine != null)

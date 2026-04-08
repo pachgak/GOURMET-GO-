@@ -111,7 +111,7 @@ public class EnemyDisguise : MonoBehaviour
         }
     }
 
-    private void RevealTrueForm(float damageTaken)
+    private void RevealTrueForm(float damageTaken, GameObject customHitVFX = null)
     {
         if (!_isDisguised) return;
         _isDisguised = false;

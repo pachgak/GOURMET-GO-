@@ -63,7 +63,7 @@ public class PersonHitbox : BaseHitBox
                         canTakeDamage.TakeDamage(damage);
                         break;
                 }*/
-                canTakeDamage.TakeDamage(damage);
+                canTakeDamage.TakeDamage(damage, customHitVFX);
             }
 
             if (hitCollider.TryGetComponent(out IKnockbackable knockbackable))

@@ -63,7 +63,7 @@ public abstract class BaseHpBarController : MonoBehaviour
         }
     }
 
-    public virtual void HandleTakeDamage(float damage)
+    public virtual void HandleTakeDamage(float damage, GameObject customHitVFX = null)
     {
         // ป้องกันบัค: ถ้ามีระบบโจมตีทะลุล่องหน แล้วศัตรูโดนดาเมจตอน Collider ปิดอยู่ ก็ไม่ต้องโชว์หลอดเลือด
         if (_collider != null && !_collider.enabled) return;

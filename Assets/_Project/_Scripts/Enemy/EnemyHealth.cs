@@ -20,14 +20,14 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
 
     //private HitEffect _hitEffect;
 
-    public Action<float> OnTakeDamage;
+    public Action<float,GameObject> OnTakeDamage;
     public Action<float> OnCurrentChang;
     public Action OnDie;
 
 
     public GameObject gameObjectOwner => gameObject;
 
-    Action<float> ITakeDamage.OnTakeDamage { get => OnTakeDamage; set => OnTakeDamage = value;}
+    Action<float, GameObject> ITakeDamage.OnTakeDamage { get => OnTakeDamage; set => OnTakeDamage = value;}
 
     protected virtual void Awake()
     {
@@ -55,9 +55,9 @@ public class EnemyHealth : MonoBehaviour , ITakeDamage
         }
     }
 
-    public virtual void TakeDamage(float damage)
+    public virtual void TakeDamage(float damage, GameObject customHitVFX = null)
     {
-        OnTakeDamage?.Invoke(damage);
+        OnTakeDamage?.Invoke(damage, customHitVFX);
 
         removeHp(damage);
 

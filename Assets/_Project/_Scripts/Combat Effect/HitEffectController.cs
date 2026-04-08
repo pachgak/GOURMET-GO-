@@ -1,8 +1,8 @@
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class HitEffectController : MonoBehaviour
 {
+    [Tooltip("เอฟเฟกต์พื้นฐาน (เช่น ประกายไฟปกติ)")]
     public GameObject effecfHitPrefab;
     public Vector3 offSet;
     public ITakeDamage takeDamage;
@@ -21,17 +21,21 @@ public class HitEffectController : MonoBehaviour
         takeDamage.OnTakeDamage -= HandleInstantiateEffect;
     }
 
-    public void HandleInstantiateEffect(float damage)
+    // *** อัปเดตพารามิเตอร์ ให้รับ GameObject เข้ามาด้วย ***
+    public void HandleInstantiateEffect(float damage, GameObject incomingHitVFX)
     {
-       Vector3 effectPos = transform.localPosition + offSet;
+        Vector3 effectPos = transform.position + offSet;
 
-        if (effecfHitPrefab != null)
+        // 1. ตรรกะการเลือก VFX: ถ้าสกิลมี VFX เฉพาะตัวส่งมา (รอยฟัน) ให้ใช้ตัวนั้น
+        // แต่ถ้าส่ง null มา (สกิลธรรมดา) ให้กลับไปใช้ effecfHitPrefab ตัว Default ของมอนสเตอร์
+        GameObject vfxToSpawn = (incomingHitVFX != null) ? incomingHitVFX : effecfHitPrefab;
+
+        if (vfxToSpawn != null)
         {
-            //GameObject cloneEffecfHit = Instantiate(effecfHitPrefab, transform);
-            GameObject cloneEffecfHit = ObjectPoolingManager.Instance.Spawn(effecfHitPrefab);
+            // 2. เสกเอฟเฟกต์ออกมาจาก Pool
+            GameObject cloneEffecfHit = ObjectPoolingManager.Instance.Spawn(vfxToSpawn);
             cloneEffecfHit.transform.parent = transform;
             cloneEffecfHit.transform.position = effectPos;
-
         }
     }
 }

@@ -16,7 +16,7 @@ public class ButterFlyMove : BaseEnemyMovement
         if (_enemyHealth != null) _enemyHealth.OnTakeDamage -= resetWhaitTime;
     }
 
-    private void resetWhaitTime(float none)
+    private void resetWhaitTime(float none, GameObject customHitVFX = null)
     {
         _timerWaiting = 0f;
     }

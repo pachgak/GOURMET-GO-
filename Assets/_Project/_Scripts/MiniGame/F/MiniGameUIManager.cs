@@ -21,6 +21,9 @@ public class MiniGameUIManager : MonoBehaviour
     public Button startButton;            // ปุ่มเริ่ม
     public Button closeButton;            // ปุ่มปิด
 
+    [Header("UI Controller Reference")]
+    public newOpenUIController uiController; // ลาก GameObject ตัวเองที่มีสคริปต์นี้มาใส่
+
     [Header("Settings")]
     public float popDuration = 0.3f; // ความเร็วตอนข้อความเด้ง
 
@@ -37,20 +40,36 @@ public class MiniGameUIManager : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject); // ถ้ามีอยู่แล้วให้ทำลายตัวใหม่ทิ้ง
+            Destroy(gameObject);
             return;
         }
         Instance = this;
 
-        // 1. ผูกปุ่มเข้ากับฟังก์ชัน
+        // 1. เปลี่ยนหน้าที่ของปุ่มปิด ให้ไปสั่ง Global Manager แทน
         if (startButton != null) startButton.onClick.AddListener(StartGameSequence);
-        if (closeButton != null) closeButton.onClick.AddListener(CloseMiniGame);
+        if (closeButton != null) closeButton.onClick.AddListener(RequestClosePanel);
 
-        // 3. ตั้งค่าเริ่มต้น (โชว์หน้า Start ซ่อนหน้าอื่นๆ)
         ResetUI();
         readyPanel.SetActive(false);
     }
 
+    private void OnEnable()
+    {
+        // 2. ดักฟัง Event ว่า "ถ้าหน้าต่างนี้ถูกปิด (ไม่ว่าจะด้วยปุ่ม E, Esc หรือกดปุ่มกากบาท) ให้ล้างค่ามินิเกมด้วยนะ"
+        if (uiController != null)
+        {
+            uiController.OnPanelClosed.AddListener(CleanUpMiniGame);
+        }
+    }
+
+    private void OnDisable()
+    {
+        // เลิกดักฟังเมื่อ Object ถูกทำลาย
+        if (uiController != null)
+        {
+            uiController.OnPanelClosed.RemoveListener(CleanUpMiniGame);
+        }
+    }
 
 
     private void HandleGameFinished(Sprite rewardSprite, int cookCount)
@@ -203,15 +222,45 @@ public class MiniGameUIManager : MonoBehaviour
         StartGameSequence();
     }
 
-    [ContextMenu("CloseMiniGame")]
-    // --- ตอนกดปุ่มปิดเกม ---
-    private void CloseMiniGame()
+    //[ContextMenu("CloseMiniGame")]
+    //// --- ตอนกดปุ่มปิดเกม ---
+    //private void CloseMiniGame()
+    //{
+    //    Debug.Log("ปิดมินิเกม กลับหน้าหลัก หรือ ปิด UI นี้ทิ้ง");
+
+    //    ResetUI(); // เคลียร์ค่าเผื่อเปิดรอบหน้า
+
+    //    // 1. สั่งให้เกมที่เพิ่งเล่นจบ "ปิดหน้าต่าง UI ของตัวเอง" ลงไป
+    //    if (_activeGame != null)
+    //    {
+    //        _activeGame.HideGameUI();
+    //        _activeGame = null; // ล้างความจำว่าไม่ได้เล่นเกมไหนอยู่
+    //    }
+
+    //    readyPanel.SetActive(false);
+
+    //    OnCloseMiniGame?.Invoke();
+    //}
+
+    // --- ฟังก์ชันสำหรับให้ปุ่มกากบาทเรียกใช้ ---
+    private void RequestClosePanel()
     {
-        Debug.Log("ปิดมินิเกม กลับหน้าหลัก หรือ ปิด UI นี้ทิ้ง");
+        // สั่งให้ Global Manager ปิดหน้าต่างบนสุด (ซึ่งก็คือตัวมันเอง)
+        if (newOpenUIManager.instance != null)
+        {
+            newOpenUIManager.instance._CloseTopPanel();
+        }
+    }
+
+    [ContextMenu("CleanUpMiniGame")]
+    // --- เปลี่ยนชื่อจาก CloseMiniGame มาเป็น CleanUpMiniGame ให้สื่อความหมายว่าล้างกระดาน ---
+    private void CleanUpMiniGame()
+    {
+        Debug.Log("ล้างค่าและซ่อนมินิเกม (เพราะหน้าต่างถูกปิดแล้ว)");
 
         ResetUI(); // เคลียร์ค่าเผื่อเปิดรอบหน้า
 
-        // 1. สั่งให้เกมที่เพิ่งเล่นจบ "ปิดหน้าต่าง UI ของตัวเอง" ลงไป
+        // สั่งให้เกมที่เพิ่งเล่นจบ "ปิดหน้าต่าง UI ของตัวเอง" ลงไป
         if (_activeGame != null)
         {
             _activeGame.HideGameUI();
@@ -220,6 +269,6 @@ public class MiniGameUIManager : MonoBehaviour
 
         readyPanel.SetActive(false);
 
-        OnCloseMiniGame?.Invoke();
+        OnCloseMiniGame?.Invoke(); // ตะโกนบอกคนอื่นเผื่อมีใครรอฟังอยู่
     }
 }
