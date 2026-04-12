@@ -6,6 +6,9 @@ using UnityEngine;
 public abstract class ItemModifier
 {
     public abstract bool AffectCharacter(GameObject character);
+
+    public virtual string GetDescription() => "";
+
 }
 
 // --- 2. ตัวอย่าง Modifier ทั่วไป ---
@@ -28,6 +31,14 @@ public class HealthModifier : ItemModifier
         }
         return false;
     }
+
+    // *** เขียน Override อธิบายตัวเอง ***
+    public override string GetDescription()
+    {
+        if (healthData == null) return "";
+        // ใช้ Rich Text ให้ตัวเลขสีเขียวได้ด้วย!
+        return $"- ฟื้นฟูพลังชีวิต <color=green>+{healthData.healAmount}</color> หน่วย";
+    }
 }
 
 [System.Serializable]
@@ -43,6 +54,13 @@ public class GetSkillModifier : ItemModifier
             return true;
         }
         return false;
+    }
+
+    // *** เขียน Override อธิบายตัวเอง ***
+    public override string GetDescription()
+    {
+        if (playerAttackSkill == null) return "";
+        return $"- ได้รับสกิล: <color=#00BFFF>{playerAttackSkill.skillName}</color> (x{amount})";
     }
 }
 
@@ -63,5 +81,20 @@ public class ApplyBuffItemModifier : ItemModifier
             return true;
         }
         return false;
+    }
+
+    // *** เขียน Override อธิบายตัวเอง ***
+    // *** เขียน Override อธิบายตัวเอง ***
+    public override string GetDescription()
+    {
+        if (buffToApply == null) return "";
+        
+        // 1. ข้อความหลัก (ชื่อบัพ และ เวลา)
+        string baseDesc = $"- ได้รับบัพ: <color=orange>{buffToApply.buffName}</color> ({buffToApply.duration} วิ)";
+        
+        // 2. ดึงข้อความย่อยจาก BuffSO มาต่อท้าย
+        string effectsDesc = buffToApply.GetEffectsDescription();
+        
+        return baseDesc + effectsDesc;
     }
 }

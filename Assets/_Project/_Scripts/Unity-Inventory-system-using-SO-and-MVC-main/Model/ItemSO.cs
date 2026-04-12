@@ -28,7 +28,10 @@ namespace Inventory.Model
         //������� Dubility
         //[HideInInspector]
         //public List<ItemParameter> DefaultParametersList { get; set; }
-
+        public virtual string GetDescription()
+        {
+            return Description;
+        }
     }
 
     //[Serializable]

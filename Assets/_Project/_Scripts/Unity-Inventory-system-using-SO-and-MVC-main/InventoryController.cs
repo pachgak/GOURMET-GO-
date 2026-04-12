@@ -164,7 +164,12 @@ namespace Inventory
             }
             ItemSO item = inventoryItem.item;
             inventoryUI.OpenItemDetail();
-            inventoryUI.UpdateItemDetail(item.ItemImage, item.name, item.Description);
+
+            //inventoryUI.UpdateItemDetail(item.ItemImage, item.name, item.Description);
+
+            string description = item.GetDescription();
+
+            inventoryUI.UpdateItemDetail(item.ItemImage, item.name, description);
         }
 
         private void HandlePointExitItem(int itemIndex)
@@ -271,7 +276,11 @@ namespace Inventory
                 return;
             }
             ItemSO item = inventoryItem.item;
-            string description = PrepareDescription(inventoryItem);
+
+            //string description = PrepareDescription(inventoryItem);
+            // *** แก้บรรทัดนี้: เรียกใช้ฟังก์ชันสุดอัจฉริยะของคุณ! ***
+            string description = item.GetDescription();
+
             inventoryUI.UpdateDescription(itemIndex, item.ItemImage,
                 item.name, description);
         }

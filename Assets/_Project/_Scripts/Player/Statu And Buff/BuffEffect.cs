@@ -6,6 +6,9 @@ public abstract class BuffEffect
     public abstract void ApplyEffect(GameObject target);
     public abstract void RemoveEffect(GameObject target);
     public virtual void TickEffect(GameObject target) { }
+
+    // *** 1. แก้คลาสแม่ให้รับค่า BuffSO ***
+    public virtual string GetDescription(BuffSO parentBuff) => "";
 }
 
 [System.Serializable]
@@ -19,6 +22,12 @@ public class MoveSpeedBuffEffect : BuffEffect
     public override void RemoveEffect(GameObject target)
     {
         if (target.TryGetComponent(out PlayerStats stats)) stats.moveSpeed.RemoveModifier(amount);
+    }
+
+    // *** Override อธิบายตัวเอง (แปลง amount 0.2 เป็น 20%) ***
+    public override string GetDescription(BuffSO parentBuff)
+    {
+        return $"<color=green>+ ความเร็ว {amount * 100}%</color>";
     }
 }
 
@@ -34,6 +43,11 @@ public class AttackPowerBuffEffect : BuffEffect
     {
         if (target.TryGetComponent(out PlayerStats stats)) stats.attackPower.RemoveModifier(amount);
     }
+
+    public override string GetDescription(BuffSO parentBuff)
+    {
+        return $"<color=red>+ พลังโจมตี {amount * 100}%</color>";
+    }
 }
 
 [System.Serializable]
@@ -47,6 +61,11 @@ public class DashBuffEffect : BuffEffect
     public override void RemoveEffect(GameObject target)
     {
         if (target.TryGetComponent(out PlayerStats stats)) stats.dashRang.RemoveModifier(amount);
+    }
+
+    public override string GetDescription(BuffSO parentBuff)
+    {
+        return $"<color=cyan>+ ระยะพุ่งตัว {amount * 100}%</color>";
     }
 }
 
@@ -70,6 +89,11 @@ public class MaxHealthBuffEffect : BuffEffect
             stats.UpdateMaxHealth();
         }
     }
+
+    public override string GetDescription(BuffSO parentBuff)
+    {
+        return $"<color=green>+ พลังชีวิตสูงสุด {amount * 100}%</color>";
+    }
 }
 
 [System.Serializable]
@@ -81,5 +105,16 @@ public class RegenHPBuffEffect : BuffEffect
     public override void TickEffect(GameObject target)
     {
         if (target.TryGetComponent(out PlayerHealth health)) health.addHp(healAmount);
+    }
+    public override string GetDescription(BuffSO parentBuff)
+    {
+        // ถ้าบัพนี้มีการติ๊กเปิด Tick Effect ไว้ ให้เอาเวลามาโชว์
+        if (parentBuff != null && parentBuff.hasTickEffect)
+        {
+            return $"<color=green>+ ฟื้นฟู {healAmount} HP ทุกๆ {parentBuff.tickInterval} วินาที</color>";
+        }
+
+        // กันเหนียว เผื่อลืมติ๊กเปิด Tick Effect
+        return $"<color=green>+ ฟื้นฟู {healAmount} HP</color>";
     }
 }
