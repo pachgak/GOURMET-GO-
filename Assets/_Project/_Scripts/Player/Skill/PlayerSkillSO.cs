@@ -1,37 +1,67 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-//// Attribute นี้จะทำให้เราสร้าง ScriptableObject จากเมนู Assets ได้
-//[CreateAssetMenu(fileName = "New Skill", menuName = "Skills/Generic Skill")]
-public abstract class PlayerSkillSO : ScriptableObject
+// --- โครงสร้างที่คุณออกแบบมา (เปลี่ยนชื่อให้ดูโปรขึ้นนิดนึง) ---
+[Serializable]
+public class SkillNewStepTT
+{
+    [Tooltip("เวลาที่จะให้ Action นี้ทำงาน (นับจาก 0)")]
+    public float playAtTime;
+
+    [SerializeReference, SubclassSelector]
+    public PlayerSkillAction action;
+}
+
+[CreateAssetMenu(fileName = "New Timeline Skill", menuName = "Skills/New Player Skill")]
+public class PlayerSkillSO : ScriptableObject
 {
     [Header("Base Skill")]
     public Sprite skillIcon;
     public string skillName;
-    [field: SerializeField]
-    [field: TextArea]
-    public string Description { get; set; }
+    [TextArea] public string Description;
     public float cooldown;
-    //public int usesCount;
 
-    [Space(20)]
-    [Header("===== Modify Skill ================================================================")]
-    [Header("LifeTime Skill")]
+    [Space(10)]
+    [Header("Skill Timeline Settings")]
+    [Tooltip("เวลาทั้งหมดของสกิล เพื่อล็อคการเดิน/โจมตี (ต้องมากกว่า Step สุดท้าย)")]
     public float skillLifeTime;
 
-    // นี่คือเมธอดหลักที่จะถูกเรียกใช้
-    // ต้องกำหนดให้เป็น abstract เพื่อบังคับให้คลาสลูกต้องเขียนทับ
-    // เพิ่ม float damageMultiplier = 1f
-    public abstract Coroutine Use(GameObject player, Vector3 mousePosition, float damageMultiplier = 1f);
+    // *** หัวใจหลักของระบบใหม่ ***
+    public List<SkillNewStepTT> skillSteps = new List<SkillNewStepTT>();
 
-    //public void EndSkilling()
-    //{
-    //    Debug.Log($"EndSkilling");
-    //    PlayerSkillController.instance.DoSkillEnd();
-    //}
-    public enum AttackType
+    // เมธอดหลักที่ PlayerSkill.cs จะเรียกใช้
+    public virtual Coroutine Use(GameObject player, Vector3 mousePosition, float damageMultiplier = 1f)
     {
-        nope,V,O,X
+        // สั่งให้ Player เป็นคนรัน Coroutine
+        return player.GetComponent<MonoBehaviour>().StartCoroutine(ExecuteTimeline(player, mousePosition, damageMultiplier));
+    }
+
+    private IEnumerator ExecuteTimeline(GameObject player, Vector3 mousePosition, float damageMultiplier)
+    {
+        float currentTime = 0f;
+
+        // เรียงลำดับ Step ตามเวลา playAtTime (เผื่อคุณเผลอสลับลำดับใน Inspector มันจะได้ไม่บั๊ก)
+        var sortedSteps = skillSteps.OrderBy(step => step.playAtTime).ToList();
+
+        foreach (var step in sortedSteps)
+        {
+            // คำนวณว่าต้องรอกี่วินาทีก่อนจะถึง Step ถัดไป
+            float waitTime = step.playAtTime - currentTime;
+
+            if (waitTime > 0)
+            {
+                yield return new WaitForSeconds(waitTime);
+                currentTime += waitTime; // อัปเดตเวลาปัจจุบัน
+            }
+
+            // รัน Action!
+            if (step.action != null)
+            {
+                step.action.Execute(player, mousePosition, damageMultiplier);
+            }
+        }
     }
 }

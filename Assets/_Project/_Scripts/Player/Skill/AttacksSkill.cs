@@ -7,8 +7,9 @@ using static UnityEngine.Rendering.DebugUI;
 [CreateAssetMenu(fileName = "New AttacksDash Skill", menuName = "Skills/Skill/AttacksDash Skill")]
 public class AttacksSkill : PlayerSkillSO
 {
+
     //[Space(20)]
-    //[Header("===== Modify Skill ================================================================")]
+    [Header("===== Modify Skill ================================================================")]
     public SpawnSkillPrefabsType spawnSkillPrefabsType;
     public SkillSetp[] skillSetp;
 
