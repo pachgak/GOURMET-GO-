@@ -17,7 +17,14 @@ MonoBehaviour:
   <ItemImage>k__BackingField: {fileID: 672336187, guid: da77d67364e355d448872a3cb7858843, type: 3}
   <IsStackable>k__BackingField: 0
   <MaxStackSize>k__BackingField: 1
-  modifiersData:
-  - statModifierSO: {fileID: 11400000, guid: 7943606dfe9b535419720f8b62cf317b, type: 2}
-    value: 10
+  modifiers:
+  - rid: 6721757944157044737
   <actionSFX>k__BackingField: {fileID: 0}
+  references:
+    version: 2
+    RefIds:
+    - rid: 6721757944157044737
+      type: {class: GetSkillModifier, ns: , asm: Assembly-CSharp}
+      data:
+        playerAttackSkill: {fileID: 11400000, guid: 9f4d433340f734040968dcea3c5d3efe, type: 2}
+        amount: 1

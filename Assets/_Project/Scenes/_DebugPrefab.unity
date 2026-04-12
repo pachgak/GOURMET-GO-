@@ -60983,10 +60983,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: '# Player'
       objectReference: {fileID: 0}
-    - target: {fileID: 435719470015313116, guid: 0ff8e50c0be48fa4db8c78156dfb0408, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 1685370080148973008, guid: 0ff8e50c0be48fa4db8c78156dfb0408, type: 3}
       propertyPath: skillUI
       value: 
@@ -61058,22 +61054,6 @@ PrefabInstance:
     - target: {fileID: 5828101129524336520, guid: 0ff8e50c0be48fa4db8c78156dfb0408, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6048071414830085413, guid: 0ff8e50c0be48fa4db8c78156dfb0408, type: 3}
-      propertyPath: attackCombo.Array.data[0].damage
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 6048071414830085413, guid: 0ff8e50c0be48fa4db8c78156dfb0408, type: 3}
-      propertyPath: attackCombo.Array.data[1].damage
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 6048071414830085413, guid: 0ff8e50c0be48fa4db8c78156dfb0408, type: 3}
-      propertyPath: attackCombo.Array.data[2].damage
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 6048071414830085413, guid: 0ff8e50c0be48fa4db8c78156dfb0408, type: 3}
-      propertyPath: attackCombo.Array.data[3].damage
-      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7303900219690452526, guid: 0ff8e50c0be48fa4db8c78156dfb0408, type: 3}
       propertyPath: loadoutUI

@@ -6,6 +6,7 @@ using static SettingPlayerControllerManager;
 
 public class PlayerMovement : MonoBehaviour , IKnockbackable
 {
+
     [Header("Walk")]
     public float moveSpeed = 5f;
     [Header("Sprint")]
@@ -33,6 +34,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
     [Header("_Scripts References")]
     private PlayerCombatController _playerCombat;
     private PlayerSkill _playerSkill;
+    private PlayerStats _playerStats;
 
     [Header("_Manager References")]
     private PlayerInputActionsManager _inputManager;
@@ -125,7 +127,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
         _settingControllerManager = SettingPlayerControllerManager.instance;
         _playerCombat = GetComponent<PlayerCombatController>();
         _playerSkill = GetComponent<PlayerSkill>();
-
+        _playerStats = GetComponent<PlayerStats>();
 
         controller = GetComponent<CharacterController>();
         if (controller == null)
@@ -453,7 +455,10 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
                 //currentSpeed = moveSpeed;
             }
 
-            finalMovement = _moveDirection * _currentSpeed;
+            // ดึงตัวคูณและนำไปคูณสปีด
+            float speedMultiplier = _playerStats != null ? _playerStats.moveSpeed.GetMultiplier() : 1f;
+
+            finalMovement = _moveDirection * _currentSpeed * speedMultiplier;
         }
 
         // ใช้ isGrounded เพื่อตรวจสอบว่าอยู่บนพื้นหรือไม่
@@ -652,16 +657,17 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
             isDashing = true;
             _dashTimeCounter = dashTime;
 
-            // InverseLerp จะหาว่า currentSpeed อยู่ที่ตำแหน่งไหนระหว่าง moveSpeed กับ sprintSpeed
             float t = Mathf.InverseLerp(moveSpeed, sonicSpeed, _currentSpeed);
-            // Lerp จะคำนวณค่าระหว่าง dashSpeedFactor.x กับ dashSpeedFactor.y ตามค่า t
             float trueDashSpeedFactor = Mathf.Lerp(dashSpeedFactor.x, dashSpeedFactor.y, t);
-            // เก็บความเร็วสำหรับใช้ตอนพุ่ง
 
-            _dashVelocity = dashDirection.normalized * _currentSpeed * trueDashSpeedFactor;
+            // *** 1. ดึงค่าตัวคูณ Dash Range ***
+            float dashRangeMultiplier = _playerStats != null ? _playerStats.dashRang.GetMultiplier() : 1f;
+
+            // *** 2. นำไปคูณร่วมกับสมการคำนวณความเร็ว (Velocity) ***
+            _dashVelocity = dashDirection.normalized * _currentSpeed * trueDashSpeedFactor * dashRangeMultiplier;
+            
             OnDashStateChange?.Invoke(isDashing, dashDirection.normalized);
 
-            // เริ่ม Coroutine สำหรับ Cooldown
             StartCoroutine(DashCooldownCoroutine(dashCooldown));
         }
 
@@ -694,7 +700,13 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
         {
             _isDashSkilling = true;
             _dashSkillTimeCounter = dashSkillTime;
-            _dashSkillVelocity = direction.normalized * dashSkillSpeed;
+
+            // *** 1. ดึงค่าตัวคูณ Dash Range ***
+            float dashRangeMultiplier = _playerStats != null ? _playerStats.dashRang.GetMultiplier() : 1f;
+
+            // *** 2. นำไปคูณกับความเร็วของ Skill Dash ***
+            _dashSkillVelocity = direction.normalized * dashSkillSpeed * dashRangeMultiplier;
+
             _skillDelayCoroutine = skillDelayCoroutine;
 
             OnDashSkillStateChange?.Invoke(isSet);

@@ -10,15 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c0756f30a60080a44b7e71b3f899893a, type: 3}
-  m_Name: Shining_Shell_Carpaccio
+  m_Name: '[Nope] Shining_Shell_Carpaccio'
   m_EditorClassIdentifier: 
-  <ItemName>k__BackingField: Shining Shell Carpaccio
+  <ItemName>k__BackingField: '[Nope] Shining Shell Carpaccio'
   <Description>k__BackingField: "\u0E2B\u0E2D\u0E22\u0E14\u0E34\u0E1A\u0E43\u0E2A\u0E40\u0E19\u0E37\u0E49\u0E2D\u0E41\u0E27\u0E27\u0E27\u0E32\u0E27
     \u0E40\u0E2A\u0E34\u0E23\u0E4C\u0E1F\u0E01\u0E31\u0E1A\u0E40\u0E19\u0E01\u0E40\u0E15\u0E2D\u0E23\u0E4C\u0E0B\u0E34\u0E15\u0E23\u0E31\u0E2A"
   <ItemImage>k__BackingField: {fileID: 1596185045, guid: da77d67364e355d448872a3cb7858843, type: 3}
   <IsStackable>k__BackingField: 0
   <MaxStackSize>k__BackingField: 1
-  modifiersData:
-  - statModifierSO: {fileID: 11400000, guid: ce88be15c3bf270449eecfbfeac83fd8, type: 2}
-    value: 10
+  modifiers:
+  - rid: 6721757944157044754
   <actionSFX>k__BackingField: {fileID: 0}
+  references:
+    version: 2
+    RefIds:
+    - rid: 6721757944157044754
+      type: {class: GetSkillModifier, ns: , asm: Assembly-CSharp}
+      data:
+        playerAttackSkill: {fileID: 11400000, guid: e03fb9f37258b6b428fcf4f19f1b7c73, type: 2}
+        amount: 1

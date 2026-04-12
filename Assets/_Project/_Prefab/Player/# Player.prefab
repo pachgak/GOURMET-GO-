@@ -68,7 +68,6 @@ GameObject:
   - component: {fileID: 3351749765356569099}
   - component: {fileID: 2128529168260919483}
   - component: {fileID: 8717273353718099811}
-  - component: {fileID: 1724738083554984008}
   - component: {fileID: 1685370080148973008}
   - component: {fileID: 7303900219690452526}
   - component: {fileID: 6880538521380756494}
@@ -189,7 +188,7 @@ MonoBehaviour:
   attackCombo:
   - attackPrefabs: {fileID: 7411569378006972243, guid: 3e60e31cdc7b27b4c860da9cc3b13d92, type: 3}
     comboCooldown: 0.28
-    damage: 1
+    damage: 10
     knockbackForce: 10
     knockbackTime: 0.15
     isSnapKnockback: 1
@@ -197,7 +196,7 @@ MonoBehaviour:
     attackForwardTime: 0.15
   - attackPrefabs: {fileID: 5400245806064550419, guid: 9de208ea034421748b19c7c2a31759d0, type: 3}
     comboCooldown: 0.28
-    damage: 1
+    damage: 10
     knockbackForce: 10
     knockbackTime: 0.15
     isSnapKnockback: 1
@@ -205,7 +204,7 @@ MonoBehaviour:
     attackForwardTime: 0.15
   - attackPrefabs: {fileID: 7411569378006972243, guid: 3e60e31cdc7b27b4c860da9cc3b13d92, type: 3}
     comboCooldown: 0.28
-    damage: 1
+    damage: 10
     knockbackForce: 10
     knockbackTime: 0.15
     isSnapKnockback: 1
@@ -213,7 +212,7 @@ MonoBehaviour:
     attackForwardTime: 0.15
   - attackPrefabs: {fileID: 2710200308815571354, guid: e4492f7b149578440900807e777775e8, type: 3}
     comboCooldown: 0.6
-    damage: 2
+    damage: 20
     knockbackForce: 20
     knockbackTime: 0.2
     isSnapKnockback: 1
@@ -277,7 +276,6 @@ MonoBehaviour:
   interactText: {fileID: 0}
   progressImg: {fileID: 0}
   _inputManager: {fileID: 0}
-  _uiManager: {fileID: 0}
   _isInteractable: 0
   _nearInteractable: {fileID: 0}
 --- !u!114 &4310143537088639991
@@ -301,6 +299,7 @@ MonoBehaviour:
   itemDropPrefab: {fileID: 5090562170970945799, guid: 6b32a4f0d2203a24b81b26541645abbd, type: 3}
   dropClip: {fileID: 0}
   audioSource: {fileID: 0}
+  uiController: {fileID: 0}
 --- !u!114 &2064799248591398167
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -313,7 +312,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3ff364055ab8294fb3a177879e12c5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  baseMaxHealth: 100
+  currentMaxHealth: 100
   currentHealth: 0
   isDead: 0
   playerHpBar: {fileID: 0}
@@ -356,20 +356,6 @@ MonoBehaviour:
   hpBar: {fileID: 0}
   hpText: {fileID: 0}
   BackPackText: {fileID: 0}
---- !u!114 &1724738083554984008
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 435719470015313116}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e84fa5abe7f3b241961a060d8fd9192, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  resitang: 0
-  regeneration: 0
 --- !u!114 &1685370080148973008
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -387,7 +373,10 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  initialSkills: []
+  initialSkills:
+  - assignedSkills: {fileID: 11400000, guid: e14a7da366ed74147add168c1ada7f1c, type: 2}
+    uesdCount: 0
+    cooldown: 0
   skillDatas: []
   useSkillDely: 0
   isLatched: 0
@@ -764,7 +753,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3002ce17a183d040b48a0504e5cf9a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetCamera: {fileID: 0}
   originalScale: {x: 1, y: 1, z: 1}
   foreshorteningParent: {fileID: 2214211652389211850}
 --- !u!1 &2973926973817327790

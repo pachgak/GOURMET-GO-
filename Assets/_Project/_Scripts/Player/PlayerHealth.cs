@@ -5,7 +5,9 @@ using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour ,ITakeDamage
 {
-    public float maxHealth = 100f;
+    [Header("Health Settings")]
+    public float baseMaxHealth = 100f;
+    public float currentMaxHealth = 100f;
     [SerializeField] public float currentHealth;
 
     public bool isDead = false;
@@ -22,6 +24,7 @@ public class PlayerHealth : MonoBehaviour ,ITakeDamage
 
     public Action<float, GameObject> OnTakeDamage;
     public Action<float> OnCurrentChang;
+    public Action<float, float> OnHealthChanged; // <--- ÃÇº Event
 
     public GameObject gameObjectOwner { get => gameObject; }
     Action<float,GameObject> ITakeDamage.OnTakeDamage { get => OnTakeDamage; set => OnTakeDamage = value; }
@@ -29,12 +32,13 @@ public class PlayerHealth : MonoBehaviour ,ITakeDamage
     private void Awake()
     {
         _playerMovement = GetComponent<PlayerMovement>();
+        currentMaxHealth = baseMaxHealth;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        setHp(maxHealth);
+        setHp(currentMaxHealth);
     }
 
     // Update is called once per frame
@@ -82,35 +86,24 @@ public class PlayerHealth : MonoBehaviour ,ITakeDamage
     public void removeHp(float damage)
     {
         currentHealth -= damage;
-
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        OnCurrentChang?.Invoke(currentHealth);
-
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
+        currentHealth = Mathf.Clamp(currentHealth, 0, currentMaxHealth);
+        OnHealthChanged?.Invoke(currentHealth, currentMaxHealth);
+        if (currentHealth <= 0) Die();
     }
 
     public void addHp(float heal)
     {
         currentHealth += heal;
-
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        OnCurrentChang?.Invoke(currentHealth);
+        currentHealth = Mathf.Clamp(currentHealth, 0, currentMaxHealth);
+        OnHealthChanged?.Invoke(currentHealth, currentMaxHealth);
     }
 
     public void setHp(float value)
     {
         currentHealth = value;
-
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        OnCurrentChang?.Invoke(currentHealth);
-
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
+        currentHealth = Mathf.Clamp(currentHealth, 0, currentMaxHealth);
+        OnHealthChanged?.Invoke(currentHealth, currentMaxHealth);
+        if (currentHealth <= 0) Die();
     }
 
     private void Die()

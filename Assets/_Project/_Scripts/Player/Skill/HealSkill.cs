@@ -10,7 +10,7 @@ public class HealSkill : PlayerSkillSO
     public int healAmount;
 
     // เขียนทับเมธอด Use() สำหรับสกิลนี้
-    public override Coroutine Use(GameObject player, Vector3 _mousePosition)
+    public override Coroutine Use(GameObject player, Vector3 mousePosition, float damageMultiplier = 1f)
     {
         // ค้นหา PlayerHealth component จากตัวละคร
         //PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();

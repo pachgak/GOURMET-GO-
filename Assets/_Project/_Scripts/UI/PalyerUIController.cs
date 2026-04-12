@@ -23,9 +23,9 @@ public class PalyerUIController : MonoBehaviour
 
     private void Start()
     {
-        // ตั้งค่า HP เริ่มต้น
-        hpBar.maxValue = playerHealth.maxHealth;
-        playerHealth.setHp(playerHealth.maxHealth);
+        //// ตั้งค่า HP เริ่มต้น
+        //hpBar.maxValue = playerHealth.maxHealth;
+        //playerHealth.setHp(playerHealth.maxHealth);
 
         // ตั้งค่า Inventory UI เริ่มต้น
         if (playerInventoryController != null && playerInventoryController.InventoryData != null)
@@ -47,20 +47,22 @@ public class PalyerUIController : MonoBehaviour
         }
     }
 
+    // เอา hpBar.maxValue ออกจาก Start ได้เลย เพราะ Event ส่งมาให้แล้ว
     private void OnEnable()
     {
-        playerHealth.OnCurrentChang += HandleCurrentChang;
+        playerHealth.OnHealthChanged += HandleHealthChanged;
     }
 
     private void OnDisable()
     {
-        playerHealth.OnCurrentChang -= HandleCurrentChang;
+        playerHealth.OnHealthChanged -= HandleHealthChanged;
     }
 
-    private void HandleCurrentChang(float obj)
+    private void HandleHealthChanged(float current, float max)
     {
-        hpBar.value = obj;
-        hpText.text = $"{obj}/{playerHealth.maxHealth}";
+        hpBar.maxValue = max;
+        hpBar.value = current;
+        hpText.text = $"{Mathf.CeilToInt(current)}/{Mathf.CeilToInt(max)}";
     }
 
     // ฟังก์ชันสำหรับอัปเดตข้อความกระเป๋า

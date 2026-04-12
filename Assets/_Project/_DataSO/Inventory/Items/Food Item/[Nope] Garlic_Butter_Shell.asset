@@ -10,14 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c0756f30a60080a44b7e71b3f899893a, type: 3}
-  m_Name: Garlic_Butter_Shell
+  m_Name: '[Nope] Garlic_Butter_Shell'
   m_EditorClassIdentifier: 
-  <ItemName>k__BackingField: Garlic Butter Shell
+  <ItemName>k__BackingField: '[Nope] Garlic Butter Shell'
   <Description>k__BackingField: "\u0E2B\u0E2D\u0E22\u0E2D\u0E1A\u0E40\u0E19\u0E22\u0E01\u0E23\u0E30\u0E40\u0E17\u0E35\u0E22\u0E21"
   <ItemImage>k__BackingField: {fileID: -1457833717, guid: da77d67364e355d448872a3cb7858843, type: 3}
   <IsStackable>k__BackingField: 0
   <MaxStackSize>k__BackingField: 1
-  modifiersData:
-  - statModifierSO: {fileID: 11400000, guid: 7125c8354d2a7ba41bf662a0beb9e62c, type: 2}
-    value: 10
+  modifiers:
+  - rid: 6721757944157044749
   <actionSFX>k__BackingField: {fileID: 0}
+  references:
+    version: 2
+    RefIds:
+    - rid: 6721757944157044749
+      type: {class: GetSkillModifier, ns: , asm: Assembly-CSharp}
+      data:
+        playerAttackSkill: {fileID: 11400000, guid: 088c339d7e3f35a4a92765a8dac35129, type: 2}
+        amount: 1

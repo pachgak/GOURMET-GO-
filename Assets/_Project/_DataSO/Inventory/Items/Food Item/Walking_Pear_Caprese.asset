@@ -17,7 +17,13 @@ MonoBehaviour:
   <ItemImage>k__BackingField: {fileID: 21300000, guid: 3598e1361f379c74399593a5af7530b1, type: 3}
   <IsStackable>k__BackingField: 0
   <MaxStackSize>k__BackingField: 1
-  modifiersData:
-  - statModifierSO: {fileID: 11400000, guid: da86f212030a02e4eafb374d657c0a23, type: 2}
-    value: 0
+  modifiers:
+  - rid: 6721757944157044759
   <actionSFX>k__BackingField: {fileID: 0}
+  references:
+    version: 2
+    RefIds:
+    - rid: 6721757944157044759
+      type: {class: ApplyBuffItemModifier, ns: , asm: Assembly-CSharp}
+      data:
+        buffToApply: {fileID: 11400000, guid: 750f549d1438665439f5069bdf3004c2, type: 2}

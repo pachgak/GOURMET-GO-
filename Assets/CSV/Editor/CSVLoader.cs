@@ -173,7 +173,7 @@ public class CSVLoader : EditorWindow
             itemSO.Description = description;
             itemSO.IsStackable = canStack;
             itemSO.MaxStackSize = maxStack;
-            itemSO.modifiersData = modifiersDatas;
+            //itemSO.modifiersData = modifiersDatas;
 
             //=================================================================\
 
@@ -300,7 +300,7 @@ public class CSVLoader : EditorWindow
             itemSO.Description = description;
             itemSO.IsStackable = canStack;
             itemSO.MaxStackSize = maxStack;
-            itemSO.modifiersData = modifiersDatas;
+            //itemSO.modifiersData = modifiersDatas;
 
             //=================================================================\
 
@@ -952,7 +952,7 @@ public class CSVLoader : EditorWindow
             itemSO.Description = description;
             itemSO.IsStackable = canStack;
             itemSO.MaxStackSize = maxStack;
-            itemSO.modifiersData = modifiersDatas;
+            //itemSO.modifiersData = modifiersDatas;
             // หมายเหตุ: ใน EatableItemSO ไม่ควรมี field recipes แล้ว ถ้าคุณลบออกไปแล้ว Code บรรทัดนี้ก็ไม่ต้องมี
 
             if (isNewitemSO)

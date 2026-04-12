@@ -34,6 +34,7 @@ public class PlayerCombatController : MonoBehaviour
     private PlayerInputActionsManager _inputManager;
     private SettingPlayerControllerManager _settingControllerManager;
     //private OpenUiManager _uiManager;
+    private PlayerStats _playerStats;
 
     [Header("_System")]
     [SerializeField] private int _attackIndex = 0;
@@ -96,6 +97,7 @@ public class PlayerCombatController : MonoBehaviour
         _settingControllerManager = SettingPlayerControllerManager.instance;
         _playerSkill = GetComponent<PlayerSkill>();
         _playerMovement = GetComponent<PlayerMovement>();
+        _playerStats = GetComponent<PlayerStats>();
     }
 
 
@@ -245,9 +247,13 @@ public class PlayerCombatController : MonoBehaviour
 
             // ���ѭ�ҳ������Фþ��仢�ҧ˹��
             //OnAttackForward?.Invoke(directionToTarget, attackForwardSpeed, attackForwardTime);
+            // ดึงตัวคูณพลังโจมตี
+            float damageMultiplier = _playerStats != null ? _playerStats.attackPower.GetMultiplier() : 1f;
+
+            float finalDamage = attackCombo[currentAttackIndex].damage * damageMultiplier;
 
             // ���ҧ GameObject �ͧ�������
-            InstallAttackHit(attackCombo[currentAttackIndex].attackPrefabs, directionToTarget, attackCombo[currentAttackIndex].damage, attackCombo[currentAttackIndex].knockbackForce, attackCombo[currentAttackIndex].knockbackTime);
+            InstallAttackHit(attackCombo[currentAttackIndex].attackPrefabs, directionToTarget, finalDamage, attackCombo[currentAttackIndex].knockbackForce, attackCombo[currentAttackIndex].knockbackTime);
 
             // �ѻവʶҹ�����Ѻ���⺶Ѵ�
             _attackIndex++;

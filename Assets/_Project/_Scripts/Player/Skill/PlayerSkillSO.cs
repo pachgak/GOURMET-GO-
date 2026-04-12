@@ -22,7 +22,8 @@ public abstract class PlayerSkillSO : ScriptableObject
 
     // นี่คือเมธอดหลักที่จะถูกเรียกใช้
     // ต้องกำหนดให้เป็น abstract เพื่อบังคับให้คลาสลูกต้องเขียนทับ
-    public abstract Coroutine Use(GameObject player, Vector3 mousePosition);
+    // เพิ่ม float damageMultiplier = 1f
+    public abstract Coroutine Use(GameObject player, Vector3 mousePosition, float damageMultiplier = 1f);
 
     //public void EndSkilling()
     //{

@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7560d074eaa8cc046ac7363514a8096b, type: 3}
+  m_Name: Healthy body
+  m_EditorClassIdentifier: 
+  buffName: Healthy body
+  description: "\u0E44\u0E14\u0E49\u0E23\u0E31\u0E1AMax Hp\u0E40\u0E1E\u0E34\u0E48\u0E21\u0E02\u0E36\u0E49\u0E19\u0E0A\u0E31\u0E48\u0E27\u0E04\u0E23\u0E32\u0E2720%\r\n\u0E23\u0E30\u0E22\u0E30\u0E40\u0E27\u0E25\u0E32:4m\r\n"
+  icon: {fileID: 1964547957, guid: f31ca828de8a4fc4485f3c969d9323a3, type: 3}
+  duration: 240
+  isStackable: 0
+  maxStacks: 1
+  hasTickEffect: 0
+  tickInterval: 1
+  effects:
+  - rid: 6721757894128173129
+  references:
+    version: 2
+    RefIds:
+    - rid: 6721757894128173129
+      type: {class: MaxHealthBuffEffect, ns: , asm: Assembly-CSharp}
+      data:
+        amount: 0.2

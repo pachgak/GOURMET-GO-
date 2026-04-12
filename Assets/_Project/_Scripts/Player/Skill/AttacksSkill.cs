@@ -41,17 +41,12 @@ public class AttacksSkill : PlayerSkillSO
         PlayerParent , PlayerWorld , MouseWorld
     }
 
-    public override Coroutine Use(GameObject player, Vector3 mousePosition)
+    public override Coroutine Use(GameObject player, Vector3 mousePosition, float damageMultiplier = 1f)
     {
-        if (player.TryGetComponent(out PlayerSkill playerSkillController))
-        {
-            Coroutine setplaySkill = playerSkillController.StartCoroutine(Setplay(player, mousePosition));
-            return setplaySkill;
-        }
-        return null;
+        return player.GetComponent<MonoBehaviour>().StartCoroutine(Setplay(player, mousePosition, damageMultiplier));
     }
 
-    private IEnumerator Setplay(GameObject player, Vector3 mousePosition)
+    private IEnumerator Setplay(GameObject player, Vector3 mousePosition, float damageMultiplier)
     {
         Vector3 attackDirection = (mousePosition - player.transform.position).normalized;
 
@@ -64,7 +59,7 @@ public class AttacksSkill : PlayerSkillSO
             float dashTime = skillSetp[i].dashTime;
             GameObject skillPrefabs = skillSetp[i].skillPrefabs;
             bool haveDash = skillSetp[i].haveDash;
-            float damage = skillSetp[i].damage;
+            float damage = skillSetp[i].damage * damageMultiplier;
             float knockbackForce = skillSetp[i].knockbackForce;
             float knockbackTime = skillSetp[i].knockbackTime;
             float speed = skillSetp[i].speed;

@@ -28,6 +28,7 @@ public class PlayerSkill : MonoBehaviour
 
     [Header("_Scripts References")]
     private PlayerMovement _playerMovement;
+    private PlayerStats _playerStats;
     [Header("_Manager References")]
     private PlayerInputActionsManager _inputManager;
     private SettingPlayerControllerManager _settingControllerManager;
@@ -47,6 +48,7 @@ public class PlayerSkill : MonoBehaviour
         _inputManager = PlayerInputActionsManager.instance;
         _settingControllerManager = SettingPlayerControllerManager.instance;
         _playerMovement = GetComponent<PlayerMovement>();
+        _playerStats = GetComponent<PlayerStats>();
     }
 
     private void OnEnable()
@@ -119,7 +121,9 @@ public class PlayerSkill : MonoBehaviour
 
         }
 
-        _skillStepCoroutine = skillDatas[indexSkillSlect].assignedSkills.Use(gameObject, targetPosition);
+        float damageMultiplier = _playerStats != null ? _playerStats.attackPower.GetMultiplier() : 1f;
+
+        _skillStepCoroutine = skillDatas[indexSkillSlect].assignedSkills.Use(gameObject, targetPosition , damageMultiplier);
         Invoke(nameof(DoSkillEnd), skillDatas[indexSkillSlect].assignedSkills.skillLifeTime);
         //skillDatas[indexSkillSlect].uesdCount--;
 
