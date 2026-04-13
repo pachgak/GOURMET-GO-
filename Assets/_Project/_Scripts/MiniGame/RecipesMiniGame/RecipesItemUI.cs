@@ -10,6 +10,7 @@ public class RecipesItemUI : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     public Image icon;
     public TMP_Text nameText;
     public Image borderHighlight; // เอาไว้เปิด/ปิด กรอบตอนโดนเลือก
+    public Image blackAlpha;
 
     public CookingRecipeSO RecipeData { get; private set; }
 
@@ -22,6 +23,16 @@ public class RecipesItemUI : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         icon.sprite = recipe.resultItem.ItemImage;
         nameText.text = recipe.resultItem.ItemName;
         Deselect();
+    }
+
+    public void SetAvailability(bool canAfford)
+    {
+        if (blackAlpha != null)
+        {
+            // ถ้าวัตถุดิบพอ (canAfford = true) ให้ปิดภาพดำ (enabled = false)
+            // ถ้าวัตถุดิบไม่พอ (canAfford = false) ให้เปิดภาพดำ (enabled = true)
+            blackAlpha.enabled = !canAfford;
+        }
     }
 
     public void Select() { if (borderHighlight != null) borderHighlight.enabled = true; }

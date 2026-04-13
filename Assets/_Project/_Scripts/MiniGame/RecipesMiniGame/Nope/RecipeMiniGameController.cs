@@ -10,6 +10,7 @@ public class RecipeMiniGameController : MonoBehaviour
     [SerializeField] private InventorySO playerInventory;
     [SerializeField] private List<CookingRecipeSO> availableRecipes; // สูตรที่มีในสถานีนี้ (เช่น เฉพาะของต้ม)
     [SerializeField] private MiniGameBase targetMiniGame; // เกมที่จะให้เล่น (เช่น เกมต้ม, เกมทอด)
+    [SerializeField] private Sprite toolIconSprite; //
 
     [Header("UI - Left Panel (Selection)")]
     [SerializeField] private Image toolIconImage;
@@ -58,6 +59,8 @@ public class RecipeMiniGameController : MonoBehaviour
 
     private void InitializeRecipeList()
     {
+        toolIconImage.sprite = toolIconSprite;
+
         // ล้างของเก่า
         foreach (Transform child in recipesContentPanel) Destroy(child.gameObject);
         _spawnedRecipeItems.Clear();
