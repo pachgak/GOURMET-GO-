@@ -25,7 +25,7 @@ public class HealPlayerAction : PlayerSkillAction
     }
 }
 
-// --- 3. Action: โจมตี/เสกของ (แบบ AttacksSkill เดิม) ---
+/// --- 3. Action: โจมตี/เสกของ (แบบ AttacksSkill เดิม) ---
 [Serializable]
 public class SpawnAttackPlayerAction : PlayerSkillAction
 {
@@ -38,9 +38,6 @@ public class SpawnAttackPlayerAction : PlayerSkillAction
     public float knockbackTime = 0.2f;
     public float speed = 0f; // สำหรับ Projectile
 
-    [Header("Offset")]
-    public float skillFar = 0f;
-
     public override void Execute(GameObject player, Vector3 mousePosition, float damageMultiplier)
     {
         if (skillPrefab == null) return;
@@ -50,34 +47,31 @@ public class SpawnAttackPlayerAction : PlayerSkillAction
         Vector3 posInstance = Vector3.zero;
         Vector3 targetVecter = Vector3.zero;
 
-        // --- Logic การ Spawn เหมือนระบบเดิมของคุณ ---
+        // --- Logic การ Spawn ที่คลีนขึ้น (เอา Offset ออก) ---
         switch (spawnType)
         {
             case AttacksSkill.SpawnSkillPrefabsType.PlayerParent:
                 attackInstance = ObjectPoolingManager.Instance.Spawn(skillPrefab);
                 attackInstance.transform.parent = player.transform;
-                posInstance = player.transform.position + (directionToMouse * skillFar);
+                posInstance = player.transform.position; // ออกที่ตัว Player
                 targetVecter = directionToMouse;
                 break;
 
             case AttacksSkill.SpawnSkillPrefabsType.PlayerWorld:
                 attackInstance = ObjectPoolingManager.Instance.Spawn(skillPrefab);
-                attackInstance.transform.position = player.transform.position;
-                posInstance = player.transform.position + (directionToMouse * skillFar);
+                posInstance = player.transform.position; // ออกที่ตัว Player
                 targetVecter = directionToMouse;
                 break;
 
             case AttacksSkill.SpawnSkillPrefabsType.MouseWorld:
                 attackInstance = ObjectPoolingManager.Instance.Spawn(skillPrefab);
-                attackInstance.transform.position = mousePosition;
-
-                float skillFarTrue = (skillFar >= 0) ? Mathf.Clamp(Vector3.Distance(mousePosition, player.transform.position), 0, skillFar) : Vector3.Distance(mousePosition, player.transform.position);
-                posInstance = player.transform.position + (directionToMouse * skillFarTrue);
+                posInstance = mousePosition; // ออกที่เมาส์เป๊ะๆ
                 targetVecter = mousePosition - player.transform.position;
                 break;
         }
 
         attackInstance.transform.position = posInstance;
+
         targetVecter.y = 0f;
         if (targetVecter != Vector3.zero) attackInstance.transform.rotation = Quaternion.LookRotation(targetVecter);
 
@@ -92,6 +86,64 @@ public class SpawnAttackPlayerAction : PlayerSkillAction
         }
 
         if (attackInstance.TryGetComponent(out ISpeed iSpeed)) iSpeed._speed = speed;
+    }
+}
+
+// --- 5. Action: เสกเอฟเฟกต์ (VFX) อย่างเดียว ---
+[Serializable]
+public class SpawnVFXPlayerAction : PlayerSkillAction
+{
+    public AttacksSkill.SpawnSkillPrefabsType spawnType;
+
+    [Tooltip("Prefab ของ Effect ที่ต้องการเสก (ไม่ต้องมี Hitbox ก็ได้)")]
+    public GameObject vfxPrefab;
+
+    public override void Execute(GameObject player, Vector3 mousePosition, float damageMultiplier)
+    {
+        if (vfxPrefab == null) return;
+
+        GameObject vfxInstance = null;
+        Vector3 directionToMouse = (mousePosition - player.transform.position).normalized;
+        Vector3 posInstance = Vector3.zero;
+        Vector3 targetVecter = Vector3.zero;
+
+        // --- Logic การ Spawn วางตำแหน่ง (เอา Offset ออก) ---
+        switch (spawnType)
+        {
+            case AttacksSkill.SpawnSkillPrefabsType.PlayerParent:
+                // เกิดที่ตัวผู้เล่นและขยับตามผู้เล่น
+                vfxInstance = ObjectPoolingManager.Instance.Spawn(vfxPrefab);
+                vfxInstance.transform.parent = player.transform;
+                posInstance = player.transform.position;
+                targetVecter = directionToMouse;
+                break;
+
+            case AttacksSkill.SpawnSkillPrefabsType.PlayerWorld:
+                // เกิดที่ตัวผู้เล่น แต่ไม่ขยับตาม (ทิ้งไว้ตรงนั้น)
+                vfxInstance = ObjectPoolingManager.Instance.Spawn(vfxPrefab);
+                posInstance = player.transform.position;
+                targetVecter = directionToMouse;
+                break;
+
+            case AttacksSkill.SpawnSkillPrefabsType.MouseWorld:
+                // เกิดที่ตำแหน่งเมาส์ชี้เป๊ะๆ
+                vfxInstance = ObjectPoolingManager.Instance.Spawn(vfxPrefab);
+                posInstance = mousePosition;
+                targetVecter = mousePosition - player.transform.position;
+                break;
+        }
+
+        // --- ตั้งค่าตำแหน่ง ---
+        vfxInstance.transform.position = posInstance;
+
+        // --- ตั้งค่าการหันหน้า (Rotation) ---
+        targetVecter.y = 0f;
+        if (targetVecter != Vector3.zero)
+        {
+            vfxInstance.transform.rotation = Quaternion.LookRotation(targetVecter);
+        }
+
+        Debug.Log($"[Skill] Spawned VFX: {vfxPrefab.name}");
     }
 }
 
@@ -113,3 +165,4 @@ public class DashPlayerAction : PlayerSkillAction
         }
     }
 }
+

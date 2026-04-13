@@ -8,7 +8,7 @@ public class EnemySkillSO : ScriptableObject
     public string skillName;
 
     [HideInInspector] public AttacksSkill.SpawnSkillPrefabsType spawnSkillPrefabsType;
-    [HideInInspector] public AttacksSkill.SkillSetp[] _skillSetp;
+    [HideInInspector] public AttacksSkill.SkillSetpOld[] _skillSetp;
 
     [SubclassSelector, SerializeReference]
     public List<SkillAction> actions = new List<SkillAction>();

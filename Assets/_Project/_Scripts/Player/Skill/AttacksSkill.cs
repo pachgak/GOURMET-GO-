@@ -11,10 +11,10 @@ public class AttacksSkill : PlayerSkillSO
     //[Space(20)]
     [Header("===== Modify Skill ================================================================")]
     public SpawnSkillPrefabsType spawnSkillPrefabsType;
-    public SkillSetp[] skillSetp;
+    public SkillSetpOld[] skillSetp;
 
     [System.Serializable]
-    public class SkillSetp
+    public class SkillSetpOld
     {
         [Header("Time")]
         public float playAtTime;

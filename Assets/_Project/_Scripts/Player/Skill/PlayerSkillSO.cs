@@ -6,7 +6,7 @@ using UnityEngine;
 
 // --- โครงสร้างที่คุณออกแบบมา (เปลี่ยนชื่อให้ดูโปรขึ้นนิดนึง) ---
 [Serializable]
-public class SkillNewStepTT
+public class SkillStep
 {
     [Tooltip("เวลาที่จะให้ Action นี้ทำงาน (นับจาก 0)")]
     public float playAtTime;
@@ -30,7 +30,7 @@ public class PlayerSkillSO : ScriptableObject
     public float skillLifeTime;
 
     // *** หัวใจหลักของระบบใหม่ ***
-    public List<SkillNewStepTT> skillSteps = new List<SkillNewStepTT>();
+    public List<SkillStep> skillSteps = new List<SkillStep>();
 
     // เมธอดหลักที่ PlayerSkill.cs จะเรียกใช้
     public virtual Coroutine Use(GameObject player, Vector3 mousePosition, float damageMultiplier = 1f)
