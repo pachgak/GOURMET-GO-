@@ -167,9 +167,24 @@ public class RecipeMiniGameUIManager : MonoBehaviour
 
     private void OnCookBtnPressed()
     {
+        if (_selectedRecipe == null || _currentStation == null) return;
+
+        // *** 1. สั่งหักวัตถุดิบออกจากกระเป๋าก่อนเลย! ***
+        ConsumeIngredients();
+
         // 1. ส่งข้อมูลให้ MiniGame
         float targetScore = 100f * (1f + (0.1f * (_cookCount - 1)));
         _currentStation.miniGameType.SetupFromRecipe(_selectedRecipe, Mathf.RoundToInt(targetScore), _cookCount);
+        
+        // ให้ UI เตรียมตัว และโยน targetMiniGame ไปให้ UI รับช่วงต่อ
+        if (MiniGameUIManager.Instance != null)
+        {
+            MiniGameUIManager.Instance.OpenMiniGame(_currentStation.miniGameType);
+        }
+        else
+        {
+            Debug.LogError("หา MiniGameUIManager ในฉากไม่เจอ! อย่าลืมเอาไปแปะไว้ในฉากนะ");
+        }
 
         // 2. ปิดหน้าจอนี้ แล้วใช้ Wrapper Method ของคุณเปิดหน้ามินิเกม!
         if (newOpenUIManager.instance != null)
@@ -179,6 +194,49 @@ public class RecipeMiniGameUIManager : MonoBehaviour
             if (miniGamePanel != null)
             {
                 newOpenUIManager.instance._TogglePanel(miniGamePanel); // โคตรสะดวก!
+            }
+        }
+    }
+
+    // ฟังก์ชันสำหรับหักวัตถุดิบออกจากกระเป๋า/ตู้เย็น
+    private void ConsumeIngredients()
+    {
+        if (_selectedRecipe == null) return;
+
+        // วนลูปตามวัตถุดิบที่สูตรต้องการ
+        foreach (var req in _selectedRecipe.ingredients)
+        {
+            int remainingToRemove = req.quantity * _cookCount; // จำนวนทั้งหมดที่ต้องหัก
+
+            // วนหาในทุกๆ กระเป๋าที่เชื่อมต่อกับเตานี้ (ไล่หักไปทีละใบ)
+            foreach (var inv in _currentStation.inventoriesToCheck)
+            {
+                if (remainingToRemove <= 0) break; // ถ้าหักครบแล้วให้ข้ามไปหาวัตถุดิบชิ้นต่อไปเลย
+
+                for (int i = 0; i < inv.Size; i++)
+                {
+                    if (remainingToRemove <= 0) break; // หักครบแล้วข้ามช่องอื่นไปเลย
+
+                    InventoryItem itemInSlot = inv.GetItemAt(i);
+
+                    // เจอของที่ตรงกันในช่องนี้!
+                    if (!itemInSlot.IsEmpty && itemInSlot.item.ID == req.item.ID)
+                    {
+                        if (itemInSlot.quantity >= remainingToRemove)
+                        {
+                            // ถ้าของในช่องนี้มีพอ หรือมากกว่าที่ต้องการหัก
+                            inv.RemoveItem(i, remainingToRemove);
+                            remainingToRemove = 0;
+                        }
+                        else
+                        {
+                            // ถ้าของในช่องนี้มีไม่พอ (ต้องไปควานหาจากช่องอื่นต่อ)
+                            int amountInThisSlot = itemInSlot.quantity;
+                            inv.RemoveItem(i, amountInThisSlot);
+                            remainingToRemove -= amountInThisSlot;
+                        }
+                    }
+                }
             }
         }
     }

@@ -664,6 +664,8 @@ MonoBehaviour:
   isPlaying: 0
   isReady: 0
   rewardSprite: {fileID: 0}
+  currentRecipe: {fileID: 0}
+  cookCount: 0
   hitSize: 65
   hitPerfectSize: 25
   gravity: 1
@@ -1970,9 +1972,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 477230214}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 146.79654, y: -48.7653}
   m_SizeDelta: {x: 92.8232, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &17639887
@@ -11800,6 +11802,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 467898b7ae9229242ad527a30b5d66e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isUiCurrentlyOpen: 0
 --- !u!114 &114736244
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64711,7 +64714,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiPanel: {fileID: 1878570904}
-  panelID: MiniGamePanel
+  panelID: RecipeMiniGameUI
   panelType: 0
   closeOnEsc: 1
   closeOnInteract: 1
@@ -110379,6 +110382,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 890459682091fb844b8ebf03f85bcd9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerInventory: {fileID: 11400000, guid: 6e3a1dbd10692eb448028a9b63b5a082, type: 2}
   readyPanel: {fileID: 896010862}
   blackOverlay: {fileID: 2009039168}
   startPanel: {fileID: 1193330958}
@@ -119937,19 +119941,17 @@ MonoBehaviour:
   stationName: 
   toolIcon: {fileID: 21300000, guid: 21efe2b7b4c55ee4d9b159b0091c85f7, type: 3}
   recipesForThisStation:
-  - {fileID: 11400000, guid: 64dd0f7811df6d2419dcb72a92b27ce6, type: 2}
-  - {fileID: 11400000, guid: f234cb29696362341b4a2cd49e644960, type: 2}
-  - {fileID: 11400000, guid: 81b4fe88b4eb195488e9facd93d21094, type: 2}
-  - {fileID: 11400000, guid: 62d0736419de3634995503e3ba568046, type: 2}
-  - {fileID: 11400000, guid: 220438d1cd3fa4b4ca95ed2846d2c20a, type: 2}
-  - {fileID: 11400000, guid: 317e17d54856fdb449416344688ab555, type: 2}
-  - {fileID: 11400000, guid: a6599459b28ce224da4e2afdb7270751, type: 2}
-  - {fileID: 11400000, guid: f43d2573e12c13046a3791b5b70cc6f9, type: 2}
-  - {fileID: 11400000, guid: 00abc07e5b1d4e842b6a779964e67f05, type: 2}
-  - {fileID: 11400000, guid: 2d7693493a1def7499fa263a3e6fe481, type: 2}
-  - {fileID: 11400000, guid: 9dc83b064c959734db8339fe9ae3e454, type: 2}
-  - {fileID: 11400000, guid: e5b890dac6780da499cf364a122fbedd, type: 2}
+  - {fileID: 11400000, guid: bfb75d9389f9de4448e819616292cb29, type: 2}
+  - {fileID: 11400000, guid: 565012eeb7ad27848a7341dc10b7f2e3, type: 2}
   - {fileID: 11400000, guid: a8d34872d0ff53c4a80d54e3efa3d80a, type: 2}
+  - {fileID: 11400000, guid: 0309b4a2d92d58f4aa0f20c066696f9e, type: 2}
+  - {fileID: 11400000, guid: 2d7693493a1def7499fa263a3e6fe481, type: 2}
+  - {fileID: 11400000, guid: 8c77a037d85135f4380eb3610166440f, type: 2}
+  - {fileID: 11400000, guid: 9dc83b064c959734db8339fe9ae3e454, type: 2}
+  - {fileID: 11400000, guid: 00abc07e5b1d4e842b6a779964e67f05, type: 2}
+  - {fileID: 11400000, guid: 71b7d765e80f3934fb501bf418ef7e30, type: 2}
+  - {fileID: 11400000, guid: 62d0736419de3634995503e3ba568046, type: 2}
+  - {fileID: 11400000, guid: 9023954cd63e9d3429bd714d44166cf3, type: 2}
   miniGameType: {fileID: 1394574804}
   inventoriesToCheck:
   - {fileID: 11400000, guid: 6e3a1dbd10692eb448028a9b63b5a082, type: 2}
@@ -239047,16 +239049,17 @@ MonoBehaviour:
   stationName: 
   toolIcon: {fileID: 21300000, guid: 96d36132fe343644ab998c5d73ab8f80, type: 3}
   recipesForThisStation:
-  - {fileID: 11400000, guid: 5c1750d7dfab6d0458f6dff410a45f1a, type: 2}
-  - {fileID: 11400000, guid: 9fb51cd5eda00c844bf231a4bc4e7a7e, type: 2}
-  - {fileID: 11400000, guid: 0309b4a2d92d58f4aa0f20c066696f9e, type: 2}
-  - {fileID: 11400000, guid: 0251bdb5f2c435a4ba580b73c9439203, type: 2}
   - {fileID: 11400000, guid: d651e03044d38484eae46683f79219cd, type: 2}
-  - {fileID: 11400000, guid: bfb75d9389f9de4448e819616292cb29, type: 2}
-  - {fileID: 11400000, guid: 7a13f578cda6f1a4ca33bd6989ffb3d0, type: 2}
-  - {fileID: 11400000, guid: 565012eeb7ad27848a7341dc10b7f2e3, type: 2}
+  - {fileID: 11400000, guid: f43d2573e12c13046a3791b5b70cc6f9, type: 2}
+  - {fileID: 11400000, guid: 9fb51cd5eda00c844bf231a4bc4e7a7e, type: 2}
+  - {fileID: 11400000, guid: 81b4fe88b4eb195488e9facd93d21094, type: 2}
+  - {fileID: 11400000, guid: 427f8876152c7ad48b84ed376debad61, type: 2}
+  - {fileID: 11400000, guid: a6599459b28ce224da4e2afdb7270751, type: 2}
+  - {fileID: 11400000, guid: 220438d1cd3fa4b4ca95ed2846d2c20a, type: 2}
   - {fileID: 11400000, guid: 499bcb5de61c5c649a4ccffe7131a1ec, type: 2}
-  - {fileID: 11400000, guid: 71b7d765e80f3934fb501bf418ef7e30, type: 2}
+  - {fileID: 11400000, guid: 317e17d54856fdb449416344688ab555, type: 2}
+  - {fileID: 11400000, guid: 7a13f578cda6f1a4ca33bd6989ffb3d0, type: 2}
+  - {fileID: 11400000, guid: a2bd6c2c716d767498dc174fefa2c434, type: 2}
   miniGameType: {fileID: 5163253}
   inventoriesToCheck:
   - {fileID: 11400000, guid: 6e3a1dbd10692eb448028a9b63b5a082, type: 2}
@@ -247726,6 +247729,8 @@ MonoBehaviour:
   isPlaying: 0
   isReady: 0
   rewardSprite: {fileID: 0}
+  currentRecipe: {fileID: 0}
+  cookCount: 0
   hitRadius: 150
   hitPerfectRadius: 50
   hitGoodRadius: 100
@@ -259578,9 +259583,9 @@ RectTransform:
   - {fileID: 1357615629}
   m_Father: {fileID: 477230214}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 45.96165, y: -48.7653}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1507449173
@@ -300280,9 +300285,9 @@ RectTransform:
   - {fileID: 1558886969}
   m_Father: {fileID: 477230214}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 247.63145, y: -48.7653}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1647639336
@@ -306216,10 +306221,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 963710032}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: -0}
+  m_SizeDelta: {x: 484.1759, y: 599.6347}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1701154739
 MonoBehaviour:
@@ -613354,16 +613359,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d06e72997fe2d047afce3194ab1f2e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiPanel: {fileID: 201634597}
+  uiPanel: {fileID: 1896672703}
   panelID: MiniGamePanel
   panelType: 0
-  closeOnEsc: 0
+  closeOnEsc: 1
   closeOnInteract: 0
   openedTime: 0
-  enableOnOpen:
-  - {fileID: 1896672703}
-  disableOnOpen:
-  - {fileID: 1210339626}
+  enableOnOpen: []
+  disableOnOpen: []
   OnPanelOpened:
     m_PersistentCalls:
       m_Calls: []
@@ -617775,7 +617778,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1878570905
 RectTransform:
   m_ObjectHideFlags: 0
@@ -658520,7 +658523,7 @@ RectTransform:
   m_Father: {fileID: 1485328258}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -660690,15 +660693,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4310143537088639991, guid: 0ff8e50c0be48fa4db8c78156dfb0408, type: 3}
       propertyPath: initialItems.Array.data[5].quantity
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4310143537088639991, guid: 0ff8e50c0be48fa4db8c78156dfb0408, type: 3}
       propertyPath: initialItems.Array.data[6].quantity
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4310143537088639991, guid: 0ff8e50c0be48fa4db8c78156dfb0408, type: 3}
       propertyPath: initialItems.Array.data[7].quantity
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4310143537088639991, guid: 0ff8e50c0be48fa4db8c78156dfb0408, type: 3}
       propertyPath: initialItems.Array.data[8].quantity

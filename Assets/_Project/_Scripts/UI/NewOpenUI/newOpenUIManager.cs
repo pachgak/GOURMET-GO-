@@ -7,7 +7,7 @@ public class newOpenUIManager : MonoBehaviour
     public static newOpenUIManager instance;
 
     public Action<bool> OnUiOpeningStateChange;
-    private bool _isUiCurrentlyOpen = false; // ตัวแปรคอยเช็คว่าเปลี่ยนสถานะหรือยัง
+    [SerializeField] private bool _isUiCurrentlyOpen = false; // ตัวแปรคอยเช็คว่าเปลี่ยนสถานะหรือยัง
 
     // ไม่ต้องมี Array registeredPanels ให้รก Inspector แล้ว!
 

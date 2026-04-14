@@ -9,6 +9,9 @@ public class MiniGameUIManager : MonoBehaviour
 {
     public static MiniGameUIManager Instance { get; private set; }
 
+    [Header("Reward Settings")]
+    public Inventory.Model.InventorySO playerInventory; // ลาก Inventory หลักของ Player มาใส่
+
     [Header("UI Panels")]
     public GameObject readyPanel;
     public CanvasGroup blackOverlay; // พื้นหลังดำโปร่งแสง
@@ -256,6 +259,9 @@ public class MiniGameUIManager : MonoBehaviour
     // --- เปลี่ยนชื่อจาก CloseMiniGame มาเป็น CleanUpMiniGame ให้สื่อความหมายว่าล้างกระดาน ---
     private void CleanUpMiniGame()
     {
+        // 1. จัดการเรื่องไอเทมก่อนล้างค่าอื่นๆ
+        ProcessItemRewards();
+
         Debug.Log("ล้างค่าและซ่อนมินิเกม (เพราะหน้าต่างถูกปิดแล้ว)");
 
         ResetUI(); // เคลียร์ค่าเผื่อเปิดรอบหน้า
@@ -270,5 +276,46 @@ public class MiniGameUIManager : MonoBehaviour
         readyPanel.SetActive(false);
 
         OnCloseMiniGame?.Invoke(); // ตะโกนบอกคนอื่นเผื่อมีใครรอฟังอยู่
+
+    }
+
+    // --- Method ใหม่สำหรับจัดการรางวัลและคืนวัตถุดิบ ---
+    private void ProcessItemRewards()
+    {
+        Debug.Log($"#ProcessItemRewards");
+        // ตรวจสอบความพร้อมของข้อมูล
+        if (_activeGame == null || _activeGame.currentRecipe == null || playerInventory == null)
+        {
+            Debug.Log($"#return {_activeGame == null} , {_activeGame.currentRecipe == null} , {playerInventory == null}");
+            return;
+        }
+
+        Debug.Log($"#Do");
+        var recipe = _activeGame.currentRecipe;
+        int count = _activeGame.cookCount;
+
+        // เช็คเงื่อนไข: ชนะ (คะแนนถึงเป้า) หรือ แพ้/ออกกลางคัน (คะแนนไม่ถึง)
+        if (_activeGame.currentScore >= _activeGame.maxScore)
+        {
+            // --- แบบที่ 1: เล่นจบ (Success) -> มอบไอเทมผลลัพธ์ ---
+            playerInventory.AddItem(recipe.resultItem, count);
+            Debug.Log($"[Reward] Cooking Success! Received: {recipe.resultItem.ItemName} x{count}");
+        }
+        else
+        {
+            // --- แบบที่ 2: เล่นไม่จบ (Cancel/Exit) -> คืนวัตถุดิบตามจำนวนที่ใช้ไป ---
+            Debug.Log($"[Refund] Cooking Incomplete. Returning ingredients for {count} sets.");
+
+            foreach (var ingredient in recipe.ingredients)
+            {
+                if (ingredient.item != null)
+                {
+                    // คืนของตามจำนวนที่คำนวณไว้ (จำนวนต่อชุด * จำนวนครั้งที่สั่งทำ)
+                    int refundAmount = ingredient.quantity * count;
+                    playerInventory.AddItem(ingredient.item, refundAmount);
+                    Debug.Log($"[Refund] Returned: {ingredient.item.ItemName} x{refundAmount}");
+                }
+            }
+        }
     }
 }

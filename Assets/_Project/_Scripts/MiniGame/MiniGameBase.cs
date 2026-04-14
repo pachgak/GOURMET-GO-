@@ -23,11 +23,17 @@ public abstract class MiniGameBase : MonoBehaviour
     [SerializeField] protected Sprite rewardSprite;
     protected int rewardCount;
 
+    [HideInInspector] public CookingRecipeSO currentRecipe;
+    [HideInInspector] public int cookCount; // เก็บจำนวนชิ้นไว้ด้วย
+
     // --- ฟังก์ชัน Setup พื้นฐาน ---
     // ใช้ virtual เพื่อให้คลาสลูกสามารถ "เขียนทับ (override)" เพื่อเพิ่มลูกเล่นเฉพาะตัวได้
     public virtual void SetupFromRecipe(CookingRecipeSO recipe, int targetMaxScore, int cookCount)
     {
         if (recipe == null) return;
+
+        this.currentRecipe = recipe;
+        this.cookCount = cookCount;
 
         maxScore = targetMaxScore;
         rewardCount = cookCount;
