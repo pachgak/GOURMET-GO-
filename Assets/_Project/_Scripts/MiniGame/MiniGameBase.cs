@@ -18,6 +18,7 @@ public abstract class MiniGameBase : MonoBehaviour
     // --- Event พื้นฐานที่ทุกเกมต้องมี ---
     public Action<int> OnScoreUpdated;
     public Action<Sprite, int> OnGameFinished;
+    public Action<CookingRecipeSO> OnRecipeSetup;
 
     // ตัวแปรเก็บของรางวัล
     [SerializeField] protected Sprite rewardSprite;
@@ -45,6 +46,7 @@ public abstract class MiniGameBase : MonoBehaviour
         }
 
         OnScoreUpdated?.Invoke(currentScore);
+        OnRecipeSetup?.Invoke(recipe);
     }
 
     // บังคับให้คลาสลูกต้องมีฟังก์ชัน StartGame และ EndGame เป็นของตัวเอง

@@ -114,7 +114,7 @@ public class newOpenUIManager : MonoBehaviour
 
             PlayerInputActionsManager.instance.playerControls.Player.Disable();
             //PlayerInputActionsManager.instance.playerControls.UI.Enable();
-            Debug.Log("UI เปิดอยู่ -> สลับเข้าโหมด UI");
+            //Debug.Log("UI เปิดอยู่ -> สลับเข้าโหมด UI");
         }
         // ถ้าไม่มีหน้าต่างเปิดเลย และก่อนหน้านี้มันเคย "เปิด" อยู่ (สถานะเปลี่ยนจาก 1 -> 0)
         else if (!hasUI && _isUiCurrentlyOpen)
@@ -126,7 +126,7 @@ public class newOpenUIManager : MonoBehaviour
 
             PlayerInputActionsManager.instance.playerControls.Player.Enable();
             //PlayerInputActionsManager.instance.playerControls.UI.Disable();
-            Debug.Log("หน้าจอเคลียร์ -> สลับเข้าโหมด Player");
+            //Debug.Log("หน้าจอเคลียร์ -> สลับเข้าโหมด Player");
         }
     }
 
