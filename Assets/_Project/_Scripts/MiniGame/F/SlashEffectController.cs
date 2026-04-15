@@ -34,7 +34,7 @@ public class SlashEffectController : MonoBehaviour
         }
 
         // หา Manager แบบไม่ต้องลากใส่
-        _miniGameManager = FindFirstObjectByType<MiniGameFManager>();
+        _miniGameManager = GetComponent<MiniGameFManager>();
     }
 
     void OnEnable()

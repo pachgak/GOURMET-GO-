@@ -224,6 +224,12 @@ public class MiniGameFManager : MiniGameBase
         {
             UI_Ingredient ingredient = activeIngredients[i];
 
+            if (ingredient == null || ingredient.Rect == null)
+            {
+                activeIngredients.RemoveAt(i); // ลบตัวที่พังออกไปจาก List
+                continue; // ข้ามไปทำรอบต่อไปทันที
+            }
+
             // ระยะห่างรวมเพื่อเช็คว่าอยู่ในวงกลมไหม (ใช้ Distance แบบเดิม)
             float distance = Vector2.Distance(hitCenter.anchoredPosition, ingredient.Rect.anchoredPosition);
 
@@ -278,6 +284,12 @@ public class MiniGameFManager : MiniGameBase
         for (int i = activeIngredients.Count - 1; i >= 0; i--)
         {
             UI_Ingredient ingredient = activeIngredients[i];
+
+            if (ingredient == null || ingredient.Rect == null)
+            {
+                activeIngredients.RemoveAt(i);
+                continue;
+            }
 
             // ระยะห่างรวมเพื่อเช็คว่าอยู่ในวงกลมไหม (ใช้ Distance แบบเดิม)
             float distance = Vector2.Distance(hitCenter.anchoredPosition, ingredient.Rect.anchoredPosition);
