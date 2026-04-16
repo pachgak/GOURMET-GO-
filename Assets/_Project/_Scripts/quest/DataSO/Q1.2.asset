@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be986961e86186e4a943cf4439fa88e2, type: 3}
+  m_Name: Q1.2
+  m_EditorClassIdentifier: 
+  questID: Q1.2
+  questName: HowCook2
+  dialogues:
+  - questText: "\u0E08\u0E32\u0E01\u0E19\u0E31\u0E49\u0E19\u0E44\u0E1B\u0E17\u0E35\u0E48
+      <color=blue><b><u>Cutting Station</color></b></u> \u0E40\u0E1E\u0E37\u0E48\u0E2D\u0E17\u0E33\u0E40\u0E21\u0E19\u0E39
+      <color=blue><b><u>Sky Egg Omelette</color></b></u>"
+    actionText: "\u0E01\u0E14 E \u0E15\u0E48\u0E2D [CL]"
+  turnInStep:
+    questText: "\u0E21\u0E35 [R0] \u0E40\u0E1E\u0E37\u0E48\u0E2D \u0E14\u0E33\u0E40\u0E19\u0E34\u0E19\u0E15\u0E48\u0E2D"
+    actionText: "\u0E01\u0E14 E \u0E40\u0E1E\u0E37\u0E48\u0E2D\u0E2A\u0E48\u0E07"
+    requirements:
+    - rid: 6721758058838491242
+  rewards: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 6721758058838491242
+      type: {class: CheckItemRequirement, ns: , asm: Assembly-CSharp}
+      data:
+        requiredItem: {fileID: 11400000, guid: 267e943c3879cfb41899b35908ebf83e, type: 2}
+        amount: 1

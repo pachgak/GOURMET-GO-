@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be986961e86186e4a943cf4439fa88e2, type: 3}
+  m_Name: Q1.1
+  m_EditorClassIdentifier: 
+  questID: Q1.1
+  questName: HowCook1
+  dialogues:
+  - questText: "\u0E2A\u0E27\u0E31\u0E2A\u0E14\u0E35\u0E40\u0E08\u0E49\u0E32\u0E25\u0E39\u0E01\u0E28\u0E34\u0E29\u0E22\u0E4C\u0E16\u0E36\u0E07\u0E40\u0E27\u0E25\u0E32\u0E2D\u0E31\u0E19\u0E14\u0E35\u0E17\u0E35\u0E48\u0E02\u0E49\u0E32\u0E08\u0E30\u0E2A\u0E2D\u0E19\u0E01\u0E32\u0E23\u0E17\u0E33\u0E2D\u0E32\u0E2B\u0E32\u0E23\u0E43\u0E2B\u0E49\u0E41\u0E01\u0E48\u0E40\u0E08\u0E49\u0E32"
+    actionText: "\u0E01\u0E14 E \u0E15\u0E48\u0E2D [CL]"
+  - questText: "\u0E2B\u0E22\u0E34\u0E1A <color=blue><b><u>Sky Egg x1</color></b></u>
+      \u0E41\u0E25\u0E30 <color=blue><b><u>Cheese Leaf x1</color></b></u> \u0E27\u0E31\u0E15\u0E16\u0E38\u0E14\u0E34\u0E1A\u0E2D\u0E22\u0E39\u0E48\u0E43\u0E19\u0E15\u0E39\u0E49\u0E40\u0E22\u0E47\u0E19
+      \n\u0E21\u0E32\u0E43\u0E2B\u0E49\u0E09\u0E31\u0E19\u0E14\u0E39\u0E2A\u0E34"
+    actionText: "\u0E01\u0E14 E \u0E15\u0E48\u0E2D [CL]"
+  turnInStep:
+    questText: "\u0E21\u0E35 [R0] \u0E41\u0E25\u0E30 [R1] \u0E40\u0E1E\u0E37\u0E48\u0E2D
+      \u0E14\u0E33\u0E40\u0E19\u0E34\u0E19\u0E15\u0E48\u0E2D"
+    actionText: "\u0E01\u0E14 E \u0E40\u0E1E\u0E37\u0E48\u0E2D\u0E2A\u0E48\u0E07"
+    requirements:
+    - rid: 6721758058838491241
+    - rid: 6721758058838491235
+  rewards: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 6721758058838491235
+      type: {class: ItemRequirement, ns: , asm: Assembly-CSharp}
+      data:
+        requiredItem: {fileID: 11400000, guid: aa49461f59937c843947905e24e1c8e9, type: 2}
+        amount: 1
+    - rid: 6721758058838491241
+      type: {class: CheckItemRequirement, ns: , asm: Assembly-CSharp}
+      data:
+        requiredItem: {fileID: 11400000, guid: befabb5078b35864bba46de0662cc900, type: 2}
+        amount: 1

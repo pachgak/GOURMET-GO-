@@ -9,6 +9,7 @@ public class RecipeMiniGameUIManager : MonoBehaviour
     public static RecipeMiniGameUIManager Instance;
 
     public float baseTargetScore = 100f;
+    public float persenMutiplyScorePerCount = 10f;
 
     [Header("MiniGame UI Reference")]
     [Tooltip("ลากหน้าต่าง MiniGame (newOpenUIController) มาใส่ได้เลย ไม่ต้องพิมพ์ชื่อแล้ว!")]
@@ -148,7 +149,7 @@ public class RecipeMiniGameUIManager : MonoBehaviour
         }
 
         // สูตร Progress 100% + (10% * จำนวนที่เพิ่ม)
-        float targetProgress = baseTargetScore * (1f + (0.1f * (_cookCount - 1)));
+        float targetProgress = baseTargetScore * (1f + ((persenMutiplyScorePerCount / 100) * (_cookCount - 1)));
         progressCountText.text = $"{Mathf.RoundToInt(targetProgress)}";
 
         cookButton.interactable = canCook;
@@ -175,7 +176,7 @@ public class RecipeMiniGameUIManager : MonoBehaviour
         ConsumeIngredients();
 
         // 1. ส่งข้อมูลให้ MiniGame
-        float targetScore = baseTargetScore * (1f + (0.1f * (_cookCount - 1)));
+        float targetScore = baseTargetScore * (1f + ((persenMutiplyScorePerCount/100) * (_cookCount - 1)));
         _currentStation.miniGameType.SetupFromRecipe(_selectedRecipe, Mathf.RoundToInt(targetScore), _cookCount);
         
         // ให้ UI เตรียมตัว และโยน targetMiniGame ไปให้ UI รับช่วงต่อ
