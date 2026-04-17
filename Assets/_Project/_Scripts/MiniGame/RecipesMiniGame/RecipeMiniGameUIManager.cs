@@ -22,6 +22,7 @@ public class RecipeMiniGameUIManager : MonoBehaviour
 
     [Header("UI - Right Panel")]
     public Image detailRecipeIcon;
+    public List<GameObject> lockDetailRecipeIcons;
     public TMP_Text detailNameText;
     public TMP_Text detailDescText;
     public Transform requirementsContentPanel;
@@ -82,7 +83,11 @@ public class RecipeMiniGameUIManager : MonoBehaviour
         foreach (var recipe in _currentStation.recipesForThisStation)
         {
             RecipesItemUI uiItem = Instantiate(recipesItemPrefab, recipesContentPanel);
-            uiItem.Setup(recipe);
+
+            bool isFinished = IsRecipeFinished(recipe);
+
+            // *** ส่งผลลัพธ์ไปให้ UI วาดรูป ***
+            uiItem.Setup(recipe, isFinished);
 
             // *** เพิ่มส่วนการเช็ควัตถุดิบสำหรับ 1 ที่ตรงนี้ ***
             bool canCookAtLeastOne = CheckIngredientForOneServing(recipe);
@@ -126,6 +131,9 @@ public class RecipeMiniGameUIManager : MonoBehaviour
     private void UpdateDetails()
     {
         if (_selectedRecipe == null) return;
+
+        bool isFinished = IsRecipeFinished(_selectedRecipe);
+        foreach (var lockObj in lockDetailRecipeIcons) lockObj.SetActive(!isFinished);
 
         detailRecipeIcon.sprite = _selectedRecipe.resultItem.ItemImage;
         detailNameText.text = _selectedRecipe.resultItem.ItemName;
@@ -242,5 +250,10 @@ public class RecipeMiniGameUIManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    private bool IsRecipeFinished(CookingRecipeSO Recipe) 
+    {
+       return MenuIndexManager.Instance.IsMenuFinished(Recipe);
     }
 }

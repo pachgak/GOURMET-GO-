@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic; // <--- อย่าลืมใส่สำหรับ List
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -9,28 +10,45 @@ public class RecipesItemUI : MonoBehaviour, IPointerClickHandler, IPointerEnterH
 {
     public Image icon;
     public TMP_Text nameText;
-    public Image borderHighlight; // เอาไว้เปิด/ปิด กรอบตอนโดนเลือก
+    public Image borderHighlight;
     public Image blackAlpha;
 
-    public CookingRecipeSO RecipeData { get; private set; }
+    // *** เพิ่ม List ไอคอนล็อค ***
+    public List<GameObject> lockIcons;
 
-    // ส่ง Event กลับไปหา Controller ว่าตัวนี้โดนคลิก
+    public CookingRecipeSO RecipeData { get; private set; }
     public event Action<RecipesItemUI> OnItemClicked;
 
-    public void Setup(CookingRecipeSO recipe)
+    // *** รับค่า bool isFinished มาจาก Manager ***
+    public void Setup(CookingRecipeSO recipe, bool isFinished)
     {
         RecipeData = recipe;
         icon.sprite = recipe.resultItem.ItemImage;
-        nameText.text = recipe.resultItem.ItemName;
+
+        if (isFinished) Finished();
+        else LockIcon();
+
         Deselect();
+    }
+
+    private void LockIcon()
+    {
+        nameText.text = RecipeData.resultItem.ItemName;  //"???"; // ซ่อนชื่อถ้ายังไม่เคยทำ
+        foreach (var lockObj in lockIcons) lockObj.SetActive(true);
+        // icon.color = Color.black; // (ถ้าอยากให้ภาพดำเปิดคอมเมนต์นี้)
+    }
+
+    private void Finished()
+    {
+        nameText.text = RecipeData.resultItem.ItemName; // โชว์ชื่อ
+        foreach (var lockObj in lockIcons) lockObj.SetActive(false);
+        // icon.color = Color.white;
     }
 
     public void SetAvailability(bool canAfford)
     {
         if (blackAlpha != null)
         {
-            // ถ้าวัตถุดิบพอ (canAfford = true) ให้ปิดภาพดำ (enabled = false)
-            // ถ้าวัตถุดิบไม่พอ (canAfford = false) ให้เปิดภาพดำ (enabled = true)
             blackAlpha.enabled = !canAfford;
         }
     }
@@ -40,10 +58,9 @@ public class RecipesItemUI : MonoBehaviour, IPointerClickHandler, IPointerEnterH
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        OnItemClicked?.Invoke(this); // บอก Controller ว่าฉันโดนเลือกแล้วนะ!
+        OnItemClicked?.Invoke(this);
     }
 
-    // เผื่ออนาคตอยากทำเอฟเฟกต์ตอนเมาส์ชี้
-    public void OnPointerEnter(PointerEventData eventData) { /* ย่อขยายภาพนิดหน่อย */ }
-    public void OnPointerExit(PointerEventData eventData) { /* กลับขนาดเดิม */ }
+    public void OnPointerEnter(PointerEventData eventData) { }
+    public void OnPointerExit(PointerEventData eventData) { }
 }

@@ -69,7 +69,12 @@ public class RecipeMiniGameController : MonoBehaviour
         foreach (var recipe in availableRecipes)
         {
             RecipesItemUI uiItem = Instantiate(recipesItemPrefab, recipesContentPanel);
-            uiItem.Setup(recipe);
+
+            bool isFinished = MenuIndexManager.Instance.IsMenuFinished(recipe);
+
+            // *** ส่งผลลัพธ์ไปให้ UI วาดรูป ***
+            uiItem.Setup(recipe, isFinished);
+
             uiItem.OnItemClicked += HandleRecipeSelected;
             _spawnedRecipeItems.Add(uiItem);
         }
