@@ -19,7 +19,7 @@ public class newOpenUIKeyAction : MonoBehaviour
             PlayerInputActionsManager.instance.OnOpenInventoryInput += HandleInventoryInput;
             PlayerInputActionsManager.instance.OnCloseInteractUIInput += HandleCloseInteractInput;
 
-            PlayerInputActionsManager.instance.OnOpenLoadoutSkillInput += () => openUI._TogglePanel("LoadoutSkill");
+            //PlayerInputActionsManager.instance.OnOpenLoadoutSkillInput += () => openUI._TogglePanel("LoadoutSkill");
             PlayerInputActionsManager.instance.OnOpenMapInput += () => openUI._TogglePanel("FullMap");
         }
     }
@@ -32,7 +32,7 @@ public class newOpenUIKeyAction : MonoBehaviour
             PlayerInputActionsManager.instance.OnOpenInventoryInput -= HandleInventoryInput;
             PlayerInputActionsManager.instance.OnCloseInteractUIInput -= HandleCloseInteractInput;
 
-            PlayerInputActionsManager.instance.OnOpenLoadoutSkillInput -= () => openUI._TogglePanel("LoadoutSkill");
+            //PlayerInputActionsManager.instance.OnOpenLoadoutSkillInput -= () => openUI._TogglePanel("LoadoutSkill");
             PlayerInputActionsManager.instance.OnOpenMapInput -= () => openUI._TogglePanel("FullMap");
         }
     }

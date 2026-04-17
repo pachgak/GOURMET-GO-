@@ -39,7 +39,8 @@ public class ItemRequirement : QuestRequirement
             current = GetItemCount(inv.InventoryData);
         }
         // คืนค่าข้อความ เช่น "Sky Egg (0/1)"
-        return $"{requiredItem.ItemName} ({current}/{amount})";
+        string color = IsMet(player) ? "#2baf2b" : "red";
+        return $"<color={color}>{requiredItem.ItemName} ({current}/{amount})</color>";
     }
 
     public override void ConsumeRequirement(GameObject player)
@@ -63,39 +64,11 @@ public class ItemRequirement : QuestRequirement
 }
 
 [Serializable]
-public class CheckItemRequirement : QuestRequirement
+public class CheckItemRequirement : ItemRequirement
 {
-    public ItemSO requiredItem;
-    public int amount = 1;
-
-    public override bool IsMet(GameObject player)
+    public override void ConsumeRequirement(GameObject player)
     {
-        if (player.TryGetComponent(out InventoryController inv))
-        {
-            return GetItemCount(inv.InventoryData) >= amount;
-        }
-        return false;
-    }
-
-    public override string GetProgressText(GameObject player)
-    {
-        int current = 0;
-        if (player != null && player.TryGetComponent(out InventoryController inv))
-        {
-            current = GetItemCount(inv.InventoryData);
-        }
-        // คืนค่าข้อความ เช่น "Sky Egg (0/1)"
-        return $"{requiredItem.ItemName} ({current}/{amount})";
-    }
-
-    private int GetItemCount(InventorySO inventory)
-    {
-        int count = 0;
-        foreach (var item in inventory.GetCurrentInventoryState().Values)
-        {
-            if (!item.IsEmpty && item.item.ID == requiredItem.ID) count += item.quantity;
-        }
-        return count;
+        //nope
     }
 }
 
@@ -106,14 +79,24 @@ public class SkillRequirement : QuestRequirement
 
     public override bool IsMet(GameObject player)
     {
-        // เช็คว่าผู้เล่นใส่สกิลนี้อยู่หรือไม่ (ปรับให้เข้ากับสคริปต์ของคุณ)
-        // if (player.TryGetComponent(out PlayerSkill loadout)) return loadout.HasSkill(requiredSkill);
-        return true;
+        // เช็คว่าหาผู้เล่นเจอไหม และมีสคริปต์ PlayerSkill แปะอยู่ไหม
+        if (player != null && player.TryGetComponent(out PlayerSkill playerSkill))
+        {
+            // ใช้ Helper Method ที่เราเพิ่งสร้าง!
+            return playerSkill.HasSkill(requiredSkill);
+        }
+        return false;
     }
 
     public override string GetProgressText(GameObject player)
     {
-        string color = IsMet(player) ? "green" : "red";
-        return $"<color={color}>ติดตั้งสกิล {requiredSkill.skillName}</color>";
+        bool isMet = IsMet(player);
+
+        // เช็คสี (เขียวถ้าผ่าน แดงถ้ายังไม่ผ่าน)
+        string color = isMet ? "#2baf2b" : "red";
+
+        string skillName = requiredSkill != null ? requiredSkill.name : "Unknown Skill";
+
+        return $"<color={color}>ติดตั้งสกิล {skillName} </color>";
     }
 }

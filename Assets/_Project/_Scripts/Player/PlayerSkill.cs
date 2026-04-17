@@ -442,4 +442,19 @@ public class PlayerSkill : MonoBehaviour
 
         skillUI.CloseItemDetail();
     }
+
+    public bool HasSkill(PlayerSkillSO skillToCheck)
+    {
+        if (skillToCheck == null) return false;
+
+        // วนลูปเช็คใน skillDatas ว่ามีสกิลที่ตรงกับที่ต้องการไหม
+        for (int i = 0; i < skillDatas.Length; i++)
+        {
+            if (!skillDatas[i].IsEmpty && skillDatas[i].assignedSkills == skillToCheck)
+            {
+                return true; // เจอแล้ว! มีสกิลนี้ติดตั้งอยู่
+            }
+        }
+        return false; // หาจนจบแล้วไม่เจอ
+    }
 }

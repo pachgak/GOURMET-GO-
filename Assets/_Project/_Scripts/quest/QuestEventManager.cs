@@ -8,7 +8,8 @@ public enum RewardID
     None,               // ไม่มีรางวัล
     UnlockPotStation,   // ปลดล็อคหม้อ
     OpenNorthGate,      // เปิดประตูทิศเหนือ
-    OpenEastGate,      // เปิดประตูทิศเหนือ
+    OpenEastGate,      // เปิดประตูทิศตะวันตก
+    UnlockMenuIdex,
     EndClear           // จบเกม
 }
 

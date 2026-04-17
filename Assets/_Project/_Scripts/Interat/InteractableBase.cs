@@ -24,6 +24,14 @@ public class InteractableBase : MonoBehaviour
     private bool onProgress;
     private bool onFinishedCall;
 
+    private int _originalLayer;
+
+    private void Awake()
+    {
+        // จำ Layer ตอนเริ่มเกมเอาไว้ (เช่น Layer 'Interactable')
+        _originalLayer = gameObject.layer;
+    }
+
     private void Update()
     {
         if (onProgress)
@@ -83,6 +91,20 @@ public class InteractableBase : MonoBehaviour
     {
         gameObject.layer = 0;
         GetComponent<InteractableBase>().enabled = false;
+    }
+
+    // --- Helper สำหรับปิด Interact ชั่วคราว ---
+    public void PauseInteract()
+    {
+        gameObject.layer = 0; // เปลี่ยนเป็น Default (OverlapBox จะมองไม่เห็นทันที)
+        this.enabled = false;
+    }
+
+    // --- Helper สำหรับเปิด Interact กลับมา ---
+    public void ResumeInteract()
+    {
+        gameObject.layer = _originalLayer; // คืนค่า Layer กลับมาเหมือนเดิม
+        this.enabled = true;
     }
 
 }
