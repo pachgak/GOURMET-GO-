@@ -21,6 +21,8 @@ public class newOpenUIKeyAction : MonoBehaviour
 
             //PlayerInputActionsManager.instance.OnOpenLoadoutSkillInput += () => openUI._TogglePanel("LoadoutSkill");
             PlayerInputActionsManager.instance.OnOpenMapInput += () => openUI._TogglePanel("FullMap");
+
+            PlayerInputActionsManager.instance.OnOpenMenuListInput += HandleOpenMenuListInput;
         }
     }
 
@@ -74,6 +76,11 @@ public class newOpenUIKeyAction : MonoBehaviour
         {
             openUI.CloseTopPanelByInteractIfAllowed();
         }
+    }
+
+    private void HandleOpenMenuListInput()
+    {
+        openUI._TogglePanel("MenuList");
     }
 
 }

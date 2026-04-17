@@ -38,6 +38,7 @@ public class PlayerInputActionsManager : MonoBehaviour
     public Action OnOpenMenuInput;
 
     public Action OnOpenMapInput;
+    public Action OnOpenMenuListInput;
 
     public Action OnEscInput;
 
@@ -202,6 +203,7 @@ public class PlayerInputActionsManager : MonoBehaviour
 
         playerControls.UI.CloseInteractUI.started += OnCloseInteractUI;
 
+        playerControls.UI.OpenMenuList.performed += OnOpenMenuListPerformed;
     }
 
     // --- Implement Methods ที่ถูกผูกไว้ ---
@@ -297,6 +299,11 @@ public class PlayerInputActionsManager : MonoBehaviour
     private void OnOpenMapPerformed(InputAction.CallbackContext context)
     {
         OnOpenMapInput?.Invoke();
+    }
+
+    private void OnOpenMenuListPerformed(InputAction.CallbackContext context)
+    {
+        OnOpenMenuListInput?.Invoke();
     }
 
     //public void RefreshActionBindingMap()

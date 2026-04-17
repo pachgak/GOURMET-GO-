@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d95a4d719bf8c5848a031bcb07c6df52
+guid: 9f7f24f91b327064a84f17125cbb46f1
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Menu_ItemImageFlram.PNG_0
+      name: Menu_Book_UI_Ref - Copy_0
       rect:
         serializedVersion: 2
-        x: 362
-        y: 623
-        width: 970
-        height: 948
+        x: 86
+        y: 1193
+        width: 902
+        height: 242
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -112,8 +112,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 204d354d9f8cca343a0789ed058cde98
-      internalID: -773915388
+      spriteID: c154c51eecfbbe7499ca3f1c5f82f562
+      internalID: 623307314
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Menu_Book_UI_Ref - Copy_1
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 85
+        width: 995
+        height: 1019
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d793ab9fe48d0a54b9a6a5d1ff201aa9
+      internalID: 868843535
       vertices: []
       indices: 
       edges: []
@@ -132,7 +154,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Menu_ItemImageFlram.PNG_0: -773915388
+      Menu_Book_UI_Ref - Copy_0: 623307314
+      Menu_Book_UI_Ref - Copy_1: 868843535
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

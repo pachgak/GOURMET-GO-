@@ -4,6 +4,7 @@ using TMPro;
 using System.Collections;
 using DG.Tweening;
 using System;
+using Inventory.Model;
 
 public class MiniGameUIManager : MonoBehaviour
 {
@@ -38,6 +39,7 @@ public class MiniGameUIManager : MonoBehaviour
     private MiniGameBase _activeGame; // จำไว้ว่ากำลังเล่นเกมไหนอยู่
 
     public Action OnCloseMiniGame;
+    public Action<CookingRecipeSO> OnCookingSuccess;
 
     private void Awake()
     {
@@ -300,6 +302,9 @@ public class MiniGameUIManager : MonoBehaviour
             // --- แบบที่ 1: เล่นจบ (Success) -> มอบไอเทมผลลัพธ์ ---
             playerInventory.AddItem(recipe.resultItem, count);
             Debug.Log($"[Reward] Cooking Success! Received: {recipe.resultItem.ItemName} x{count}");
+
+            // ตะโกนบอกทุกคนที่ดักฟังอยู่!
+            OnCookingSuccess?.Invoke(recipe);
         }
         else
         {

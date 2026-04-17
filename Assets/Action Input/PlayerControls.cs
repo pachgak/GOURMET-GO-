@@ -542,6 +542,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenMenuList"",
+                    ""type"": ""Button"",
+                    ""id"": ""518b18d2-e3b6-4354-9552-b96a93d7f7c2"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -643,6 +652,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""OpenMap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cdc2c57a-987c-463b-947b-fae9ad8614a9"",
+                    ""path"": ""<Keyboard>/k"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenMenuList"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -668,6 +688,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_UI_OpenMenu = m_UI.FindAction("OpenMenu", throwIfNotFound: true);
         m_UI_OpenLoadoutSkill = m_UI.FindAction("OpenLoadoutSkill", throwIfNotFound: true);
         m_UI_OpenMap = m_UI.FindAction("OpenMap", throwIfNotFound: true);
+        m_UI_OpenMenuList = m_UI.FindAction("OpenMenuList", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -949,6 +970,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_OpenMenu;
     private readonly InputAction m_UI_OpenLoadoutSkill;
     private readonly InputAction m_UI_OpenMap;
+    private readonly InputAction m_UI_OpenMenuList;
     /// <summary>
     /// Provides access to input actions defined in input action map "UI".
     /// </summary>
@@ -980,6 +1002,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "UI/OpenMap".
         /// </summary>
         public InputAction @OpenMap => m_Wrapper.m_UI_OpenMap;
+        /// <summary>
+        /// Provides access to the underlying input action "UI/OpenMenuList".
+        /// </summary>
+        public InputAction @OpenMenuList => m_Wrapper.m_UI_OpenMenuList;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1021,6 +1047,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @OpenMap.started += instance.OnOpenMap;
             @OpenMap.performed += instance.OnOpenMap;
             @OpenMap.canceled += instance.OnOpenMap;
+            @OpenMenuList.started += instance.OnOpenMenuList;
+            @OpenMenuList.performed += instance.OnOpenMenuList;
+            @OpenMenuList.canceled += instance.OnOpenMenuList;
         }
 
         /// <summary>
@@ -1047,6 +1076,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @OpenMap.started -= instance.OnOpenMap;
             @OpenMap.performed -= instance.OnOpenMap;
             @OpenMap.canceled -= instance.OnOpenMap;
+            @OpenMenuList.started -= instance.OnOpenMenuList;
+            @OpenMenuList.performed -= instance.OnOpenMenuList;
+            @OpenMenuList.canceled -= instance.OnOpenMenuList;
         }
 
         /// <summary>
@@ -1200,5 +1232,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnOpenMap(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "OpenMenuList" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnOpenMenuList(InputAction.CallbackContext context);
     }
 }
