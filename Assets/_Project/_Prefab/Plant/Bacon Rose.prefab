@@ -122,7 +122,7 @@ MonoBehaviour:
     countMax: 3
   offSet: {x: 0, y: 2, z: -1}
   spriteRenderer: {fileID: 8017730287463863478}
-  imageEmptyTree: {fileID: 275816734, guid: 41b49f27167d7c148b380c385b2ba77c, type: 3}
+  imageEmptyTree: {fileID: 1944676293, guid: 90ba9ddf93ca76d4a8ba9a15cb53c9b3, type: 3}
 --- !u!114 &5871856031724106864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -422,7 +422,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1326184634, guid: 41b49f27167d7c148b380c385b2ba77c, type: 3}
+  m_Sprite: {fileID: 1384586617, guid: 90ba9ddf93ca76d4a8ba9a15cb53c9b3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -460,8 +460,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.45, y: 0.45, z: 0.45}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.16, y: 0.16, z: 0.16}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1693037431267277376}
   m_Father: {fileID: 6932772277065985682}
@@ -478,6 +478,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3002ce17a183d040b48a0504e5cf9a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetCamera: {fileID: 0}
   originalScale: {x: 1, y: 1, z: 1}
   foreshorteningParent: {fileID: 1693037431267277376}

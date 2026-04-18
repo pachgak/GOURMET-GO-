@@ -6,6 +6,7 @@ using UnityEngine.Events;
 public enum RewardID
 {
     None,               // ไม่มีรางวัล
+    CanFindGo,
     UnlockPotStation,   // ปลดล็อคหม้อ
     OpenNorthGate,      // เปิดประตูทิศเหนือ
     OpenEastGate,      // เปิดประตูทิศตะวันตก

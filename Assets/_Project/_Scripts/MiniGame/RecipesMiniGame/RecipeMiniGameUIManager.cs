@@ -16,6 +16,7 @@ public class RecipeMiniGameUIManager : MonoBehaviour
     public newOpenUIController miniGamePanel;
 
     [Header("UI - Left Panel")]
+    public TMP_Text stationName;
     public Image toolIconImage;
     public Transform recipesContentPanel;
     public RecipesItemUI recipesItemPrefab;
@@ -67,6 +68,7 @@ public class RecipeMiniGameUIManager : MonoBehaviour
 
         // 1. Update Tool Icon
         toolIconImage.sprite = station.toolIcon;
+        stationName.text = station.stationName;
 
         // 2. สร้างรายการอาหารเฉพาะของ Station นี้
         RefreshRecipeList();

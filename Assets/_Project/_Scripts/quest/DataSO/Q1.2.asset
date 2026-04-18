@@ -24,7 +24,8 @@ MonoBehaviour:
     actionText: "\u0E01\u0E14 E \u0E40\u0E1E\u0E37\u0E48\u0E2D\u0E2A\u0E48\u0E07"
     requirements:
     - rid: 6721758058838491242
-  rewards: []
+  rewards:
+  - rid: 6721758080333774972
   references:
     version: 2
     RefIds:
@@ -33,3 +34,7 @@ MonoBehaviour:
       data:
         requiredItem: {fileID: 11400000, guid: 267e943c3879cfb41899b35908ebf83e, type: 2}
         amount: 1
+    - rid: 6721758080333774972
+      type: {class: EventQuestReward, ns: , asm: Assembly-CSharp}
+      data:
+        eventID: 1
