@@ -264,8 +264,10 @@ public class ShamakiriSquadController : MonoBehaviour
             BaseEnemyAI clone = activeClones[i];
             if (clone == null || clone.currentState != BaseEnemyAI.EnemyState.Standby) continue;
 
-            // *** สำคัญ: ถ้า Agent ปิดอยู่ หรือ "เท้ายังไม่แตะพื้น NavMesh" ห้ามสั่งเดินเด็ดขาด! ***
-            if (!clone.TryGetComponent(out NavMeshAgent agent) || !agent.isActiveAndEnabled || !agent.isOnNavMesh) continue;
+            if (!clone.TryGetComponent(out NavMeshAgent agent) || !agent.isActiveAndEnabled) continue;
+
+            //// *** สำคัญ: ถ้า Agent ปิดอยู่ หรือ "เท้ายังไม่แตะพื้น NavMesh" ห้ามสั่งเดินเด็ดขาด! ***
+            //if (!clone.TryGetComponent(out NavMeshAgent agent) || !agent.isActiveAndEnabled || !agent.isOnNavMesh) continue;
 
             float angle = _formationAngle + (i * angleStep);
             Vector3 offset = Quaternion.Euler(0, angle, 0) * Vector3.forward * formationRadius;
@@ -303,11 +305,42 @@ public class ShamakiriSquadController : MonoBehaviour
         int index = activeClones.IndexOf(clone);
         if (index == -1) return;
 
-        // 1. คำนวณจุดปัจจุบันที่มันต้องไปยืน
+        // 1. คำนวณจุดที่มันต้องไปยืนตามค่ายกล
         float angleStep = 360f / activeClones.Count;
         float angle = _formationAngle + (index * angleStep);
         Vector3 offset = Quaternion.Euler(0, angle, 0) * Vector3.forward * formationRadius;
-        Vector3 targetPos = _myAI.playerTarget.position + offset;
+
+        Vector3 centerPos = _myAI.playerTarget.position;
+        Vector3 targetPos = centerPos + offset;
+
+        // ==========================================
+        // *** ระบบกันกระโดดทะลุกำแพง (Dynamic Formation Shrink) ***
+        // ==========================================
+        Vector3 dirToTarget = (targetPos - centerPos).normalized;
+        float distToTarget = formationRadius;
+
+        // ยกระดับจุดยิง Raycast ขึ้นมา 1 หน่วย (ระดับอก) เพื่อไม่ให้ยิงชนพื้น
+        Vector3 rayStart = centerPos + Vector3.up * 1f;
+
+        // ถ้ายิงแล้วชนกำแพง (obstacleMask)
+        if (Physics.Raycast(rayStart, dirToTarget, out RaycastHit hit, distToTarget, obstacleMask))
+        {
+            // ถอยร่นจากจุดที่ชนกำแพงกลับมาหาผู้เล่น 1 หน่วย (เพื่อไม่ให้โมเดลมอนสเตอร์จมกำแพง)
+            Vector3 safePos = hit.point - (dirToTarget * 1f);
+
+            // เช็คซ้ำด้วย NavMesh เพื่อความชัวร์ว่าจุดนั้นยืนได้จริงๆ และเดินต่อได้
+            if (NavMesh.SamplePosition(safePos, out NavMeshHit navHit, 2f, NavMesh.AllAreas))
+            {
+                targetPos = navHit.position;
+            }
+            else
+            {
+                targetPos = safePos;
+            }
+
+            Debug.Log($"[{clone.name}] ค่ายกลติดกำแพง! ร่นระยะกระโดดกลับมาที่ปลอดภัย");
+        }
+        // ==========================================
 
         // 2. สั่งกระโดด!
         if (clone.TryGetComponent(out BaseEnemyMovement move))

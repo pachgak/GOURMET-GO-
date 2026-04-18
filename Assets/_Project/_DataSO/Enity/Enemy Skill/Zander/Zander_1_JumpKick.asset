@@ -30,6 +30,9 @@ MonoBehaviour:
         jumpDuration: 1
         randomPos: 0
         range: 0
+        obstacleMask:
+          serializedVersion: 2
+          m_Bits: 0
     - rid: 6721757739975704655
       type: {class: SpawnHitAction_M, ns: , asm: Assembly-CSharp}
       data:
@@ -48,3 +51,6 @@ MonoBehaviour:
         jumpDuration: 1
         randomPos: 1
         range: 10
+        obstacleMask:
+          serializedVersion: 2
+          m_Bits: 8192

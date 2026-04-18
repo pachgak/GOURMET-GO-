@@ -88,10 +88,14 @@ public class SpawnPoint : MonoBehaviour
     // --- คำสั่งล้างบาง ---
     public void ClearObject()
     {
-        if (_spawnedInstance != null)
+        // 1. เคลียร์ตัวแปรอ้างอิงตัวหลักทิ้งไปก่อน
+        _spawnedInstance = null;
+
+        // 2. วนลูปทำลาย Child "ทุกตัว" ที่อยู่ภายใต้ SpawnPoint นี้ 
+        // (เทคนิค: วนลูปถอยหลัง ป้องกันบั๊กข้าม Index เวลา Object ถูกทำลาย)
+        for (int i = transform.childCount - 1; i >= 0; i--)
         {
-            Destroy(_spawnedInstance);
-            _spawnedInstance = null;
+            Destroy(transform.GetChild(i).gameObject);
         }
     }
 

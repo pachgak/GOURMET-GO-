@@ -522,20 +522,23 @@ public class JumpAction : SkillAction
     public float jumpHeight = 5f;
     public float jumpDuration = 1.0f; // เวลาที่ลอยอยู่
 
+    [Header("Random Position Settings")]
     public bool randomPos = false;
     public float range;
+
+    [Tooltip("ใส่เลเยอร์ของกำแพงหรือสิ่งกีดขวาง (Wall) เพื่อป้องกันการกระโดดทะลุ")]
+    public LayerMask obstacleMask; // <--- เพิ่มตัวแปรสำหรับเช็คกำแพง
 
     public override void Execute(GameObject user, GameObject target, Vector3 directionSkill, float speedMultiplier = 1.0f, LayerMask? layerTarget = null)
     {
         if (user.TryGetComponent(out BaseEnemyMovement movement))
         {
-            // Save currentDiractionSkill คำนวณทิศทาง (ใช้ Helper ที่เราทำไว้)
+            // คำนวณทิศทาง
             Vector3 targetVector = CalculateTargetVector(user, target, directionSkill, dirType);
-            
-            Vector3 jumpCenter = Vector3.zero;  
-            Vector3 jumpTargetPos = Vector3.zero;  
-            // สมมติว่ากระโดดไปข้างหน้านิดนึง หรือกระโดดอยู่กับที่
-            // ถ้าอยากให้อยู่กับที่ ก็ใช้ user.transform.position
+
+            Vector3 jumpCenter = Vector3.zero;
+            Vector3 jumpTargetPos = Vector3.zero;
+
             switch (dirType)
             {
                 case DirMethod.SkillDiraction:
@@ -554,17 +557,45 @@ public class JumpAction : SkillAction
 
             if (randomPos)
             {
-                // 1. สุ่มจุดในวงกลมรัศมี 1 หน่วย แล้วคูณด้วย range
-                Vector2 randomCircle = UnityEngine.Random.insideUnitCircle * range;
+                Vector3 bestPos = jumpCenter;
+                bool foundSafeSpot = false;
 
-                // 2. เอาค่าที่สุ่มได้มาบวกกับ jumpCenter โดยใส่ในแกน X และ Z (ให้ Y คงเดิม)
-                jumpTargetPos = jumpCenter + new Vector3(randomCircle.x, 0f, randomCircle.y);
-
-                // --- (Pro Tip: แนะนำให้ใส่เพิ่มเพื่อกันกระโดดทะลุกำแพง) ---
-                // ใช้ NavMesh.SamplePosition เพื่อดึงจุดที่สุ่มได้ ให้กลับมาอยู่บนพื้นที่เดินได้ (NavMesh)
-                if (UnityEngine.AI.NavMesh.SamplePosition(jumpTargetPos, out UnityEngine.AI.NavMeshHit hit, range, UnityEngine.AI.NavMesh.AllAreas))
+                // *** เพิ่มลูปสุ่มหาจุดที่ปลอดภัย (ไม่เกิน 10 ครั้ง) ***
+                for (int i = 0; i < 10; i++)
                 {
-                    jumpTargetPos = hit.position; // ใช้จุดที่ปลอดภัยบน NavMesh
+                    // 1. สุ่มจุดในวงกลม
+                    Vector2 randomCircle = UnityEngine.Random.insideUnitCircle * range;
+                    Vector3 potentialPos = jumpCenter + new Vector3(randomCircle.x, 0f, randomCircle.y);
+
+                    // 2. เช็ค Raycast หากำแพงระหว่างจุดเริ่มกระโดด กับ จุดตก
+                    Vector3 dirToTarget = potentialPos - jumpCenter;
+                    float dist = dirToTarget.magnitude;
+
+                    // ยกระดับ Raycast ขึ้นมาจากพื้น 1 หน่วย ป้องกันการยิงชนเศษหินที่พื้น
+                    Vector3 rayStart = jumpCenter + Vector3.up * 1f;
+
+                    // ถ้ายิงแล้ว "ไม่โดนกำแพง" แปลว่าทางโล่ง
+                    if (!Physics.Raycast(rayStart, dirToTarget.normalized, dist, obstacleMask))
+                    {
+                        // 3. เอาจุดนั้นไปเช็คกับ NavMesh ต่อ เพื่อให้มั่นใจว่ายืนได้ชัวร์ๆ (หาในระยะ 2 หน่วย)
+                        if (UnityEngine.AI.NavMesh.SamplePosition(potentialPos, out UnityEngine.AI.NavMeshHit hit, 2f, UnityEngine.AI.NavMesh.AllAreas))
+                        {
+                            bestPos = hit.position; // ได้จุดตกที่สมบูรณ์แบบ!
+                            foundSafeSpot = true;
+                            break; // หยุดสุ่ม แล้วเอาจุดนี้ไปใช้เลย
+                        }
+                    }
+                }
+
+                // สรุปผลการหาจุด
+                if (!foundSafeSpot)
+                {
+                    Debug.LogWarning($"[{user.name}] โดนกำแพงล้อมรอบ หาจุดกระโดดไม่เจอ! ขอกระโดดอยู่กับที่แทน");
+                    jumpTargetPos = jumpCenter; // ถ้าหาไม่ได้จริงๆ ให้โดดอยู่กับที่ ป้องกันหลุดแมพ
+                }
+                else
+                {
+                    jumpTargetPos = bestPos;
                 }
             }
             else
@@ -572,9 +603,9 @@ public class JumpAction : SkillAction
                 jumpTargetPos = jumpCenter;
             }
 
-            // สั่งกระโดด (คูณ speedMultiplier ด้วยก็ได้ถ้าต้องการ)
+            // สั่งกระโดด 
             movement.SkillJump(jumpTargetPos, jumpHeight, jumpDuration / speedMultiplier);
-            Debug.Log($"{user.name} Jumped!");
+            Debug.Log($"{user.name} Jumped to {jumpTargetPos}!");
         }
     }
 }
@@ -629,16 +660,16 @@ public class SplitSelfAction : SkillAction
 
         Vector3 centerPos = user.transform.position;
 
-        // 1. เล่น Effect ตอนเริ่มแยกร่าง
+        // 1. เล่น Effect ตอนเริ่มแยกร่าง (เปลี่ยนมาใช้ Instantiate ปกติ)
         if (spawnVFX != null)
         {
-            ObjectPoolingManager.Instance.Spawn(spawnVFX, centerPos);
+            GameObject.Instantiate(spawnVFX, centerPos, Quaternion.identity);
         }
 
-        // 2. ฝาก Manager รัน Coroutine (ส่ง user ไปด้วยเพื่อเอาไปหา SquadManager)
-        if (ObjectPoolingManager.Instance != null)
+        // 2. ฝากตัว User (บอส) รัน Coroutine แทน ObjectPoolingManager
+        if (user.TryGetComponent(out MonoBehaviour mono))
         {
-            ObjectPoolingManager.Instance.StartCoroutine(SpawnMinion(centerPos, target, user));
+            mono.StartCoroutine(SpawnMinion(centerPos, target, user));
         }
 
         // 3. ฆ่าร่างต้น (ถ้าเป็นโคลนธรรมดา)
@@ -671,7 +702,8 @@ public class SplitSelfAction : SkillAction
             Vector3 offset = Quaternion.Euler(0, angle, 0) * Vector3.forward * spawnRadius;
             Vector3 spawnPos = centerPos + offset;
 
-            GameObject minion = ObjectPoolingManager.Instance.Spawn(minionPrefabs[i], spawnPos);
+            // *** เปลี่ยนมาใช้ Instantiate แบบสดใหม่ ***
+            GameObject minion = GameObject.Instantiate(minionPrefabs[i], spawnPos, Quaternion.identity, user.transform.parent);
             spawnedClones.Add(minion);
 
             //if (target != null)
@@ -686,7 +718,8 @@ public class SplitSelfAction : SkillAction
 
             if (spawnVFX != null)
             {
-                ObjectPoolingManager.Instance.Spawn(spawnVFX, minion.transform.position);
+                // *** เปลี่ยนมาใช้ Instantiate กับควันเสกด้วย ***
+                GameObject.Instantiate(spawnVFX, minion.transform.position, Quaternion.identity, user.transform.parent);
             }
         }
 

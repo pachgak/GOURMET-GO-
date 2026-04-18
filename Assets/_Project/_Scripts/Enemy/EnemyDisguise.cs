@@ -48,10 +48,8 @@ public class EnemyDisguise : MonoBehaviour
         // 1. สุ่มมอนสเตอร์จำแลง
         GameObject prefabToClone = enemyCloneList[Random.Range(0, enemyCloneList.Length)];
 
-        // 2. เสกโคลนออกมาตรงตำแหน่งเดียวกับร่างจริง
-        _currentClone = ObjectPoolingManager.Instance.Spawn(prefabToClone, transform.position);
-        //_currentClone = Instantiate(prefabToClone);
-        //_currentClone.transform.position = transform.position;
+        // 2. เสกโคลนออกมาตรงตำแหน่งเดียวกับร่างจริง (เปลี่ยนมาใช้ Instantiate แทน Object Pooling)
+        _currentClone = Instantiate(prefabToClone, transform.position, transform.rotation);
 
         // 3. ปิดการดรอปไอเทมของโคลน (พอมัน disable มันจะถอด Event OnDie ให้เอง)
         if (_currentClone.TryGetComponent(out SpawnItemDropPoor dropSystem))
@@ -68,7 +66,6 @@ public class EnemyDisguise : MonoBehaviour
         // 
         if (_currentClone.TryGetComponent(out BaseEnemyAI cloneAI))
         {
-            // ใช้ Lambda ส่งดาเมจกลับมาให้ร่างจริงด้วย
             cloneAI.enabled = false;
         }
 
@@ -78,7 +75,6 @@ public class EnemyDisguise : MonoBehaviour
             // ใช้ Lambda ส่งดาเมจกลับมาให้ร่างจริงด้วย
             cloneHealth.OnTakeDamage += RevealTrueForm;
         }
-
 
         // 6. ซ่อนร่างจริง ปิด AI, Movement, และ Collider
         enemyGraphics.SetActive(false);
@@ -118,18 +114,20 @@ public class EnemyDisguise : MonoBehaviour
         if (!_isDisguised) return;
         _isDisguised = false;
 
-        // 1. เล่น VFX ควันตรงตำแหน่งร่างโคลน
+        // 1. เล่น VFX ควันตรงตำแหน่งร่างโคลน (เปลี่ยนมาใช้ Instantiate แทน Object Pooling)
         if (revealVFX != null)
         {
-            ObjectPoolingManager.Instance.Spawn(revealVFX, _currentClone.transform.position);
+            Instantiate(revealVFX, _currentClone.transform.position, Quaternion.identity);
         }
 
-        // 2. เอาร่างโคลนกลับเข้า Pool (สำคัญ! อย่าลืมเอา Event ออกด้วย)
+        // 2. เอาร่างโคลนออกไป (สำคัญ! อย่าลืมเอา Event ออกด้วย)
         if (_currentClone.TryGetComponent(out EnemyHealth cloneHealth))
         {
             cloneHealth.OnTakeDamage -= RevealTrueForm; // ป้องกัน Memory Leak
         }
-        ObjectPoolingManager.Instance.Respawn(_currentClone);
+
+        // (เปลี่ยนจาก Respawn คืน Pool เป็นทำลายทิ้งด้วย Destroy)
+        Destroy(_currentClone);
 
         // 3. เปิดการใช้งานร่างจริงทั้งหมด
         enemyGraphics.SetActive(true);
