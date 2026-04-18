@@ -264,8 +264,8 @@ public class ShamakiriSquadController : MonoBehaviour
             BaseEnemyAI clone = activeClones[i];
             if (clone == null || clone.currentState != BaseEnemyAI.EnemyState.Standby) continue;
 
-            // *** สำคัญ: ถ้ากำลังกระโดดอยู่ (Agent ปิด) ห้ามกวนใจมัน ข้ามไปเลย ***
-            if (!clone.TryGetComponent(out NavMeshAgent agent) || !agent.isActiveAndEnabled) continue;
+            // *** สำคัญ: ถ้า Agent ปิดอยู่ หรือ "เท้ายังไม่แตะพื้น NavMesh" ห้ามสั่งเดินเด็ดขาด! ***
+            if (!clone.TryGetComponent(out NavMeshAgent agent) || !agent.isActiveAndEnabled || !agent.isOnNavMesh) continue;
 
             float angle = _formationAngle + (i * angleStep);
             Vector3 offset = Quaternion.Euler(0, angle, 0) * Vector3.forward * formationRadius;

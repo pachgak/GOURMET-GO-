@@ -523,7 +523,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c84ebf10b65ecd54cb497f840413eb83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 250
+  maxHealth: 300
   currentHealth: 0
   isDead: 0
   isRespawnNow: 1
@@ -646,7 +646,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemDropPrefab: {fileID: 2141094486571183500, guid: 6b32a4f0d2203a24b81b26541645abbd, type: 3}
   Items:
-  - item: {fileID: 11400000, guid: af54a0a13cd0d4f4aa14f72da9884c1e, type: 2}
+  - item: {fileID: 11400000, guid: 7efe141397ec5d24a85c7c59bdfa8a7e, type: 2}
     countMin: 1
     countMax: 0
   offSet: {x: 0, y: 1, z: 0}

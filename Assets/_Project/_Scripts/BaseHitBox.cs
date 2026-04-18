@@ -3,8 +3,8 @@ using System;
 
 public abstract class BaseHitBox : MonoBehaviour , IHitBox
 {
-    [HideInInspector] public GameObject ownerHit;
-    [HideInInspector] public LayerMask targetLayer; // ตั้งค่า Layer ของศัตรูใน Inspector
+     public GameObject ownerHit;
+     public LayerMask targetLayer; // ตั้งค่า Layer ของศัตรูใน Inspector
     [HideInInspector] public float damage = 0f; // ค่าดาเมจของการโจมตี
 
     // *** เพิ่มบรรทัดนี้: ให้แต่ละ Hitbox ใส่ VFX เฉพาะตัวได้ ***

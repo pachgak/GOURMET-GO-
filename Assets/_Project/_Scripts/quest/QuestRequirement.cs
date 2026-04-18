@@ -99,4 +99,58 @@ public class SkillRequirement : QuestRequirement
 
         return $"<color={color}>ติดตั้งสกิล {skillName} </color>";
     }
+
+    [Serializable]
+    public class FinishedMenuIndexRequirement : QuestRequirement
+    {
+        public override bool IsMet(GameObject player)
+        {
+            // 1. เช็คความปลอดภัยว่ามี Manager อยู่ในฉากไหม
+            if (MenuIndexManager.Instance == null) return false;
+
+            // 2. นับจำนวนเมนูที่ทำสำเร็จแล้ว
+            int finishedCount = 0;
+            foreach (var recipe in MenuIndexManager.Instance.MenuIndexList)
+            {
+                if (MenuIndexManager.Instance.IsMenuFinished(recipe))
+                {
+                    finishedCount++;
+                }
+            }
+
+            // 3. เทียบว่าจำนวนที่ทำเสร็จ มากกว่าหรือเท่ากับ จำนวนเมนูทั้งหมดหรือไม่
+            return finishedCount >= MenuIndexManager.Instance.MenuIndexList.Count;
+        }
+
+        public override string GetProgressText(GameObject player)
+        {
+            int current = 0;
+            int total = 0;
+
+            if (MenuIndexManager.Instance != null)
+            {
+                total = MenuIndexManager.Instance.MenuIndexList.Count;
+
+                foreach (var recipe in MenuIndexManager.Instance.MenuIndexList)
+                {
+                    if (MenuIndexManager.Instance.IsMenuFinished(recipe))
+                    {
+                        current++;
+                    }
+                }
+            }
+
+            bool isMet = IsMet(player);
+
+            // เช็คสี (เขียวถ้าผ่าน แดงถ้ายังไม่ผ่าน)
+            string color = isMet ? "#2baf2b" : "red";
+
+            return $"<color={color}>({current}/{total})</color>";
+        }
+
+        public override void ConsumeRequirement(GameObject player)
+        {
+            // เงื่อนไขนี้เป็นแค่สถิติ/ความสำเร็จ (Achievement) ไม่ต้องหักไอเทมอะไรออก ปล่อยว่างไว้ได้เลย
+        }
+    }
 }

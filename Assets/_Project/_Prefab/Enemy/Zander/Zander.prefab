@@ -307,8 +307,10 @@ MonoBehaviour:
   isOvercharge: 0
   lightningHitCount: 1
   hitsToOvercharge: 2
-  overchargeDuration: 60
-  overchargeAuraVFX: {fileID: 1627133038340418700, guid: d9fce8c17e6fd024cad80d3df76393a0, type: 3}
+  overchargeDuration: 9999
+  overchargeStrikeVFXPrefab: {fileID: 1627133038340418700, guid: 4bb1911f4b08f7949af25624ddc10744, type: 3}
+  strikeOverchargeTime: 2.5
+  strikeOverchargeRange: 5
   thunderStorm:
     hitPrefab: {fileID: 0}
     damage: 5
@@ -327,7 +329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c84ebf10b65ecd54cb497f840413eb83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 1000
+  maxHealth: 700
   currentHealth: 0
   isDead: 0
   isRespawnNow: 0
@@ -410,10 +412,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemDropPrefab: {fileID: 2141094486571183500, guid: 6b32a4f0d2203a24b81b26541645abbd, type: 3}
   Items:
-  - item: {fileID: 11400000, guid: 9e71b582a5dc16a4c86d911580a827ec, type: 2}
+  - item: {fileID: 11400000, guid: de1b031e236268641b1ff2c4d42ba4ba, type: 2}
     countMin: 1
     countMax: 0
-  - item: {fileID: 11400000, guid: de07e445750a64b48afd2fa04d5c03ec, type: 2}
+  - item: {fileID: 11400000, guid: 47cb8f3f3458b7e4ba50817321708131, type: 2}
     countMin: 1
     countMax: 0
   offSet: {x: 0, y: 2, z: -1}

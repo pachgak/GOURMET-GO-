@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4818c6b2ca796e34b94d8883368ceb78, type: 3}
+  m_Name: Pant_Zone1
+  m_EditorClassIdentifier: 
+  prefabs:
+  - possiblePrefab: {fileID: 711491280912386278, guid: f5fabe0a75ff9f2449802d79bc4295ed, type: 3}
+    rate: 1
+  - possiblePrefab: {fileID: 2486808375358348500, guid: 375a613365921064a9471f5ecb6b9d04, type: 3}
+    rate: 1
+  - possiblePrefab: {fileID: 633984226670577456, guid: ca54c98bc5cff8c4297c644717b010cc, type: 3}
+    rate: 1
+  - possiblePrefab: {fileID: 8759297970870559649, guid: 87d9571d73f42f74da196f2722a2cd2c, type: 3}
+    rate: 1
+  - possiblePrefab: {fileID: 0}
+    rate: 1

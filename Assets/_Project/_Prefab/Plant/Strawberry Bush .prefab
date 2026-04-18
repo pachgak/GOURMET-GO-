@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3015287758598127767}
   - component: {fileID: 1427231499261333735}
   - component: {fileID: 8623169469025654635}
+  - component: {fileID: 7143865603389166284}
   m_Layer: 9
   m_Name: 'Strawberry Bush '
   m_TagString: Untagged
@@ -29,7 +30,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 633984226670577456}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -313.44, y: 0, z: 107.619995}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -149,6 +150,19 @@ MonoBehaviour:
   iconSprite: {fileID: -1032888878, guid: 0b0348e69f11e824eba3c1db1651d231, type: 3}
   iconColor: {r: 1, g: 1, b: 1, a: 1}
   isStatic: 1
+--- !u!114 &7143865603389166284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 633984226670577456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a00bbcbf3efcb04c8267545653dd334, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetGrid: {fileID: 0}
 --- !u!1 &1221142014717628747
 GameObject:
   m_ObjectHideFlags: 0

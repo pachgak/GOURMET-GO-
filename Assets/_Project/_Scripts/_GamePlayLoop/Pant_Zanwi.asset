@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4818c6b2ca796e34b94d8883368ceb78, type: 3}
+  m_Name: Pant_Zanwi
+  m_EditorClassIdentifier: 
+  prefabs:
+  - possiblePrefab: {fileID: 711491280912386278, guid: f5fabe0a75ff9f2449802d79bc4295ed, type: 3}
+    rate: 3
+  - possiblePrefab: {fileID: 2486808375358348500, guid: 375a613365921064a9471f5ecb6b9d04, type: 3}
+    rate: 3
+  - possiblePrefab: {fileID: 0}
+    rate: 1

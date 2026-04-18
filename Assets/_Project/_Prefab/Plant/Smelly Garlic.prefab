@@ -101,6 +101,7 @@ GameObject:
   - component: {fileID: 6510443871748925103}
   - component: {fileID: 7552340007669806335}
   - component: {fileID: 260795742514959706}
+  - component: {fileID: 6599903265797060072}
   m_Layer: 9
   m_Name: Smelly Garlic
   m_TagString: Untagged
@@ -116,7 +117,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 711491280912386278}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -309.93, y: 0, z: 113}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -236,6 +237,19 @@ MonoBehaviour:
   iconSprite: {fileID: -1032888878, guid: 0b0348e69f11e824eba3c1db1651d231, type: 3}
   iconColor: {r: 1, g: 1, b: 1, a: 1}
   isStatic: 1
+--- !u!114 &6599903265797060072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 711491280912386278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a00bbcbf3efcb04c8267545653dd334, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetGrid: {fileID: 0}
 --- !u!1 &2405756132708875065
 GameObject:
   m_ObjectHideFlags: 0

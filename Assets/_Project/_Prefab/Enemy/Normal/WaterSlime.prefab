@@ -472,7 +472,7 @@ MonoBehaviour:
   chaseSpeed: 3
   _isWaiting: 0
   canKnockback: 1
-  knockbackMultiplier: 2
+  knockbackMultiplier: 1
   _dashStoppingThreshold: 0.5
 --- !u!114 &5560926432821684543
 MonoBehaviour:
@@ -486,7 +486,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c84ebf10b65ecd54cb497f840413eb83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 6
+  maxHealth: 150
   currentHealth: 0
   isDead: 0
   isRespawnNow: 1

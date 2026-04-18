@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4818c6b2ca796e34b94d8883368ceb78, type: 3}
+  m_Name: Monster_Zone1
+  m_EditorClassIdentifier: 
+  prefabs:
+  - possiblePrefab: {fileID: 5228126747636255589, guid: 045cde472c64a994f866e3171fc154dd, type: 3}
+    rate: 1
+  - possiblePrefab: {fileID: 7394732908978849504, guid: 4df93e08f9dcc1f4a84285dadfb7e5c0, type: 3}
+    rate: 1
+  - possiblePrefab: {fileID: 3801016203709125662, guid: 51ba6fca056187841a9f1df3e22f4de7, type: 3}
+    rate: 1
+  - possiblePrefab: {fileID: 0}
+    rate: 1

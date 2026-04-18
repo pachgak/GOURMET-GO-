@@ -32,6 +32,8 @@ public class EnemyDisguise : MonoBehaviour
         _myCollider = GetComponent<Collider>();
         _dropShadowController = GetComponent<DropShadowController>();
         _agent = GetComponent<NavMeshAgent>();
+
+        if (target == null) target = GameObject.FindWithTag("Player").transform;
     }
 
     private void Start()

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4818c6b2ca796e34b94d8883368ceb78, type: 3}
+  m_Name: Monster_Danger
+  m_EditorClassIdentifier: 
+  prefabs:
+  - possiblePrefab: {fileID: 3418801280768994957, guid: 396b460827acc064fac182dfe73cad75, type: 3}
+    rate: 2
+  - possiblePrefab: {fileID: 4645498519941289105, guid: aeac3ff34ef5ef644b10813bac9326ad, type: 3}
+    rate: 2
+  - possiblePrefab: {fileID: 0}
+    rate: 1

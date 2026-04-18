@@ -25,6 +25,7 @@ public class PlayerHealth : MonoBehaviour ,ITakeDamage
     public Action<float, GameObject> OnTakeDamage;
     public Action<float> OnCurrentChang;
     public Action<float, float> OnHealthChanged; // <--- ÃÇº Event
+    public Action OnDie;
 
     public GameObject gameObjectOwner { get => gameObject; }
     Action<float,GameObject> ITakeDamage.OnTakeDamage { get => OnTakeDamage; set => OnTakeDamage = value; }
@@ -111,6 +112,12 @@ public class PlayerHealth : MonoBehaviour ,ITakeDamage
         Debug.Log(transform.name + " has been defeated.");
         isDead = true;
         //Destroy(gameObject);
+        OnDie?.Invoke();
     }
 
+    public void RestoreMaxHP()
+    {
+        currentHealth = currentMaxHealth;
+        isDead = false;
+    }
 }
