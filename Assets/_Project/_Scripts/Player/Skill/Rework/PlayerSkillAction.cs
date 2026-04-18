@@ -130,7 +130,7 @@ public class SpawnVFXPlayerAction : PlayerSkillAction
                 vfxInstance = ObjectPoolingManager.Instance.Spawn(vfxPrefab);
                 posInstance = mousePosition;
                 targetVecter = mousePosition - player.transform.position;
-                break;
+                break; 
         }
 
         // --- ตั้งค่าตำแหน่ง ---
@@ -166,3 +166,29 @@ public class DashPlayerAction : PlayerSkillAction
     }
 }
 
+[Serializable]
+public class SetStealthPlayerAction : PlayerSkillAction
+{
+    [Tooltip("ติ๊กถูก = เปิดโหมดหายตัว, ไม่ติ๊ก = ปิดโหมดหายตัว (คืนร่าง)")]
+    public bool enableStealth = true;
+
+    public override void Execute(GameObject player, Vector3 mousePosition, float damageMultiplier)
+    {
+        // ค้นหาสคริปต์ PlayerStealthController ที่แปะอยู่บนตัวผู้เล่น
+        if (player.TryGetComponent(out PlayerStealthController stealthController))
+        {
+            if (enableStealth)
+            {
+                stealthController.EnableStealth();
+            }
+            else
+            {
+                stealthController.DisableStealth();
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[SkillAction] {player.name} ไม่มีสคริปต์ PlayerStealthController เลยสั่งหายตัวไม่ได้!");
+        }
+    }
+}

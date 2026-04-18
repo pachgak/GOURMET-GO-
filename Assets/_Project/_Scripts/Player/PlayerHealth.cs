@@ -16,6 +16,9 @@ public class PlayerHealth : MonoBehaviour ,ITakeDamage
 
     private PlayerMovement _playerMovement;
 
+    [Header("Status Effects")]
+    public bool isInvincible = false; // <--- เพิ่มตัวแปรนี้
+
     // --- ค่า Settings สำหรับ Slow Motion ---
     [Header("Slow Motion Settings")]
     public float slowMotionDuration = 0.25f; // ระยะเวลาสโลว์โมชั่น (วินาที)
@@ -48,27 +51,22 @@ public class PlayerHealth : MonoBehaviour ,ITakeDamage
         
     }
 
+    // ไปที่ฟังก์ชัน TakeDamage แล้วเพิ่มการดักจับบรรทัดแรกเลย:
     public void TakeDamage(float damage, GameObject customHitVFX = null)
     {
+        // *** ถ้าเป็นอมตะอยู่ ให้ยกเลิกการรับดาเมจทันที! ***
+        if (isInvincible) return; 
+
         if (_playerMovement != null && _playerMovement.isDashing)
         {
             Debug.Log("Doge");
-
-            // ถ้ากำลัง Dash ให้ทำ Slow Motion
             StartCoroutine(HandleSlowMotion());
-
-            // เนื่องจากคุณต้องการให้มัน 'return' (ไม่รับดาเมจ) ในโค้ดเดิม
-            // ถ้าต้องการให้รับดาเมจด้วย ให้ย้าย removeHp(damage); เข้ามาที่นี่
-            return; // ไม่รับดาเมจตามโค้ดเดิม
+            return; 
         }
 
         OnTakeDamage?.Invoke(damage, customHitVFX);
-        //กล้อสั่นโนนตี
         CameraShakeManager.instance.ShakePlayerTakeDamage();
-
         removeHp(damage);
-
-        
     }
 
     IEnumerator HandleSlowMotion()

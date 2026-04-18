@@ -19,6 +19,7 @@ MonoBehaviour:
   <MaxStackSize>k__BackingField: 1
   modifiers:
   - rid: 6721757961748480098
+  - rid: 6721758104113905801
   <actionSFX>k__BackingField: {fileID: 0}
   references:
     version: 2
@@ -27,3 +28,8 @@ MonoBehaviour:
       type: {class: HealthModifier, ns: , asm: Assembly-CSharp}
       data:
         healthData: {fileID: 11400000, guid: e7031f9c45e65a449b0a72f7f91fa319, type: 2}
+    - rid: 6721758104113905801
+      type: {class: GetSkillModifier, ns: , asm: Assembly-CSharp}
+      data:
+        playerAttackSkill: {fileID: 11400000, guid: c4138b6f1476ba2458064c14e87d86b2, type: 2}
+        amount: 1

@@ -15,9 +15,65 @@ MonoBehaviour:
   skillIcon: {fileID: 21300000, guid: 5ed67d57d480b064b9372581d7f2cf7b, type: 3}
   skillName: Cross Slash
   Description: "\u0E01\u0E23\u0E30\u0E42\u0E14\u0E14\u0E02\u0E36\u0E49\u0E19\u0E1F\u0E49\u0E32\u0E40\u0E04\u0E25\u0E37\u0E48\u0E2D\u0E19\u0E17\u0E35\u0E48\u0E44\u0E14\u0E49\u0E23\u0E30\u0E22\u0E30\u0E19\u0E36\u0E07\u0E23\u0E30\u0E2B\u0E27\u0E48\u0E32\u0E07\u0E19\u0E35\u0E49\u0E08\u0E30\u0E44\u0E21\u0E48\u0E16\u0E39\u0E01\u0E14\u0E32\u0E40\u0E21\u0E08\u0E2B\u0E25\u0E31\u0E07\u0E08\u0E32\u0E01\u0E19\u0E31\u0E49\u0E19\u0E1F\u0E31\u0E19\u0E25\u0E07\u0E21\u0E32\u0E43\u0E19\u0E08\u0E38\u0E14\u0E17\u0E35\u0E48\u0E22\u0E37\u0E19\u0E2D\u0E22\u0E39\u0E48\u0E40\u0E1B\u0E47\u0E19\u0E23\u0E39\u0E1B\u0E01\u0E32\u0E01\u0E1A\u0E32\u0E15"
-  cooldown: 0
-  skillLifeTime: 0
-  skillSteps: []
+  cooldown: 12
+  skillLifeTime: 1
+  skillSteps:
+  - playAtTime: 0
+    action:
+      rid: 6721758104113905833
+  - playAtTime: 0.1
+    action:
+      rid: 6721758104113905834
+  - playAtTime: 0.4
+    action:
+      rid: 6721758104113905835
+  - playAtTime: 1
+    action:
+      rid: 6721758104113905836
+  - playAtTime: 1
+    action:
+      rid: 6721758104113905837
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 6721758104113905833
+      type: {class: SpawnVFXPlayerAction, ns: , asm: Assembly-CSharp}
+      data:
+        spawnType: 0
+        vfxPrefab: {fileID: 5235569682727656305, guid: ab566e5728ce4754a8b5253f437f558a, type: 3}
+    - rid: 6721758104113905834
+      type: {class: SpawnAttackPlayerAction, ns: , asm: Assembly-CSharp}
+      data:
+        spawnType: 0
+        skillPrefab: {fileID: 1196117690023051640, guid: bdf366643d30d6046b85bfbc1192c446, type: 3}
+        damage: 100
+        knockbackForce: 0
+        knockbackTime: 0
+        speed: 0
+    - rid: 6721758104113905835
+      type: {class: SpawnAttackPlayerAction, ns: , asm: Assembly-CSharp}
+      data:
+        spawnType: 0
+        skillPrefab: {fileID: 2473681799277640695, guid: 91b2a28d9267b98498b2c29c4a9bb6fa, type: 3}
+        damage: 100
+        knockbackForce: 0
+        knockbackTime: 0
+        speed: 0
+    - rid: 6721758104113905836
+      type: {class: SpawnAttackPlayerAction, ns: , asm: Assembly-CSharp}
+      data:
+        spawnType: 0
+        skillPrefab: {fileID: 1196117690023051640, guid: bdf366643d30d6046b85bfbc1192c446, type: 3}
+        damage: 100
+        knockbackForce: 0
+        knockbackTime: 0
+        speed: 0
+    - rid: 6721758104113905837
+      type: {class: SpawnAttackPlayerAction, ns: , asm: Assembly-CSharp}
+      data:
+        spawnType: 0
+        skillPrefab: {fileID: 2473681799277640695, guid: 91b2a28d9267b98498b2c29c4a9bb6fa, type: 3}
+        damage: 100
+        knockbackForce: 50
+        knockbackTime: 0
+        speed: 0

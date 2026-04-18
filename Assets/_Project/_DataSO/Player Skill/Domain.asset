@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d3d39bf9dbe595459f6df25e1ea3278, type: 3}
+  m_Name: Domain
+  m_EditorClassIdentifier: 
+  skillIcon: {fileID: 21300000, guid: 55313cb66a2cadb4cab9675c1621c32c, type: 3}
+  skillName: Domain
+  Description: 
+  cooldown: 0
+  skillLifeTime: 1
+  skillSteps:
+  - playAtTime: 0
+    action:
+      rid: 6721758104113905839
+  - playAtTime: 4.5
+    action:
+      rid: 6721758104113905840
+  references:
+    version: 2
+    RefIds:
+    - rid: 6721758104113905839
+      type: {class: SpawnVFXPlayerAction, ns: , asm: Assembly-CSharp}
+      data:
+        spawnType: 0
+        vfxPrefab: {fileID: 4860845726010322869, guid: a9d01cca9879e534398991b2e8d01e32, type: 3}
+    - rid: 6721758104113905840
+      type: {class: SpawnAttackPlayerAction, ns: , asm: Assembly-CSharp}
+      data:
+        spawnType: 0
+        skillPrefab: {fileID: 9094599885976885780, guid: bb7ff9225c4cf19498534902bc03064e, type: 3}
+        damage: 50
+        knockbackForce: 5
+        knockbackTime: 0
+        speed: 0

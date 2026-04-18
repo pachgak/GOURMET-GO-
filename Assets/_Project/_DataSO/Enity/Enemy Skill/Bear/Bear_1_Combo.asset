@@ -115,7 +115,7 @@ MonoBehaviour:
         prefab: {fileID: 8207986665541837172, guid: ce1ac4d019a01bd47a091e2ad2a3eeef, type: 3}
         spawnType: 0
         offset: {x: 0, y: 0}
-        damage: 3
+        damage: 10
         knockbackForce: 10
     - rid: 3016931425684553824
       type: {class: DashAction, ns: , asm: Assembly-CSharp}
@@ -130,7 +130,7 @@ MonoBehaviour:
         prefab: {fileID: 8207986665541837172, guid: ce1ac4d019a01bd47a091e2ad2a3eeef, type: 3}
         spawnType: 0
         offset: {x: 0, y: 0}
-        damage: 3
+        damage: 10
         knockbackForce: 5
     - rid: 3016931425684553832
       type: {class: DashAction, ns: , asm: Assembly-CSharp}
@@ -145,5 +145,5 @@ MonoBehaviour:
         prefab: {fileID: 8207986665541837172, guid: ce1ac4d019a01bd47a091e2ad2a3eeef, type: 3}
         spawnType: 0
         offset: {x: 0, y: 0}
-        damage: 3
+        damage: 10
         knockbackForce: 5

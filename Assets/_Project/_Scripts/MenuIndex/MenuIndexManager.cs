@@ -226,4 +226,36 @@ public class MenuIndexManager : MonoBehaviour
             newOpenUIManager.instance._CloseTopPanel();
         }
     }
+
+    // ==========================================
+    // สำหรับโหมด Debug (กดคลิกขวาที่ชื่อ Script ใน Inspector)
+    // ==========================================
+    [ContextMenu("Unlock All Menus (Debug)")]
+    public void UnlockAllMenus()
+    {
+        if (MenuIndexList == null || MenuIndexList.Count == 0)
+        {
+            Debug.LogWarning("[MenuIndexManager] ไม่มีเมนูใน List ให้ปลดล็อค!");
+            return;
+        }
+
+        int unlockCount = 0;
+        foreach (var recipe in MenuIndexList)
+        {
+            if (!_finishedMenus.Contains(recipe))
+            {
+                _finishedMenus.Add(recipe);
+                unlockCount++;
+            }
+        }
+
+        Debug.Log($"<color=green>[MenuIndexManager] ปลดล็อคเมนูสำเร็จ {unlockCount} เมนู! (รวมทั้งหมด {MenuIndexList.Count} เมนู)</color>");
+
+        // ป้องกัน Error หากเผลอไปกดตอนที่ไม่ได้รันเกม (Edit Mode)
+        // ถ้ากดตอนรันเกมอยู่และหน้าจอเมนูเปิดอยู่ ให้มันอัปเดตภาพทันที
+        if (Application.isPlaying && menuListUIController != null && menuListUIController.uiPanel != null && menuListUIController.uiPanel.activeSelf)
+        {
+            GenerateMenuList();
+        }
+    }
 }

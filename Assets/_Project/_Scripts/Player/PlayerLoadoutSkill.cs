@@ -4,7 +4,6 @@ using System.Text;
 using UnityEngine;
 using static PlayerLoadoutSkill.LoadoutData;
 
-
 public class PlayerLoadoutSkill : MonoBehaviour
 {
     private PlayerSkill _playerSkill;
@@ -12,8 +11,8 @@ public class PlayerLoadoutSkill : MonoBehaviour
     public UILoadoutSkillPage loadoutUI;
     public LoadoutData loadoutData;
 
-    //Size
-    public AttacksSkill[] baseSkillList;
+    // *** 1. เปลี่ยนจาก AttacksSkill[] เป็น PlayerSkillSO[] เพื่อให้รับได้ทั้งสกิลเก่าและใหม่ ***
+    public PlayerSkillSO[] baseSkillList;
 
     public List<loadoutItem> initialItems = new List<loadoutItem>();
 
@@ -27,7 +26,8 @@ public class PlayerLoadoutSkill : MonoBehaviour
         [System.Serializable]
         public struct loadoutItem
         {
-            public AttacksSkill skill;
+            // *** 2. เปลี่ยนเป็น PlayerSkillSO ***
+            public PlayerSkillSO skill;
             public int exp;
             public bool IsEmpty => skill == null;
 
@@ -37,7 +37,6 @@ public class PlayerLoadoutSkill : MonoBehaviour
                 {
                     skill = this.skill,
                     exp = newQuantity,
-                    //itemParameter = new List<ItemParameter>(this.itemParameter)
                 };
             }
 
@@ -46,19 +45,19 @@ public class PlayerLoadoutSkill : MonoBehaviour
             {
                 skill = null,
                 exp = 0,
-                //itemParameter = new List<ItemParameter>()
             };
 
-            public static loadoutItem GetNewItem(AttacksSkill newSkill, int newExp)
+            // *** 3. เปลี่ยน Parameter เป็น PlayerSkillSO ***
+            public static loadoutItem GetNewItem(PlayerSkillSO newSkill, int newExp)
             => new loadoutItem
             {
                 skill = newSkill,
                 exp = newExp,
-                //itemParameter = new List<ItemParameter>()
             };
         }
 
-        public void InitializeData(AttacksSkill[] skillList)
+        // *** 4. เปลี่ยน Parameter เป็น PlayerSkillSO[] ***
+        public void InitializeData(PlayerSkillSO[] skillList)
         {
             loadoutItems = new List<loadoutItem>();
             for (int i = 0; i < skillList.Length; i++)
@@ -82,7 +81,8 @@ public class PlayerLoadoutSkill : MonoBehaviour
             AddItem(item.skill, item.exp);
         }
 
-        public int AddItem(AttacksSkill item, int exp)
+        // *** 5. เปลี่ยน Parameter เป็น PlayerSkillSO ***
+        public int AddItem(PlayerSkillSO item, int exp)
         {
             int initialQuantity = exp;
             int collectedQuantity = 0;
@@ -91,11 +91,11 @@ public class PlayerLoadoutSkill : MonoBehaviour
             InformAboutChange();
 
             collectedQuantity = initialQuantity - exp;
-            //OnAddItem?.Invoke(item, collectedQuantity);
             return exp;
         }
 
-        private int AddStackableItem(AttacksSkill skill, int quantity)
+        // *** 6. เปลี่ยน Parameter เป็น PlayerSkillSO ***
+        private int AddStackableItem(PlayerSkillSO skill, int quantity)
         {
             for (int i = 0; i < loadoutItems.Count; i++)
             {
@@ -103,20 +103,20 @@ public class PlayerLoadoutSkill : MonoBehaviour
                     continue;
                 if (loadoutItems[i].skill == skill)
                 {
-                    
-                        loadoutItems[i] = loadoutItems[i]
-                            .ChangeQuantity(loadoutItems[i].exp + quantity);
 
-                        InformAboutChange();
-                        return 0;
-     
+                    loadoutItems[i] = loadoutItems[i]
+                        .ChangeQuantity(loadoutItems[i].exp + quantity);
+
+                    InformAboutChange();
+                    return 0;
+
                 }
             }
 
             loadoutItem newSkill = loadoutItem.GetNewItem(skill, quantity);
 
             loadoutItems.Add(newSkill);
-            
+
             InformAboutChange();
             return 0;
         }
@@ -124,7 +124,6 @@ public class PlayerLoadoutSkill : MonoBehaviour
         public void InformAboutChange()
         {
             OnLoadoutUpdated?.Invoke(loadoutItems);
-            //OnLoadoutUpdated?.Invoke(GetCurrentInventoryState());
         }
 
         public Dictionary<int, loadoutItem> GetCurrentInventoryState()
@@ -154,13 +153,11 @@ public class PlayerLoadoutSkill : MonoBehaviour
 
         loadoutUI.CleanLoadoutSlot();
 
-        //ห้ามสลับ data ก่อน UI เพราะ loadoutUI.InitializeUI(baseSkillList.Length); มาหลังแล้วมันจะ ผิดพลาด
         PrepareData();
         PrepareUI();
 
         UpdateUI(loadoutData.loadoutItems);
 
-        //Invoke(nameof(PrepareSkillPage), 0.01f);
         PrepareSkillPage();
     }
 
@@ -170,7 +167,7 @@ public class PlayerLoadoutSkill : MonoBehaviour
         _playerSkill.skillUI.OnSwapItems += HandleAddSkillBar;
     }
 
-    private void HandleAddSkillBar(int currentlyDraggedItemIndex,int targetDrop)
+    private void HandleAddSkillBar(int currentlyDraggedItemIndex, int targetDrop)
     {
         int loadoutIndex = loadoutUI.GetCurrentlyDraggedItemIndex();
 
@@ -182,12 +179,6 @@ public class PlayerLoadoutSkill : MonoBehaviour
         loadoutItem inventoryItem = loadoutData.GetItemAt(loadoutIndex);
 
         _playerSkill.SetAtSkill(inventoryItem.skill, 1, skillBarIndex);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     private void PrepareData()
@@ -208,14 +199,9 @@ public class PlayerLoadoutSkill : MonoBehaviour
         loadoutUI.InitializeUI(baseSkillList.Length);
 
         loadoutUI.OnItemSelection += HandleSelect;
-        //loadoutUI.OnSwapItems += HandleSwapItems;
         loadoutUI.OnStartDragging += HandleDragging;
-        //loadoutUI.OnItemActionRequested += HandleItemActionRequest;
-        //pageUI.OnItemPerformAction += HandleItemPerformAction;
         loadoutUI.OnPointEnterItem += HandlePointEnterItem;
         loadoutUI.OnPointExitItem += HandlePointExitItem;
-
-        //loadoutUI.OnDropItems += HandleDropItem;
     }
 
     private void UpdateUI(List<loadoutItem> loadoutItems)
@@ -234,19 +220,6 @@ public class PlayerLoadoutSkill : MonoBehaviour
                 loadoutItems[i].skill.skillIcon,
                 loadoutItems[i].exp);
         }
-
-        /*
-        //foreach (var item in loadoutItems)
-        //{
-
-        //    loadoutUI.UpdateData(
-        //        item.Key, 
-        //        item.Value.skill.skillIcon,
-        //        item.Value.exp);
-        //}
-        */
-
-
     }
 
     private void HandleSelect(int itemIndex)
@@ -257,9 +230,10 @@ public class PlayerLoadoutSkill : MonoBehaviour
             loadoutUI.ResetSelection();
             return;
         }
-        
+
         loadoutUI.UpdateSelect(itemIndex);
     }
+
     private void HandleDragging(int itemIndex)
     {
         loadoutItem inventoryItem = loadoutData.GetItemAt(itemIndex);
@@ -275,7 +249,8 @@ public class PlayerLoadoutSkill : MonoBehaviour
         if (inventoryItem.IsEmpty)
             return;
 
-        AttacksSkill skill = inventoryItem.skill;
+        // *** 7. เปลี่ยนเป็น PlayerSkillSO ***
+        PlayerSkillSO skill = inventoryItem.skill;
         string description = PrepareDescription(inventoryItem);
 
         loadoutUI.OpenItemDescription();
@@ -288,13 +263,6 @@ public class PlayerLoadoutSkill : MonoBehaviour
         StringBuilder sb = new StringBuilder();
         sb.Append(inventoryItem.skill.Description);
         sb.AppendLine();
-        //for (int i = 0; i < inventoryItem.itemParameter.Count; i++)
-        //{
-        //    sb.Append($"{inventoryItem.itemParameter[i].itemParameterSO.ParameterName} " +
-        //        $": {inventoryItem.itemParameter[i].value} / " +
-        //        $"{inventoryItem.item.DefaultParametersList[i].value}");
-        //    sb.AppendLine();
-        //}
         return sb.ToString();
     }
 

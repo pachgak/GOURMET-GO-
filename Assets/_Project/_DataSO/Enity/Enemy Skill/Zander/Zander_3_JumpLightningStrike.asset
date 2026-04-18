@@ -41,7 +41,7 @@ MonoBehaviour:
         prefab: {fileID: 5843587471576232207, guid: 53ffcffba5954524baccf38987737d0f, type: 3}
         spawnType: 0
         offset: {x: 0, y: 0}
-        damage: 1
+        damage: 10
         knockbackForce: 5
         modifiers: []
     - rid: 6721757739975704656
@@ -62,6 +62,6 @@ MonoBehaviour:
         prefab: {fileID: 1627133038340418700, guid: 4bb1911f4b08f7949af25624ddc10744, type: 3}
         spawnType: 1
         offset: {x: 0, y: 0}
-        damage: 1
+        damage: 10
         knockbackForce: 5
         modifiers: []

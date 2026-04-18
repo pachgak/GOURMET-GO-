@@ -15,7 +15,7 @@ MonoBehaviour:
   skillIcon: {fileID: 21300000, guid: e54854aa57d00a64db352403d9e127d1, type: 3}
   skillName: Ground Slam
   Description: 
-  cooldown: 5
+  cooldown: 10
   skillLifeTime: 0.8
   skillSteps:
   - playAtTime: 0
@@ -41,7 +41,7 @@ MonoBehaviour:
     skillPrefabs: {fileID: 4911351558283754124, guid: aef6fe06ecc6253458bed1d8bf2db098, type: 3}
     skillFar: 0
     skillHight: 0
-    damage: 7
+    damage: 100
     knockbackForce: 30
     knockbackTime: 0
     speed: 0

@@ -15,9 +15,58 @@ MonoBehaviour:
   skillIcon: {fileID: 21300000, guid: 332208728f2478d43892d97f2fd5dfff, type: 3}
   skillName: Dash Slash
   Description: "\u0E1E\u0E38\u0E48\u0E07\u0E44\u0E1B\u0E02\u0E49\u0E32\u0E07\u0E2B\u0E19\u0E49\u0E32\u0E1F\u0E31\u0E19\u0E23\u0E2D\u0E1A\u0E15\u0E31\u0E27\u0E08\u0E32\u0E01\u0E19\u0E31\u0E49\u0E19\u0E17\u0E33\u0E14\u0E32\u0E40\u0E21\u0E085\u0E2E\u0E34\u0E15"
-  cooldown: 0
-  skillLifeTime: 0
-  skillSteps: []
+  cooldown: 4
+  skillLifeTime: 1
+  skillSteps:
+  - playAtTime: 0
+    action:
+      rid: 6721758104113905822
+  - playAtTime: 0.2
+    action:
+      rid: 6721758104113905826
+  - playAtTime: 0.2
+    action:
+      rid: 6721758104113905823
+  - playAtTime: 0.3
+    action:
+      rid: 6721758104113905823
+  - playAtTime: 0.4
+    action:
+      rid: 6721758104113905823
+  - playAtTime: 0.5
+    action:
+      rid: 6721758104113905823
+  - playAtTime: 0.5
+    action:
+      rid: 6721758104113905825
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 6721758104113905822
+      type: {class: DashPlayerAction, ns: , asm: Assembly-CSharp}
+      data:
+        dashSpeed: 20
+        dashTime: 0.2
+    - rid: 6721758104113905823
+      type: {class: SpawnAttackPlayerAction, ns: , asm: Assembly-CSharp}
+      data:
+        spawnType: 0
+        skillPrefab: {fileID: 927231659849890082, guid: ac7b70acf06f3d2479315afcbf6eaa71, type: 3}
+        damage: 10
+        knockbackForce: 5
+        knockbackTime: 0.1
+        speed: 0
+    - rid: 6721758104113905825
+      type: {class: SpawnAttackPlayerAction, ns: , asm: Assembly-CSharp}
+      data:
+        spawnType: 0
+        skillPrefab: {fileID: 927231659849890082, guid: ac7b70acf06f3d2479315afcbf6eaa71, type: 3}
+        damage: 20
+        knockbackForce: 10
+        knockbackTime: 0.2
+        speed: 0
+    - rid: 6721758104113905826
+      type: {class: SpawnVFXPlayerAction, ns: , asm: Assembly-CSharp}
+      data:
+        spawnType: 0
+        vfxPrefab: {fileID: 1684030683921940695, guid: 4ae158f8fe3b2a647baea8169589d4c6, type: 3}

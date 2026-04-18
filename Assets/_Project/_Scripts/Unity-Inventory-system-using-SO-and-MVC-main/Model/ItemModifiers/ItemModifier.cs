@@ -44,7 +44,7 @@ public class HealthModifier : ItemModifier
 [System.Serializable]
 public class GetSkillModifier : ItemModifier
 {
-    public AttacksSkill playerAttackSkill;
+    public PlayerSkillSO playerAttackSkill;
     public int amount = 1;
     public override bool AffectCharacter(GameObject character)
     {

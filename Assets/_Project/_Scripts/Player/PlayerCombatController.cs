@@ -350,7 +350,7 @@ public class PlayerCombatController : MonoBehaviour
     {
         int currentAttackIndex = _attackIndex % attackCombo.Length;
 
-        float minKnockbackMultiplier = 1000f;
+        float minKnockbackMultiplier = 1f;
         bool isCanKnockback = true;
 
         foreach (var hitCollider in hitColliders)
