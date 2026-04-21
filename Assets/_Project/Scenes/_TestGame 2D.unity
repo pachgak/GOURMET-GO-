@@ -69966,6 +69966,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 133781552653345702, guid: 3700596d67a1e5c4e83b013dfe56a5f8, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 348270358305644471, guid: 3700596d67a1e5c4e83b013dfe56a5f8, type: 3}
       propertyPath: m_LocalScale.z
       value: 5.0236936
@@ -70201,6 +70205,14 @@ PrefabInstance:
     - target: {fileID: 4781819001844187373, guid: 3700596d67a1e5c4e83b013dfe56a5f8, type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4872024983528093073, guid: 3700596d67a1e5c4e83b013dfe56a5f8, type: 3}
+      propertyPath: swaySpeed
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4872024983528093073, guid: 3700596d67a1e5c4e83b013dfe56a5f8, type: 3}
+      propertyPath: swayAmount
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4997388232264086005, guid: 3700596d67a1e5c4e83b013dfe56a5f8, type: 3}
       propertyPath: m_Enabled
