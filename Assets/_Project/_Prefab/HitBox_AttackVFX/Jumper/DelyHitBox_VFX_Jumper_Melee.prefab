@@ -254,6 +254,26 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2543441446560613364, guid: b0a03a7b92fd9a9469d408c029b64152, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: 0a9a16029fb38a44998d4b192a765a07, type: 3}
+    - target: {fileID: 2543441446560613364, guid: b0a03a7b92fd9a9469d408c029b64152, type: 3}
+      propertyPath: MaxDistance
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2543441446560613364, guid: b0a03a7b92fd9a9469d408c029b64152, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 0a9a16029fb38a44998d4b192a765a07, type: 3}
+    - target: {fileID: 2543441446560613364, guid: b0a03a7b92fd9a9469d408c029b64152, type: 3}
+      propertyPath: rolloffMode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2543441446560613364, guid: b0a03a7b92fd9a9469d408c029b64152, type: 3}
+      propertyPath: panLevelCustomCurve.m_Curve.Array.data[0].value
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7590878401880619633, guid: b0a03a7b92fd9a9469d408c029b64152, type: 3}
       propertyPath: m_IsActive
       value: 0

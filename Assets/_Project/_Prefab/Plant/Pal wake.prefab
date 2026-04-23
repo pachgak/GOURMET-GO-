@@ -60,7 +60,7 @@ MonoBehaviour:
   <itemSO>k__BackingField: {fileID: 11400000, guid: 60319730b2aecd945b9eed93884fa779, type: 2}
   itemDropImage: {fileID: 3205875561525536050}
   <Quantity>k__BackingField: 1
-  audioSource: {fileID: 0}
+  audioSource: {fileID: 572523554533951521}
   duration: 0.3
 --- !u!114 &8601959929914351240
 MonoBehaviour:
@@ -145,11 +145,11 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
-  m_Volume: 1
-  m_Pitch: 1
+  m_audioClip: {fileID: 8300000, guid: 1f3f234cb947c394b9002042a78e70e0, type: 3}
+  m_Resource: {fileID: 8300000, guid: 1f3f234cb947c394b9002042a78e70e0, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 0.287
+  m_Pitch: 2
   Loop: 0
   Mute: 0
   Spatialize: 0
@@ -371,6 +371,8 @@ MonoBehaviour:
   iconSprite: {fileID: -1032888878, guid: 0b0348e69f11e824eba3c1db1651d231, type: 3}
   iconColor: {r: 1, g: 1, b: 1, a: 1}
   isStatic: 0
+  targetRenderer: {fileID: 0}
+  myIcon: {fileID: 0}
 --- !u!1 &3064836365158659113
 GameObject:
   m_ObjectHideFlags: 0

@@ -668,6 +668,8 @@ MonoBehaviour:
   iconSprite: {fileID: -1396527067, guid: 0b0348e69f11e824eba3c1db1651d231, type: 3}
   iconColor: {r: 1, g: 1, b: 1, a: 1}
   isStatic: 0
+  targetRenderer: {fileID: 0}
+  myIcon: {fileID: 0}
 --- !u!114 &5276286416863013373
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -45,6 +45,10 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
     [Header("Dash Settings")]
     [SerializeField] protected float _dashStoppingThreshold = 0.5f; // ค่าความเร็วต่ำสุดก่อนหยุด Dash
 
+    // เพิ่ม Event สำหรับแจ้งเตือนการเคลื่อนที่
+    public Action<bool> OnMoveStateChange;
+    // เก็บสถานะการเดินก่อนหน้า
+    private bool _isMoving = false;
 
     protected virtual void Awake()
     {
@@ -172,6 +176,15 @@ public class BaseEnemyMovement : MonoBehaviour , IKnockbackable
             //    SetNewRoamPoint(_roamPoint);
             //    _timerWaiting = waitRoamTime;
             //}
+        }
+
+        // เช็คว่า Agent กำลังขยับอยู่จริงๆ ใช่ไหม (มีความเร็ว และไม่ได้ถูกสั่งให้หยุด)
+        bool currentIsMoving = _agent.velocity.magnitude > 0.1f && !_agent.isStopped;
+
+        if (_isMoving != currentIsMoving)
+        {
+            _isMoving = currentIsMoving;
+            OnMoveStateChange?.Invoke(_isMoving);
         }
     }
 

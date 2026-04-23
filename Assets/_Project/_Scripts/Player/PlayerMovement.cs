@@ -68,7 +68,11 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
     private float _sprintTimer;
     private Coroutine _sonicTimerCoroutine;
     private Coroutine _canSprinteCoroutine;
+    // เพิ่ม Action ด้านบนรวมกับ Action อื่นๆ
 
+    public Action<bool> OnWalkStateChange;
+    // เพิ่มตัวแปรเก็บสถานะ (เอาไว้แถวๆ ตัวแปร movement)
+    private bool _isWalking = false;
 
     //Direction
     private Vector3 _moveDirection;
@@ -465,7 +469,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
         if (controller.isGrounded)
         {
             // ถ้าอยู่บนพื้น ให้ความเร็วแกน Y เป็น 0 เพื่อไม่ให้ตัวละครจม
-            finalMovement.y = 0;
+            finalMovement.y = -2;
         }
         else
         {
@@ -476,7 +480,15 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
         // ใช้ controller.Move เพื่อให้ตัวละครเคลื่อนที่
         controller.Move(finalMovement * Time.deltaTime);
 
+        bool currentIsWalking = _canMove && _moveDirection != Vector3.zero && controller.isGrounded && !_isSprinting && !isDashing && !_isSliding && !_isAttackingForward;
 
+        // ถ้ายกเลิกสถานะเดิน หรือเพิ่งเริ่มเดิน ให้ส่ง Event แจ้งเตือนสคริปต์อื่น
+        if (_isWalking != currentIsWalking)
+        {
+            _isWalking = currentIsWalking;
+            OnWalkStateChange?.Invoke(_isWalking);
+            Debug.Log($"_isWalking : {_isWalking}");
+        }
     }
 
     // Coroutine สำหรับการหน่วงเวลา

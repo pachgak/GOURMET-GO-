@@ -1048,6 +1048,7 @@ GameObject:
   - component: {fileID: 3341716836705908699}
   - component: {fileID: 417778132287791924}
   - component: {fileID: 7488378702098805472}
+  - component: {fileID: 609723537089417312}
   m_Layer: 8
   m_Name: Bear Enemy Pure Instance Events (1)
   m_TagString: Untagged
@@ -1351,7 +1352,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.511
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -1360,9 +1361,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 30
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -1395,7 +1396,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -1450,6 +1451,8 @@ MonoBehaviour:
   iconSprite: {fileID: -1396527067, guid: 0b0348e69f11e824eba3c1db1651d231, type: 3}
   iconColor: {r: 1, g: 1, b: 1, a: 1}
   isStatic: 0
+  targetRenderer: {fileID: 0}
+  myIcon: {fileID: 0}
 --- !u!114 &7488378702098805472
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1468,6 +1471,19 @@ MonoBehaviour:
   totalFlashDuration: 0.6
   flashCount: 1
   isLerp: 1
+--- !u!114 &609723537089417312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5501947848412054241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 914c4abd2961e24429b8ae8ba54b8546, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  walkClip: {fileID: 8300000, guid: 0af3199ae009c78418db50b2ea638da5, type: 3}
 --- !u!1 &5824194706473204785
 GameObject:
   m_ObjectHideFlags: 0

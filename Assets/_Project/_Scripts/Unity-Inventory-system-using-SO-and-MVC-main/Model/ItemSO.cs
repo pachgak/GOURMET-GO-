@@ -8,6 +8,9 @@ namespace Inventory.Model
     public abstract class ItemSO : ScriptableObject
     {
         [field: SerializeField]
+        public string ItemIdsd { get; set; }
+
+        [field: SerializeField]
         public string ItemName { get; set; }
 
         [field: SerializeField]
