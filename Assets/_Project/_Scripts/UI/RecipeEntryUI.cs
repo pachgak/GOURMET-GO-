@@ -66,7 +66,7 @@ public class RecipeEntryUI : MonoBehaviour
                     int needQuantity = recipe.ingredients[i].quantity;
 
                     // นับของเฉพาะในกระเป๋าคนเล่น
-                    int countInBag = GetItemCountInInventory(playerInventory, itemNeeded.ID);
+                    int countInBag = GetItemCountInInventory(playerInventory, itemNeeded.IDg);
                     ingredientCountTexts[i].text = $"{countInBag}/{needQuantity}";
 
                     if (countInBag >= needQuantity)
@@ -111,7 +111,7 @@ public class RecipeEntryUI : MonoBehaviour
         // 1. วนลูปหักของออกจากกระเป๋าผู้เล่น (ทำเมื่อมั่นใจแล้วว่ามีที่เก็บ)
         foreach (var ingredient in currentRecipe.ingredients)
         {
-            RemoveItemFromInventory(currentPlayerInventory, ingredient.item.ID, ingredient.quantity);
+            RemoveItemFromInventory(currentPlayerInventory, ingredient.item.IDg, ingredient.quantity);
         }
 
         // 2. เพิ่มอาหารสำเร็จรูปเข้ากระเป๋า
@@ -135,13 +135,13 @@ public class RecipeEntryUI : MonoBehaviour
         // ต้องตรวจสอบว่าการหักวัตถุดิบครั้งนี้ จะทำให้ช่องไหนสักช่อง "ว่าง" ลงหรือไม่
         foreach (var ingredient in recipe.ingredients)
         {
-            int itemID = ingredient.item.ID;
+            int itemID = ingredient.item.IDg;
             int amountNeeded = ingredient.quantity;
 
             for (int i = 0; i < inventory.Size; i++)
             {
                 InventoryItem itemInSlot = inventory.GetItemAt(i);
-                if (!itemInSlot.IsEmpty && itemInSlot.item.ID == itemID)
+                if (!itemInSlot.IsEmpty && itemInSlot.item.IDg == itemID)
                 {
                     // ถ้าของในช่องนี้ มีจำนวนน้อยกว่าหรือเท่ากับที่จะถูกใช้
                     // แปลว่าคราฟต์เสร็จ ช่องนี้จะกลายเป็นช่องว่าง! (มีที่ว่างให้อาหารใหม่ไปแทนที่)
@@ -170,7 +170,7 @@ public class RecipeEntryUI : MonoBehaviour
         int count = 0;
         foreach (var item in inventory.GetCurrentInventoryState().Values)
         {
-            if (!item.IsEmpty && item.item.ID == itemID)
+            if (!item.IsEmpty && item.item.IDg == itemID)
             {
                 count += item.quantity;
             }
@@ -184,7 +184,7 @@ public class RecipeEntryUI : MonoBehaviour
         for (int i = 0; i < inventory.Size; i++)
         {
             InventoryItem itemInSlot = inventory.GetItemAt(i);
-            if (!itemInSlot.IsEmpty && itemInSlot.item.ID == itemID)
+            if (!itemInSlot.IsEmpty && itemInSlot.item.IDg == itemID)
             {
                 if (itemInSlot.quantity >= amountToRemove)
                 {

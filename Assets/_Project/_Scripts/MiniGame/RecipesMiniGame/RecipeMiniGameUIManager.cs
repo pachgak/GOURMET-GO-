@@ -106,7 +106,7 @@ public class RecipeMiniGameUIManager : MonoBehaviour
         foreach (var req in recipe.ingredients)
         {
             // เช็คจำนวนรวมในทุก Inventory ที่เชื่อมต่ออยู่
-            if (GetTotalItemCount(req.item.ID) < req.quantity)
+            if (GetTotalItemCount(req.item.IDg) < req.quantity)
             {
                 return false; // ถ้ามีแค่อย่างเดียวที่ไม่พอ ก็คือทำไม่ได้
             }
@@ -150,7 +150,7 @@ public class RecipeMiniGameUIManager : MonoBehaviour
         {
             int needed = req.quantity * _cookCount;
             // เช็ครวมทุก Inventory (กระเป๋า + ตู้เย็น)
-            int totalOwned = GetTotalItemCount(req.item.ID);
+            int totalOwned = GetTotalItemCount(req.item.IDg);
 
             RequirementsItemUI reqUI = Instantiate(requirementPrefab, requirementsContentPanel);
             reqUI.Setup(req.item.ItemImage, totalOwned, needed);
@@ -172,7 +172,7 @@ public class RecipeMiniGameUIManager : MonoBehaviour
         {
             foreach (var slot in inv.GetCurrentInventoryState().Values)
             {
-                if (!slot.IsEmpty && slot.item.ID == itemID) total += slot.quantity;
+                if (!slot.IsEmpty && slot.item.IDg == itemID) total += slot.quantity;
             }
         }
         return total;
@@ -233,7 +233,7 @@ public class RecipeMiniGameUIManager : MonoBehaviour
                     InventoryItem itemInSlot = inv.GetItemAt(i);
 
                     // เจอของที่ตรงกันในช่องนี้!
-                    if (!itemInSlot.IsEmpty && itemInSlot.item.ID == req.item.ID)
+                    if (!itemInSlot.IsEmpty && itemInSlot.item.IDg == req.item.IDg)
                     {
                         if (itemInSlot.quantity >= remainingToRemove)
                         {

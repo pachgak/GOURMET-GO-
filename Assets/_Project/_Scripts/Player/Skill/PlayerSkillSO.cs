@@ -19,6 +19,11 @@ public class SkillStep
 public class PlayerSkillSO : ScriptableObject
 {
     [Header("Base Skill")]
+    [field: SerializeField]
+    [Tooltip("ไอดีสำหรับเซฟเกม ห้ามซ้ำกัน (เช่น skill_fireball)")]
+    public string ID { get; private set; } // <--- เพิ่มบรรทัดนี้
+
+    [Header("Base Skill")]
     public Sprite skillIcon;
     public string skillName;
     [TextArea] public string Description;

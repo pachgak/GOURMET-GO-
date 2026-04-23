@@ -23,7 +23,7 @@ public class SnapToGrid : MonoBehaviour
 
             if (targetGrid == null)
             {
-                Debug.LogWarning($"{gameObject.name}: ไม่พบ Grid! กรุณาใส่ Grid ใน SnapToGridManager หรือที่ตัวสคริปต์เอง");
+                //Debug.LogWarning($"{gameObject.name}: ไม่พบ Grid! กรุณาใส่ Grid ใน SnapToGridManager หรือที่ตัวสคริปต์เอง");
                 return;
             }
         }

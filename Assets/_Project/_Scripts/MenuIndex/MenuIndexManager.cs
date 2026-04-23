@@ -258,4 +258,26 @@ public class MenuIndexManager : MonoBehaviour
             GenerateMenuList();
         }
     }
+
+    // ส่งข้อมูลให้ SaveManager
+    public List<CookingRecipeSO> GetFinishedMenus()
+    {
+        return _finishedMenus;
+    }
+
+    // รับข้อมูล ID จาก SaveManager มาแปลงกลับเป็น CookingRecipeSO
+    public void LoadFinishedMenusFromSave(List<string> savedMenuIDs)
+    {
+        _finishedMenus.Clear(); // ล้างของเก่าก่อน
+
+        // วนลูปหาใน MenuIndexList (ที่ทำหน้าที่เหมือน Database)
+        foreach (var recipe in MenuIndexList)
+        {
+            // ถ้า ID ของเมนูตรงกับที่เซฟไว้ ก็จับยัดเข้า List เมนูที่ทำสำเร็จเลย
+            if (savedMenuIDs.Contains(recipe.ID))
+            {
+                _finishedMenus.Add(recipe);
+            }
+        }
+    }
 }

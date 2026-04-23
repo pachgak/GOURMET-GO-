@@ -24,7 +24,8 @@ public class ItemRequirement : QuestRequirement
 
     public override bool IsMet(GameObject player)
     {
-        if (player.TryGetComponent(out InventoryController inv))
+        // --- เพิ่มเงื่อนไข player != null ดักเอาไว้ก่อน ---
+        if (player != null && player.TryGetComponent(out InventoryController inv))
         {
             return GetItemCount(inv.InventoryData) >= amount;
         }
@@ -57,7 +58,7 @@ public class ItemRequirement : QuestRequirement
         int count = 0;
         foreach (var item in inventory.GetCurrentInventoryState().Values)
         {
-            if (!item.IsEmpty && item.item.ID == requiredItem.ID) count += item.quantity;
+            if (!item.IsEmpty && item.item.IDg == requiredItem.IDg) count += item.quantity;
         }
         return count;
     }

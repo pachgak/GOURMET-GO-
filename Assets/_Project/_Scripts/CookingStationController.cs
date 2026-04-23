@@ -123,7 +123,7 @@ namespace Inventory
                 {
                     InventoryItem itemInSlot = cookingPotInventory.GetItemAt(i);
 
-                    if (!itemInSlot.IsEmpty && itemInSlot.item.ID == ingredient.item.ID)
+                    if (!itemInSlot.IsEmpty && itemInSlot.item.IDg == ingredient.item.IDg)
                     {
                         if (itemInSlot.quantity >= amountToRemove)
                         {

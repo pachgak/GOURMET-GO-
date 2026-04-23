@@ -123,7 +123,7 @@ public class RecipeMiniGameController : MonoBehaviour
         foreach (var ingredient in recipe.ingredients)
         {
             int totalNeed = ingredient.quantity * _currentCookCount; // ¤Ù³¨Ó¹Ç¹ªÔé¹
-            int countInBag = GetItemCountInInventory(playerInventory, ingredient.item.ID);
+            int countInBag = GetItemCountInInventory(playerInventory, ingredient.item.IDg);
 
             RequirementsItemUI reqUI = Instantiate(requirementPrefab, requirementsContentPanel);
             reqUI.Setup(ingredient.item.ItemImage, countInBag, totalNeed);
@@ -166,7 +166,7 @@ public class RecipeMiniGameController : MonoBehaviour
         int count = 0;
         foreach (var item in inventory.GetCurrentInventoryState().Values)
         {
-            if (!item.IsEmpty && item.item.ID == itemID) count += item.quantity;
+            if (!item.IsEmpty && item.item.IDg == itemID) count += item.quantity;
         }
         return count;
     }

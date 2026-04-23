@@ -487,7 +487,7 @@ public class PlayerMovement : MonoBehaviour , IKnockbackable
         {
             _isWalking = currentIsWalking;
             OnWalkStateChange?.Invoke(_isWalking);
-            Debug.Log($"_isWalking : {_isWalking}");
+            //Debug.Log($"_isWalking : {_isWalking}");
         }
     }
 

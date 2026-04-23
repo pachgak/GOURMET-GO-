@@ -11,8 +11,8 @@ namespace Inventory.Model
 
         public ItemSO GetItemByID(string id)
         {
-            // ค้นหาไอเทมจาก ID ที่ตั้งไว้ (ในตัวอย่างก่อนหน้าที่ให้เพิ่ม string ID ใน ItemSO)
-            return allItems.Find(item => item.name == id);
+            // เปลี่ยนจาก item.name เป็น item.ID ครับ
+            return allItems.Find(item => item != null && item.ID == id);
         }
 
         [ProButton]

@@ -25,6 +25,8 @@ namespace Inventory.Model
             {
                 inventoryItems.Add(InventoryItem.GetEmptyItem());
             }
+
+            InformAboutChange();
         }
 
         public void MoveItemTo(InventorySO targetInventory, int sourceIndex, int targetIndex)
@@ -35,7 +37,7 @@ namespace Inventory.Model
 
             // 2. ตรวจสอบกรณีรวมกอง (Stacking)
             // ถ้าไอเทมเหมือนกัน + รวมกองได้ + ปลายทางไม่ว่าง
-            if (!targetItem.IsEmpty && sourceItem.item.ID == targetItem.item.ID && sourceItem.item.IsStackable)
+            if (!targetItem.IsEmpty && sourceItem.item.IDg == targetItem.item.IDg && sourceItem.item.IsStackable)
             {
                 int amountPossibleToTake = targetItem.item.MaxStackSize - targetItem.quantity;
 
@@ -151,7 +153,7 @@ namespace Inventory.Model
             {
                 if (inventoryItems[i].IsEmpty)
                     continue;
-                if(inventoryItems[i].item.ID == item.ID)
+                if(inventoryItems[i].item.IDg == item.IDg)
                 {
                     int amountPossibleToTake =
                         inventoryItems[i].item.MaxStackSize - inventoryItems[i].quantity;

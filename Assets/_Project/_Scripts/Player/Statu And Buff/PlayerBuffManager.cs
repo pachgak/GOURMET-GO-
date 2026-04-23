@@ -9,7 +9,7 @@ public class PlayerBuffManager : MonoBehaviour
     public Action<BuffSO, float, int> OnBuffUpdated; // ส่งเวลาที่ลดลงทุกเฟรม
     public Action<BuffSO> OnBuffRemoved;             // ส่งข้อมูลบัพที่ถูกลบออกไป
 
-    private class ActiveBuff
+    public class ActiveBuff
     {
         public BuffSO data;
         public float durationTimer;
@@ -87,5 +87,44 @@ public class PlayerBuffManager : MonoBehaviour
                 _activeBuffs.RemoveAt(i);
             }
         }
+    }
+
+    // 1. ดึงข้อมูลบัฟทั้งหมดส่งให้ SaveManager
+    public List<ActiveBuff> GetActiveBuffs() => _activeBuffs;
+
+    // 2. เคลียร์บัฟทั้งหมด (ใช้ตอนกำลังจะโหลดเกม)
+    public void ClearAllBuffs()
+    {
+        for (int i = _activeBuffs.Count - 1; i >= 0; i--)
+        {
+            ActiveBuff buff = _activeBuffs[i];
+            for (int j = 0; j < buff.currentStacks; j++)
+            {
+                foreach (var effect in buff.data.effects) effect.RemoveEffect(gameObject);
+            }
+            OnBuffRemoved?.Invoke(buff.data); // แจ้ง UI ให้ลบไอคอน
+        }
+        _activeBuffs.Clear();
+    }
+
+    // 3. เสกบัฟกลับคืนมาตามข้อมูลที่โหลดได้
+    public void RestoreBuff(BuffSO buffData, float remainingTime, int stacks)
+    {
+        // ใส่ Effect เข้าตัว Player ตามจำนวน Stack
+        for (int i = 0; i < stacks; i++)
+        {
+            foreach (var effect in buffData.effects) effect.ApplyEffect(gameObject);
+        }
+
+        _activeBuffs.Add(new ActiveBuff
+        {
+            data = buffData,
+            durationTimer = remainingTime,
+            tickTimer = buffData.tickInterval,
+            currentStacks = stacks
+        });
+
+        // แจ้ง UI ให้สร้างไอคอน
+        OnBuffAdded?.Invoke(buffData, remainingTime, stacks);
     }
 }

@@ -5,6 +5,10 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Buff", menuName = "Buff System/Buff Data")]
 public class BuffSO : ScriptableObject
 {
+    [field: SerializeField]
+    [Tooltip("ไอดีสำหรับเซฟเกม ห้ามซ้ำกัน (เช่น buff_regen_hp)")]
+    public string ID { get; private set; }
+
     [Header("UI & Info")]
     public string buffName; // สำคัญมาก เอาไว้เช็คบัพซ้ำ!
     [TextArea] public string description;

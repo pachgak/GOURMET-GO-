@@ -8,7 +8,7 @@ namespace Inventory.Model
     public abstract class ItemSO : ScriptableObject
     {
         [field: SerializeField]
-        public string ItemIdsd { get; set; }
+        public string ID { get; private set; }
 
         [field: SerializeField]
         public string ItemName { get; set; }
@@ -23,7 +23,7 @@ namespace Inventory.Model
         [field: SerializeField]
         public bool IsStackable { get; set; }
 
-        public int ID => GetInstanceID();
+        public int IDg => GetInstanceID();
 
         [field: SerializeField]
         public int MaxStackSize { get; set; } = 1;

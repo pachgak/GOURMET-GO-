@@ -21,10 +21,48 @@ public class GameSaveData
     public List<SavedItem> storageItems = new List<SavedItem>();
 
     // --- 3. ข้อมูลสกิล ---
-    public List<string> acquiredSkillIDs = new List<string>(); // สกิลที่มีทั้งหมดใน Loadout
-    public string[] skillBarIDs = new string[4]; // สกิลที่ใส่ไว้ในช่องกด F1-F4
+    [System.Serializable]
+    public struct SavedLoadoutSkill
+    {
+        public string skillID;
+        public int exp;
+    }
+    public List<SavedLoadoutSkill> acquiredSkills = new List<SavedLoadoutSkill>(); // เปลี่ยนมาใช้ List นี้แทน
 
-    // --- 4. ความคืบหน้าเกม ---
+    // *** เพิ่มโครงสร้างสำหรับ Skill Bar เข้ามาแทน string[] แบบเก่า ***
+    [System.Serializable]
+    public struct SavedSkillBarItem
+    {
+        public int slotIndex;
+        public string skillID;
+        public int usedCount;
+    }
+    public List<SavedSkillBarItem> skillBarItems = new List<SavedSkillBarItem>();
+
+    // --- 4. บัฟในตัว Player ---
+    [System.Serializable]
+    public struct SavedBuff
+    {
+        public string buffID;
+        public float timeRemaining; // เวลาบัฟที่เหลืออยู่
+        public int stacks;          // จำนวน Stack ของบัฟนั้น
+    }
+    public List<SavedBuff> activeBuffs = new List<SavedBuff>();
+
+
+    // --- 5. ความคืบหน้าเกม ---
     public List<string> finishedMenuIDs = new List<string>(); // เมนูที่ปลดล็อคแล้ว
-    public List<string> triggeredRewardIDs = new List<string>(); // เควสหรือรางวัลที่เคยรับไปแล้ว
+
+    // --- 6. ความคืบหน้าเควส ---
+    [System.Serializable]
+    public struct SavedNPCQuest
+    {
+        public string npcID;
+        public int questIndex;
+        public int stepIndex;
+    }
+    public List<SavedNPCQuest> npcQuestProgress = new List<SavedNPCQuest>();
+
+    //อันนี้มีอยู่แล้ว ใช้สำหรับเก็บ RewardID ที่เคยถูกเปิดไปแล้ว (5.2 พื้นที่/สิ่งของ)
+    public List<string> triggeredRewardIDs = new List<string>();
 }

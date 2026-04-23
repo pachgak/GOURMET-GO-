@@ -8,6 +8,10 @@ namespace Inventory.Model
     [CreateAssetMenu(fileName = "New Cooking Recipe", menuName = "Inventory/Cooking/Recipe")]
     public class CookingRecipeSO : ScriptableObject
     {
+        [field: SerializeField]
+        [Tooltip("ไอดีสำหรับเซฟเกม ห้ามซ้ำกัน (เช่น menu_fried_egg)")]
+        public string ID { get; private set; }
+
         [Header("Ingredients (วัตถุดิบ)")]
         public List<ItemQuantity> ingredients;
 
@@ -43,7 +47,7 @@ namespace Inventory.Model
                 // แทนที่จะวน foreach เราใช้ FindIndex หาตำแหน่งของไอเทมที่ตรงเงื่อนไขแทน
                 // เงื่อนไข: ID ตรงกัน และ จำนวน >= ที่ต้องการ
                 int indexFound = tempPotContents.FindIndex(x =>
-                    x.item.ID == itemNeeded.ID &&
+                    x.item.IDg == itemNeeded.IDg &&
                     x.quantity >= amountNeeded
                 );
 

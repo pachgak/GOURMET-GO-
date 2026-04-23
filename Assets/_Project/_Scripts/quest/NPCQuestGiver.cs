@@ -9,6 +9,10 @@ using DG.Tweening; // <--- อย่าลืม! ต้องมี DOTween
 
 public class NPCQuestGiver : MonoBehaviour
 {
+    [Header("Save Data")]
+    [Tooltip("ไอดีของ NPC ตัวนี้ ห้ามซ้ำกับตัวอื่น (เช่น npc_village_chief)")]
+    public string npcID;
+
     [Header("UI Reference")]
     public GameObject dialoguePanel;
     public TMP_Text questText;
@@ -58,6 +62,27 @@ public class NPCQuestGiver : MonoBehaviour
         if (dialoguePanel != null) dialoguePanel.SetActive(false);
 
         actionButton.onClick.AddListener(OnActionButtonPressed);
+
+        // *** 1. ลงทะเบียนตัวเองเข้า Database ***
+        if (QuestEventManager.Instance != null)
+        {
+            QuestEventManager.Instance.allNPCsInScene.Add(this);
+        }
+    }
+
+    // *** 2. ถอดตัวเองออกจาก Database เมื่อถูกทำลาย (เช่น ตอนเปลี่ยนฉาก หรือตาย) ***
+    private void OnDestroy()
+    {
+        if (QuestEventManager.Instance != null)
+        {
+            QuestEventManager.Instance.allNPCsInScene.Remove(this);
+        }
+
+        // --- เพิ่มตรงนี้: ยกเลิกการแอบฟัง Event ทันทีที่ NPC ตัวนี้ถูกทำลาย ---
+        if (_playerInventoryData != null)
+        {
+            _playerInventoryData.OnInventoryUpdated -= UpdateDialogueUI;
+        }
     }
 
     private void Update()
@@ -322,5 +347,18 @@ public class NPCQuestGiver : MonoBehaviour
             if (!req.IsMet(_playerObj)) return false;
         }
         return true;
+    }
+
+    // --- ระบบ Save / Load ---
+    public int GetQuestIndex() => currentQuestIndex;
+    public int GetStepIndex() => currentStepIndex;
+
+    public void LoadQuestState(int savedQuestIndex, int savedStepIndex)
+    {
+        currentQuestIndex = savedQuestIndex;
+        currentStepIndex = savedStepIndex;
+
+        // อัปเดตหน้าต่าง UI ให้ตรงกับเควสที่โหลดมา
+        UpdateDialogueUI();
     }
 }
